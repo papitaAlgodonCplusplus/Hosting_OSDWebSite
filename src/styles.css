@@ -1,0 +1,29 @@
+/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Style for the scroll bar in the main window */
+::-webkit-scrollbar {
+  width: 8px; /* Width of the scroll bar */
+  background-color: #f5f5f5; /* Scroll bar background color */
+}
+
+/* Style for the scroll bar slider */
+::-webkit-scrollbar-thumb {
+  background-color: #a8a7a7; /* Scrollbar slider color */
+  border-radius: 6px; /* Slider border radius */
+}
+
+/* Style for the scroll bar track (unselected bar) */
+::-webkit-scrollbar-track {
+  background-color: #f5f5f5; /* Track background color */
+}
+
+/* Style for when the mouse hovers over the scroll bar */
+::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* Changes color when mouse hovers */
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

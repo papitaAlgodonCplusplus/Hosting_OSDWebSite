@@ -1,0 +1,4 @@
+.animate__fadeInLeft,
+.animate__fadeInRight {
+  animation-duration: 0.5s;
+}

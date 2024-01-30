@@ -1,0 +1,27 @@
+<div class="relative w-full my-3" [formGroup]="formGroup">
+    <div>
+        <div [ngClass]="[bgColor, 'absolute top-[-15px] left-6 p-1']">
+            <label for="" class="text-darkgray">{{ label }}</label>
+        </div>
+        <input (blur)="onInputBlur()" autocomplete="off" type="text" placeholder="{{label}}" [value]="selectedItemLabel" (input)="onInput($event)"
+        class="text-center placeholder:text-darkgray block border-solid border-2 border-ligthgray w-full rounded-lg p-2 pl-9 pr-3 h-14 shadow-sm focus:outline-none focus:ring focus:lightblue-cyan"
+        [ngClass]="[bgColor, isDropdownOpen ? 'border-ligthgray' : '']" [id]="fieldName" (click)="toggleDropdown()">
+    </div>
+
+    <div *ngIf="isDropdownOpen"
+        class="visible-element absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+        role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+        <div class="py-1" role="none">
+            <a *ngFor="let item of filteredDropdownItems; let i = index" class="cursor-pointer text-gray-700 block px-4 py-2 text-md"
+                role="menuitem" tabindex="-1" [id]="'menu-item-' + i" (click)="toggleDropdown(item)">{{ item.value }}</a>
+
+        </div>
+    </div>
+
+    <p class="mt-2 text-sm text-red" *ngIf="dropdownError && !isDropdownOpen">
+        {{ label }} is required
+    </p>
+    <p class="mt-2 text-sm text-red" *ngIf="!dropdownError || isDropdownOpen">
+        &nbsp;
+    </p>
+</div>

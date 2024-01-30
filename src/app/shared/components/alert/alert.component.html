@@ -1,0 +1,47 @@
+<div *ngIf="(alertType$ | async) === 'success'" class="absolute bg-success-green-bg p-3 flex justify-center items-center gap-6 text-success-green-txt rounded-lg top-5 left-5 z-50"
+  [ngClass]="{'animate__animated animate__fadeInLeft': alertOpen$ | async, 'animate__animated animate__fadeInRight': !(alertOpen$ | async)}"
+>
+  <div class="flex justify-center items-center gap-1">
+    <p class="font-semibold">Exito!</p>
+    <p class="">{{ message$ | async }}</p>
+  </div>
+  <button (click)="toggleSuccessAlert()">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
+</div>
+
+<div *ngIf="(alertType$ | async) === 'warning' && (alertPosition$ | async) === 'left'" class="absolute bg-warning-yellow-bg p-3 flex justify-center items-center gap-6 text-warning-yellow-txt rounded-lg top-5 left-5 z-50"
+  [ngClass]="{'animateanimated animatefadeInLeft': alertOpen$ | async, 'animateanimated animatefadeInRight': !(alertOpen$ | async)}"
+>
+  <div class="flex justify-center items-center gap-1">
+    <p class="font-semibold">Advertencia!</p>
+    <p class="">{{ message$ | async }}</p>
+  </div>
+  <button (click)="toggleSuccessAlert()">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
+</div>
+
+<div *ngIf="(alertType$ | async) === 'warning' && (alertPosition$ | async) === 'right'" class="absolute bg-warning-yellow-bg p-3 flex justify-center items-center gap-6 text-warning-yellow-txt rounded-lg top-5 right-5 z-50"
+  [ngClass]="{'animateanimated animatefadeInRight': alertOpen$ | async, 'animateanimated animatefadeInLeft': !(alertOpen$ | async)}"
+>
+  <div class="flex justify-center items-center gap-1">
+    <p class="font-semibold">Advertencia!</p>
+    <p class="">{{ message$ | async }}</p>
+  </div>
+  <button (click)="toggleSuccessAlert()">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
+</div>
+
+<div *ngIf="(alertType$ | async) === 'info'" class="absolute bg-info-blue-bg p-3 flex justify-center items-center gap-6 text-info-blue-txt rounded-lg top-5 left-5 z-50"
+  [ngClass]="{'animate__animated animate__fadeInLeft': alertOpen$ | async, 'animate__animated animate__fadeInRight': !(alertOpen$ | async)}"
+>
+  <div class="flex justify-center items-center gap-1">
+    <p class="font-semibold">Info!</p>
+    <p class="">{{ message$ | async }}</p>
+  </div>
+  <button (click)="toggleSuccessAlert()">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
+</div>
