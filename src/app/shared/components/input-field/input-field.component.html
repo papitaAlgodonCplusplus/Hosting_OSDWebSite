@@ -1,0 +1,23 @@
+<div class="relative w-full my-1 p-1" [formGroup]="formGroup">
+  <div [ngClass]="[bgColor, 'absolute top-[-10px] left-6 p-0.5']">
+    <label for="" class="text-darkgray">{{ label }}</label>
+  </div>
+  <input
+    [ngClass]="[
+      bgColor,
+      'placeholder:text-darkgray block border-solid border-2 border-ligthgray w-full rounded-lg p-2 pl-9 pr-3 h-12 shadow-sm focus:outline-none focus:ring focus:lightblue-cyan'
+    ]"
+    [formControlName]="fieldName"
+    [name]="fieldName"
+    [id]="fieldName"
+    [type]="inputType"
+    [readOnly]="readOnly"
+    (blur)="blurEvent.emit()"
+  />
+  <p class="mt-2 text-sm text-red" *ngIf="isValidField(fieldName); else hidden">
+    {{ getFieldError(fieldName) }}
+  </p>
+  <ng-template #hidden>
+    <p class="mt-2 text-sm">&nbsp;</p>
+  </ng-template>
+</div>
