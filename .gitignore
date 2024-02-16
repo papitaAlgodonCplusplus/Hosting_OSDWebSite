@@ -55,7 +55,7 @@ Thumbs.db
 
 # Maven
 target/
-dist/
+#dist/
 
 # JetBrains IDE
 .idea/
