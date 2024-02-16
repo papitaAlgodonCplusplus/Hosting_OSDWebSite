@@ -22,7 +22,7 @@ export class OnboardingRegisterClaimantComponent {
     { value: 'Reclamación Extrajudicial/ Informe Sostenibilidad - 450€ /10€ / 7,5€', key: 'key3' },
     { value: 'Mediación/Arbitraje 750€ /10€ / 7,5€', key: 'Key4' }
   ];
- 
+
   constructor(private store: Store,
     private formBuilder: FormBuilder,
     private validationsService: ValidationsService,
@@ -43,7 +43,7 @@ export class OnboardingRegisterClaimantComponent {
     }, 0);
   }
 
-  
+
   toggleDropdown() {
     this.isDropdownOpen = !this.isDropdownOpen;
   }
@@ -62,10 +62,10 @@ export class OnboardingRegisterClaimantComponent {
       email: ['', [Validators.required, this.validationsService.isValidEmail]],
       web: [''],
       claimant: ['', [Validators.required]],
-      subscriberClaimed:['',[]],
-      serviceProvided:['',[]],
-      amountClaimed:['',[]],
-      facts:['',[]],
+      subscriberClaimed: ['', []],
+      serviceProvided: ['', []],
+      amountClaimed: ['', []],
+      facts: ['', []],
       supportingDocument1: [null, [Validators.required]],
       supportingDocument2: [null, [Validators.required]],
       acceptConditions: [false]
@@ -73,7 +73,7 @@ export class OnboardingRegisterClaimantComponent {
     return form;
   }
 
- 
+
   onSubmit(): void {
     console.log(this.registerForm.value)
 
@@ -82,13 +82,10 @@ export class OnboardingRegisterClaimantComponent {
       return;
 
     }
-
-    if (this.registerForm.value.acceptConditions) {
-      const userEmail = this.registerForm.value.email;
-      localStorage.setItem('userEmail', userEmail);
-      //  this.securityEventService.userRegister(this.registerForm.value);
-    }
-
+    
+    const userEmail = this.registerForm.value.email;
+    localStorage.setItem('userEmail', userEmail);
+    //  this.securityEventService.userRegister(this.registerForm.value);
   }
 
   toggleForm(formType: string): void {
