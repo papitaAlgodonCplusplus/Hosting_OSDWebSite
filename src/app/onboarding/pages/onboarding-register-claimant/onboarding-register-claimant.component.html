@@ -1,0 +1,99 @@
+<div class="flex flex-col justify-center items-center py-10 px-10 h-screen bg-blue-950 ">
+    <div class="flex flex-col py-2 rounded-xl space-y-2 bg-white text-blue-950 font-normal ">
+
+        <h1 class="text-4xl pl-3">Formulario Registro</h1>
+        <div class="pl-3 py-2 bg-blue-950 space-x-5 border-2 border-yellow-500 border-r-0 border-l-0 text-gray-200">
+            <a routerLink="/onboarding/onboarding-register-claimant" routerLinkActive="text-yellow-500"
+                class="pointer-events-none"><i class="fa-solid fa-circle text-sm"></i> Reclamante</a>
+            <a routerLink="/onboarfding/" routerLinkActive="text-white" class="pointer-events-none"><i
+                    class="fa-solid fa-circle text-sm"></i> Cliente</a>
+            <a routerLink="/onboarsding/" routerLinkActive="text-white" class="pointer-events-none"><i
+                    class="fa-solid fa-circle text-sm"></i> Profesional Libre</a>
+        </div>
+
+        <form [formGroup]="registerForm" autocomplete="off" class="flex flex-col items-center">
+            <div class="flex flex-wrap pl-8" *ngIf="showPersonalInfo">
+                <shared-input-field class="" fieldName="name" label="Nombre*" inputType="text"
+                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+                <shared-input-field class="" fieldName="firstSurname" label="Primer Apellido*" inputType="text"
+                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+                <shared-input-field class="" fieldName="middleSurname" label="Segundo Apellido*" inputType="text"
+                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+                <shared-input-field class="" fieldName="identity" label="CIF/ D.N.I/ PASAPORTE*" inputType="text"
+                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+                <shared-input-field class="" fieldName="landline" label="Landline" inputType="text"
+                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+                <shared-input-field class="" fieldName="mobilePhone" label="Mobile Phone*" inputType="text"
+                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+                <shared-input-field class="" fieldName="email" label="Email*" inputType="email"
+                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+                <shared-input-field class="" fieldName="web" label="Web" inputType="text"
+                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+                <shared-input-field class="" fieldName="country" label="Country" inputType="text"
+                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+                <shared-input-field class="" fieldName="zipCode" label="Zip Code" inputType="number"
+                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+                <shared-text-area class="w-9/12" fieldName="address" label="Address*" inputType="text"
+                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-text-area>
+            </div>
+
+            <div class="flex flex-wrap justify-center space-x-2 items-center" *ngIf="!showPersonalInfo">
+                <shared-simple-dropdown class="w-full" fieldName="claimant" label="Claimant*" [formGroup]="registerForm"
+                    [dropdownItems]="claimant" [selectedItem]="selectedClaimant">
+                </shared-simple-dropdown>
+
+                <shared-input-field class="w-full" fieldName="subscriberClaimed" label="Subscriber claimed"
+                    inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+                <shared-input-field class="w-full" fieldName="serviceProvided" label="Service provided" inputType="text"
+                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+                <shared-input-field class="w-full" fieldName="amountClaimed" label="Amount claimed" inputType="text"
+                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+                <shared-text-area class="w-full" fieldName="facts" label="Facts*" inputType="text"
+                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-text-area>
+
+                <div class="flex flex-grow">
+                    <shared-input-field class="w-full" fieldName="supportingDocument1" inputType="file"
+                        label="Supporting Document 1" [formGroup]="registerForm"
+                        [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+                    <shared-input-field class="w-full" fieldName="supportingDocument2" inputType="file"
+                        label="Supporting Document 2" [formGroup]="registerForm"
+                        [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                </div>
+            </div>       
+        </form>
+        
+        <div class="p-3">
+            <input type="checkbox" id="acceptConditions" formControlName="acceptConditions">
+            <label for="acceptConditions"> Acepto las Condiciones</label>
+            <div *ngIf="!registerForm.value.acceptConditions" class="text-red-700 pl-1">
+                Debes aceptar las condiciones.
+            </div>
+        </div>
+    </div>
+    <div class="w-full flex flex-wrap justify-end space-x-3">
+        <button
+            class="w-60 h-12  border bg-white text-blue-950 text-lg mt-4 rounded-lg font-bold hover:bg-hover-darkblue"
+            i18n="@@signin">
+            Cancelar
+        </button>
+        <button type="submit" (click)="onSubmit()"
+            class="w-96 h-12  bg-yellow-500 text-blue-950 text-lg mt-4 rounded-lg font-bold hover:bg-hover-darkblue"
+            i18n="@@signin">
+            Registrarse y presentar reclamación
+        </button>
+    </div>
+</div>

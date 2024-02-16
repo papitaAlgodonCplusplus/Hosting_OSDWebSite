@@ -1,11 +1,11 @@
 <div class="relative w-full my-1 p-1" [formGroup]="formGroup">
-  <div [ngClass]="[bgColor, 'absolute top-[-10px] left-6 p-0.5']">
+  <div [ngClass]="[bgColor, ' ']">
     <label for="" class="text-darkgray">{{ label }}</label>
   </div>
   <input
     [ngClass]="[
       bgColor,
-      'placeholder:text-darkgray block border-solid border-2 border-ligthgray w-full rounded-lg p-2 pl-9 pr-3 h-12 shadow-sm focus:outline-none focus:ring focus:lightblue-cyan'
+      'placeholder:text-darkgray bg-gray-200 block border-solid border w-full p-2 pl-9 pr-3 rounded-md shadow-sm focus:outline-none focus:border-blue-950'
     ]"
     [formControlName]="fieldName"
     [name]="fieldName"
@@ -14,7 +14,7 @@
     [readOnly]="readOnly"
     (blur)="blurEvent.emit()"
   />
-  <p class="mt-2 text-sm text-red" *ngIf="isValidField(fieldName); else hidden">
+  <p class="mt-2 text-sm text-red-700" *ngIf="isValidField(fieldName); else hidden">
     {{ getFieldError(fieldName) }}
   </p>
   <ng-template #hidden>

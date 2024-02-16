@@ -3,15 +3,25 @@ import { CommonModule } from '@angular/common';
 import { HomeComponent } from './pages/home/home.component';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from '../shared/shared.module';
+import { FilesComponent } from './pages/files/files.component';
+import { CourseFilesComponent } from './pages/course-files/course-files.component';
+
 
 
 @NgModule({
   declarations: [
-    HomeComponent
+    HomeComponent,
+    FilesComponent,
+    CourseFilesComponent
   ],
   imports: [
     CommonModule,
-    DashboardRoutingModule
+    DashboardRoutingModule,
+    ReactiveFormsModule,
+    SharedModule,
+    FormsModule
   ]
 })
 export class DashboardModule { }

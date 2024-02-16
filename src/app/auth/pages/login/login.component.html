@@ -1,60 +1,51 @@
-<div class="flex justify-center items-center h-full w-full py-6">
-  <div
-    class="relative w-full xl:w-full md:w-11/12 h-full rounded-l-3xl rounded-r-8xl bg-white-lightbone md:bg-darkblue-cyan drop-shadow-2xl max-w-screen-lg max-h-[800px]"
-  >
-    <shared-error-modal *ngIf="errorModalOpen$ | async"></shared-error-modal>
-
+<div class="flex flex-grow h-full">
+  <div class="flex-1 flex justify-center items-center">
     <div
-      class=""
-    >
-      <div
-        class="flex flex-col justify-center items-center w-full h-full gap-12 mt-10 md:mt-o"
-      >
-        <h2
-          class="text-center text-4xl text-darkblue font-bold mb-10"
-          i18n="@@login"
-        >
-          Acceso
-        </h2>
+      class="relative w-full xl:w-full md:w-11/12 h-full rounded-l-3xl rounded-r-8xl bg-white-lightbone md:bg-darkblue-cyan drop-shadow-2xl max-w-screen-lg max-h-[800px]">
+      <shared-error-modal *ngIf="errorModalOpen$ | async"></shared-error-modal>
 
-        <form
-          [formGroup]="loginForm"
-          (ngSubmit)="onSubmit()"
-          autocomplete="off"
-          class="flex flex-col items-center justify-center h-4/5 w-full md:w-4/5 px-2 pb-20 2xl:px-10 gap-6"
-        >
-          <shared-input-field
-            class="w-full"
-            fieldName="email"
-            label="Email"
-            inputType="email"
-            [formGroup]="loginForm"
-            [bgColor]="'bg-white-lightbone'"
-          ></shared-input-field>
-          <auth-input-password
-            class="w-full"
-            [formGroup]="loginForm"
-          ></auth-input-password>
-          <div class="w-full flex justify-end">
-            <a class="cursor-pointer underline decoration-1 text-blue text-sm" routerLink="/auth/forgot-password">Olvidaste tu contraseña?</a>
-          </div>
-          <button
-            type="submit"
-            class="w-full h-14 bg-black text-white text-lg p-2 rounded-lg font-bold hover:bg-hover-darkblue"
-            i18n="@@signin"
-            routerLink="/home"          
-          >
-            Iniciar sesión
-          </button>
-          <div class="w-full flex justify-start gap-1 text-sm">
-            <h3>Nuevo en OSD?</h3>
-            <a
-              class="cursor-pointer underline decoration-1 text-blue"
-              routerLink="/auth/register"
-              >Crea una cuenta</a
-            >
-          </div>
-        </form>
+      <div class="">
+        <div class="flex flex-col justify-center items-center w-full h-full gap-12 mt-10 md:mt-o">
+          <h2 class="text-center text-4xl text-yellow-500 font-bold mb-10" i18n="@@login">
+            Acceso a tu cuenta
+          </h2>
+
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" autocomplete="off"
+            class="flex flex-col items-center justify-center h-4/5 w-full md:w-4/5 px-2 pb-20 2xl:px-10 gap-6">
+            <shared-input-field class="w-full" fieldName="email" label="Email" inputType="email" [formGroup]="loginForm"
+              [bgColor]="'bg-white-lightbone'"></shared-input-field>
+            <auth-input-password class="w-full" [formGroup]="loginForm"></auth-input-password>
+            <div class="w-full flex justify-end">
+              <a class="cursor-pointer underline decoration-1 text-blue text-sm"
+                routerLink="/auth/forgot-password">Olvidaste tu contraseña?</a>
+            </div>
+            <button type="submit"
+              class="w-full h-14 bg-yellow-500 text-white text-lg p-2 rounded-lg font-bold hover:bg-hover-darkblue"
+              i18n="@@signin" routerLink="/home/files">
+              Iniciar sesión
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex-1 flex justify-center items-center" style="background-color: #1b3e57;">
+    <div class="flex flex-col w-96 space-y-5 items-center">
+
+      <img src="/./assets/img/OSD.png" alt="Logo OSD" class="w-44">
+      <button type="submit"
+        class="w-full h-14 bg-yellow-500 text-white text-lg p-2 rounded-lg font-bold hover:bg-hover-darkblue"
+        routerLink="/onboarding/onboarding-register-claimant">
+        Presentar Reclamación
+      </button>
+      <div class="w-full flex flex-col justify-start gap-1 text-white text-sm">
+        <h3>Nuevo en OSD?</h3>
+        <button type="submit"
+          class="w-full h-14 bg-yellow-500 text-white text-lg p-2 rounded-lg font-bold hover:bg-hover-darkblue"
+          routerLink="/onboarding">
+          Crea una cuenta
+        </button>
       </div>
     </div>
   </div>
