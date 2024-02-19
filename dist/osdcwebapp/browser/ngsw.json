@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1708108445923,
+  "timestamp": 1708312874623,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -11,17 +11,17 @@
         "ignoreVary": true
       },
       "urls": [
-        "/119.7937518131bf8897.js",
-        "/287.45acc0fa1defd94f.js",
+        "/119.fe488d4b913ec38a.js",
+        "/160.49118e4486fb3cfa.js",
         "/58.96bb898fb086553f.js",
-        "/72.d27ab977e442a462.js",
-        "/common.7c25c931162319f4.js",
+        "/72.4b4a2687f7d3ee4f.js",
+        "/common.2907d2916d96680e.js",
         "/index.html",
-        "/main.004ce2137c83a325.js",
+        "/main.093cac65861cce42.js",
         "/manifest.webmanifest",
         "/polyfills.44758e52d54ec63f.js",
-        "/runtime.b46547d493fc7e21.js",
-        "/styles.f1e617aedd36a4d1.css"
+        "/runtime.a7455754e9658128.js",
+        "/styles.f5ae5e1fd3b25876.css"
       ],
       "patterns": []
     },
@@ -35,31 +35,29 @@
       "urls": [
         "/assets/img/OSD.png",
         "/assets/img/default-cover.jpg",
-        "/assets/img/grupo-de-trabajo.png",
         "/assets/img/profile.png",
-        "/assets/img/suscripcion.png"
+        "/assets/img/sitio-web.png"
       ],
       "patterns": []
     }
   ],
   "dataGroups": [],
   "hashTable": {
-    "/119.7937518131bf8897.js": "460c59a17f9145806d3ed3a8caa2119a083f0a3f",
-    "/287.45acc0fa1defd94f.js": "cd71b80b5a0da2b28deae39ecf8c645fc47d59c8",
+    "/119.fe488d4b913ec38a.js": "5d631a5657abb3355c506eb3d4929df6e2e815f7",
+    "/160.49118e4486fb3cfa.js": "d2b7b300bcb4a50c04fda5fe1e4dcd838b9a4d7c",
     "/58.96bb898fb086553f.js": "0838c691d7d18970bf12d39497febe37fffc5629",
-    "/72.d27ab977e442a462.js": "5ee81f815295ff94f21f59cfec49abc5e2b8261d",
+    "/72.4b4a2687f7d3ee4f.js": "fd183e00270341330ce57e2d6c53cee998ec0338",
     "/assets/img/OSD.png": "8c6f6741329061acabacc830f714a875976f237d",
     "/assets/img/default-cover.jpg": "2360864b94228927369e2d25bd22c001812a08f0",
-    "/assets/img/grupo-de-trabajo.png": "113c858301b26f1c02f1a91d562ae23107e6590b",
     "/assets/img/profile.png": "45103f97c0c7c243ebc34616123212cddc3fddbf",
-    "/assets/img/suscripcion.png": "7f29f18b76bb6c7e463242df3e610e0dc6bb2546",
-    "/common.7c25c931162319f4.js": "21eea381d9a83f3a71cb5a8ee0ae9a617ac951b9",
-    "/index.html": "e76180a873527c66651e00b48e96475e29479736",
-    "/main.004ce2137c83a325.js": "c6d28b7d5aad8a9e0b578df20ff7d96f5f6bf44b",
+    "/assets/img/sitio-web.png": "8b4306ff15d72b5d973356fd4c08a2832ba43a0f",
+    "/common.2907d2916d96680e.js": "048ab2252e6a87771aaa0b13b78136d2bacc9552",
+    "/index.html": "44a5f3b7bf3e0e9f2f3cf5b692c1d5a7e33fa295",
+    "/main.093cac65861cce42.js": "478f933ffb97c3c58c9e7174f2248c0d786f7b3a",
     "/manifest.webmanifest": "16a8f1fba0fb28e6df2c071ad2bd1ffb29de631c",
     "/polyfills.44758e52d54ec63f.js": "fdfaba65bb8bd5baa8b2afee98a4e04b0d5dca74",
-    "/runtime.b46547d493fc7e21.js": "1f80e60c41c468ef7065c40268e08e7697fb758a",
-    "/styles.f1e617aedd36a4d1.css": "c032923eda28592ee81455cf97d64d80aa2d58b1"
+    "/runtime.a7455754e9658128.js": "686c43f9de635be1377961497b75403508165a88",
+    "/styles.f5ae5e1fd3b25876.css": "73b9de0d422ae6f41842f5d687c56e3edadac227"
   },
   "navigationUrls": [
     {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
@@ -7,15 +7,15 @@ import { ValidationsService } from 'src/app/services/validations.service';
 import { UiActions } from 'src/app/store/actions';
 
 @Component({
-  selector: 'app-register-cfh',
-  templateUrl: './register-cfh.component.html',
-  styleUrls: ['./register-cfh.component.css']
+  selector: 'app-register-sub-client',
+  templateUrl: './onboarding-register-sub-client.component.html',
+  styleUrls: ['./onboarding-register-sub-client.component.css']
 })
-export class RegisterCfhComponent {
+export class OnboardingRegisterSubClientComponent implements OnDestroy {
 
   registerForm: FormGroup;
-  selectedEntity: string | undefined;
-  entity: DropDownItem[] = [
+  selectedClientType: string | undefined;
+  clientType: DropDownItem[] = [
     { value: 'Entidad Publica', key: 'key1' },
     { value: 'Entidad Privada', key: 'Key2' },
   ];
@@ -46,7 +46,7 @@ export class RegisterCfhComponent {
 
   private createRegisterForm(): FormGroup {
     const form = this.formBuilder.group({
-      entity: ['', [Validators.required]],
+      clientType: ['', [Validators.required]],
       identity: ['', [Validators.required]],
       name: ['', [Validators.required]],
       firstSurname: ['', [Validators.required]],
@@ -58,6 +58,7 @@ export class RegisterCfhComponent {
       mobilePhone: ['', [Validators.required]],
       email: ['', [Validators.required, this.validationsService.isValidEmail]],
       web: [''],
+      plCode: [''],
       acceptConditions: [false]
     });
 

@@ -5,21 +5,21 @@ import { OnboardingRoutingModule } from './onboarding-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 
-import { RegisterCfhComponent } from './pages/register-cfh/register-cfh.component';
+import { OnboardingRegisterCfhComponent } from './pages/onboarding-register-cfh/onboarding-register-cfh.component';
 import { OnboardingRegisterClaimantComponent } from './pages/onboarding-register-claimant/onboarding-register-claimant.component';
-import { RegisterFreeProfessionalComponent } from './pages/register-free-professional/register-free-professional.component';
+import { OnboardingRegisterFreeProfessionalComponent } from './pages/onboarding-register-free-professional/onboarding-register-free-professional.component';
 import { OnboardingRegisterTypeComponent } from './pages/onboarding-register-type/onboarding-register-type.component';
-import { RegisterSubClientComponent } from './pages/register-sub-client/register-sub-client.component';
+import { OnboardingRegisterSubClientComponent } from './pages/onboarding-register-sub-client/onboarding-register-sub-client.component';
 
 
 
 @NgModule({
   declarations: [
     OnboardingRegisterTypeComponent,
-    RegisterCfhComponent,
+    OnboardingRegisterCfhComponent,
     OnboardingRegisterClaimantComponent,
-    RegisterFreeProfessionalComponent,
-    RegisterSubClientComponent
+    OnboardingRegisterFreeProfessionalComponent,
+    OnboardingRegisterSubClientComponent
   ],
   imports: [
     CommonModule,

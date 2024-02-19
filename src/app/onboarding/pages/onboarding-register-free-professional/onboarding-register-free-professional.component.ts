@@ -8,10 +8,10 @@ import { UiActions } from 'src/app/store/actions';
 
 @Component({
   selector: 'app-register-free-professional',
-  templateUrl: './register-free-professional.component.html',
-  styleUrls: ['./register-free-professional.component.css']
+  templateUrl: './onboarding-register-free-professional.component.html',
+  styleUrls: ['./onboarding-register-free-professional.component.css']
 })
-export class RegisterFreeProfessionalComponent implements OnDestroy {
+export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   registerForm: FormGroup;
   selectedWorkspace: string | undefined;
   isDropdownOpen = false;

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
@@ -13,7 +13,6 @@ import { UiActions } from 'src/app/store/actions';
 })
 export class OnboardingRegisterClaimantComponent {
   registerForm: FormGroup;
-  isDropdownOpen = false;
   selectedClaimant: string | undefined;
   showPersonalInfo: boolean = true;
   claimant: DropDownItem[] = [
@@ -22,7 +21,9 @@ export class OnboardingRegisterClaimantComponent {
     { value: 'Reclamación Extrajudicial/ Informe Sostenibilidad - 450€ /10€ / 7,5€', key: 'key3' },
     { value: 'Mediación/Arbitraje 750€ /10€ / 7,5€', key: 'Key4' }
   ];
-
+  activeLink: string = '';
+  documentNames: string[] = new Array(2);
+  
   constructor(private store: Store,
     private formBuilder: FormBuilder,
     private validationsService: ValidationsService,
@@ -43,11 +44,6 @@ export class OnboardingRegisterClaimantComponent {
     }, 0);
   }
 
-
-  toggleDropdown() {
-    this.isDropdownOpen = !this.isDropdownOpen;
-  }
-
   private createRegisterForm(): FormGroup {
     const form = this.formBuilder.group({
       identity: ['', [Validators.required]],
@@ -66,17 +62,16 @@ export class OnboardingRegisterClaimantComponent {
       serviceProvided: ['', []],
       amountClaimed: ['', []],
       facts: ['', []],
-      supportingDocument1: [null, [Validators.required]],
-      supportingDocument2: [null, [Validators.required]],
+      supportingDocument1: ['', [Validators.required]],
+      supportingDocument2: ['', [Validators.required]],
       acceptConditions: [false]
     });
     return form;
   }
 
-
   onSubmit(): void {
     console.log(this.registerForm.value)
-
+    this.showPersonalInfo = false;
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
       return;
@@ -94,5 +89,19 @@ export class OnboardingRegisterClaimantComponent {
     } else if (formType === 'claimInfo') {
       this.showPersonalInfo = false;
     }
+  }
+
+  displayFileName(): void {
+    const fileNameDocument1 = document.getElementById('supportingDocument1') as HTMLInputElement;
+    const fileNameDocument2 = document.getElementById('supportingDocument2') as HTMLInputElement;
+  
+    if (fileNameDocument1.value !== null || fileNameDocument2.value !== null) {
+      this.documentNames[0] = fileNameDocument1.value;
+      this.documentNames[1] = fileNameDocument2.value;
+    }
+  }
+  
+  changeColor(link: string): void {
+    this.activeLink = link;
   }
 }

@@ -1,4 +1,4 @@
-<div class="relative w-full" [formGroup]="formGroup">
+<div class="relative w-full my-1 p-1" [formGroup]="formGroup">
     <div [ngClass]="[bgColor]">
       <label for="" class="text-darkgray">{{ label }}</label>
     </div>
@@ -11,7 +11,7 @@
       [name]="fieldName"
       [id]="fieldName"
     ></textarea>
-    <p class="mt-2 text-sm text-red" *ngIf="isValidField(fieldName)">
+    <p class="mt-2 text-sm text-red-600" *ngIf="isValidField(fieldName)">
       {{ getFieldError(fieldName) }}
     </p>
   </div>
