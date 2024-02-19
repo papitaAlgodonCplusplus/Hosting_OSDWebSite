@@ -28,8 +28,8 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     { value: 'PL Code 1', key: 'KeyplCode1' }
   ];
   conditionsArray: DropDownItem[] = [ // TODO: Rename the array
-    { value: 'ORD Claims Processor- 125€', key: 'Key1' },
-    { value: 'Trainer/Consultant - 250€', key: 'Key2' }
+    { value: 'Tramitador de Reclamaciones ORD- 125€', key: 'Key1' },
+    { value: 'Formador/Consultor - 250€', key: 'Key2' }
   ];
   documentNames: string[] = new Array(2);
   constructor(private store: Store,
@@ -69,6 +69,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
       middleSurname: ['', [Validators.required]],
       address: ['', [Validators.required]],
       zipCode: ['', [Validators.required]],
+      country: ['', [Validators.required]],
       landline: [''],
       mobilePhone: ['', [Validators.required]],
       email: ['', [Validators.required, this.validationsService.isValidEmail]],

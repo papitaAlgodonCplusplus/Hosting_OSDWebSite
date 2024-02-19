@@ -6,7 +6,7 @@
 
       <div class="">
         <div class="flex flex-col justify-center items-center w-full h-full gap-12 mt-10 md:mt-o">
-          <h2 class="text-center text-4xl text-yellow-500 font-bold mb-10" i18n="@@login">
+          <h2 class="text-center text-4xl text-darkslategray font-bold mb-10" i18n="@@login">
             Acceso a tu cuenta
           </h2>
 
@@ -20,8 +20,8 @@
                 routerLink="/auth/forgot-password">Olvidaste tu contraseña?</a>
             </div>
             <button type="submit"
-              class="w-full h-14 bg-yellow-500 text-white text-lg p-2 rounded-lg font-bold hover:bg-hover-darkblue"
-              i18n="@@signin" routerLink="/home/files">
+              class="w-full h-14 bg-darkslategray text-white text-lg p-2 rounded-lg font-bold hover:bg-hover-darkblue"
+              i18n="@@signin" routerLink="/home">
               Iniciar sesión
             </button>
           </form>
@@ -31,18 +31,18 @@
   </div>
 
   <div class="flex-1 flex justify-center items-center bg-darkslategray">
-    <div class="flex flex-col w-96 space-y-5 items-center">
+    <div class="flex flex-col w-96 space-y-5 items-center ">
 
       <img src="/./assets/img/OSD.png" alt="Logo OSD" class="w-44">
       <button type="submit"
-        class="w-full h-14 bg-yellow-500 text-white text-lg p-2 rounded-lg font-bold hover:bg-hover-darkblue"
+        class="w-full h-14 font-semibold text-white bg-yellow-500 hover:bg-yellow-300 rounded-full transition duration-300 ease-in-out"
         routerLink="/onboarding/onboarding-register-claimant">
         Presentar Reclamación
       </button>
-      <div class="w-full flex flex-col justify-start gap-1 text-white text-sm">
-        <h3>Nuevo en OSD?</h3>
+      <div class="w-full flex flex-col justify-start gap-1 text-white">
+        <h3 class="text-sm">Nuevo en OSD?</h3>
         <button type="submit"
-          class="w-full h-14 bg-yellow-500 text-white text-lg p-2 rounded-lg font-bold hover:bg-hover-darkblue"
+          class="w-full h-14 font-semibold text-white bg-yellow-500 hover:bg-yellow-300 rounded-full transition duration-300 ease-in-out"
           routerLink="/onboarding">
           Crea una cuenta
         </button>
