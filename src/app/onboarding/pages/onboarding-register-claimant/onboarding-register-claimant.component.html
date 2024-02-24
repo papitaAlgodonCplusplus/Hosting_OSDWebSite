@@ -2,15 +2,17 @@
     <div class="flex flex-col py-3 bg-white text-darkslategray border rounded-xl shadow-2xl">
         <div class="flex flex-row px-2 items-center">
             <img src="/./assets/img/OSD.png" alt="Logo OSD" class="w-10">
-            <h1 class="text-4xl p-3">Formulario de reclamación</h1>
+            <h1 class="text-4xl p-3">{{'reclamante' | translate}}</h1>
         </div>
         <div class="pl-3 py-2 space-x-5 border bg-darkslategray text-white">
             <a routerLink="/onboarding/onboarding-register-claimant" routerLinkActive="text-yellow-500"
-                class="pointer-events-none text-sm"><i class="fa-solid fa-circle"></i> Reclamante</a>
+                class="pointer-events-none text-sm"><i class="fa-solid fa-circle"></i> {{'reclamante' | translate}}</a>
             <a routerLink="/onboardisng/onboarding-register-claimant" routerLinkActive="text-yellow-500"
-                class="pointer-events-none text-sm"><i class="fa-solid fa-circle"></i> Cliente</a>
+                class="pointer-events-none text-sm"><i class="fa-solid fa-circle"></i> {{'suscriptor_cliente' |
+                translate}}</a>
             <a routerLink="/onboardisng/onboarding-register-claimant" routerLinkActive="text-yellow-500"
-                class="pointer-events-none text-sm"><i class="fa-solid fa-circle"></i> Profesional Libres</a>
+                class="pointer-events-none text-sm"><i class="fa-solid fa-circle"></i> {{'profesional_libre' |
+                translate}}</a>
             <a routerLink="/onboarding/onboarding-register-cfh" routerLinkActive="text-yellow-500"
                 class="pointer-events-none text-sm"><i class="fa-solid fa-circle"></i> CFH</a>
         </div>
@@ -21,138 +23,135 @@
                 <shared-input-field class="w-full md:w-1/3" fieldName="identity" label="CIF/ D.N.I/ PASAPORTE*"
                     inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-                <shared-input-field class="w-full md:w-1/3" fieldName="name" label="Nombre*" inputType="text"
-                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-                <shared-input-field class="w-full md:w-1/3" fieldName="firstSurname" label="Primer Apellido*"
+                <shared-input-field class="w-full md:w-1/3" fieldName="name" label="{{'nombre' | translate}}"
                     inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-                <shared-input-field class="w-full md:w-1/3" fieldName="middleSurname" label="Segundo Apellido*"
+                <shared-input-field class="w-full md:w-1/3" fieldName="firstSurname"
+                    label="{{'primer_apellido' | translate}}" inputType="text" [formGroup]="registerForm"
+                    [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+                <shared-input-field class="w-full md:w-1/3" fieldName="middleSurname"
+                    label="{{'segundo_apellido' | translate}}" inputType="text" [formGroup]="registerForm"
+                    [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+                <shared-text-area class="w-full md:w-1/3" fieldName="address" label="{{'direccion' | translate}}*"
+                    inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-text-area>
+
+                <shared-input-field class="w-full md:w-1/3" fieldName="zipCode" label="{{'cod_postal' | translate}}"
+                    inputType="number" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+                <shared-input-field class="w-full md:w-1/3" fieldName="country" label="{{'pais' | translate}}"
                     inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-                <shared-text-area class="w-full md:w-1/3" fieldName="address" label="Dirección*" inputType="text"
-                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-text-area>
-
-                <shared-input-field class="w-full md:w-1/3" fieldName="zipCode" label="Código postal" inputType="number"
-                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-                <shared-input-field class="w-full md:w-1/3" fieldName="country" label="Ciudad/Pais" inputType="text"
-                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-                <shared-input-field class="w-full md:w-1/3" fieldName="landline" label="Telefono fijo" inputType="text"
-                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-                <shared-input-field class="w-full md:w-1/3" fieldName="mobilePhone" label="Telefono móvil*"
+                <shared-input-field class="w-full md:w-1/3" fieldName="landline" label="{{'tel_fijo' | translate}}"
                     inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-                <shared-input-field class="w-full md:w-1/3" fieldName="email" label="E-mail*" inputType="email"
-                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                <shared-input-field class="w-full md:w-1/3" fieldName="mobilePhone" label="{{'tel_movil' | translate}}"
+                    inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-                <shared-input-field class="w-full md:w-1/3" fieldName="web" label="Web" inputType="text"
-                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                <shared-input-field class="w-full md:w-1/3" fieldName="email"
+                    label="{{'correo_electronico' | translate}}" inputType="email" [formGroup]="registerForm"
+                    [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+                <shared-input-field class="w-full md:w-1/3" fieldName="web" label="{{'pagina_web' | translate}}"
+                    inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
                 <div class=" mt-2 flex px-3 items-center text-black w-full shadow-xl">
                     <div class="flex-1 flex flex-col justify-center space-y-2">
                         <div class="flex flex-row space-x-2">
                             <input type="checkbox" id="register" formControlName="zipCode">
-                            <label for="register"> Registrarse en la plataforma</label>
+                            <label for="register"> {{'registrarse_plataforma' | translate}}</label>
                         </div>
                         <div class=" flex flex-row space-x-2">
                             <input type="checkbox" id="" formControlName="zipCode">
-                            <label for=""> No Registrarse</label>
+                            <label for=""> {{'no_registrarse' | translate}}</label>
                         </div>
                     </div>
                     <div class="flex-1 flex flex-wrap text-black">
-                        <shared-input-field class="w-full md:w-72" fieldName="amountClaimed" label="Nombre de usuario*"
-                            inputType="text" [formGroup]="registerForm"
+                        <shared-input-field class="w-full md:w-72" fieldName="zipCode"
+                            label="{{'nombre_usuario' | translate}}" inputType="text" [formGroup]="registerForm"
                             [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-                        <shared-input-field class="w-full md:w-72" fieldName="amountClaimed" label="Contraseña*"
-                            inputType="text" [formGroup]="registerForm"
+                        <shared-input-field class="w-full md:w-72" fieldName="zipCode"
+                            label="{{'contraseña' | translate}}" inputType="text" [formGroup]="registerForm"
                             [bgColor]="'bg-white-lightbone'"></shared-input-field>
                     </div>
+                </div>
+
+                <div class="w-full pt-3 flex justify-end text-base">
+                    <a class="text-gray-500 cursor-pointer" type="button" (click)="toggleForm('claimInfo')">
+                        {{'ir_informacion_reclmacion'
+                        | translate}} <i
+                            class="fa-solid fa-chevron-right pr-1 text-yellow-500 hover:text-darkslategray "></i></a>
                 </div>
             </div>
 
             <div [ngClass]="{'show': !showPersonalInfo, 'hide': showPersonalInfo}">
                 <div class="w-full py-3 items-center">
-                    <a class="text-gray-500" type="button"> <i (click)="toggleForm('personalInfo')"
-                            class="fa-solid fa-chevron-left pr-1 text-yellow-500 hover:text-darkslategray cursor-pointer"></i>Volver
-                        a informacion personal</a>
+                    <a class="text-gray-500 cursor-pointer" type="button" (click)="toggleForm('personalInfo')"> <i
+                            class="fa-solid fa-chevron-left pr-1 text-yellow-500 hover:text-darkslategray"></i>{{'volver_info_personal'
+                        | translate}}</a>
                 </div>
-                <shared-simple-dropdown class=" w-full" fieldName="claimant" label="Reclamación*"
+                <shared-simple-dropdown class=" w-full" fieldName="claimant" label="{{'reclamacion' | translate}}"
                     [formGroup]="registerForm" [dropdownItems]="claimant" [selectedItem]="selectedClaimant">
                 </shared-simple-dropdown>
-                <div class="w-full bg-yellow-500 p-4 font-medium rounded-sm shadow-lg space-x-3">
-                    <span>Forma de pago:</span>
-                    <a class="text-white cursor-pointer space-x-2" (click)="changeColor('transferencia')">
-                        <i [ngClass]="{'text-darkslategray font-semibold': activeLink === 'transferencia'}"
-                            class="fa-solid fa-circle font-normal"></i>
-                        <span [ngClass]="{'text-darkslategray ': activeLink === 'transferencia'}">Transferencia
-                            bancaria </span>
-                    </a>
 
-                    <a class="text-white cursor-pointer space-x-2" (click)="changeColor('paypal')">
-                        <i [ngClass]="{'text-darkslategray font-semibold': activeLink === 'paypal'}"
-                            class="fa-solid fa-circle font-normal"></i>
-                        <span [ngClass]="{'text-darkslategray ': activeLink === 'paypal'}">PayPal</span>
-                    </a>
+                <shared-input-field class="w-full md:w-1/3" fieldName="subscriberClaimed"
+                    label="{{'suscriptor_reclamado' | translate}}" inputType="text" [formGroup]="registerForm"
+                    [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-                    <a class="text-white cursor-pointer space-x-2" (click)="changeColor('tarjeta')">
-                        <i [ngClass]="{'text-darkslategray font-semibold': activeLink === 'tarjeta'}"
-                            class="fa-solid fa-circle font-normal"></i>
-                        <span [ngClass]="{'text-darkslategray ': activeLink === 'tarjeta'}">Tarjeta de
-                            credito</span>
-                    </a>
-                </div>
-                <shared-input-field class="w-full md:w-1/3" fieldName="subscriberClaimed" label="Suscriptor Reclamado"
-                    inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                <shared-input-field class="w-full md:w-1/3" fieldName="serviceProvided"
+                    label="{{'servicio_prestado' | translate}}" inputType="text" [formGroup]="registerForm"
+                    [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-                <shared-input-field class="w-full md:w-1/3" fieldName="serviceProvided" label="Servicio prestado"
-                    inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                <shared-input-field class="w-full md:w-1/3" fieldName="amountClaimed"
+                    label="{{'cuantia_reclamada' | translate}}" inputType="text" [formGroup]="registerForm"
+                    [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-                <shared-input-field class="w-full md:w-1/3" fieldName="amountClaimed" label="Cuantia reclamada"
-                    inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-                <shared-text-area class="w-full" fieldName="facts" label="Hechos*" inputType="text"
+                <shared-text-area class="w-full" fieldName="facts" label="{{'hechos' | translate}}" inputType="text"
                     [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-text-area>
 
                 <div class="flex flex-wrap pt-3 ">
                     <div class="mb-4 p-2 flex flex-wrap items-center space-x-2">
-                        <label for="supportingDocument1" class="block text-gray-700 mb-1"> Documento Probatorio 2
-                            (Archivo Adjunto)
+                        <label for="supportingDocument1" class="block text-gray-700 mb-1">{{'documento1' | translate}}
                         </label>
                         <div class=" flex flex-col">
                             <input type="file" id="supportingDocument1" formControlName="supportingDocument1"
                                 class="hidden" (change)="displayFileName()">
                             <label for="supportingDocument1"
                                 class="cursor-pointer bg-gray-200 py-2 px-4 rounded-md text-gray-700 hover:bg-gray-400 focus:outline-none focus:ring focus:border-blue-300">
-                                Select File
+                                {{'seleccionar_archivo' | translate}}
                             </label>
                         </div>
                         <span class="ml-2 text-yellow-500">{{this.documentNames[0]}}</span>
                     </div>
                     <div class="mb-4 p-2 flex flex-wrap items-center space-x-2">
-                        <label for="supportingDocument2" class="block text-gray-700 mb-1"> Documento Probatorio 2
-                            (Archivo Adjunto)
+                        <label for="supportingDocument2" class="block text-gray-700 mb-1"> {{'documento2' | translate}}
                         </label>
                         <div class=" flex flex-col">
                             <input type="file" id="supportingDocument2" formControlName="supportingDocument2"
                                 class="hidden" (change)="displayFileName()">
                             <label for="supportingDocument2"
                                 class="cursor-pointer bg-gray-200 py-2 px-4 rounded-md text-gray-700 hover:bg-gray-400 focus:outline-none focus:ring focus:border-blue-300">
-                                Select File
+                                {{'seleccionar_archivo' | translate}}
                             </label>
                         </div>
                         <span class="ml-2 text-yellow-500">{{this.documentNames[1]}}</span>
                     </div>
                 </div>
+
+                <div class="w-full flex justify-end pt-7"> <button (click)="onSubmit()"
+                        class="p-2  bg-yellow-500 text-white  rounded-lg hover:bg-hover-darkblue" i18n="@@signin">
+                        {{'registrarse_reclamación' | translate}}
+                    </button>
+                </div>
+
             </div>
             <div class="pt-2 flex flex-row space-x-2">
                 <input type="checkbox" id="acceptConditions" formControlName="acceptConditions">
-                <label for="acceptConditions"> Acepto las Condiciones</label>
+                <label for="acceptConditions"> {{'aceptar_condiciones'| translate}}</label>
                 <div *ngIf="!registerForm.value.acceptConditions" class="text-red-700 pl-1">
-                    Debes aceptar las condiciones.
+                    {{'error_condiciones' | translate}}
                 </div>
             </div>
         </form>
@@ -160,13 +159,34 @@
     </div>
 
     <div class="flex flex-wrap justify-end items-center space-x-2 p-1">
-        <button routerLink="/onboarding/onboarding-register" class="p-2  bg-darkslategray text-white rounded-lg  hover:bg-hover-darkblue"
-            i18n="@@signin">
-            Cancelar
-        </button>
-        <button type="submit" (click)="onSubmit()"
-            class="p-2  bg-yellow-500 text-white  rounded-lg hover:bg-hover-darkblue" i18n="@@signin">
-            Registrarse y presentar reclamación
+        <button routerLink="/onboarding/onboarding-register"
+            class="p-2  bg-darkslategray text-white rounded-lg  hover:bg-hover-darkblue" i18n="@@signin">
+            {{'cancelar' | translate}}
         </button>
     </div>
 </div>
+
+
+
+<div class="w-full bg-yellow-500 p-4 font-medium rounded-sm shadow-lg space-x-3">
+    <span>Forma de pago:</span>
+    <a class="text-white cursor-pointer space-x-2" (click)="changeColor('transferencia')">
+        <i [ngClass]="{'text-darkslategray font-semibold': activeLink === 'transferencia'}"
+            class="fa-solid fa-circle font-normal"></i>
+        <span [ngClass]="{'text-darkslategray ': activeLink === 'transferencia'}">Transferencia
+            bancaria </span>
+    </a>
+
+    <a class="text-white cursor-pointer space-x-2" (click)="changeColor('paypal')">
+        <i [ngClass]="{'text-darkslategray font-semibold': activeLink === 'paypal'}"
+            class="fa-solid fa-circle font-normal"></i>
+        <span [ngClass]="{'text-darkslategray ': activeLink === 'paypal'}">PayPal</span>
+    </a>
+
+    <a class="text-white cursor-pointer space-x-2" (click)="changeColor('tarjeta')">
+        <i [ngClass]="{'text-darkslategray font-semibold': activeLink === 'tarjeta'}"
+            class="fa-solid fa-circle font-normal"></i>
+        <span [ngClass]="{'text-darkslategray ': activeLink === 'tarjeta'}">Tarjeta de
+            credito</span>
+    </a>
+</div> 

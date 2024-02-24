@@ -10,6 +10,7 @@ import { OnboardingRegisterClaimantComponent } from './pages/onboarding-register
 import { OnboardingRegisterFreeProfessionalComponent } from './pages/onboarding-register-free-professional/onboarding-register-free-professional.component';
 import { OnboardingRegisterTypeComponent } from './pages/onboarding-register-type/onboarding-register-type.component';
 import { OnboardingRegisterSubClientComponent } from './pages/onboarding-register-sub-client/onboarding-register-sub-client.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 
@@ -27,6 +28,7 @@ import { OnboardingRegisterSubClientComponent } from './pages/onboarding-registe
     ReactiveFormsModule,
     SharedModule,
     FormsModule,
+    TranslateModule
   ]
 })
 export class OnboardingModule { }

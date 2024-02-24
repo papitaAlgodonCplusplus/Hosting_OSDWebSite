@@ -13,10 +13,11 @@ import { AlertComponent } from './components/alert/alert.component';
 import { SimpleDropdownComponent } from './components/simple-dropdown/simple-dropdown.component';
 import { ConfirmationModalComponent } from './components/confirmation-modal/confirmation-modal.component';
 import { SearchDropdownComponent } from './components/search-dropdown/search-dropdown.component';
-import { LeftSidebarComponent } from './left-sidebar/left-sidebar.component';
 
+import { SwitchLanguagesComponent } from './components/switch-languages/switch-languages.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { LeftSidebarComponent } from './components/left-sidebar/left-sidebar.component';
  
-
 @NgModule({
   declarations: [
     HeaderComponent,
@@ -31,13 +32,15 @@ import { LeftSidebarComponent } from './left-sidebar/left-sidebar.component';
     ConfirmationModalComponent,
     AlertComponent,
     SearchDropdownComponent,
-    LeftSidebarComponent
+    LeftSidebarComponent,
+    SwitchLanguagesComponent
   ],
   imports: [
     CommonModule,
     SharedRoutingModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    TranslateModule
   ],
   exports: [
     HeaderComponent,
@@ -50,7 +53,8 @@ import { LeftSidebarComponent } from './left-sidebar/left-sidebar.component';
     TextAreaComponent,
     ConfirmationModalComponent,
     SearchDropdownComponent,
-    LeftSidebarComponent
+    LeftSidebarComponent,
+    SwitchLanguagesComponent
   ]
 })
 export class SharedModule { }

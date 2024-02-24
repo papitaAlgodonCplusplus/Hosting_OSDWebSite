@@ -5,6 +5,7 @@ import { Observable, Subscription } from 'rxjs';
 import { ModalSelectors, UiSelectors } from './store/selectors';
 import { WebsocketService } from './services/websocket.service';
 import { SecurityDataService } from './services/security-data.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',
@@ -22,13 +23,21 @@ export class AppComponent implements OnDestroy {
   hideFooter$: Observable<boolean> = this.store.select(UiSelectors.hideFooter);
   alertOpen$: Observable<boolean> = this.store.select(ModalSelectors.alertOpen);
   hideLeftSidebar$: Observable<boolean> = this.store.select(UiSelectors.hideLeftSidebar);
-  
+
   constructor(private store: Store,
     private router: Router,
     public websocketService: WebsocketService,
-    private securityDataService: SecurityDataService) {
+    private securityDataService: SecurityDataService,
+    private translate: TranslateService) {
     this.showHeader = false;
     this.initialized = false;
+    this.translate.addLangs(['en', 'es']);
+    const lang = this.translate.getBrowserLang()
+    if (lang !== 'es' && lang !== 'en') {
+      this.translate.setDefaultLang('es')
+    } else {
+      this.translate.use(lang)
+    }
   }
 
   ngOnInit() {
@@ -37,12 +46,12 @@ export class AppComponent implements OnDestroy {
       this.initialized = true;
     }
     this.securityDataService.userAuthenticationSuccess$.subscribe((userAuthenticationSuccess: string) => {
-      if(userAuthenticationSuccess !== ""){
+      if (userAuthenticationSuccess !== "") {
         this.router.navigate([userAuthenticationSuccess]);
       }
     });
   }
-  
+
   ngOnDestroy(): void {
     this.websocketService.disconnect();
   }

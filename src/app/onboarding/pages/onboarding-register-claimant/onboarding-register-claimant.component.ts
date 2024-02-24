@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
+import { TranslateService } from '@ngx-translate/core';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
 import { SecurityEventService } from 'src/app/services/security-event.service';
 import { ValidationsService } from 'src/app/services/validations.service';
@@ -16,18 +17,19 @@ export class OnboardingRegisterClaimantComponent {
   selectedClaimant: string | undefined;
   showPersonalInfo: boolean = true;
   claimant: DropDownItem[] = [
-    { value: 'Reclamación Simple - 75€ /10€ /7,5€ ', key: 'key1' },
-    { value: 'Reclamación Compleja -300€ /10€ / 7,5€', key: 'Key2' },
-    { value: 'Reclamación Extrajudicial/ Informe Sostenibilidad - 450€ /10€ / 7,5€', key: 'key3' },
-    { value: 'Mediación/Arbitraje 750€ /10€ / 7,5€', key: 'Key4' }
+    { value: this.translate.instant('reclamacion_simple'), key: 'key1' }, //'Reclamación Simple - 75€ /10€ /7,5€ '
+    { value: this.translate.instant('reclamacion_compleja'), key: 'Key2' },
+    { value: this.translate.instant('reclamacion_sostenibilidad'), key: 'key3' },
+    { value: this.translate.instant('mediacion_arbitraje'), key: 'Key4' }
   ];
   activeLink: string = '';
   documentNames: string[] = new Array(2);
-  
+
   constructor(private store: Store,
     private formBuilder: FormBuilder,
     private validationsService: ValidationsService,
     private securityEventService: SecurityEventService,
+    private translate: TranslateService
   ) {
     this.registerForm = this.createRegisterForm();
   }
@@ -77,7 +79,7 @@ export class OnboardingRegisterClaimantComponent {
       return;
 
     }
-    
+
     const userEmail = this.registerForm.value.email;
     localStorage.setItem('userEmail', userEmail);
     //  this.securityEventService.userRegister(this.registerForm.value);
@@ -94,13 +96,13 @@ export class OnboardingRegisterClaimantComponent {
   displayFileName(): void {
     const fileNameDocument1 = document.getElementById('supportingDocument1') as HTMLInputElement;
     const fileNameDocument2 = document.getElementById('supportingDocument2') as HTMLInputElement;
-  
+
     if (fileNameDocument1.value !== null || fileNameDocument2.value !== null) {
       this.documentNames[0] = fileNameDocument1.value;
       this.documentNames[1] = fileNameDocument2.value;
     }
   }
-  
+
   changeColor(link: string): void {
     this.activeLink = link;
   }

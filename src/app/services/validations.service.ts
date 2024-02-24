@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormGroup, ValidationErrors, FormControl, ValidatorFn, AbstractControl } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -8,6 +9,8 @@ import { FormGroup, ValidationErrors, FormControl, ValidatorFn, AbstractControl 
 
 export class ValidationsService {
   private readonly emailPattern: RegExp = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i;
+
+  constructor(private translate : TranslateService){}
 
   isValidEmail = function (this: ValidationsService, control: FormControl): ValidationErrors | null {
     const value: string = control.value.trim();
@@ -54,6 +57,7 @@ export class ValidationsService {
     return null;
   };
 
+  
   getFieldError(form: FormGroup, field: string): string | null {
     if (field === 'confirmPassword') {
       const confirmPasswordControl = form.get('confirmPassword');
@@ -69,6 +73,9 @@ export class ValidationsService {
     for (const key of Object.keys(errors)) {
       switch (key) {
         case 'required':
+          if(this.translate.currentLang == "en"){
+            return 'This field is required';
+          }
           return 'Este campo es obligatorio';
 
         case 'minlength':

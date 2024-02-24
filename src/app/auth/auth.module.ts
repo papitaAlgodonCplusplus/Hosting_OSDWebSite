@@ -9,6 +9,9 @@ import { VerifyEmailComponent } from './pages/verify-email/verify-email.componen
 import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
 import { NewpasswordComponent } from './pages/newpassword/newpassword.component';
 import { InputNewpasswordComponent } from './components/input-newpassword/input-newpassword.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { TransparencyComponent } from './pages/transparency/transparency.component';
+import { LeftSidebarTransparencyComponent } from './components/left-sidebar-transparency/left-sidebar-transparency.component';
 
 
 
@@ -19,14 +22,17 @@ import { InputNewpasswordComponent } from './components/input-newpassword/input-
     VerifyEmailComponent,
     ForgotPasswordComponent,
     NewpasswordComponent,
-    InputNewpasswordComponent
+    InputNewpasswordComponent,
+    TransparencyComponent,
+    LeftSidebarTransparencyComponent
   ],
   imports: [
     CommonModule,
     AuthRoutingModule,
     ReactiveFormsModule,
     SharedModule,
-    FormsModule
+    FormsModule,
+    TranslateModule
   ]
 })
 export class AuthModule { }

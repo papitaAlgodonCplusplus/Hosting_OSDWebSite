@@ -1,6 +1,7 @@
 import { Component, Input, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
+import { TranslateService } from '@ngx-translate/core';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
 import { SecurityEventService } from 'src/app/services/security-event.service';
 import { ValidationsService } from 'src/app/services/validations.service';
@@ -16,26 +17,27 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   selectedWorkspace: string | undefined;
   isDropdownOpen = false;
   workspace: DropDownItem[] = [
-    { value: 'DT Director/a Tecnico/a', key: 'key1' },
-    { value: 'FC  Formador/Consultor', key: 'Key2' },
-    { value: 'TR Tramitador/a', key: 'key3' },
-    { value: 'TC- Tecnico Contabilidad', key: 'Key4' },
-    { value: 'TM- Marketing', key: 'key5' },
-    { value: 'TS- Sac (Servicio atención al ciudadano)', key: 'Key6' }
+    { value: this.translate.instant('DT'), key: 'key1' },
+    { value: this.translate.instant('FC'), key: 'Key2' },
+    { value: this.translate.instant('TR'), key: 'key3' },
+    { value: this.translate.instant('TC'), key: 'Key4' },
+    { value: this.translate.instant('TM'), key: 'key5' },
+    { value: this.translate.instant('TS'), key: 'Key6' }
   ];
   selectedpayTPV: string | undefined;
   payTPV: DropDownItem[] = [
     { value: 'PL Code 1', key: 'KeyplCode1' }
   ];
   conditionsArray: DropDownItem[] = [ // TODO: Rename the array
-    { value: 'Tramitador de Reclamaciones ORD- 125€', key: 'Key1' },
-    { value: 'Formador/Consultor - 250€', key: 'Key2' }
+    { value:  this.translate.instant('tramitador_reclamaciones_ORD'), key: 'Key1' },
+    { value:  this.translate.instant('formador_consultor'), key: 'Key2' }
   ];
   documentNames: string[] = new Array(2);
   constructor(private store: Store,
     private formBuilder: FormBuilder,
     private validationsService: ValidationsService,
     private securityEventService: SecurityEventService,
+    private translate: TranslateService
   ) {
     this.registerForm = this.createRegisterForm();
   }

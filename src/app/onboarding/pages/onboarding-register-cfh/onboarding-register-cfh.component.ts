@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
+import { TranslateService } from '@ngx-translate/core';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
 import { SecurityEventService } from 'src/app/services/security-event.service';
 import { ValidationsService } from 'src/app/services/validations.service';
@@ -16,8 +17,8 @@ export class OnboardingRegisterCfhComponent {
   registerForm: FormGroup;
   selectedEntity: string | undefined;
   entity: DropDownItem[] = [
-    { value: 'Entidad Publica', key: 'key1' },
-    { value: 'Entidad Privada', key: 'Key2' },
+    { value: this.translate.instant("entidad_publica"), key: 'key1' },
+    { value: this.translate.instant("entidad_privada"), key: 'Key2' },
   ];
   selectedPLcode: string | undefined;
   plCode: DropDownItem[] = [
@@ -28,6 +29,7 @@ export class OnboardingRegisterCfhComponent {
     private formBuilder: FormBuilder,
     private validationsService: ValidationsService,
     private securityEventService: SecurityEventService,
+    private translate : TranslateService
   ) {
     this.registerForm = this.createRegisterForm();
   }
