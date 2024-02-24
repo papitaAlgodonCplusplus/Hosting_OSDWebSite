@@ -24,6 +24,15 @@ module.exports = {
       maxWidth: {
         '200': '200px',
       },
+      backgroundColor:{
+        'darkslategray' : '#1b3e57'
+      },
+      textColor:{
+        'darkslategray' : '#1b3e57'
+      },
+      borderColor:{
+        'darkslategray' : '#1b3e57'
+      }
     },
   },
   plugins: [],

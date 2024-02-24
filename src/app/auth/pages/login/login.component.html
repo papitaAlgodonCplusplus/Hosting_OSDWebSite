@@ -1,60 +1,55 @@
-<div class="flex justify-center items-center h-full w-full py-6">
-  <div
-    class="relative w-full xl:w-full md:w-11/12 h-full rounded-l-3xl rounded-r-8xl bg-white-lightbone md:bg-darkblue-cyan drop-shadow-2xl max-w-screen-lg max-h-[800px]"
-  >
-    <shared-error-modal *ngIf="errorModalOpen$ | async"></shared-error-modal>
-
+<div class="flex flex-col h-full md:flex-row">
+  <div class="flex-1 flex justify-center items-center">
     <div
-      class=""
-    >
-      <div
-        class="flex flex-col justify-center items-center w-full h-full gap-12 mt-10 md:mt-o"
-      >
-        <h2
-          class="text-center text-4xl text-darkblue font-bold mb-10"
-          i18n="@@login"
-        >
-          Acceso
-        </h2>
+      class="relative w-full xl:w-full md:w-11/12 h-full rounded-l-3xl rounded-r-8xl bg-white-lightbone md:bg-darkblue-cyan drop-shadow-2xl max-w-screen-lg max-h-[800px]">
+      <shared-error-modal *ngIf="errorModalOpen$ | async"></shared-error-modal>
 
-        <form
-          [formGroup]="loginForm"
-          (ngSubmit)="onSubmit()"
-          autocomplete="off"
-          class="flex flex-col items-center justify-center h-4/5 w-full md:w-4/5 px-2 pb-20 2xl:px-10 gap-6"
-        >
-          <shared-input-field
-            class="w-full"
-            fieldName="email"
-            label="Email"
-            inputType="email"
-            [formGroup]="loginForm"
-            [bgColor]="'bg-white-lightbone'"
-          ></shared-input-field>
-          <auth-input-password
-            class="w-full"
-            [formGroup]="loginForm"
-          ></auth-input-password>
-          <div class="w-full flex justify-end">
-            <a class="cursor-pointer underline decoration-1 text-blue text-sm" routerLink="/auth/forgot-password">Olvidaste tu contraseña?</a>
+      <div class="">
+        <div class="flex flex-col justify-center items-center w-full h-full gap-12 mt-10 md:mt-o">
+          <h2 class="text-center text-4xl text-darkslategray font-bold mb-10">
+            {{'acceso_a_tu_cuenta' | translate}}
+          </h2>
+
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" autocomplete="off"
+            class="flex flex-col items-center justify-center h-4/5 w-full md:w-4/5 px-2 pb-20 2xl:px-10 gap-6">
+            <shared-input-field class="w-full" fieldName="email" label="{{ 'correo_electronico' | translate }}"
+              inputType="email" [formGroup]="loginForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+            <auth-input-password class="w-full" [formGroup]="loginForm"
+              label="{{'contraseña' | translate}}"></auth-input-password>
+            <div class="w-full flex justify-end">
+              <a class="cursor-pointer underline decoration-1 text-blue text-sm"
+                routerLink="/auth/forgot-password">{{'olvidaste_tu_contraseña' | translate}}</a>
+            </div>
+            <button type="submit"
+              class="w-full h-14 bg-darkslategray text-white text-lg p-2 rounded-lg font-bold hover:bg-hover-darkblue"
+              i18n="@@signin" routerLink="/home">
+              {{'iniciar_sesion' | translate}}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex-1 bg-darkslategray flex justify-center">
+    <shared-switch-languages></shared-switch-languages>
+    <div class="flex justify-center items-center flex-col pb-10 md:w-96 space-y-2">
+      <img src="/./assets/img/OSD.png" alt="Logo OSD" class="">
+      <button
+        class="px-10 py-2 font-semibold text-white shadow-2xl hover:bg-gray-600 hover:text-white rounded-lg transition duration-300 ease-in-out"
+        routerLink="/onboarding/onboarding-register-claimant">
+        {{'presentar_reclamación' | translate}} <i class="fa-solid fa-chevron-right text-sm  pl-2"></i>
+      </button>
+      <div class="flex flex-col justify-center items-center gap-1 text-white font-medium">
+        <div class="p-2 flex flex-row space-x-1 cursor-pointer left-0 top-0 w-full" routerLink="/auth/transparency">
+          <a class="text-white underline text-sm">{{'transparencia' | translate}}
+          </a>
+          <div>
+            <img src="/./assets/img/transparency.png" alt="" class="">
           </div>
-          <button
-            type="submit"
-            class="w-full h-14 bg-black text-white text-lg p-2 rounded-lg font-bold hover:bg-hover-darkblue"
-            i18n="@@signin"
-            routerLink="/home"          
-          >
-            Iniciar sesión
-          </button>
-          <div class="w-full flex justify-start gap-1 text-sm">
-            <h3>Nuevo en OSD?</h3>
-            <a
-              class="cursor-pointer underline decoration-1 text-blue"
-              routerLink="/auth/register"
-              >Crea una cuenta</a
-            >
-          </div>
-        </form>
+        </div>
+        <a class="text-sm underline cursor-pointer" routerLink="/onboarding">
+          {{'nuevo_en_OSD' | translate}}</a>
       </div>
     </div>
   </div>

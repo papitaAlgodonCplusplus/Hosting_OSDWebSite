@@ -1,21 +1,18 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './pages/login/login.component';
-import { RegisterComponent } from './pages/register/register.component';
 import { VerifyEmailComponent } from './pages/verify-email/verify-email.component';
 import { authGuard } from '../guards/auth.guard';
 import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
 import { NewpasswordComponent } from './pages/newpassword/newpassword.component';
+import { TransparencyComponent } from './pages/transparency/transparency.component';
+
 
 // Child routes of the auth model
 const routes: Routes = [
   {
     path: '',
     component: LoginComponent
-  },
-  {
-    path: 'register',
-    component: RegisterComponent
   },
   {
     path: 'verify-email',
@@ -29,6 +26,10 @@ const routes: Routes = [
   {
     path: 'newpassword',
     component: NewpasswordComponent
+  },
+  {
+    path: 'transparency',
+    component: TransparencyComponent
   }
 ];
 

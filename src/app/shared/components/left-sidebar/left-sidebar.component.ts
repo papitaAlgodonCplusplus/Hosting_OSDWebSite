@@ -18,7 +18,6 @@ export class LeftSidebarComponent {
 
   constructor(private store: Store, private router: Router) {}
 
-  //function to toggle the boolean value to open or close the sidebar
   toggleLeftSidebar(): void {
     this.store.dispatch(UiActions.toggleLeftSidebar());
     if(this.arrowLeftSidebar === true){

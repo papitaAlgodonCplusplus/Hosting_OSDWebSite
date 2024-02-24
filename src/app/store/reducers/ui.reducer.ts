@@ -1,5 +1,6 @@
 import { createReducer, on } from "@ngrx/store";
 import { UiActions } from "../actions";
+import { tr } from "date-fns/locale";
 
 export interface UiState {
   headerOpen: boolean;

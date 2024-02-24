@@ -1,5 +1,6 @@
 import { Component, Input, ViewChild, ElementRef,ChangeDetectorRef  } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface'; 
 
 @Component({
@@ -22,7 +23,8 @@ export class SimpleDropdownComponent {
   isDropdownVisible = false;
   private previousDropdownItems: DropDownItem[] = [];
 
-  constructor(private changeDetectorRef: ChangeDetectorRef) { }
+  constructor(private changeDetectorRef: ChangeDetectorRef,
+              private translate : TranslateService) { }
 
   ngDoCheck() {
     if (this.dropdownItems !== this.previousDropdownItems) {

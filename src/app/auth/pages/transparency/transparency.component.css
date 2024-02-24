@@ -1,0 +1,30 @@
+/* Defines the opening animation from left to right */
+@keyframes slideInFromLeft {
+    from {
+      transform: translateX(-100%); /* Starts off screen on the left */
+    }
+    to {
+      transform: translateX(0); /* Ends in its original position */
+    }
+  }
+  
+  /* Applies the transition to smooth the movement */
+  .left-sidebar {
+    /* Applies the animation when the 'transform' property changes */
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  /* Add a class to apply the opening animation */
+  .left-sidebar.open {
+    /* Applies the opening animation */
+    animation: slideInFromLeft 0.3s ease-in-out;
+  }
+  
+  .show-button {
+    opacity: 1;
+  }
+  
+  .arrow-left{
+    left: 98%;
+  }
+  
