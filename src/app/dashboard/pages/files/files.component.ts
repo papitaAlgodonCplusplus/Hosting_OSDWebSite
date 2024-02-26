@@ -1,6 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
+import { TranslateService } from '@ngx-translate/core';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
 import { UiActions } from 'src/app/store/actions';
 
@@ -15,10 +16,10 @@ export class FilesComponent implements OnDestroy {
   validationsService: any;
   selectedClaimant: string | undefined;
   claimant: DropDownItem[] = [
-    { value: 'Reclamación Simple - 75€ /10€ /7,5€ ', key: 'key1' },
-    { value: 'Reclamación Compleja -300€ /10€ / 7,5€', key: 'Key2' },
-    { value: 'Reclamación Extrajudicial/ Informe Sostenibilidad - 450€ /10€ / 7,5€', key: 'key3' },
-    { value: 'Mediación/Arbitraje 750€ /10€ / 7,5€', key: 'Key4' }
+    { value: this.translate.instant('reclamacion_simple'), key: 'key1' }, //'Reclamación Simple - 75€ /10€ /7,5€ '
+    { value: this.translate.instant('reclamacion_compleja'), key: 'Key2' },
+    { value: this.translate.instant('reclamacion_sostenibilidad'), key: 'key3' },
+    { value: this.translate.instant('mediacion_arbitraje'), key: 'Key4' }
   ];
   selectedSubscriber: string | undefined;
   subscriber: DropDownItem[] = [
@@ -26,17 +27,18 @@ export class FilesComponent implements OnDestroy {
   ];
   selectedfreeProfessionals: string | undefined;
   freeProfessionals: DropDownItem[] = [
-    { value: 'DT Director/a Tecnico/a', key: 'key1' },
-    { value: 'FC Formador/Consulto', key: 'key2' },
-    { value: 'TR Tramitador/a', key: 'key3' },
-    { value: 'TC- Tecnico Contabilidad', key: 'key4' },
-    { value: 'TM- Marketing', key: 'key5' },
-    { value: 'TS- Sac (Servicio atención al ciudadano', key: 'key6' }
+    { value: this.translate.instant('DT'), key: 'key1' },
+    { value: this.translate.instant('FC'), key: 'Key2' },
+    { value: this.translate.instant('TR'), key: 'key3' },
+    { value: this.translate.instant('TC'), key: 'Key4' },
+    { value: this.translate.instant('TM'), key: 'key5' },
+    { value: this.translate.instant('TS'), key: 'Key6' }
   ];
   isDropdownOpen = false;
 
   constructor(private store: Store,
-    private formBuilder: FormBuilder,)
+    private formBuilder: FormBuilder,
+    private translate : TranslateService)
     {
       this.registerForm = this.createRegisterForm();
     }
