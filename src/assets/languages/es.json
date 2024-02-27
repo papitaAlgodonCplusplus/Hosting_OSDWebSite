@@ -87,5 +87,21 @@
     "institutionValuationFreeOsdProfessionals" : "Institución Valoración Profesionales Libres OSD: 0 a 5",
     "freeProfessionalsIntervention" : "Profesionales Libres intervinientes ",
     "performances" : "Actuaciones",
-    "newAction" : "Crear nueva actuación"
+    "newAction" : "Crear nueva actuación",
+
+    "----COMMENT9----" : "Variables for proceeding course page",
+    "guardar" : "Guardar",
+    "studentName": "Nombre del Estudiante",
+    "formacion": "Formacion",
+    "expedienteCurso": "Expediente Curso",
+    "calificacionFinal": "Calificacion Final",
+    "estado": "Estado",
+    "ingresos": "Ingresos",
+    "gastos": "Gastos",
+    "liquidacion": "Liquidacion",
+    "pendiente": "Pendiente",
+    "enEjecucion": "En Ejecución",
+    "finalizado": "Finalizado",
+    "freeInterveningProfessional": "Profesionales Libres Intervinientes"
+    
 }

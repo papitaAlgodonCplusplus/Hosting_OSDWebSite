@@ -98,5 +98,20 @@
     "institutionValuationFreeOsdProfessionals" : "Institution Valuation Free OSD Professionals: 0 to 5",
     "freeProfessionalsIntervention" : "Free Professionals intervening",
     "performances" : "Performances",
-    "newAction" : "Create New Action"
+    "newAction" : "Create New Action",
+
+    "----COMMENT9----" : "Variables for proceeding course page",
+    "guardar": "Save",
+    "studentName": "Student Name",
+    "formacion": "Training",
+    "expedienteCurso": "Course Record",
+    "calificacionFinal": "Final Grade",
+    "estado": "Status",
+    "ingresos": "Income",
+    "gastos": "Expenses",
+    "liquidacion": "Settlement",
+    "pendiente": "Pending",
+    "enEjecucion": "In Progress",
+    "finalizado": "Completed",
+    "freeInterveningProfessional": "Free Intervening Professionals"
 }
