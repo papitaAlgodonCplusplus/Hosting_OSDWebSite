@@ -22,29 +22,24 @@ export class CreatePerformanceComponent implements OnDestroy{
   ];
   PL_FreeProfessional: string | undefined;
   FreeProfessional: DropDownItem[] = [];
-  
-  
   isDropdownOpen = false;
   isDropdownOpen2 = false;
-
+  
   constructor(private store: Store,
     private formBuilder: FormBuilder,)
     {
       this.registerForm = this.createRegisterForm();
     }
-
   ngOnInit() {
     setTimeout(() => {
       this.store.dispatch(UiActions.hideAll());
     }, 0);
   }
-
   ngOnDestroy() {
     setTimeout(() => {
       this.store.dispatch(UiActions.showAll());
     }, 0);
   }
-
   private createRegisterForm(): FormGroup {
     const form = this.formBuilder.group({
           Type:['',[Validators.required]],
@@ -58,40 +53,28 @@ export class CreatePerformanceComponent implements OnDestroy{
           WorkHoursDT: ['', [Validators.required]],
           TravelTimeDT:['',[Validators.required]],
           TravelExpensesDT:['',[Validators.required]],
-          RemunerationDT:['',[Validators.required]],
-          
+          RemunerationDT:['',[Validators.required]],    
     });
     return form;
   }
-  
   toggleDropdown(Response: string ) {
-    
     if (Response =="isDropdownOpen") {
-      console.log("TEST");
       this.isDropdownOpen = !this.isDropdownOpen;
-
     }
     else{
       this.isDropdownOpen2 = !this.isDropdownOpen2;
-    }
-    
+    }   
   }
-
   onSubmit(): void {
-    console.log(this.registerForm.value)
-    
+    console.log(this.registerForm.value) 
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
       return;
       
     }
-
     if(this.registerForm.value.acceptConditions){
       const userEmail = this.registerForm.value.email;
-      localStorage.setItem('userEmail', userEmail);
-      //  this.securityEventService.userRegister(this.registerForm.value);
+      localStorage.setItem('userEmail', userEmail);  
     }
-
   }
-
 }
