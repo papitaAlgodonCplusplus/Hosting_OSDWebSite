@@ -4,12 +4,13 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
-import { UiActions } from 'src/app/store/actions';
+import { AuthenticationActions, UiActions } from 'src/app/store/actions';
 import { WebsocketService } from 'src/app/services/websocket.service';
 import { EventFactoryService } from 'src/app/services/event-factory.service';
 import { ValidationsService } from '../../../services/validations.service';
 import { ModalSelectors } from 'src/app/store/selectors';
 import { SecurityEventService } from 'src/app/services/security-event.service';
+import { authenticationReducers } from 'src/app/store/reducers/authentication.reducer';
 
 @Component({
   selector: 'auth-login',
@@ -38,7 +39,7 @@ export class LoginComponent implements OnDestroy {
 
   ngOnInit() {
     setTimeout(() => {
-      this.store.dispatch(UiActions.hideAll());
+      this.store.dispatch(UiActions.hideAll()); 
     }, 0);
   }
 
@@ -49,22 +50,24 @@ export class LoginComponent implements OnDestroy {
   }
 
   onSubmit(): void {
-    if (this.loginForm.invalid) {
-      this.loginForm.markAllAsTouched();
-      return;
-    }
-
-    this.securityEventService.userLogin(this.loginForm.value);
+    this.store.dispatch(AuthenticationActions.signIn()) //TODO: Delete until login is implemented
+    // if (this.loginForm.invalid) {
+    //   this.loginForm.markAllAsTouched();
+    //   return;
+    // }
+    // this.securityEventService.userLogin(this.loginForm.value);
   }
 
   private createLoginForm(): FormGroup {
-
     return this.formBuilder.group({
       email: ['', [Validators.required, this.validationsService.isValidEmail], []],
       password: ['', [Validators.required, this.validationsService.isValidPassword, Validators.minLength(6)], []],
     });
   }
 
+  signOut(): void{
+    this.store.dispatch(AuthenticationActions.signOut()) //TODO: Delete until login is implemented
+  }
   // Trigger the sign-in action, simulate an HTTP request
   // signIn(): void {
 

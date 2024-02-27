@@ -82,9 +82,10 @@
     "seguro_responsabilidad_civil": "Copy of Last Receipt Civil Liability Insurance",
     "tramitador_reclamaciones_ORD": "ORD Claims Processor - 125€",
     "formador_consultor": "Trainer/Consultant - 250€",
+    "engineer": "Kuarctec engineer. OSD digital platform - 750€",
 
     "----COMMENT7----" : "Variables for the XXXX File (Claim) page",
-    "file_claim" : "File XXXX (Complaint)",
+    "file_claim" : "File (Complaint)",
     "state" : "State",
     "earring" : "Earring",
     "running" : "Running",
@@ -100,6 +101,12 @@
     "performances" : "Performances",
     "newAction" : "Create New Action",
 
+
+    "----COMMENT8----" : "Variables for the Course record page",
+    "status" : "Status",
+    "course-record": "Course Record",
+    "final-grade":"Final Grade",
+
     "----COMMENT9----" : "Variables for proceeding course page",
     "guardar": "Save",
     "studentName": "Student Name",
@@ -113,5 +120,7 @@
     "pendiente": "Pending",
     "enEjecucion": "In Progress",
     "finalizado": "Completed",
-    "freeInterveningProfessional": "Free Intervening Professionals"
+    "freeInterveningProfessional": "Free Intervening Professionals",
+    
+  
 }

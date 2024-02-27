@@ -1,7 +1,9 @@
 import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
+import { TranslateService } from '@ngx-translate/core';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
+import { ValidationsService } from 'src/app/services/validations.service';
 import { UiActions } from 'src/app/store/actions';
 
 @Component({
@@ -11,13 +13,12 @@ import { UiActions } from 'src/app/store/actions';
 })
 export class CourseFilesComponent implements OnDestroy {
   registerForm: FormGroup;
-  validationsService: any;
   selectedClaimant: string | undefined;
   claimant: DropDownItem[] = [
-    { value: 'Reclamación Simple - 75€ /10€ /7,5€ ', key: 'key1' },
-    { value: 'Reclamación Compleja -300€ /10€ / 7,5€', key: 'Key2' },
-    { value: 'Reclamación Extrajudicial/ Informe Sostenibilidad - 450€ /10€ / 7,5€', key: 'key3' },
-    { value: 'Mediación/Arbitraje 750€ /10€ / 7,5€', key: 'Key4' }
+    { value: this.translate.instant('reclamacion_simple'), key: 'key1' }, //'Reclamación Simple - 75€ /10€ /7,5€ '
+    { value: this.translate.instant('reclamacion_compleja'), key: 'Key2' },
+    { value: this.translate.instant('reclamacion_sostenibilidad'), key: 'key3' },
+    { value: this.translate.instant('mediacion_arbitraje'), key: 'Key4' }
   ];
   selectedSubscriber: string | undefined;
   subscriber: DropDownItem[] = [
@@ -25,17 +26,15 @@ export class CourseFilesComponent implements OnDestroy {
   ];
   selectedfreeProfessionals: string | undefined;
   freeProfessionals: DropDownItem[] = [
-    { value: 'DT Director/a Tecnico/a', key: 'key1' },
-    { value: 'FC Formador/Consulto', key: 'key2' },
-    { value: 'TR Tramitador/a', key: 'key3' },
-    { value: 'TC- Tecnico Contabilidad', key: 'key4' },
-    { value: 'TM- Marketing', key: 'key5' },
-    { value: 'TS- Sac (Servicio atención al ciudadano', key: 'key6' }
+    { value: this.translate.instant('CFH'), key: 'key1' },
+    { value: this.translate.instant('FC'), key: 'Key2' }
   ];
   isDropdownOpen = false;
 
   constructor(private store: Store,
-    private formBuilder: FormBuilder,) {
+    private formBuilder: FormBuilder,
+    private validationsService: ValidationsService,
+    private translate: TranslateService) {
     this.registerForm = this.createRegisterForm();
   }
 
@@ -53,7 +52,6 @@ export class CourseFilesComponent implements OnDestroy {
 
   private createRegisterForm(): FormGroup {
     const form = this.formBuilder.group({
-      claimant: ['', [Validators.required]],
       identity: ['', [Validators.required]],
       name: ['', [Validators.required]],
       firstSurname: ['', [Validators.required]],
@@ -65,6 +63,7 @@ export class CourseFilesComponent implements OnDestroy {
       mobilePhone: ['', [Validators.required]],
       email: ['', [Validators.required, this.validationsService.isValidEmail]],
       web: [''],
+      finalGrade: ['', [Validators.required]],
     });
     return form;
   }
