@@ -9,14 +9,10 @@
                 [dropdownItems]="claimant" [selectedItem]="selectedClaimant">
             </shared-simple-dropdown>
 
-            <div class="w-full flex flex-col items-center">
-                <span>{{'state' | translate}}:</span>
-                <ul class="list-disc flex flex-row space-x-8">
-                    <li>{{'earring' | translate}}</li>
-                    <li>{{'running' | translate}}</li>
-                    <li>{{'finalized' | translate}}</li>
-                </ul>
-            </div>
+            <shared-simple-dropdown class="w-full" label="{{'status' | translate}}" fieldName="finalGrade"
+            [formGroup]="registerForm" [dropdownItems]="Status" [selectedItem]="selectedStatus">
+            </shared-simple-dropdown>
+        
             <shared-simple-dropdown class="w-full" fieldName="Subscriber" label="{{'subscriber' | translate}}" [formGroup]="registerForm"
                 [dropdownItems]="subscriber" [selectedItem]="selectedSubscriber">
             </shared-simple-dropdown>
@@ -85,7 +81,8 @@
                 <div class="flex flex-col justify-center items-center space-y-5 font-bold">
                     <span class="hover:underline cursor-pointer">{{'performances' | translate}} 2214</span>
 
-                    <button class=" rounded-xl p-3 text-white hover:bg-gray-600 space-x-2">
+                    <button class=" rounded-xl p-3 text-white hover:bg-gray-600 space-x-2"
+                    routerLink="/home/performance">
                         <span>{{'newAction' | translate }}</span> <i class="fa-solid fa-chevron-right text-base"></i>
                     </button>
                 </div>
