@@ -70,7 +70,6 @@
     "transparencia" : "Transparencia",
     "equipo_OSD" : "Equipo OSD",
     "usuarios" : "Usuarios",
-    
     "guardar" : "Guardar",
     "studentName": "Nombre del Estudiante",
     "formacion": "Formacion",
@@ -83,7 +82,7 @@
     "pendiente": "Pendiente",
     "enEjecucion": "En Ejecución",
     "finalizado": "Finalizado",
-    "freeInterveningProfessional": "Profesionales Libres Intervinientes",
+    "freeInterveningProfessional": "Profesionales Libres Intervinientes"
     "home" : "Inicio",
     
     "----COMMENT7----" : "Variables for the XXXX File (Claim) Component page",
