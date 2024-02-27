@@ -33,6 +33,7 @@
     "reclamacion_sostenibilidad": "Extrajudicial Claim/Sustainability Report - 450€ / 10€ / 7.5€",
     "mediacion_arbitraje": "Mediation/Arbitration - 750€ / 10€ / 7.5€",
     "cancelar": "Cancel",
+    "guardar": "Save",
     "registrarse": "Register",
     "cuantia_reclamada": "Amount claimed",
     "home" : "Home",
@@ -82,9 +83,10 @@
     "seguro_responsabilidad_civil": "Copy of Last Receipt Civil Liability Insurance",
     "tramitador_reclamaciones_ORD": "ORD Claims Processor - 125€",
     "formador_consultor": "Trainer/Consultant - 250€",
+    "engineer": "Kuarctec engineer. OSD digital platform - 750€",
 
     "----COMMENT7----" : "Variables for the XXXX File (Claim) page",
-    "file_claim" : "File XXXX (Complaint)",
+    "file_claim" : "File (Complaint)",
     "state" : "State",
     "earring" : "Earring",
     "running" : "Running",
@@ -109,5 +111,13 @@
     "TravelExpenses":"Travel Expenses",
     "Remuneration":"Remuneration",
     "TechnicalDirector":"Technical director",
-    "TitlePerformance":"Create New Performance"
+    "TitlePerformance":"Create New Performance",
+    
+    "----COMMENT9----" : "Variables for the Course record page",
+    "status" : "Status",
+    "course-record": "Course Record",
+    "ingresos":"Earnings",
+    "gastos":"Expenses",
+    "liquidacion":"Liquitation",
+    "final-grade":"Final Grade"
 }
