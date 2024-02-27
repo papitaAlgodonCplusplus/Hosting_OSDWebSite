@@ -1,10 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { TranslateService } from '@ngx-translate/core';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
-import { SecurityEventService } from 'src/app/services/security-event.service';
-import { ValidationsService } from 'src/app/services/validations.service';
 import { UiActions } from 'src/app/store/actions';
 
 @Component({
@@ -14,6 +11,7 @@ import { UiActions } from 'src/app/store/actions';
 })
 export class CreatePerformanceComponent implements OnDestroy{
   registerForm: FormGroup;
+  Response= "";
   validationsService: any;
   selectedType: string | undefined;
   type: DropDownItem[] = [
@@ -27,6 +25,7 @@ export class CreatePerformanceComponent implements OnDestroy{
   
   
   isDropdownOpen = false;
+  isDropdownOpen2 = false;
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,)
@@ -48,32 +47,34 @@ export class CreatePerformanceComponent implements OnDestroy{
 
   private createRegisterForm(): FormGroup {
     const form = this.formBuilder.group({
-          claimant: ['', [Validators.required]],
-          subscriber:['',[Validators.required]],
+          Type:['',[Validators.required]],
+          WorkHours: ['', [Validators.required]],
+          TravelTime:['',[Validators.required]],
           amountClaimed:['',[Validators.required]],
-          AAsavingsPP:['',[Validators.required]],
-          creditingDate:['',[Validators.required]],
-          OSDvaluation:['',[Validators.required]],
-          valuationClaimant:['',[Validators.required]],
-          valuationFreeOSDprofessionals:['',[Validators.required]]
+          TravelExpenses:['',[Validators.required]],
+          Date:['',[Validators.required]],
+          DateDT:['',[Validators.required]],
+          Remuneration:['',[Validators.required]],
+          WorkHoursDT: ['', [Validators.required]],
+          TravelTimeDT:['',[Validators.required]],
+          TravelExpensesDT:['',[Validators.required]],
+          RemunerationDT:['',[Validators.required]],
+          
     });
     return form;
   }
-  // Declara variables para controlar la visibilidad de los campos de entrada
-  showDropdownInput1: boolean = false;
-  showDropdownInput2: boolean = false;
+  
+  toggleDropdown(Response: string ) {
+    
+    if (Response =="isDropdownOpen") {
+      console.log("TEST");
+      this.isDropdownOpen = !this.isDropdownOpen;
 
-  // Método para cambiar la visibilidad de los campos de entrada según el dropdown seleccionado
-  toggleDropdownInput(dropdown: string) {
-   
-      if (dropdown === 'dropdown1') {
-          this.showDropdownInput1 = !this.showDropdownInput1;
-      } else if (dropdown === 'dropdown2') {
-          this.showDropdownInput2 = !this.showDropdownInput2;
-      }
-  }
-  toggleDropdown() {
-    this.isDropdownOpen = !this.isDropdownOpen;
+    }
+    else{
+      this.isDropdownOpen2 = !this.isDropdownOpen2;
+    }
+    
   }
 
   onSubmit(): void {

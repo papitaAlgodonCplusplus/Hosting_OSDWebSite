@@ -105,7 +105,9 @@
     "TypePerformance":"Type",
     "Date":"Date",
     "WorkHours":"Work Hours",
-    "TravelTime":"Horas desplazamiento",
-    "TravelExpenses":"Gastos desplazamiento",
-    "Remuneration":"Remuneration"
+    "TravelTime":"TravelTime",
+    "TravelExpenses":"Travel Expenses",
+    "Remuneration":"Remuneration",
+    "TechnicalDirector":"Technical director",
+    "TitlePerformance":"Create New Performance"
 }

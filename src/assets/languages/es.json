@@ -96,5 +96,7 @@
     "WorkHours":"Horas de trabajo",
     "TravelTime":"Horas desplazamiento",
     "TravelExpenses":"Gastos desplazamiento",
-    "Remuneration":"Retribución"
+    "Remuneration":"Retribución",
+    "TechnicalDirector":"Director Técnico",
+    "TitlePerformance":"Crear Actuación"
 }

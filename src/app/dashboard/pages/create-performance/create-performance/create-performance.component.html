@@ -1,89 +1,90 @@
-<div class="flex flex-grow w-full h-full justify-center ">
-    <div class="flex-1 flex justify-center py-3 ">
-        <div class="flex flex-col">
-            <div class="flex flex-row px-2 items-center border bg-darkslategray text-white">
-                <img src="/./assets/img/OSD.png" alt="Logo OSD" class="w-12">
-                <h1 class="text-4xl p-3">Crear Actuación
-                </h1>
+<div class=" flex flex-col justify-center  px-10 py-2 ">
+    <div class="flex flex-col py-3 bg-white text-darkslategray border rounded-xl shadow-2xl">
+        <div class="flex flex-row px-2 items-center border bg-darkslategray text-white">
+            <img src="/./assets/img/OSD.png" alt="Logo OSD" class="w-12">
+            <h1 class="text-4xl p-3">{{'TitlePerformance'|translate}}
+            </h1>
+        </div>
+
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" autocomplete="off" class="flex flex-col space-y-3 p-2">
+
+            <div>
+                
+                    <shared-input-field class="w-full" fieldName="Date" label="{{'Date'|translate}}" inputType="date"
+                        [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                
+
+               
+                    <shared-simple-dropdown class="w-full" fieldName="Type" label="{{'TypePerformance'|translate}}"
+                        [formGroup]="registerForm" [dropdownItems]="type" [selectedItem]="selectedType">
+                    </shared-simple-dropdown>
+                
+
+               
+                    <button (click)="toggleDropdown('isDropdownOpen')" type="button"
+                        class="inline-flex justify-center font-medium items-center px-4 py-2 text-base text-black-500 hover:underline rounded-lg">
+                        {{'profesional_libre' | translate}} <i class="fa-solid fa-chevron-down pl-2 text-xs"></i>
+                    </button>
+                
+
+
+                <div *ngIf="isDropdownOpen">
+                    <shared-input-field class="w-full" fieldName="WorkHours" label="{{'WorkHours'|translate}}"
+                        inputType="text" [formGroup]="registerForm"
+                        [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                    <shared-input-field class="w-full" fieldName="TravelTime" label="{{'TravelTime'|translate}}"
+                        inputType="text" [formGroup]="registerForm"
+                        [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                    <shared-input-field class="w-full" fieldName="TravelExpenses" label="{{'TravelExpenses'|translate}}"
+                        inputType="text" [formGroup]="registerForm"
+                        [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                    <shared-input-field class="w-full" fieldName="Remuneration" label="{{'Remuneration'|translate}}"
+                        inputType="text" [formGroup]="registerForm"
+                        [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+                </div>
+                
+                    <button (click)="toggleDropdown('isDropdownOpen2')" type="button"
+                        class="inline-flex justify-center font-medium items-center px-4 py-2 text-base text-black-500 hover:underline rounded-lg">
+                        {{'TechnicalDirector'|translate}} <i class="fa-solid fa-chevron-down pl-2 text-xs"></i>
+                    </button>
+
+                
+
+
+                <div *ngIf="isDropdownOpen2">
+                    <shared-input-field class="w-full" fieldName="DateDT" label="{{'Date'|translate}}" inputType="date"
+                        [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                    <shared-input-field class="w-full" fieldName="WorkHoursDT" label="{{'WorkHours'|translate}}"
+                        inputType="text" [formGroup]="registerForm"
+                        [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                    <shared-input-field class="w-full" fieldName="TravelTimeDT" label="{{'TravelTime'|translate}}"
+                        inputType="text" [formGroup]="registerForm"
+                        [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                    <shared-input-field class="w-full" fieldName="TravelExpenses" label="{{'TravelExpenses'|translate}}"
+                        inputType="text" [formGroup]="registerForm"
+                        [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                    <shared-input-field class="w-full" fieldName="Remuneration" label="{{'Remuneration'|translate}}"
+                        inputType="text" [formGroup]="registerForm"
+                        [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+                </div>
+
             </div>
 
-            <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" autocomplete="off" class="">
-                <ul class="flex flex-col py-3">
-                    <div [ngClass]="['w-[30rem]']">
-                        <li>
-                            <shared-input-field class="w-full" fieldName="creditingDate" label="{{'Date'|translate}}"
-                                inputType="date" [formGroup]="registerForm"
-                                [bgColor]="'bg-white-lightbone'"></shared-input-field>
-                        </li>
+            <div class="flex flex-row h-full justify-end space-x-2 pb-3">
+                <button
+                    class="w-60 h-12  border bg-white text-blue-950 text-lg mt-4 rounded-lg font-bold hover:bg-hover-darkblue"
+                    i18n="@@signin">
+                    {{'cancelar'|translate}}
+                </button>
 
-                        <li>
-                            <shared-simple-dropdown class="w-full" fieldName="claimant" label="{{'TypePerformance'|translate}}"
-                                [formGroup]="registerForm" [dropdownItems]="type" [selectedItem]="selectedType">
-                            </shared-simple-dropdown>
-                        </li>
-                        <li>
-                            <shared-simple-dropdown class="w-full" fieldName="claimant" label="{{'profesional_libre'|translate}}"
-                                [formGroup]="registerForm" [dropdownItems]="FreeProfessional" [selectedItem]="PL_FreeProfessional"
-                                (click)="toggleDropdownInput('dropdown1')">
-                            </shared-simple-dropdown>
-                        </li>
-                        <li *ngIf="showDropdownInput1">
-                            <shared-input-field class="w-full" fieldName="amountClaimed" label="{{'WorkHours'|translate}}"
-                                    inputType="text" [formGroup]="registerForm"
-                                    [bgColor]="'bg-white-lightbone'"></shared-input-field>
-                            <shared-input-field class="w-full" fieldName="amountClaimed" label="{{'TravelTime'|translate}}"
-                                    inputType="text" [formGroup]="registerForm"
-                                    [bgColor]="'bg-white-lightbone'"></shared-input-field>
-                            <shared-input-field class="w-full" fieldName="amountClaimed" label="{{'TravelExpenses'|translate}}"
-                                    inputType="text" [formGroup]="registerForm"
-                                    [bgColor]="'bg-white-lightbone'"></shared-input-field>
-                            <shared-input-field class="w-full" fieldName="amountClaimed" label="{{'Remuneration'|translate}}"
-                                    inputType="text" [formGroup]="registerForm"
-                                    [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-                        </li>
-                        <li>
-                            <shared-simple-dropdown class="w-full" fieldName="claimant" label="Visado DT-Director Técnico"
-                                [formGroup]="registerForm" [dropdownItems]="FreeProfessional" [selectedItem]="PL_FreeProfessional"
-                                (click)="toggleDropdownInput('dropdown2')">
-                            </shared-simple-dropdown>
-                        </li>
-                        <li *ngIf="showDropdownInput2">
-                            <shared-input-field class="w-full" fieldName="creditingDate" label="{{'Date'|translate}}"
-                                inputType="date" [formGroup]="registerForm"
-                                [bgColor]="'bg-white-lightbone'"></shared-input-field>
-                            <shared-input-field class="w-full" fieldName="amountClaimed" label="{{'WorkHours'|translate}}"
-                                    inputType="text" [formGroup]="registerForm"
-                                    [bgColor]="'bg-white-lightbone'"></shared-input-field>
-                            <shared-input-field class="w-full" fieldName="amountClaimed" label="{{'TravelTime'|translate}}"
-                                    inputType="text" [formGroup]="registerForm"
-                                    [bgColor]="'bg-white-lightbone'"></shared-input-field>
-                            <shared-input-field class="w-full" fieldName="amountClaimed" label="{{'TravelExpenses'|translate}}"
-                                    inputType="text" [formGroup]="registerForm"
-                                    [bgColor]="'bg-white-lightbone'"></shared-input-field>
-                            <shared-input-field class="w-full" fieldName="amountClaimed" label="{{'Remuneration'|translate}}"
-                                    inputType="text" [formGroup]="registerForm"
-                                    [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-                        </li>
-
-                    </div>
-                </ul>
-                <div class="flex flex-row space-x-2 pb-3">
-                    <button
-                        class="w-60 h-12  border bg-white text-blue-950 text-lg mt-4 rounded-lg font-bold hover:bg-hover-darkblue"
-                        i18n="@@signin">
-                        {{'cancelar'|translate}}
-                    </button>
-
-                    <button type="submit"
-                        class="w-full h-12  bg-yellow-500 text-blue-950 text-lg mt-4 rounded-lg font-bold hover:bg-hover-darkblue"
-                        i18n="@@signin">
-                        {{'CreatePerformance'|translate}}
-                    </button>
-                </div>
-            </form>
-        </div>
+                <button type="submit"
+                    class="w-60 h-12  bg-yellow-500 text-blue-950 text-lg mt-4 rounded-lg font-bold hover:bg-hover-darkblue"
+                    i18n="@@signin">
+                    {{'CreatePerformance'|translate}}
+                </button>
+            </div>
+        </form>
     </div>
-
 </div>
