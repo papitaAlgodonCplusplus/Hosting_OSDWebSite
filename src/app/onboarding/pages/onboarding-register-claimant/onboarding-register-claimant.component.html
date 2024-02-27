@@ -84,10 +84,11 @@
                         | translate}} <i
                             class="fa-solid fa-chevron-right pr-1 text-yellow-500 hover:text-darkslategray "></i></a>
                 </div>
+                
             </div>
 
             <div [ngClass]="{'show': !showPersonalInfo, 'hide': showPersonalInfo}">
-                <div class="w-full py-3 items-center">
+                <div *ngIf="this.showPersonalInfo" class="w-full py-3 items-center">
                     <a class="text-gray-500 cursor-pointer" type="button" (click)="toggleForm('personalInfo')"> <i
                             class="fa-solid fa-chevron-left pr-1 text-yellow-500 hover:text-darkslategray"></i>{{'volver_info_personal'
                         | translate}}</a>

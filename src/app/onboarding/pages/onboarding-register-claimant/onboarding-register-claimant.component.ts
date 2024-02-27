@@ -2,12 +2,15 @@ import { Component, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
-import { is } from 'date-fns/locale';
+import { is, tr } from 'date-fns/locale';
+import { Observable } from 'rxjs';
+import { Action } from 'rxjs/internal/scheduler/Action';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { SecurityEventService } from 'src/app/services/security-event.service';
 import { ValidationsService } from 'src/app/services/validations.service';
-import { UiActions } from 'src/app/store/actions';
+import { AuthenticationActions, UiActions } from 'src/app/store/actions';
+import { AuthSelectors } from 'src/app/store/selectors';
 
 @Component({
   selector: 'app-register-claimant',
@@ -15,9 +18,10 @@ import { UiActions } from 'src/app/store/actions';
   styleUrls: ['./onboarding-register-claimant.component.css']
 })
 export class OnboardingRegisterClaimantComponent {
+  isValidToken$: Observable<boolean> = this.store.select(AuthSelectors.authenticationToken);
   registerForm: FormGroup;
   selectedClaimant: string | undefined;
-  showPersonalInfo: boolean = true;
+  showPersonalInfo!: boolean;
   claimant: DropDownItem[] = [
     { value: this.translate.instant('reclamacion_simple'), key: 'key1' },
     { value: this.translate.instant('reclamacion_compleja'), key: 'Key2' },
@@ -42,6 +46,17 @@ export class OnboardingRegisterClaimantComponent {
       this.store.dispatch(UiActions.hideAll());
     }, 0);
 
+    
+    
+    this.isValidToken$.subscribe((validation)=>{
+      console.log(validation)
+      if(validation){
+        this.showPersonalInfo = false
+      }
+      else{
+        this.showPersonalInfo = true
+      }
+    })
   }
 
   ngOnDestroy(): void {

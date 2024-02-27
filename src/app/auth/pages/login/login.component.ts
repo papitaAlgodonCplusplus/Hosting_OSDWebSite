@@ -4,12 +4,13 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
-import { UiActions } from 'src/app/store/actions';
+import { AuthenticationActions, UiActions } from 'src/app/store/actions';
 import { WebsocketService } from 'src/app/services/websocket.service';
 import { EventFactoryService } from 'src/app/services/event-factory.service';
 import { ValidationsService } from '../../../services/validations.service';
 import { ModalSelectors } from 'src/app/store/selectors';
 import { SecurityEventService } from 'src/app/services/security-event.service';
+import { authenticationReducers } from 'src/app/store/reducers/authentication.reducer';
 
 @Component({
   selector: 'auth-login',
@@ -46,6 +47,7 @@ export class LoginComponent implements OnDestroy {
     setTimeout(() => {
       this.store.dispatch(UiActions.showAll());
     }, 0);
+    this.store.dispatch(AuthenticationActions.signIn()) //TODO: Delete until login is implemented
   }
 
   onSubmit(): void {
@@ -53,12 +55,10 @@ export class LoginComponent implements OnDestroy {
       this.loginForm.markAllAsTouched();
       return;
     }
-
     this.securityEventService.userLogin(this.loginForm.value);
   }
 
   private createLoginForm(): FormGroup {
-
     return this.formBuilder.group({
       email: ['', [Validators.required, this.validationsService.isValidEmail], []],
       password: ['', [Validators.required, this.validationsService.isValidPassword, Validators.minLength(6)], []],
