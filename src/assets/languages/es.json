@@ -95,5 +95,6 @@
     "ingresos":"Ingresos",
     "gastos":"Gastos",
     "liquidacion":"Liquidación",
-    "final-grade":"Calificación final"
+    "final-grade":"Calificación final",
+    "compra":"Compra"
 }

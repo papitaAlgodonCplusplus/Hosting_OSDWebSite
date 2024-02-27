@@ -108,5 +108,8 @@
     "ingresos":"Earnings",
     "gastos":"Expenses",
     "liquidacion":"Liquitation",
-    "final-grade":"Final Grade"
+    "final-grade":"Final Grade",
+
+    "----COMMENT9----" : "Variables for the Course record page",
+    "compra":"Purchase"
 }

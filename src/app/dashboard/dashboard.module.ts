@@ -8,6 +8,7 @@ import { SharedModule } from '../shared/shared.module';
 import { FilesComponent } from './pages/files/files.component';
 import { CourseFilesComponent } from './pages/course-files/course-files.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { SaleComponent } from './pages/sale/sale.component';
 
 
 
@@ -15,7 +16,8 @@ import { TranslateModule } from '@ngx-translate/core';
   declarations: [
     HomeComponent,
     FilesComponent,
-    CourseFilesComponent
+    CourseFilesComponent,
+    SaleComponent
   ],
   imports: [
     CommonModule,
