@@ -33,7 +33,6 @@
     "aceptar_condiciones": "_Aceptar condiciones",
     "error_condiciones": "Debes aceptar las condiciones",
     "cancelar": "Cancelar",
-    "guardar": "guardar",
     "registrarse": "Registrarse",
     "area_trabajo": "Área de trabajo",
     "otra": "Otra",
@@ -90,10 +89,22 @@
     "freeProfessionalsIntervention" : "Profesionales Libres intervinientes ",
     "performances" : "Actuaciones",
     "newAction" : "Crear nueva actuación",
+
+    "----COMMENT9----" : "Variables for proceeding course page",
+    "studentName": "Nombre del Estudiante",
+    "formacion": "Formacion",
+    "expedienteCurso": "Expediente Curso",
+    "calificacionFinal": "Calificacion Final",
+    "estado": "Estado",
+    "ingresos": "Ingresos",
+    "gastos": "Gastos",
+    "liquidacion": "Liquidacion",
+    "pendiente": "Pendiente",
+    "enEjecucion": "En Ejecución",
+    "finalizado": "Finalizado",
+    "freeInterveningProfessional": "Profesionales Libres Intervinientes",
+    
     "status" : "Estado",
     "course-record": "Expediente curso",
-    "ingresos":"Ingresos",
-    "gastos":"Gastos",
-    "liquidacion":"Liquidación",
     "final-grade":"Calificación final"
 }
