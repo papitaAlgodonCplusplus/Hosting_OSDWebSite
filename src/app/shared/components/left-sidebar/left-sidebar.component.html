@@ -24,7 +24,11 @@
     <ul class="space-y-2 font-medium text-black ml-2">
       <li class="cursor-pointer" routerLink="/home">
           <i class="fa-solid fa-house text-lg"></i>
-          <span class="ml-3" i18n="@@home">Home</span>
+          <span class="ml-3">{{'home' | translate}}</span>
+      </li>
+      <li class="cursor-pointer" routerLink="/home/files">
+        <i class="fa-solid fa-file text-lg"></i>   
+        <span class="ml-3">{{'file_claim' | translate}}</span>
       </li>
 
       <li class="cursor-pointer" routerLink="/home/proceeding-course">

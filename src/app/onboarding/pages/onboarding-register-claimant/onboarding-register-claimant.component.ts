@@ -17,7 +17,7 @@ export class OnboardingRegisterClaimantComponent {
   selectedClaimant: string | undefined;
   showPersonalInfo: boolean = true;
   claimant: DropDownItem[] = [
-    { value: this.translate.instant('reclamacion_simple'), key: 'key1' }, //'Reclamación Simple - 75€ /10€ /7,5€ '
+    { value: this.translate.instant('reclamacion_simple'), key: 'key1' },
     { value: this.translate.instant('reclamacion_compleja'), key: 'Key2' },
     { value: this.translate.instant('reclamacion_sostenibilidad'), key: 'key3' },
     { value: this.translate.instant('mediacion_arbitraje'), key: 'Key4' }
