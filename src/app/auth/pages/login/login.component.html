@@ -10,7 +10,7 @@
             {{'acceso_a_tu_cuenta' | translate}}
           </h2>
 
-          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" autocomplete="off"
+          <form [formGroup]="loginForm" autocomplete="off"
             class="flex flex-col items-center justify-center h-4/5 w-full md:w-4/5 px-2 pb-20 2xl:px-10 gap-6">
             <shared-input-field class="w-full" fieldName="email" label="{{ 'correo_electronico' | translate }}"
               inputType="email" [formGroup]="loginForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
@@ -20,7 +20,7 @@
               <a class="cursor-pointer underline decoration-1 text-blue text-sm"
                 routerLink="/auth/forgot-password">{{'olvidaste_tu_contraseña' | translate}}</a>
             </div>
-            <button type="submit"
+            <button  (click)="onSubmit()"
               class="w-full h-14 bg-darkslategray text-white text-lg p-2 rounded-lg font-bold hover:bg-hover-darkblue"
               i18n="@@signin" routerLink="/home">
               {{'iniciar_sesion' | translate}}
@@ -36,6 +36,7 @@
     <div class="flex justify-center items-center flex-col pb-10 md:w-96 space-y-2">
       <img src="/./assets/img/OSD.png" alt="Logo OSD" class="">
       <button
+      (click)="signOut()"
         class="px-10 py-2 font-semibold text-white shadow-2xl hover:bg-gray-600 hover:text-white rounded-lg transition duration-300 ease-in-out"
         routerLink="/onboarding/onboarding-register-claimant">
         {{'presentar_reclamación' | translate}} <i class="fa-solid fa-chevron-right text-sm  pl-2"></i>
