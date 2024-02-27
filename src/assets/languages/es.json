@@ -9,7 +9,7 @@
     "crea_una_cuenta": "Crea una cuenta",
     "titulo": "¡Bienvenido a nuestra página web!",
     "subTitulo": "Gracias por confiar en nosotros.",
-    "regresar_a_iniciar_sesión": "Regresar a iniciar sesión",
+    "regresar_a_iniciar_sesión": "Regresar",
     "ahora_selecciona_tu_tipo_de_registro": "¡Selecciona tu tipo de registro!",
     "reclamante": "Reclamante",
     "reclamacion": "Reclamación",
@@ -117,5 +117,6 @@
     
     "status" : "Estado",
     "course-record": "Expediente curso",
-    "final-grade":"Calificación final"
+    "final-grade":"Calificación final",
+    "guardar" : "Guardar"
 }

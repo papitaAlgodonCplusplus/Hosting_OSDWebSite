@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
 import { FilesComponent } from './pages/files/files.component';
 import { CreatePerformanceComponent } from './pages/create-performance/create-performance/create-performance.component';
-import { ProceedingCourseComponent } from './pages/proceeding-course/proceeding-course.component';
+import { CourseFilesComponent } from './pages/course-files/course-files.component';
 
 // Child routes of the dashboard model
 const routes: Routes = [
@@ -18,14 +18,12 @@ const routes: Routes = [
   {
     path: 'performance',
     component: CreatePerformanceComponent
-    
   },
   {
-    path: 'proceeding-course',
-    component: ProceedingCourseComponent
-  }
-
-
+    path: 'course-files',
+    component: CourseFilesComponent
+  },
+ 
 ];
 
 @NgModule({

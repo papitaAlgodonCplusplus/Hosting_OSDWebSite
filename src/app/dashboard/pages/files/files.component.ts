@@ -34,6 +34,12 @@ export class FilesComponent implements OnDestroy {
     { value: this.translate.instant('TM'), key: 'key5' },
     { value: this.translate.instant('TS'), key: 'Key6' }
   ];
+  selectedStatus: string | undefined;
+  Status: DropDownItem[] = [
+    { value: this.translate.instant('earring'), key: 'key1' },
+    { value: this.translate.instant('running'), key: 'Key2' },
+    { value: this.translate.instant('finalized'), key: 'Key2' }
+  ];
   isDropdownOpen = false;
 
   constructor(private store: Store,
