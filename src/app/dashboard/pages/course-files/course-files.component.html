@@ -1,1 +1,101 @@
-<p>course-files works!</p>
+<div class="flex flex-col md:flex-row">
+    <div class="flex-1 bg-white py-5 flex justify-center px-2">
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" autocomplete="off"
+            class="flex flex-col items-center px-1">
+            <div class="w-full rounded-xl bg-darkslategray rounded-b-none">
+                <h1 class=" px-1 py-3 text-white ">{{'course-record' | translate}}</h1>
+            </div>
+            <!--             <shared-simple-dropdown class="w-full" fieldName="claimant" label="{{'reclamacion' | translate}}" [formGroup]="registerForm"
+                [dropdownItems]="claimant" [selectedItem]="selectedClaimant">
+            </shared-simple-dropdown> -->
+
+            <div class="w-full flex flex-col items-center">
+                <label for="option1">
+                    <input type="checkbox" id="option1" name="options" value="option1">
+                    {{'tramitador_reclamaciones_ORD' | translate}}
+                </label>
+
+                <label for="option2">
+                    <input type="checkbox" id="option2" name="options" value="option2">
+                    {{'formador_consultor' | translate}}
+                </label>
+
+                <label for="option3">
+                    <input type="checkbox" id="option3" name="options" value="option3">
+                    {{'engineer' | translate}}
+                </label>
+            </div>
+
+            <shared-input-field class="w-full" fieldName="identity" label="{{'DNI' | translate}}*" inputType="text"
+                [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+            <shared-input-field class="w-full" fieldName="name" label="{{'nombre' | translate}}" inputType="text"
+                [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+            <shared-input-field class="w-full" fieldName="firstSurname" label="{{'primer_apellido' | translate}}"
+                inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+            <shared-input-field class="w-full" fieldName="middleSurname" label="{{'segundo_apellido' | translate}}"
+                inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+            <shared-text-area class="w-full" fieldName="address" label="{{'direccion' | translate}}" inputType="text"
+                [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-text-area>
+
+            <shared-input-field class="w-full" fieldName="zipCode" label="{{'cod_postal' | translate}}"
+                inputType="number" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+            <shared-input-field class="w-full" fieldName="landline" label="{{'tel_fijo' | translate}}" inputType="tel"
+                [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+            <shared-input-field class="w-full" fieldName="mobilePhone" label="{{'tel_movil' | translate}}"
+                inputType="tel" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+            <shared-input-field class="w-full" fieldName="email" label="{{'correo_electronico' | translate}}"
+                inputType="email" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+            <shared-input-field class="w-full" fieldName="web" label="{{'pagina_web' | translate}}" inputType="text"
+                [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+            <div class="flex flex-row space-x-2 w-full">
+                <button routerLink="/home"
+                    class="w-60 h-12  border bg-darkslategray text-white text-lg mt-4 rounded-lg font-bold hover:bg-hover-darkblue"
+                    i18n="@@signin">
+                    {{'cancelar' | translate}}
+                </button>
+
+                <button type="submit"
+                    class="w-full h-12  bg-yellow-500 text-white text-lg mt-4 rounded-lg font-bold hover:bg-hover-darkblue"
+                    i18n="@@signin">
+                    {{'guardar' | translate}}
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div
+        class="flex-1 flex justify-center items-center bg-darkslategray md:border-l-4 md:border-t-0 border-t-4 border-gray-400 text-white">
+
+        <div class="w-96 bottom-0 flex flex-col items-center pt-5 pb-40 md:top-56 md:fixed">
+            <div class="w-full flex flex-col items-center">
+                <span>{{'status' | translate}}:</span>
+                <ul class="list-disc flex flex-row space-x-8">
+                    <li>{{'earring' | translate}}</li>
+                    <li>{{'running' | translate}}</li>
+                    <li>{{'finalized' | translate}}</li>
+                </ul>
+                <div class="flex flex-col">
+                    <ul class="list-disc">
+                        <li>{{'ingresos' | translate}}: <span class="amount">1000 €</span></li>
+                        <li>{{'gastos' | translate}}: <span class="amount">1000 €</span></li>
+                        <li>{{'liquidacion' | translate}}: <span class="amount">1000 €</span></li>
+                    </ul>
+                </div>
+            <shared-simple-dropdown class="w-full" label="{{'freeProfessionalsIntervention' | translate}}"
+                fieldName="subscriber" [formGroup]="registerForm" [dropdownItems]="freeProfessionals"
+                [selectedItem]="selectedfreeProfessionals">
+            </shared-simple-dropdown>
+            <shared-input-field class="w-full" fieldName="finalGrade" label="{{'final-grade' | translate}}" inputType="number"
+                [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'" min="0" max="100"></shared-input-field>
+        </div>
+    </div>
+</div>
