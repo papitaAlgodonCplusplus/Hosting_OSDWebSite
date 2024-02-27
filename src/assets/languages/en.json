@@ -70,5 +70,19 @@
     "mediacion_arbitraje": "Mediation/Arbitration - 750€ / 10€ / 7.5€",
     "transparencia" : "Transparency",
     "equipo_OSD" : "OSD Team",
-    "usuarios" : "Users"
+    "usuarios" : "Users",
+    "guardar" : "Save",
+    "studentName": "Student Name",
+    "formacion": "Formation",
+    "expedienteCurso": "Proceeding Course",
+    "calificacionFinal": "Final Calification",
+    "estado": "State",
+    "ingresos": "Income",
+    "gastos": "Expenses",
+    "liquidacion": "Settlement",
+    "pendiente": "Pending",
+    "enEjecucion": "In progress",
+    "finalizado": "Completed",
+    "freeInterveningProfessional": "Free Intervening Professional"
+
 }

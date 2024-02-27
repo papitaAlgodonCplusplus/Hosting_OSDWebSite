@@ -70,5 +70,18 @@
     "mediacion_arbitraje": "Mediación/Arbitraje - 750€ / 10€ / 7,5€",
     "transparencia" : "Transparencia",
     "equipo_OSD" : "Equipo OSD",
-    "usuarios" : "Usuarios"
+    "usuarios" : "Usuarios",
+    "guardar" : "Guardar",
+    "studentName": "Nombre del Estudiante",
+    "formacion": "Formacion",
+    "expedienteCurso": "Expediente Curso",
+    "calificacionFinal": "Calificacion Final",
+    "estado": "Estado",
+    "ingresos": "Ingresos",
+    "gastos": "Gastos",
+    "liquidacion": "Liquidacion",
+    "pendiente": "Pendiente",
+    "enEjecucion": "En Ejecución",
+    "finalizado": "Finalizado",
+    "freeInterveningProfessional": "Profesionales Libres Intervinientes"
 }
