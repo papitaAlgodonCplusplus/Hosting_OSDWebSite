@@ -70,5 +70,12 @@
     "mediacion_arbitraje": "Mediation/Arbitration - 750€ / 10€ / 7.5€",
     "transparencia" : "Transparency",
     "equipo_OSD" : "OSD Team",
-    "usuarios" : "Users"
+    "usuarios" : "Users",
+    "CreatePerformance":"Create new Performance",
+    "TypePerformance":"Type",
+    "Date":"Date",
+    "WorkHours":"Work Hours",
+    "TravelTime":"Horas desplazamiento",
+    "TravelExpenses":"Gastos desplazamiento",
+    "Remuneration":"Remuneration"
 }
