@@ -101,13 +101,23 @@
     "performances" : "Performances",
     "newAction" : "Create New Action",
 
-
-    "----COMMENT8----" : "Variables for the Course record page",
+    "----COMMENT8----": "Variables on performancePage",
+    "CreatePerformance":"Create new Performance",
+    "TypePerformance":"Type",
+    "Date":"Date",
+    "WorkHours":"Work Hours",
+    "TravelTime":"TravelTime",
+    "TravelExpenses":"Travel Expenses",
+    "Remuneration":"Remuneration",
+    "TechnicalDirector":"Technical director",
+    "TitlePerformance":"Create New Performance",
+    
+    "----COMMENT9----" : "Variables for the Course record page",
     "status" : "Status",
     "course-record": "Course Record",
     "final-grade":"Final Grade",
 
-    "----COMMENT9----" : "Variables for proceeding course page",
+    "----COMMENT10----" : "Variables for proceeding course page",
     "guardar": "Save",
     "studentName": "Student Name",
     "formacion": "Training",
@@ -120,7 +130,7 @@
     "pendiente": "Pending",
     "enEjecucion": "In Progress",
     "finalizado": "Completed",
-    "freeInterveningProfessional": "Free Intervening Professionals",
+    "freeInterveningProfessional": "Free Intervening Professionals"
     
   
 }
