@@ -18,6 +18,10 @@ const routes: Routes = [
     loadChildren: () => import('./onboarding/onboarding.module').then(m => m.OnboardingModule)
   },
   {
+    path: 'proceeding',
+    loadChildren: () => import('./proceedings/proceedings.module').then(m => m.ProceedingsModule)
+  },
+  {
     path: '404',
     loadChildren: () => import('./shared/shared.module').then(m => m.SharedModule)
   },
