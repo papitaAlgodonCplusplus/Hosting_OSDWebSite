@@ -7,6 +7,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 import { FilesComponent } from './pages/files/files.component';
 import { CourseFilesComponent } from './pages/course-files/course-files.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 
@@ -21,7 +22,8 @@ import { CourseFilesComponent } from './pages/course-files/course-files.componen
     DashboardRoutingModule,
     ReactiveFormsModule,
     SharedModule,
-    FormsModule
+    FormsModule,
+    TranslateModule
   ]
 })
 export class DashboardModule { }
