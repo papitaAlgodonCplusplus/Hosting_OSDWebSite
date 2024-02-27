@@ -84,15 +84,17 @@
                         | translate}} <i
                             class="fa-solid fa-chevron-right pr-1 text-yellow-500 hover:text-darkslategray "></i></a>
                 </div>
-                
+
             </div>
 
             <div [ngClass]="{'show': !showPersonalInfo, 'hide': showPersonalInfo}">
-                <div *ngIf="this.showPersonalInfo" class="w-full py-3 items-center">
+
+                <div *ngIf="!(isValidToken$ | async)" class="w-full py-3 items-center">
                     <a class="text-gray-500 cursor-pointer" type="button" (click)="toggleForm('personalInfo')"> <i
                             class="fa-solid fa-chevron-left pr-1 text-yellow-500 hover:text-darkslategray"></i>{{'volver_info_personal'
                         | translate}}</a>
                 </div>
+
                 <shared-simple-dropdown class=" w-full" fieldName="claimant" label="{{'reclamacion' | translate}}"
                     [formGroup]="registerForm" [dropdownItems]="claimant" [selectedItem]="selectedClaimant">
                 </shared-simple-dropdown>
@@ -141,13 +143,19 @@
                     </div>
                 </div>
 
-                <div class="w-full flex justify-end pt-7"> <button (click)="onSubmit()"
+                <div *ngIf="(isValidToken$ | async)" class="w-full flex justify-end pt-7"> <button (click)="onSubmit()"
+                        class="p-2  bg-yellow-500 text-white  rounded-lg hover:bg-hover-darkblue" i18n="@@signin">
+                        {{'presentar_reclamación' | translate}}
+                    </button>
+                </div>
+
+                <div *ngIf="!(isValidToken$ | async)" class="w-full flex justify-end pt-7"> <button (click)="onSubmit()"
                         class="p-2  bg-yellow-500 text-white  rounded-lg hover:bg-hover-darkblue" i18n="@@signin">
                         {{'registrarse_reclamación' | translate}}
                     </button>
                 </div>
-
             </div>
+
             <div class="pt-2 flex flex-row space-x-2">
                 <input type="checkbox" id="acceptConditions" formControlName="acceptConditions">
                 <label for="acceptConditions"> {{'aceptar_condiciones'| translate}}</label>
@@ -155,18 +163,27 @@
                     {{'error_condiciones' | translate}}
                 </div>
             </div>
-        </form>
 
+        </form>
     </div>
 
-    <div class="flex flex-wrap justify-end items-center space-x-2 p-1">
+    <div *ngIf="!(isValidToken$ | async) else isValidToken"
+        class="flex flex-wrap justify-end items-center space-x-2 p-1">
         <button routerLink="/onboarding/onboarding-register"
-            class="p-2  bg-darkslategray text-white rounded-lg  hover:bg-hover-darkblue" i18n="@@signin">
+            class="p-2  bg-darkslategray text-white rounded-lg  hover:bg-hover-darkblue">
             {{'cancelar' | translate}}
         </button>
     </div>
-</div>
 
+    <ng-template #isValidToken>
+        <div class="flex flex-wrap justify-end items-center space-x-2 p-1">
+            <button routerLink="/home" class="p-2  bg-darkslategray text-white rounded-lg  hover:bg-hover-darkblue"
+                i18n="@@signin">
+                {{'cancelar' | translate}}
+            </button>
+        </div>
+    </ng-template>
+</div>
 
 <!-- 
 <div class="w-full bg-yellow-500 p-4 font-medium rounded-sm shadow-lg space-x-3">

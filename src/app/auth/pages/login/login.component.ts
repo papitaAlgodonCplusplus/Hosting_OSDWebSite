@@ -39,7 +39,7 @@ export class LoginComponent implements OnDestroy {
 
   ngOnInit() {
     setTimeout(() => {
-      this.store.dispatch(UiActions.hideAll());
+      this.store.dispatch(UiActions.hideAll()); 
     }, 0);
   }
 
@@ -47,15 +47,15 @@ export class LoginComponent implements OnDestroy {
     setTimeout(() => {
       this.store.dispatch(UiActions.showAll());
     }, 0);
-    this.store.dispatch(AuthenticationActions.signIn()) //TODO: Delete until login is implemented
   }
 
   onSubmit(): void {
-    if (this.loginForm.invalid) {
-      this.loginForm.markAllAsTouched();
-      return;
-    }
-    this.securityEventService.userLogin(this.loginForm.value);
+    this.store.dispatch(AuthenticationActions.signIn()) //TODO: Delete until login is implemented
+    // if (this.loginForm.invalid) {
+    //   this.loginForm.markAllAsTouched();
+    //   return;
+    // }
+    // this.securityEventService.userLogin(this.loginForm.value);
   }
 
   private createLoginForm(): FormGroup {
@@ -65,6 +65,9 @@ export class LoginComponent implements OnDestroy {
     });
   }
 
+  signOut(): void{
+    this.store.dispatch(AuthenticationActions.signOut()) //TODO: Delete until login is implemented
+  }
   // Trigger the sign-in action, simulate an HTTP request
   // signIn(): void {
 

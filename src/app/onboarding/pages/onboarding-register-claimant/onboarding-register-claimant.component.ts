@@ -28,7 +28,7 @@ export class OnboardingRegisterClaimantComponent {
     { value: this.translate.instant('reclamacion_sostenibilidad'), key: 'key3' },
     { value: this.translate.instant('mediacion_arbitraje'), key: 'Key4' }
   ];
-  activeLink: string = '';
+
   documentNames: string[] = new Array(2);
 
   constructor(private store: Store,
@@ -36,7 +36,7 @@ export class OnboardingRegisterClaimantComponent {
     private validationsService: ValidationsService,
     private securityEventService: SecurityEventService,
     private translate: TranslateService,
-    private guard : AuthService
+    private guard: AuthService
   ) {
     this.registerForm = this.createRegisterForm();
   }
@@ -44,19 +44,15 @@ export class OnboardingRegisterClaimantComponent {
   ngOnInit(): void {
     setTimeout(() => {
       this.store.dispatch(UiActions.hideAll());
+      this.isValidToken$.subscribe((validation) => {
+        if (validation) {
+          this.showPersonalInfo = false
+        } 
+        else{
+          this.showPersonalInfo = true
+        }      
+      })
     }, 0);
-
-    
-    
-    this.isValidToken$.subscribe((validation)=>{
-      console.log(validation)
-      if(validation){
-        this.showPersonalInfo = false
-      }
-      else{
-        this.showPersonalInfo = true
-      }
-    })
   }
 
   ngOnDestroy(): void {
@@ -91,12 +87,9 @@ export class OnboardingRegisterClaimantComponent {
   }
 
   onSubmit(): void {
-    console.log(this.registerForm.value)
-    this.showPersonalInfo = false;
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
       return;
-
     }
 
     const userEmail = this.registerForm.value.email;
@@ -122,7 +115,4 @@ export class OnboardingRegisterClaimantComponent {
     }
   }
 
-  changeColor(link: string): void {
-    this.activeLink = link;
-  }
 }
