@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
 import { FilesComponent } from './pages/files/files.component';
+import { CourseFilesComponent } from './pages/course-files/course-files.component';
 
 // Child routes of the dashboard model
 const routes: Routes = [
@@ -12,6 +13,10 @@ const routes: Routes = [
   {
     path: 'files',
     component: FilesComponent
+  },
+  {
+    path: 'course-files',
+    component: CourseFilesComponent
   },
 
 
