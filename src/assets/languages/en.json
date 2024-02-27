@@ -66,5 +66,37 @@
     "regresar_a_iniciar_sesión": "Return to login",
     "ahora_selecciona_tu_tipo_de_registro": "Select your record type!",
     "equipo_OSD" : "OSD Team",
-    "usuarios" : "Users"
+    "usuarios" : "Users",
+    "reclamante": "Claimant",
+
+    "----COMMENT5----" : "Variables on the Subscriber/Customer page",
+    "tipo_cliente": "Client Type",
+    "cod_PL": "PL Code",
+
+    "----COMMENT6----": "Variables on free professional page",
+    "area_trabajo": "Workspace",
+    "otra": "Other",
+    "seleccionar_archivo": "Select File",
+    "documentacion_adjunta": "Attached Documentation (both docs required)",
+    "carnet_colegiado": "Collegiate Card",
+    "seguro_responsabilidad_civil": "Copy of Last Receipt Civil Liability Insurance",
+    "tramitador_reclamaciones_ORD": "ORD Claims Processor - 125€",
+    "formador_consultor": "Trainer/Consultant - 250€",
+
+    "----COMMENT7----" : "Variables for the XXXX File (Claim) page",
+    "file_claim" : "File XXXX (Complaint)",
+    "state" : "State",
+    "earring" : "Earring",
+    "running" : "Running",
+    "finalized" : "Finalized",
+    "subscriber" : "Subscriber",
+    "amountPaidByOtherParty" : "Amount paid by the other party",
+    "institutionalImprovementSavings" : "Improvement/Savings Inst/Entity",
+    "creditingDate" : "Crediting Date",
+    "institutionOsdValuation" : "Institution OSD Valuation: 0 to 5",
+    "institutionClaimantRating": "Institution Valuation Complainant/Complainant: 0 to 5",
+    "institutionValuationFreeOsdProfessionals" : "Institution Valuation Free OSD Professionals: 0 to 5",
+    "freeProfessionalsIntervention" : "Free Professionals intervening",
+    "performances" : "Performances",
+    "newAction" : "Create New Action"
 }
