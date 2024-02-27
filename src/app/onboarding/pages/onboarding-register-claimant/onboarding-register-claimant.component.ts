@@ -2,7 +2,9 @@ import { Component, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
+import { is } from 'date-fns/locale';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
+import { AuthService } from 'src/app/auth/services/auth.service';
 import { SecurityEventService } from 'src/app/services/security-event.service';
 import { ValidationsService } from 'src/app/services/validations.service';
 import { UiActions } from 'src/app/store/actions';
@@ -29,7 +31,8 @@ export class OnboardingRegisterClaimantComponent {
     private formBuilder: FormBuilder,
     private validationsService: ValidationsService,
     private securityEventService: SecurityEventService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private guard : AuthService
   ) {
     this.registerForm = this.createRegisterForm();
   }
@@ -38,6 +41,7 @@ export class OnboardingRegisterClaimantComponent {
     setTimeout(() => {
       this.store.dispatch(UiActions.hideAll());
     }, 0);
+
   }
 
   ngOnDestroy(): void {
