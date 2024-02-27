@@ -66,5 +66,20 @@
     "regresar_a_iniciar_sesión": "Return to login",
     "ahora_selecciona_tu_tipo_de_registro": "Select your record type!",
     "equipo_OSD" : "OSD Team",
-    "usuarios" : "Users"
+    "usuarios" : "Users",
+
+    "guardar": "Save",
+    "studentName": "Student Name",
+    "formacion": "Training",
+    "expedienteCurso": "Course Record",
+    "calificacionFinal": "Final Grade",
+    "estado": "Status",
+    "ingresos": "Income",
+    "gastos": "Expenses",
+    "liquidacion": "Settlement",
+    "pendiente": "Pending",
+    "enEjecucion": "In Progress",
+    "finalizado": "Completed",
+    "freeInterveningProfessional": "Free Intervening Professionals",
+    "home": "Home"
 }
