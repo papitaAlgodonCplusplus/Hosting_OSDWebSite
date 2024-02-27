@@ -56,7 +56,6 @@ export class CourseFilesComponent implements OnDestroy {
       name: ['', [Validators.required]],
       firstSurname: ['', [Validators.required]],
       middleSurname: ['', [Validators.required]],
-      subscriber: ['', [Validators.required]],
       country: ['', Validators.required],
       zipCode: ['', Validators.required],
       address: ['', [Validators.required]],
