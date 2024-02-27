@@ -33,7 +33,6 @@
     "reclamacion_sostenibilidad": "Extrajudicial Claim/Sustainability Report - 450€ / 10€ / 7.5€",
     "mediacion_arbitraje": "Mediation/Arbitration - 750€ / 10€ / 7.5€",
     "cancelar": "Cancel",
-    "guardar": "Save",
     "registrarse": "Register",
     "cuantia_reclamada": "Amount claimed",
     "home" : "Home",
@@ -116,8 +115,22 @@
     "----COMMENT9----" : "Variables for the Course record page",
     "status" : "Status",
     "course-record": "Course Record",
-    "ingresos":"Earnings",
-    "gastos":"Expenses",
-    "liquidacion":"Liquitation",
-    "final-grade":"Final Grade"
+    "final-grade":"Final Grade",
+
+    "----COMMENT10----" : "Variables for proceeding course page",
+    "guardar": "Save",
+    "studentName": "Student Name",
+    "formacion": "Training",
+    "expedienteCurso": "Course Record",
+    "calificacionFinal": "Final Grade",
+    "estado": "Status",
+    "ingresos": "Income",
+    "gastos": "Expenses",
+    "liquidacion": "Settlement",
+    "pendiente": "Pending",
+    "enEjecucion": "In Progress",
+    "finalizado": "Completed",
+    "freeInterveningProfessional": "Free Intervening Professionals"
+    
+  
 }

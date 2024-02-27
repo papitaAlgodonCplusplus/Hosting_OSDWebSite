@@ -6,6 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 import { FilesComponent } from './pages/files/files.component';
 import { CourseFilesComponent } from './pages/course-files/course-files.component';
+import { ProceedingCourseComponent } from './pages/proceeding-course/proceeding-course.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { CreatePerformanceComponent } from './pages/create-performance/create-performance/create-performance.component';
 
@@ -15,7 +16,8 @@ import { CreatePerformanceComponent } from './pages/create-performance/create-pe
     HomeComponent,
     FilesComponent,
     CourseFilesComponent,
-    CreatePerformanceComponent
+    CreatePerformanceComponent,
+    ProceedingCourseComponent
   ],
   imports: [
     CommonModule,
