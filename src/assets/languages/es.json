@@ -117,6 +117,17 @@
     
     "status" : "Estado",
     "course-record": "Expediente curso",
+    "ingresos":"Ingresos",
+    "gastos":"Gastos",
+    "liquidacion":"Liquidación",
     "final-grade":"Calificación final",
-    "guardar" : "Guardar"
+    "compra":"Compra",
+    "guardar" : "Guardar",
+
+    "---COMMENT11---": "Variables for the sales page",
+    "Solicitud productos/servicios": "Solicitud productos/servicios",
+    "Identificación Producto/Servicio": "Identificación Producto/Servicio",
+    "Unidades min-max": "Unidades min-max",
+    "Coste Unitario": "Coste Unitario",
+    "Vida útil": "Vida útil"
 }
