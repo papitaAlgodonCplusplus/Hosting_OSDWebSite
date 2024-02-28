@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
 import { FilesComponent } from './pages/files/files.component';
+import { CreatePerformanceComponent } from './pages/create-performance/create-performance/create-performance.component';
 import { CourseFilesComponent } from './pages/course-files/course-files.component';
 import { SaleComponent } from './pages/sale/sale.component';
 
@@ -16,6 +17,10 @@ const routes: Routes = [
     component: FilesComponent
   },
   {
+    path: 'performance',
+    component: CreatePerformanceComponent
+  },
+  {
     path: 'course-files',
     component: CourseFilesComponent
   },
@@ -25,6 +30,7 @@ const routes: Routes = [
   }
 
 
+ 
 ];
 
 @NgModule({

@@ -29,6 +29,13 @@ export class CourseFilesComponent implements OnDestroy {
     { value: this.translate.instant('CFH'), key: 'key1' },
     { value: this.translate.instant('FC'), key: 'Key2' }
   ];
+
+  selectedStatus: string | undefined;
+  Status: DropDownItem[] = [
+    { value: this.translate.instant('earring'), key: 'key1' },
+    { value: this.translate.instant('running'), key: 'Key2' },
+    { value: this.translate.instant('finalized'), key: 'Key2' }
+  ];
   isDropdownOpen = false;
 
   constructor(private store: Store,

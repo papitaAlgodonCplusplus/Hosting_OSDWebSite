@@ -33,7 +33,6 @@
     "reclamacion_sostenibilidad": "Extrajudicial Claim/Sustainability Report - 450€ / 10€ / 7.5€",
     "mediacion_arbitraje": "Mediation/Arbitration - 750€ / 10€ / 7.5€",
     "cancelar": "Cancel",
-    "guardar": "Save",
     "registrarse": "Register",
     "cuantia_reclamada": "Amount claimed",
     "home" : "Home",
@@ -64,7 +63,7 @@
     "----COMMENT4----" : "Variables in Record Type page",
     "titulo": "Welcome to our website",
     "subTitulo": "Thank you for trusting us!",
-    "regresar_a_iniciar_sesión": "Return to login",
+    "regresar_a_iniciar_sesión": "Return",
     "ahora_selecciona_tu_tipo_de_registro": "Select your record type!",
     "equipo_OSD" : "OSD Team",
     "usuarios" : "Users",
@@ -86,7 +85,7 @@
     "engineer": "Kuarctec engineer. OSD digital platform - 750€",
 
     "----COMMENT7----" : "Variables for the XXXX File (Claim) page",
-    "file_claim" : "File XXXX (Complaint)",
+    "file_claim" : "File (Complaint)",
     "state" : "State",
     "earring" : "Earring",
     "running" : "Running",
@@ -102,7 +101,18 @@
     "performances" : "Performances",
     "newAction" : "Create New Action",
 
-    "----COMMENT8----" : "Variables for the Course record page",
+    "----COMMENT8----": "Variables on performancePage",
+    "CreatePerformance":"Create new Performance",
+    "TypePerformance":"Type",
+    "Date":"Date",
+    "WorkHours":"Work Hours",
+    "TravelTime":"TravelTime",
+    "TravelExpenses":"Travel Expenses",
+    "Remuneration":"Remuneration",
+    "TechnicalDirector":"Technical director",
+    "TitlePerformance":"Create New Performance",
+    
+    "----COMMENT9----" : "Variables for the Course record page",
     "status" : "Status",
     "course-record": "Course Record",
     "ingresos":"Earnings",
@@ -111,5 +121,23 @@
     "final-grade":"Final Grade",
 
     "----COMMENT9----" : "Variables for the Course record page",
-    "compra":"Purchase"
+    "compra":"Purchase",
+    "final-grade":"Final Grade",
+
+    "----COMMENT10----" : "Variables for proceeding course page",
+    "guardar": "Save",
+    "studentName": "Student Name",
+    "formacion": "Training",
+    "expedienteCurso": "Course Record",
+    "calificacionFinal": "Final Grade",
+    "estado": "Status",
+    "ingresos": "Income",
+    "gastos": "Expenses",
+    "liquidacion": "Settlement",
+    "pendiente": "Pending",
+    "enEjecucion": "In Progress",
+    "finalizado": "Completed",
+    "freeInterveningProfessional": "Free Intervening Professionals"
+    
+  
 }
