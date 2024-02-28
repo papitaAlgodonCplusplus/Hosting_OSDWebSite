@@ -137,7 +137,12 @@
     "pendiente": "Pending",
     "enEjecucion": "In Progress",
     "finalizado": "Completed",
-    "freeInterveningProfessional": "Free Intervening Professionals"
+    "freeInterveningProfessional": "Free Intervening Professionals",
     
-  
+  "---COMMENT11---": "Variables for the sales page",
+  "Solicitud productos/servicios": "Request for products/services",
+  "Identificación Producto/Servicio": "Product/Service Identification",
+  "Unidades min-max": "Units min-max",
+  "Coste Unitario": "Unit Cost",
+  "Vida útil": "Lifespan"
 }

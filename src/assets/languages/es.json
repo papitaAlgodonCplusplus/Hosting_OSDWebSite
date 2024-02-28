@@ -122,5 +122,12 @@
     "liquidacion":"Liquidación",
     "final-grade":"Calificación final",
     "compra":"Compra",
-    "guardar" : "Guardar"
+    "guardar" : "Guardar",
+
+    "---COMMENT11---": "Variables for the sales page",
+    "Solicitud productos/servicios": "Solicitud productos/servicios",
+    "Identificación Producto/Servicio": "Identificación Producto/Servicio",
+    "Unidades min-max": "Unidades min-max",
+    "Coste Unitario": "Coste Unitario",
+    "Vida útil": "Vida útil"
 }

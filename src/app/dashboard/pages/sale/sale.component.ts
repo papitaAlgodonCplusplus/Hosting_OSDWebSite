@@ -20,6 +20,7 @@ export class SaleComponent implements OnDestroy {
     { value: this.translate.instant('reclamacion_sostenibilidad'), key: 'key3' },
     { value: this.translate.instant('mediacion_arbitraje'), key: 'Key4' }
   ];
+  documentName: string | undefined;
   selectedSubscriber: string | undefined;
   subscriber: DropDownItem[] = [
     { value: 'PL', key: 'key1' }
@@ -87,5 +88,13 @@ export class SaleComponent implements OnDestroy {
       //  this.securityEventService.userRegister(this.registerForm.value);
     }
 
+  }
+  displayFileName(): void {
+    const fileNameDocument1 = document.getElementById('supportingDocument1') as HTMLInputElement;
+
+
+    if (fileNameDocument1.value !== null) {
+      this.documentName = fileNameDocument1.value;
+    }
   }
 }
