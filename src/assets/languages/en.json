@@ -115,6 +115,13 @@
     "----COMMENT9----" : "Variables for the Course record page",
     "status" : "Status",
     "course-record": "Course Record",
+    "ingresos":"Earnings",
+    "gastos":"Expenses",
+    "liquidacion":"Liquitation",
+    "final-grade":"Final Grade",
+
+    "----COMMENT9----" : "Variables for the Course record page",
+    "compra":"Purchase",
     "final-grade":"Final Grade",
 
     "----COMMENT10----" : "Variables for proceeding course page",
@@ -130,7 +137,12 @@
     "pendiente": "Pending",
     "enEjecucion": "In Progress",
     "finalizado": "Completed",
-    "freeInterveningProfessional": "Free Intervening Professionals"
+    "freeInterveningProfessional": "Free Intervening Professionals",
     
-  
+  "---COMMENT11---": "Variables for the sales page",
+  "Solicitud productos/servicios": "Request for products/services",
+  "Identificación Producto/Servicio": "Product/Service Identification",
+  "Unidades min-max": "Units min-max",
+  "Coste Unitario": "Unit Cost",
+  "Vida útil": "Lifespan"
 }
