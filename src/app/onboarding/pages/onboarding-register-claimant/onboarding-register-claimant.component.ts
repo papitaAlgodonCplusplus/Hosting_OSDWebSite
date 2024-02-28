@@ -20,8 +20,8 @@ import { AuthSelectors } from 'src/app/store/selectors';
 export class OnboardingRegisterClaimantComponent {
   isValidToken$: Observable<boolean> = this.store.select(AuthSelectors.authenticationToken);
   registerForm: FormGroup;
-  selectedClaimant: string | undefined;
   showPersonalInfo!: boolean;
+  selectedClaimant: string | undefined;
   claimant: DropDownItem[] = [
     { value: this.translate.instant('reclamacion_simple'), key: 'key1' },
     { value: this.translate.instant('reclamacion_compleja'), key: 'Key2' },

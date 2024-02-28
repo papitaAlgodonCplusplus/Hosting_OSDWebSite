@@ -10,10 +10,6 @@ import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password
 import { NewpasswordComponent } from './pages/newpassword/newpassword.component';
 import { InputNewpasswordComponent } from './components/input-newpassword/input-newpassword.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { TransparencyComponent } from './pages/transparency/transparency.component';
-import { LeftSidebarTransparencyComponent } from './components/left-sidebar-transparency/left-sidebar-transparency.component';
-
-
 
 @NgModule({
   declarations: [
@@ -22,9 +18,7 @@ import { LeftSidebarTransparencyComponent } from './components/left-sidebar-tran
     VerifyEmailComponent,
     ForgotPasswordComponent,
     NewpasswordComponent,
-    InputNewpasswordComponent,
-    TransparencyComponent,
-    LeftSidebarTransparencyComponent
+    InputNewpasswordComponent
   ],
   imports: [
     CommonModule,

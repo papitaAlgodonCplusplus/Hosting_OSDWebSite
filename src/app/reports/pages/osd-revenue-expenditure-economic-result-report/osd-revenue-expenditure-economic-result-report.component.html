@@ -1,0 +1,80 @@
+<div class="border-b-2  w-full font-semibold text-darkslategray text-lg">
+    <h1>OSD: Ingresos-Gastos/ Resultado Económico</h1>
+</div>
+<div class="container mx-auto mt-8">
+    <table class="min-w-full border-gray-300">
+      <thead>
+        <tr>
+          <th class="p-2"></th> <!-- Espacio vacío en la esquina superior izquierda -->
+          <ng-container *ngFor="let subtableName of listaInformes">
+            <th class="py-2 px-4">OSD INGRESOS</th>
+            <th class="py-2 px-4">OSD GASTOS</th>
+            <th class="py-2 px-4">Reclamaciones Cuantía</th>
+            <th class="py-2 px-4">Indemnización obtenida por el Reclamante Ahorro AA.PP Mejora</th>
+          </ng-container>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let informe of listaInformes">
+          <tr>
+            <td class="p-2 font-medium text-darkslategray">Total</td>
+            <td class="p-2">{{ informe.total.osdIngresos }}</td>
+            <td class="p-2">{{ informe.total.osdGastos }}</td>
+            <td class="p-2">{{ informe.total.reclamacionesCuantia }}</td>
+            <td class="p-2">{{ informe.total.indemnizacion }}</td>
+          </tr>
+          <tr>
+            <td class="p-2 font-medium text-darkslategray">Area de trabajo</td>
+            <td class="p-2"></td>
+            <td class="p-2"></td>
+            <td class="p-2"></td>
+            <td class="p-2"></td>
+          </tr>
+          <tr>
+            <td class="p-2 font-medium text-darkslategray">PL- PROFESIONALES LIBRES</td>
+            <td class="p-2">{{ informe.profesionalesLibres.osdIngresos }}</td>
+            <td class="p-2">{{ informe.profesionalesLibres.osdGastos }}</td>
+            <td class="p-2"></td>
+            <td class="p-2"></td>
+          </tr>
+          <tr>
+            <td class="p-2 font-medium text-darkslategray">DT- DIRECCION TECNICA
+            </td>
+            <td class="p-2">{{ informe.direccionTecnica.osdGastos }}</td>
+            <td class="p-2">{{ informe.direccionTecnica.osdIngresos }}</td>
+            <td class="p-2"></td>
+            <td class="p-2"></td>
+          </tr>
+          <tr>
+            <td class="p-2 font-medium text-darkslategray">CO- CONTABILIDAD
+            </td>
+            <td class="p-2">{{ informe.contabilidad.osdGastos }}</td>
+            <td class="p-2">{{ informe.contabilidad.osdIngresos }}</td>
+            <td class="p-2"></td>
+            <td class="p-2"></td>
+          </tr>
+          <tr>
+            <td class="p-2 font-medium text-darkslategray">MK- MARKETING
+            </td>
+            <td class="p-2">{{ informe.marketing.osdGastos }}</td>
+            <td class="p-2">{{ informe.marketing.osdIngresos }}</td>
+            <td class="p-2"></td>
+            <td class="p-2"></td>
+          </tr>
+          <tr>
+            <td class="p-2 font-medium text-darkslategray">              
+                <div class="flex flex-col">
+                    <p>INF- INFORMATICA</p>
+                    <p>SAC- SERVICIO ATENCION AL CLIENTE</p>
+                </div>
+            </td>
+            <td class="p-2">{{ informe.inf_sac.osdGastos }}</td>
+            <td class="p-2">{{ informe.inf_sac.osdIngresos }}</td>
+            <td class="p-2"></td>
+            <td class="p-2"></td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+  
