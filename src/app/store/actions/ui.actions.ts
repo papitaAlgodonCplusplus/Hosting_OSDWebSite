@@ -1,4 +1,4 @@
-import { createAction } from "@ngrx/store";
+import { createAction, props } from "@ngrx/store";
 // Action to hide the visibility of the header component
 export const hideHeader = createAction(
   '[Header Component] Hide Header'
@@ -22,5 +22,9 @@ export const hideAll = createAction(
 // Action to show all navigation components in the Auth Module
 export const showAll = createAction(
   '[Nav Components] Show All nav components'
+);
+export const switchReport = createAction(
+  '[Reports] Switch Report',
+  props<{ reportName: string }>()
 );
 

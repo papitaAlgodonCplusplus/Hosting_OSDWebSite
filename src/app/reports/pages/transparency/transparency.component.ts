@@ -1,7 +1,9 @@
 import { Component, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { UiActions } from 'src/app/store/actions';
+import { switchReport } from 'src/app/store/actions/ui.actions';
 import { UiSelectors } from 'src/app/store/selectors';
 
 @Component({
@@ -12,10 +14,13 @@ import { UiSelectors } from 'src/app/store/selectors';
 export class TransparencyComponent implements OnDestroy{
 
   leftSidebarOpen$: Observable<boolean> = this.store.select(UiSelectors.leftSidebarOpen);
+  reportOpen$: Observable<string> = this.store.select(UiSelectors.selectSwitchReport);
+  TEST! : string;
   arrowLeftSidebar : boolean = false;
 
   constructor(
-    private store : Store
+    private store : Store,
+    private router : Router
   ){
 
   }
@@ -28,23 +33,8 @@ export class TransparencyComponent implements OnDestroy{
   ngOnDestroy(): void {
     setTimeout(() => {
       this.store.dispatch(UiActions.showAll());
+      this.store.dispatch(switchReport({ reportName: 'null' }));
     }, 0);
   }
   
-  //function to toggle the boolean value to open or close the sidebar
-  toggleLeftSidebar(): void {
-    this.store.dispatch(UiActions.toggleLeftSidebar());
-    if(this.arrowLeftSidebar === true){
-      this.arrowLeftSidebar = false;
-    }
-  }
-
-  showArrow(): void{
-      this.arrowLeftSidebar = true;
-      
-  }
-  
-  hideArrow(): void{
-    this.arrowLeftSidebar = false;
-  }
 }

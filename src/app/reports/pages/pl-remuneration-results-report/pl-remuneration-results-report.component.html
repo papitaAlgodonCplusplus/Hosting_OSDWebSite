@@ -1,0 +1,60 @@
+<div class="border-b-2  w-full font-normal text-darkslategray text-lg">
+    <h1>{{'compensationToProfessionals' | translate}}
+    </h1>
+</div>
+<div class="container mx-auto mt-8 ">
+    <table class="min-w-full">
+        <ng-container *ngFor="let informe of datos">
+            <thead>
+                <tr>
+                    <th class="border py-2 px-4 font-normal" colspan="3">{{'exercise' | translate}} 2024</th>
+                </tr>
+                <tr>
+                    <th class="border py-2 px-4 font-normal" colspan="3">{{'fullName' | translate}} : {{
+                        informe.plInfo.name }} {{informe.plInfo.apellidos}}</th>
+                </tr>
+                <tr>
+                    <th class="border p-2"></th> <!-- Espacio vacío en la esquina superior izquierda -->
+                    <th class="border py-2 px-4 text-yellow-500 font-normal">€</th>
+                    <th class="border py-2 px-4 text-yellow-500 font-normal">{{'results' | translate}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="border p-2 fp-2 font-medium text-darkslategray text-center">{{'OSDCertificate' | translate}}
+                    </td>
+                    <td class="border p-2 text-center">{{ informe.certificado.total}}</td>
+                    <td class="border border-y-0 p-2 text-center">{{ informe.certificado.resultados}}</td>
+                </tr>
+
+                <tr>
+                    <td class="border p-2 font-medium text-darkslategray text-center">{{'outsourcing' | translate}}
+                        OUTSOURCING
+                    </td>
+                    <td class="border p-2 text-center">{{ informe.externalizacion.total}}</td>
+                    <td class="border border-y-0 p-2 text-center">{{ informe.externalizacion.resultados}}</td>
+                </tr>
+
+                <tr>
+                    <td class="border p-2 font-medium text-darkslategray text-center">{{'training' | translate}}</td>
+                    <td class="border p-2 text-center">{{ informe.formacion.total}}</td>
+                    <td class="border p-2 text-center">{{ informe.formacion.resultados}}</td>
+                </tr>
+
+                <tr>
+                    <td class="border p-2 font-medium text-darkslategray text-center">{{'marketing' | translate}}
+                    </td>
+                    <td class="border p-2 text-center">{{ informe.primaComercial.total}}</td>
+                    <td class="border p-2 text-center">{{ informe.primaComercial.resultados}}</td>
+                </tr>
+
+                <tr>
+                    <td class="border p-2 font-medium text-darkslategray text-center">{{'accumulatedAnnualCompensation' | translate}}
+                    </td>
+                    <td class="border p-2 text-center">{{ informe.retribucion.total}}</td>
+                    <td class="border p-2 text-center">{{ informe.retribucion.resultados}}</td>
+                </tr>
+            </tbody>
+        </ng-container>
+    </table>
+</div>

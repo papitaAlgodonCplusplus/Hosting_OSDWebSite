@@ -1,47 +1,45 @@
-<div class="flex flex-col justify-center items-center">
-    <div class="border-b-2  w-full font-semibold text-darkslategray text-lg">
-        <h1>RATING VALORACION RECLAMANTE&RECLAMADO / OSD</h1>
-    </div>
-    <div class="container mt-8 mx-auto">
-        <div class="overflow-x-auto">
-            <table class="bg-white shadow-xl min-w-full">
-                <thead>
-                    <tr class="">
-                        <th class="py-2 px-4 text-center">
-                            INSTITUCIÓN ENTIDAD
-                        </th>
-                        <th class="py-2 px-4 text-center">
-                            Reclamaciones Cuantía
-                        </th>
-                        <th class="py-2 px-4 text-center">
-                            Indemnización obtenida por el Reclamante
-                        </th>
-                        <th class="py-2 px-4 text-center">
-                            Ahorro Inst/Entidad Mejora
-                        </th>
-                        <th class="py-2 px-4 text-center">
-                            Valoración Reclamante 0 a 5
-                        </th>
-                        <th class="py-2 px-4 text-center">
-                            Valoración Reclamado
-                        </th>
-                        <th class="py-2 px-4 text-center">
-                            Valoración OSD
-                        </th>
-                    </tr>
-                </thead>
-                <tbody class="text-center">
-                    <tr *ngFor="let item of reports">
-                        <td class="py-2 px-5">{{ item.institutionEntity }}</td>
-                        <td class="py-2 px-4">{{ item.claimsAmount }}</td>
-                        <td class="py-2 px-4">{{ item.claimantCompensation }}</td>
-                        <td class="py-2 px-4">{{ item.savingsImprovement }}</td>
-                        <td class="py-2 px-4">{{ item.claimantRating }}</td>
-                        <td class="py-2 px-4">{{ item.claimedRating }}</td>
-                        <td class="py-2 px-4">{{ item.osdRating }}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+<div class="pl-8 border-b-2  w-full font-normal text-darkslategray text-lg">
+    <h1>{{'claimantRating' | translate}}</h1>
+</div>
+<div class="container mt-8 mx-auto">
+    <div class="overflow-x-auto">
+        <table class="bg-white shadow-xl min-w-full">
+            <thead>
+                <tr class="">
+                    <th class="py-2 px-4 border text-center font-normal text-yellow-500">
+                        {{'institutionEntity' | translate}}
+                    </th>
+                    <th class="py-2 px-4 border text-center font-normal text-yellow-500">
+                        {{'claimAmount' | translate}}
+                    </th>
+                    <th class="py-2 px-4 border text-center font-normal text-yellow-500">
+                        {{'claimantCompensation' | translate}}
+                    </th>
+                    <th class="py-2 px-4 border text-center font-normal text-yellow-500">
+                        {{'institutionEntitySavings' | translate}}
+                    </th>
+                    <th class="py-2 px-4 border text-center font-normal text-yellow-500">
+                        {{'entityRating' | translate}}
+                    </th>
+                    <th class="py-2 px-4 border text-center font-normal text-yellow-500">
+                        {{'defendantRating' | translate}}
+                    </th>
+                    <th class="py-2 px-4 border text-center font-normal text-yellow-500">
+                        {{'OSDRating' | translate}}
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="text-center">
+                <tr *ngFor="let item of reports">
+                    <td class="py-2 px-4 border">{{ item.institutionEntity }}</td>
+                    <td class="py-2 px-4 border">{{ item.claimsAmount }}</td>
+                    <td class="py-2 px-4 border">{{ item.claimantCompensation }}</td>
+                    <td class="py-2 px-4 border">{{ item.savingsImprovement }}</td>
+                    <td class="py-2 px-4 border">{{ item.claimantRating }}</td>
+                    <td class="py-2 px-4 border">{{ item.claimedRating }}</td>
+                    <td class="py-2 px-4 border">{{ item.osdRating }}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>

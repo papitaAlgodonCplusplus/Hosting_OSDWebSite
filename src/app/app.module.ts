@@ -33,7 +33,7 @@ import { HttpClient } from '@angular/common/http';
     StoreModule.forRoot({
       uiState: uiReducers,
       modalState: modalReducers,
-      authenticationState: authenticationReducers
+      authenticationState: authenticationReducers,
     }),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
     ServiceWorkerModule.register('ngsw-worker.js', {

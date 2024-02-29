@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { claimantClaimedOsdReportItems } from '../../interface/claimantClaimedOsdReportItems.interface copy';
+import { Store } from '@ngrx/store';
+import { UiActions } from 'src/app/store/actions';
 
 
 @Component({
@@ -8,7 +10,7 @@ import { claimantClaimedOsdReportItems } from '../../interface/claimantClaimedOs
   templateUrl: './claimant-claimed-osd-report.component.html',
   styleUrls: ['./claimant-claimed-osd-report.component.css']
 })
-export class ClaimantClaimedOsdReportComponent {
+export class ClaimantClaimedOsdReportComponent implements OnDestroy {
   reports: claimantClaimedOsdReportItems[] = [
     {
       institutionEntity: "Institucion 1",
@@ -53,6 +55,18 @@ export class ClaimantClaimedOsdReportComponent {
 
 
   constructor(
-    private translate: TranslateService
+    private translate: TranslateService,
+    private store : Store
   ) { }
+
+  ngOnInit(): void{
+    setTimeout(() => {
+      this.store.dispatch(UiActions.hideAll());
+    }, 0);
+  }
+  ngOnDestroy(): void {
+    setTimeout(() => {
+      this.store.dispatch(UiActions.showAll());
+    }, 0);
+  }
 }

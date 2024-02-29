@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { UiActions } from 'src/app/store/actions';
+import { AuthenticationActions, UiActions } from 'src/app/store/actions';
 
 @Component({
   selector: 'app-register-type',
@@ -24,5 +24,8 @@ export class OnboardingRegisterTypeComponent implements OnDestroy{
       this.store.dispatch(UiActions.showAll());
     }, 0);
   }
-
+  
+  signOut(): void{
+    this.store.dispatch(AuthenticationActions.signOut()) //TODO: Delete until login is implemented
+  }
 }

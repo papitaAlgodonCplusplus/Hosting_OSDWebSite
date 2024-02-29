@@ -7,15 +7,18 @@ import { TransparencyComponent } from './pages/transparency/transparency.compone
 import { TranslateModule } from '@ngx-translate/core';
 import { LeftSidebarTransparencyComponent } from './components/left-sidebar-transparency/left-sidebar-transparency.component';
 import { OSDRevenueExpenditureEconomicResultReportComponent } from './pages/osd-revenue-expenditure-economic-result-report/osd-revenue-expenditure-economic-result-report.component';
-
+import { PLRemunerationResultsReportComponent } from './pages/pl-remuneration-results-report/pl-remuneration-results-report.component';
+import { CFHResultReportComponent } from './pages/cfhresult-report/cfhresult-report.component';
 
 @NgModule({
   declarations: [
     ClaimantClaimedOsdReportComponent,
     TransparencyComponent,
     LeftSidebarTransparencyComponent,
-    OSDRevenueExpenditureEconomicResultReportComponent
-  ],
+    OSDRevenueExpenditureEconomicResultReportComponent,
+    PLRemunerationResultsReportComponent,
+    CFHResultReportComponent
+    ],
   imports: [
     CommonModule,
     ReportsRoutingModule,

@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { OSDRevenueExpenditureEconomicResultReportItems } from '../../interface/OSDRevenueExpenditureEconomicResultReportItems.interface';
+import { Store } from '@ngrx/store';
+import { UiActions } from 'src/app/store/actions';
 
 @Component({
   selector: 'app-osd-revenue-expenditure-economic-result-report',
@@ -42,5 +44,18 @@ export class OSDRevenueExpenditureEconomicResultReportComponent {
     },
     // Puedes agregar más objetos con la misma estructura
   ];
+  constructor(
+    private store : Store
+  ) { }
 
+  ngOnInit(): void{
+    setTimeout(() => {
+      this.store.dispatch(UiActions.hideAll());
+    }, 0);
+  }
+  ngOnDestroy(): void {
+    setTimeout(() => {
+      this.store.dispatch(UiActions.showAll());
+    }, 0);
+  }
 }
