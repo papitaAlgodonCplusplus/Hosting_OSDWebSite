@@ -53,7 +53,6 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
       name: ['', [Validators.required]],
       firstSurname: ['', [Validators.required]],
       middleSurname: ['', [Validators.required]],
-      country: ['',Validators.required],
       zipCode: ['',Validators.required],
       address: ['', [Validators.required]],
       landline: [''],

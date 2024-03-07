@@ -16,9 +16,8 @@ import { EmailVerificationCodeResendEvent } from '../auth/interfaces/resend-emai
   providedIn: 'root',
 })
 export class EventFactoryService {
-  
-  constructor(private authenticationService : AuthenticationService)
-  {
+
+  constructor(private authenticationService: AuthenticationService) {
 
   }
 
@@ -69,22 +68,19 @@ export class EventFactoryService {
     return event;
   }
 
-  public CreateRegisterUserEvent(registerForm: RegisterUserEvent): WebBaseEvent {
+  public CreateRegisterUserEvent(accountForm: RegisterUserEvent, personalForm: RegisterUserEvent): WebBaseEvent {
     let event: WebBaseEvent;
 
     event = new WebBaseEvent();
     event.SessionKey = this.authenticationService.sessionKey;
     event.SecurityToken = "3746736473";
     event.TraceIdentifier = Guid.create().toString();
-    event.Type = EventType.Security;
-    event.Action = EventAction.REGISTER_USER;
+    event.Type = EventType.OSD;
+    event.Action = EventAction.REGISTER_COSTUMER;
     event.Date = (new Date()).toUTCString();
     event.ApplicationIdentifier = "WebClient"; //TODO: change to use an application identifier
-    event.setBodyProperty(EventConstants.FIRST_NAME, registerForm.firstName);
-    event.setBodyProperty(EventConstants.LAST_NAME, registerForm.lastName);
-    event.setBodyProperty(EventConstants.EMAIL, registerForm.email);
-    event.setBodyProperty(EventConstants.PASSWORD, registerForm.password);
-
+    event.setBodyProperty(EventConstants.ACCOUNT_FORM, accountForm);
+    event.setBodyProperty(EventConstants.PERSONAL_FORM, personalForm);
     return event;
   }
 

@@ -1,8 +1,9 @@
 import { Component, Input, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
+import { EventAction } from 'src/app/models/eventAction';
 import { SecurityEventService } from 'src/app/services/security-event.service';
 import { ValidationsService } from 'src/app/services/validations.service';
 import { UiActions } from 'src/app/store/actions';
@@ -13,7 +14,8 @@ import { UiActions } from 'src/app/store/actions';
   styleUrls: ['./onboarding-register-free-professional.component.css']
 })
 export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
-  registerForm: FormGroup;
+  accountForm: FormGroup;
+  personalForm: FormGroup;
   selectedWorkspace: string | undefined;
   isDropdownOpen = false;
   workspace: DropDownItem[] = [
@@ -28,18 +30,22 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   payTPV: DropDownItem[] = [
     { value: 'PL Code 1', key: 'KeyplCode1' }
   ];
-  conditionsArray: DropDownItem[] = [ // TODO: Rename the array
-    { value:  this.translate.instant('tramitador_reclamaciones_ORD'), key: 'Key1' },
-    { value:  this.translate.instant('formador_consultor'), key: 'Key2' }
+  selectedservicerates!: string;
+  servicerates: DropDownItem[] = [
+    { value: this.translate.instant('tramitador_reclamaciones_ORD'), key: 'Key1' },
+    { value: this.translate.instant('formador_consultor'), key: 'Key2' }
   ];
   documentNames: string[] = new Array(2);
+  isAcceptConditions!: boolean;
+
   constructor(private store: Store,
     private formBuilder: FormBuilder,
     private validationsService: ValidationsService,
     private securityEventService: SecurityEventService,
     private translate: TranslateService
   ) {
-    this.registerForm = this.createRegisterForm();
+    this.accountForm = this.createAccountForm();
+    this.personalForm = this.createPersonalForm();
   }
 
   toggleDropdown() {
@@ -58,13 +64,21 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     }, 0);
   }
 
-  private createRegisterForm(): FormGroup {
-    const form = this.formBuilder.group({
-      workspace: ['', [Validators.required]],
-      otherWorspace: [''],
-      collegiateCardArchive: [null, [Validators.required]],
-      lastReceiptCLI: [null, [Validators.required]],
-      conditions: [[], [Validators.required]], //TODO: Rename the form attribute
+  private createAccountForm(): FormGroup {
+    const accountForm = this.formBuilder.group({
+        workspace: ['', [Validators.required]],
+        otherWorspace: [''],
+        collegiateCardArchive: [null, [Validators.required]],
+        lastReceiptCLI: [null, [Validators.required]],
+        servicerates: ['', [Validators.required]],
+        payTPV: ['', Validators.required],
+        accountType : [EventAction.FREE_PROFESSIONAL]
+    });
+    return accountForm;
+  }
+
+  private createPersonalForm(): FormGroup {
+    const personalForm = this.formBuilder.group({
       identity: ['', [Validators.required]],
       name: ['', [Validators.required]],
       firstSurname: ['', [Validators.required]],
@@ -76,10 +90,17 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
       mobilePhone: ['', [Validators.required]],
       email: ['', [Validators.required, this.validationsService.isValidEmail]],
       web: [''],
-      payTPV: ['', Validators.required],
       acceptConditions: [false]
     });
-    return form;
+    return personalForm;
+  }
+
+  selectServiceRates(index: number) {
+    const serviceratesControl = this.accountForm.get('servicerates');
+    if (serviceratesControl) {
+      this.selectedservicerates = this.servicerates[index].value;
+      serviceratesControl.setValue(this.selectedservicerates);
+    }
   }
 
   displayFileName(): void {
@@ -93,20 +114,20 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     }
   }
 
-
   onSubmit(): void {
-    console.log(this.registerForm.value)
-
-    if (this.registerForm.invalid) {
-      this.registerForm.markAllAsTouched();
+    if (this.accountForm.invalid || this.personalForm.invalid) {
+      this.accountForm.markAllAsTouched();
+      this.personalForm.markAllAsTouched();
+      return;
+    }
+  
+    if (!this.personalForm.value.acceptConditions) {
+      this.isAcceptConditions = true;
       return;
     }
 
-    if (this.registerForm.value.acceptConditions) {
-      const userEmail = this.registerForm.value.email;
-      localStorage.setItem('userEmail', userEmail);
-      //  this.securityEventService.userRegister(this.registerForm.value);
-    }
+    const userEmail = this.personalForm.value.email;
+    localStorage.setItem('userEmail', userEmail);
+    this.securityEventService.userRegister(this.accountForm.value,this.personalForm.value);
   }
-
 }

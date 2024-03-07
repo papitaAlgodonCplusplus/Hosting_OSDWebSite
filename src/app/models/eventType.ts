@@ -4,9 +4,9 @@ export enum EventType {
   Control,
   Security,
   Logic,
-  Notification,
-  Onboarding,
-  SocialNetworkLogic,
   Transactional,
+  DisruptionSource,
+  Notification,
+  OSD,
   Unknown
 }

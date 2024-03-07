@@ -60,6 +60,11 @@ export class EventConstants {
   public static EMAIL: string = "Email";
   //#endregion
 
+
+  // #region OSD
+  public static ACCOUNT_FORM: string = "AccountForm";
+  public static PERSONAL_FORM: string = "PersonalForm";
+  //#endregion
   constructor()
   {
 

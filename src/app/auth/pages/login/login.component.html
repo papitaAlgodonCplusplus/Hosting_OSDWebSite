@@ -7,7 +7,7 @@
       <div class="">
         <div class="flex flex-col justify-center items-center w-full h-full gap-12 mt-10 md:mt-o">
           <h2 class="text-center text-4xl text-darkslategray font-bold mb-10">
-            {{'acceso_a_tu_cuenta' | translate}}
+            {{'iniciar_sesion' | translate}}
           </h2>
 
           <form [formGroup]="loginForm" autocomplete="off"
@@ -21,7 +21,7 @@
                 routerLink="/auth/forgot-password">{{'olvidaste_tu_contraseña' | translate}}</a>
             </div>
             <button (click)="onSubmit()"
-              class="w-full h-14 bg-darkslategray text-white text-lg p-2 rounded-lg font-bold hover:bg-hover-darkblue"
+              class="w-full bg-darkslategray text-white text-lg py-3 font-bold hover:bg-hover-darkblue"
               i18n="@@signin" routerLink="/home">
               {{'iniciar_sesion' | translate}}
             </button>
@@ -38,12 +38,12 @@
     <div class="flex items-center flex-col pb-10 md:w-96 space-y-2 font-medium text-white">
       <img src="/./assets/img/OSD.png" alt="Logo OSD" class="">
       <button (click)="signOut()"
-        class="px-10 py-2 items-center hover:bg-gray-600 hover:text-white rounded-lg transition duration-300 ease-in-out"
+        class="px-10 py-2 items-center hover:bg-gray-600 hover:text-white transition duration-300 ease-in-out"
         routerLink="/onboarding/onboarding-register-claimant">
         {{'presentar_reclamación' | translate}} <i class="fa-solid fa-chevron-right text-sm  pl-2"></i>
       </button>
       <button routerLink="/reports"
-        class="items-center flex flex-row px-10 py-2 hover:bg-gray-600 hover:text-white rounded-lg transition duration-300 ease-in-out">
+        class="items-center flex flex-row px-10 py-2 hover:bg-gray-600 hover:text-white transition duration-300 ease-in-out">
         {{'transparencia' | translate}} <img src="/./assets/img/transparency.png" alt="" class="px-2"> </button> 
     </div>
   </div>

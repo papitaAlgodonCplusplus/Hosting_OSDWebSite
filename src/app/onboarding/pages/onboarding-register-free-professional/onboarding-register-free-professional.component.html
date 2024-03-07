@@ -1,134 +1,154 @@
-<div class="flex flex-col justify-center items-end px-10 py-2">
-    <div class="flex flex-col py-3 bg-white text-darkslategray border rounded-xl shadow-2xl">
-        <div class="flex flex-row px-2 items-center">
+<div class="flex flex-col justify-center px-10 py-2">
+    <div class="flex flex-col py-3 bg-white text-black ">
+        <div class="flex flex-row px-2 items-center text-darkslategray">
             <img src="/./assets/img/OSD.png" alt="Logo OSD" class="w-10">
             <h1 class="text-4xl p-3">{{'profesional_libre' | translate}}
             </h1>
         </div>
-        <div class="pl-3 py-2 space-x-5 border bg-darkslategray text-white">
+        <div class="py-2 border-t text-darkslategray text-sm flex flex-col text-start md:flex-row">
             <a routerLink="/onboarding/onboarding-register-claimant" routerLinkActive="text-yellow-500"
-                class="pointer-events-none text-sm"><i class="fa-solid fa-circle"></i> {{'reclamante' | translate}}</a>
+                class="pointer-events-none pr-3"><i class="fa-solid fa-circle text-xs"></i> {{'reclamante' |
+                translate}}</a>
             <a routerLink="/onboardisng/onboarding-register-claimant" routerLinkActive="text-yellow-500"
-                class="pointer-events-none text-sm"><i class="fa-solid fa-circle"></i> {{'suscriptor_cliente' | translate}}</a>
+                class="pointer-events-none pr-3"><i class="fa-solid fa-circle text-xs"></i> {{'suscriptor_cliente' |
+                translate}}</a>
             <a routerLink="/onboarding/onboarding-register-free-professional" routerLinkActive="text-yellow-500"
-                class="pointer-events-none text-sm"><i class="fa-solid fa-circle"></i>{{'profesional_libre' | translate}}</a>
+                class="pointer-events-none pr-3"><i class="fa-solid fa-circle text-xs"></i>{{'profesional_libre' |
+                translate}}</a>
             <a routerLink="/onboarding/onboarding-register-cfh" routerLinkActive="text-yellow-500"
-                class="pointer-events-none text-sm"><i class="fa-solid fa-circle"></i> CFH</a>
+                class="pointer-events-none pr-3"><i class="fa-solid fa-circle text-xs"></i> CFH</a>
         </div>
 
-        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" autocomplete="off" class="flex flex-col space-y-3 p-2">
-            <div class="flex flex-wrap items-center">
-
-                <shared-simple-dropdown class="w-full md:w-1/3" fieldName="workspace" label="{{'area_trabajo' | translate}}"
-                    [formGroup]="registerForm" [dropdownItems]="workspace" [selectedItem]="selectedWorkspace">
+        <div class="flex flex-col space-y-3 p-2">
+            <form [formGroup]="accountForm" autocomplete="off" class="flex flex-wrap items-center">
+                <shared-simple-dropdown class="w-full md:w-1/3" fieldName="workspace"
+                    label="{{'area_trabajo' | translate}}" [formGroup]="accountForm" [dropdownItems]="workspace"
+                    [selectedItem]="selectedWorkspace">
                 </shared-simple-dropdown>
-                <shared-input-field class="w-full md:w-1/3" fieldName="otherWorspace" label="{{'otra' | translate}}" inputType="text"
-                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-                <div class=" w-full flex justify-center mb-5 text-left">
-                    <div>
+                <shared-input-field class="w-full md:w-1/3" fieldName="otherWorspace" label="{{'otra' | translate}}"
+                    inputType="text" [formGroup]="accountForm"
+                    [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+                <div class=" flex justify-center pl-1 pb-4 w-full md:w-auto md:pl-0 md:pb-0">
+                    <div class="space-y-1">
                         <button (click)="toggleDropdown()" type="button"
-                            class="inline-flex justify-center items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            class="inline-flex justify-center items-center px-4 py-2 border border-gray-300 text-sm  text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-1  focus:ring-black">
                             {{'documentacion_adjunta' | translate}}
                         </button>
-                    </div>
 
-                    <div [class.show]="isDropdownOpen"
-                        class="dropdown-menu flex flex-col p-5 space-y-2 z-50 bg-white origin-top-right absolute right-36 top-24 w-80 rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
-                        <div class="mb-4">
-                            <label for="collegiateCardArchive"
-                                class="block text-sm font-medium text-gray-700 mb-1">{{'carnet_colegiado' | translate}}</label>
-                            <div class="flex items-center">
-                                <input type="file" id="collegiateCardArchive" formControlName="collegiateCardArchive"
-                                    class="hidden" (change)="displayFileName()">
+                        <div [class.show]="isDropdownOpen"
+                            class="dropdown-menu flex flex-col p-5 space-y-2 z-50 bg-white absolute top-auto w-80 border ring-1 ring-black ring-opacity-5">
+                            <div class="mb-4">
                                 <label for="collegiateCardArchive"
-                                    class="cursor-pointer inline-block bg-gray-300 py-2 px-4 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-400 focus:outline-none focus:ring focus:border-blue-300">
-                                    {{'seleccionar_archivo' | translate}}
-                                </label>
-                                <span class="ml-2 text-yellow-500">{{this.documentNames[0]}}</span>
+                                    class="block text-sm text-darkslategray  mb-1">{{'carnet_colegiado' |
+                                    translate}}</label>
+                                <div class="flex items-center">
+                                    <input type="file" id="collegiateCardArchive"
+                                        formControlName="collegiateCardArchive" class="hidden"
+                                        (change)="displayFileName()">
+                                    <label for="collegiateCardArchive"
+                                        class="cursor-pointer py-2 px-4 text-sm border hover:bg-gray-100 focus:outline-none focus:ring focus:border-blue-300">
+                                        {{'seleccionar_archivo' | translate}}
+                                    </label>
+                                    <span class="ml-2 text-red-600">{{this.documentNames[0]}}</span>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="mb-4">
-                            <label for="lastReceiptCLI" class="block text-sm font-medium text-gray-700 mb-1">{{'seguro_responsabilidad_civil' | translate}}
-                            </label>
-                            <div class="flex items-center">
-                                <input type="file" id="lastReceiptCLI" formControlName="lastReceiptCLI" class="hidden"
-                                    (change)="displayFileName()">
+                            <div class="mb-4">
                                 <label for="lastReceiptCLI"
-                                    class="cursor-pointer inline-block bg-gray-300 py-2 px-4 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-400 focus:outline-none focus:ring focus:border-blue-300">
-                                    {{'seleccionar_archivo' | translate}}
+                                    class="block text-sm text-darkslategray mb-1">{{'seguro_responsabilidad_civil' |
+                                    translate}}
                                 </label>
-                                <span class="ml-2 text-yellow-500">{{this.documentNames[1]}}</span>
+                                <div class="flex items-center">
+                                    <input type="file" id="lastReceiptCLI" formControlName="lastReceiptCLI"
+                                        class="hidden" (change)="displayFileName()">
+                                    <label for="lastReceiptCLI"
+                                        class="cursor-pointer py-2 px-4 text-sm border hover:bg-gray-100 focus:outline-none focus:ring focus:border-blue-300">
+                                        {{'seleccionar_archivo' | translate}}
+                                    </label>
+                                    <span class="ml-2 text-red-600">{{this.documentNames[1]}}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div
-                    class="w-full border flex justify-center bg-yellow-500 p-4 font-medium rounded-sm shadow-lg space-x-3">
-                    <label *ngFor="let condition of conditionsArray; let i = index">
-                        <input type="checkbox" class="" [formControlName]="'condition' + i" /> {{ condition.value }}
+                <div class="w-full bg-gray-200 flex flex-wrap py-4 justify-center">
+                    <label *ngFor="let condition of servicerates; let i = index" class="pr-4">
+                        <input type="checkbox" (click)="selectServiceRates(i)" /> {{ condition.value }}
                     </label>
                 </div>
 
+                <shared-simple-dropdown class=" w-full md:w-1/3" fieldName="payTPV" label="Pago TPV*"
+                    [formGroup]="accountForm" [dropdownItems]="payTPV" [selectedItem]="selectedpayTPV">
+                </shared-simple-dropdown>
+
+            </form>
+
+            <form [formGroup]="personalForm" autocomplete="off" class="flex flex-wrap items-center">
                 <shared-input-field class="w-full md:w-1/3" fieldName="identity" label="{{'DNI' | translate}}"
-                    inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                    inputType="text" [formGroup]="personalForm"
+                    [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
                 <shared-input-field class="w-full md:w-1/3" fieldName="name" label="{{'nombre' | translate}}"
-                    inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                    inputType="text" [formGroup]="personalForm"
+                    [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
                 <shared-input-field class="w-full md:w-1/3" fieldName="firstSurname"
-                    label="{{'primer_apellido' | translate}}" inputType="text" [formGroup]="registerForm"
+                    label="{{'primer_apellido' | translate}}" inputType="text" [formGroup]="personalForm"
                     [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
                 <shared-input-field class="w-full md:w-1/3" fieldName="middleSurname"
-                    label="{{'segundo_apellido' | translate}}" inputType="text" [formGroup]="registerForm"
+                    label="{{'segundo_apellido' | translate}}" inputType="text" [formGroup]="personalForm"
                     [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
                 <shared-text-area class="w-full md:w-1/3" fieldName="address" label="{{'direccion' | translate}}"
-                    inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-text-area>
+                    inputType="text" [formGroup]="personalForm"
+                    [bgColor]="'bg-white-lightbone'"></shared-text-area>
 
                 <shared-input-field class="w-full md:w-1/3" fieldName="zipCode" label="{{'cod_postal' | translate}}"
-                    inputType="number" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                    inputType="number" [formGroup]="personalForm"
+                    [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
                 <shared-input-field class="w-full md:w-1/3" fieldName="country" label="{{'pais' | translate}}"
-                    inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                    inputType="text" [formGroup]="personalForm"
+                    [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
                 <shared-input-field class="w-full md:w-1/3" fieldName="landline" label="{{'tel_fijo' | translate}}"
-                    inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                    inputType="text" [formGroup]="personalForm"
+                    [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
                 <shared-input-field class="w-full md:w-1/3" fieldName="mobilePhone" label="{{'tel_movil' | translate}}"
-                    inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                    inputType="text" [formGroup]="personalForm"
+                    [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
                 <shared-input-field class="w-full md:w-1/3" fieldName="email"
-                    label="{{'correo_electronico' | translate}}" inputType="email" [formGroup]="registerForm"
+                    label="{{'correo_electronico' | translate}}" inputType="email" [formGroup]="personalForm"
                     [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
                 <shared-input-field class="w-full md:w-1/3" fieldName="web" label="{{'pagina_web' | translate}}"
-                    inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                    inputType="text" [formGroup]="personalForm"
+                    [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-                <shared-simple-dropdown class=" w-full md:w-1/3" fieldName="payTPV" label="Pago TPV*"
-                    [formGroup]="registerForm" [dropdownItems]="payTPV" [selectedItem]="selectedpayTPV">
-                </shared-simple-dropdown>
-            </div>
-            <div class="pt-2 flex flex-row space-x-2">
-                <input type="checkbox" id="acceptConditions" formControlName="acceptConditions">
-                <label for="acceptConditions"> {{'aceptar_condiciones' | translate}}</label>
-                <div *ngIf="!registerForm.value.acceptConditions" class="text-red-700 pl-1">
-                    {{'error_condiciones' | translate}}
+                <div class="pt-2 flex flex-row space-x-2 border-t items-center w-full">
+                    <input type="checkbox" id="acceptConditions" formControlName="acceptConditions">
+                    <label for="acceptConditions"> {{'aceptar_condiciones' | translate}}</label>
+                    <div *ngIf="this.isAcceptConditions" class="text-red-700  text-sm">
+                        {{'error_condiciones' | translate}}
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
+
+        </div>
     </div>
 
     <div class="flex flex-wrap justify-end items-center space-x-2 p-1">
         <button routerLink="/onboarding/onboarding-register"
-            class="p-2  bg-darkslategray text-white rounded-lg  hover:bg-hover-darkblue" i18n="@@signin">
+            class="p-2  bg-darkslategray text-white hover:bg-hover-darkblue">
             {{'cancelar' | translate}}
         </button>
-        <button type="submit" (click)="onSubmit()"
-            class="p-2  bg-yellow-500 text-white  rounded-lg hover:bg-hover-darkblue" i18n="@@signin">
+        <button type="submit" (click)="onSubmit()" class="p-2  bg-yellow-500 text-white  hover:bg-hover-darkblue">
             {{'registrarse' | translate}}
         </button>
     </div>
