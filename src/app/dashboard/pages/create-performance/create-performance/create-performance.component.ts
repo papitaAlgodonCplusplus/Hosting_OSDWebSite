@@ -22,8 +22,8 @@ export class CreatePerformanceComponent implements OnDestroy{
   ];
   PL_FreeProfessional: string | undefined;
   FreeProfessional: DropDownItem[] = [];
-  isDropdownOpen = false;
-  isDropdownOpen2 = false;
+  isDropdownOpenPL = true;
+  isDropdownOpenDT = true;
   
   constructor(private store: Store,
     private formBuilder: FormBuilder,)
@@ -59,10 +59,10 @@ export class CreatePerformanceComponent implements OnDestroy{
   }
   toggleDropdown(Response: string ) {
     if (Response =="isDropdownOpen") {
-      this.isDropdownOpen = !this.isDropdownOpen;
+      this.isDropdownOpenPL = !this.isDropdownOpenPL;
     }
     else{
-      this.isDropdownOpen2 = !this.isDropdownOpen2;
+      this.isDropdownOpenDT = !this.isDropdownOpenDT;
     }   
   }
   onSubmit(): void {

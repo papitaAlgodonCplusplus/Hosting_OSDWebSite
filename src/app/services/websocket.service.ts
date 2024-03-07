@@ -14,6 +14,7 @@ export class WebsocketService {
   private webSocketConnection: HubConnection;
   public securityEventHandler : Subject<WebBaseEvent>;
   public logicEventHandler : Subject<WebBaseEvent>;
+  public osdEventHandler : Subject<WebBaseEvent>;
 
   constructor(private eventFactoryService : EventFactoryService)
   {
@@ -22,9 +23,10 @@ export class WebsocketService {
                                   .build();
     this.logicEventHandler = new Subject<WebBaseEvent>();
     this.securityEventHandler = new Subject<WebBaseEvent>();
+    this.osdEventHandler = new Subject<WebBaseEvent>();
     this.registerOnServiceChannelSecurityEvents();
     this.registerOnServiceChannelLogicEvents();
-  
+    this.registerOnServiceChannelOSDEvents();
   }
 
 private registerOnServiceChannelSecurityEvents(): void {
@@ -43,6 +45,15 @@ private registerOnServiceChannelSecurityEvents(): void {
 
       baseEvent = this.eventFactoryService.ConvertJsonToWebBaseEvent(jsonEvent);
       this.logicEventHandler.next(baseEvent);
+    });
+  }
+
+  private registerOnServiceChannelOSDEvents(): void {
+    this.webSocketConnection.on('HandleOSDEvent', (jsonEvent: string) => {
+      var baseEvent : WebBaseEvent;
+
+      baseEvent = this.eventFactoryService.ConvertJsonToWebBaseEvent(jsonEvent);
+      this.osdEventHandler.next(baseEvent);
     });
   }
 
@@ -68,6 +79,15 @@ private registerOnServiceChannelSecurityEvents(): void {
 
     jsonEvent = JSON.stringify(webBaseEvent);
     this.webSocketConnection.invoke('ProcessSecurityEvent', jsonEvent)
+    .catch(err => console.error(err)); //TODO: send error to local log file or ZeptooBrowser
+  }
+
+  public sendOSDEvent (webBaseEvent: WebBaseEvent)
+  {
+    var jsonEvent:string;
+
+    jsonEvent = JSON.stringify(webBaseEvent);
+    this.webSocketConnection.invoke('ProcessOSDEvent', jsonEvent)
     .catch(err => console.error(err)); //TODO: send error to local log file or ZeptooBrowser
   }
 

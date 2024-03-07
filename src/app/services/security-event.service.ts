@@ -46,10 +46,9 @@ export class SecurityEventService {
     this.websocketService.sendSecurityEvent(userLoginEvent);
   }
 
-
-  public userRegister(registerForm: RegisterUserEvent) {
-    const registerUserEvent: WebBaseEvent = this.eventFactoryService.CreateRegisterUserEvent(registerForm);
-    this.websocketService.sendSecurityEvent(registerUserEvent);
+  public userRegister(accountForm: RegisterUserEvent, personalForm: RegisterUserEvent) {
+    const registerUserEvent: WebBaseEvent = this.eventFactoryService.CreateRegisterUserEvent(accountForm, personalForm);  
+    this.websocketService.sendOSDEvent(registerUserEvent);
   }
 
   public verifyEmail(verifyEmailForm: VerifyEmailEvent) {
@@ -94,17 +93,17 @@ export class SecurityEventService {
         {
           this.NotifySessionExpired(securityEvent);
           break;
-        }   
+        }
       case EventAction.HANDLE_PASSWORD_RESET_EMAIL_RESPONSE:
         {
           this.HandlePasswordResetEmailResponse(securityEvent);
           break;
         }
       case EventAction.HANDLE_UPDATE_ACCOUNT_PASSWORD_RESPONSE:
-      {
-        this.HandleUpdatePasswordResponse(securityEvent);
-        break;
-      }
+        {
+          this.HandleUpdatePasswordResponse(securityEvent);
+          break;
+        }
       default:
         {
           //TODO: Send event warning to web socket or local log file
@@ -124,7 +123,7 @@ export class SecurityEventService {
       //TODO: create exception event and send to local file or core
     }
   }
-  
+
 
   public HandleAuthenticationResponse(webBaseEvent: WebBaseEvent) {
     let userAuthenticationSuccess: boolean;

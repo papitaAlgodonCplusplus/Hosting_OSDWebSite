@@ -9,6 +9,7 @@ export interface UiState {
   hideHeader: boolean;
   hideFooter: boolean;
   hideLeftSidebar: boolean;
+  reportName: string;
 }
 
 const initialState: UiState = {
@@ -17,7 +18,8 @@ const initialState: UiState = {
   leftSidebarOpen: true,
   hideHeader: false,
   hideFooter: false,
-  hideLeftSidebar: false
+  hideLeftSidebar: false,
+  reportName: 'null'
 }
 
 // Reducer for toggling the visibility of the header, footer and left sidebar components
@@ -42,14 +44,16 @@ export const uiReducers = createReducer(initialState,
     ...currentState,
     hideHeader: true,
     hideFooter: true,
-    hideLeftSidebar:true
+    hideLeftSidebar: true
   })),
   on(UiActions.showAll, (currentState) => ({
     ...currentState,
     hideHeader: false,
     hideFooter: false,
     hideLeftSidebar: false
+  })),
+  on(UiActions.switchReport, (currentState, { reportName }) => ({
+    ...currentState,
+    reportName: reportName
   }))
-
-
 );

@@ -15,34 +15,28 @@
       class="arrow-left absolute top-10 bg-yellow rounded-full px-2 hover:bg-white-bone animate__animated animate__fadeInLeft">
       <i class="fa-solid fa-chevron-left text-base text-black"></i>
     </button>
-    <div class="font-medium text-darkgray mb-6 mr-3 cursor-pointer">
+    <div class="font-medium text-darkslategray mb-6 mr-3 cursor-pointer">
       <div class="flex flex-col justify-center items-start border-b">
-        <span class="ml-3">Jaen Carlo González</span>
+        <span class="ml-3">{{'OSDservices' | translate}}</span>
       </div>
     </div>
-    <ul class="space-y-2 font-medium text-black ml-2">
-      <li class="cursor-pointer" routerLink="/home">
-        <i class="fa-solid fa-house text-lg"></i>
-        <span class="ml-3">{{'home' | translate}}</span>
-      </li>
-      <li class="cursor-pointer" routerLink="/home/files">
-        <i class="fa-solid fa-file text-lg"></i>
-        <span class="ml-3">{{'file_claim' | translate}}</span>
-      </li>
-      
-      <li class="cursor-pointer" routerLink="/home/course-files">
-        <i class="fa-solid fa-address-book text-lg"></i>
-        <span class="ml-3" i18n="@@home">{{'expedienteCurso' | translate}}</span>
+    <ul class="space-y-2 font-normal text-black ml-2">
+
+      <li class="cursor-pointer" routerLink="/reports">
+        <i class="fa-solid fa-eye"></i>
+        <span class="ml-3">{{'transparencia' | translate}}</span>
       </li>
 
       <li class="cursor-pointer" routerLink="/onboarding/onboarding-register-claimant">
-        <i class="fas fa-exclamation-triangle"></i>
+        <i class="fas fa-balance-scale"></i>
         <span class="ml-3">{{'presentar_reclamación' | translate}}</span>
       </li>
-      <li class="cursor-pointer" routerLink="/home/sale">
-        <i class="fa-solid fa-money-bill text-lg"></i>   
-        <span class="ml-3">{{'compra' | translate}}</span>
+    
+      <li class="cursor-pointer" routerLink="/onboarding">
+        <i class="fa-solid fa-user-plus"></i>
+        <span class="ml-3">{{'registerNewUser' | translate}}</span>
       </li>
+      
     </ul>
   </div>
 </ng-template>

@@ -36,3 +36,8 @@ export const hideLeftSidebar = createSelector(
   uiState,
   (uiState) => uiState.hideLeftSidebar
 );
+
+export const selectSwitchReport = createSelector(
+  uiState,
+  (uiState) => uiState.reportName
+);

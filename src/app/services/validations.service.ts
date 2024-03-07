@@ -10,7 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
 export class ValidationsService {
   private readonly emailPattern: RegExp = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i;
 
-  constructor(private translate : TranslateService){}
+  constructor(private translate: TranslateService) { }
 
   isValidEmail = function (this: ValidationsService, control: FormControl): ValidationErrors | null {
     const value: string = control.value.trim();
@@ -32,10 +32,10 @@ export class ValidationsService {
     const hasLowerCase = /[a-z]/.test(value); // Al menos una letra minúscula
     const hasNumber = /\d/.test(value); // Al menos un número
 
-    if ( !hasUpperCase || !hasLowerCase || !hasNumber) {
-        return {
-            invalidPassword: true,
-        };
+    if (!hasUpperCase || !hasLowerCase || !hasNumber) {
+      return {
+        invalidPassword: true,
+      };
     }
 
     return null;
@@ -57,7 +57,7 @@ export class ValidationsService {
     return null;
   };
 
-  
+
   getFieldError(form: FormGroup, field: string): string | null {
     if (field === 'confirmPassword') {
       const confirmPasswordControl = form.get('confirmPassword');
@@ -73,7 +73,7 @@ export class ValidationsService {
     for (const key of Object.keys(errors)) {
       switch (key) {
         case 'required':
-          if(this.translate.currentLang == "en"){
+          if (this.translate.currentLang == "en") {
             return 'This field is required';
           }
           return 'Este campo es obligatorio';
@@ -82,9 +82,15 @@ export class ValidationsService {
           return `Mínimo ${errors['minlength'].requiredLength} caracteres`;
 
         case 'invalidEmail':
+          if (this.translate.currentLang == "en") {
+            return 'The email is invalid.';
+          }
           return 'El correo electrónico no es válido.';
 
         case 'invalidPassword':
+          if (this.translate.currentLang == "en") {
+            return 'Your password is weak';
+          }
           return 'Su contraseña es débil';
       }
     }

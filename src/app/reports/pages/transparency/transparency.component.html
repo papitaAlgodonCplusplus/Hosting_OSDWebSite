@@ -1,0 +1,19 @@
+<div class="flex flex-row space-x-2">
+    <app-left-sidebar-transparency></app-left-sidebar-transparency>
+    <div class="p-10 space-y-3 w-full">
+        <div *ngIf="reportOpen$ | async as reportOpen">
+            <div *ngIf="reportOpen == 'sub'">
+                <app-claimant-claimed-osd-report></app-claimant-claimed-osd-report>
+            </div>
+            <div *ngIf="reportOpen == 'osd'">
+                <app-osd-revenue-expenditure-economic-result-report></app-osd-revenue-expenditure-economic-result-report>
+            </div>
+            <div *ngIf="reportOpen == 'pl'">
+                <app-pl-remuneration-results-report></app-pl-remuneration-results-report>
+            </div>
+            <div *ngIf="reportOpen == 'cfh'">
+                <app-cfhresult-report></app-cfhresult-report>
+            </div>
+        </div>
+    </div>
+</div>

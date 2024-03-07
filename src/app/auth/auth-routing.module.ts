@@ -5,8 +5,6 @@ import { VerifyEmailComponent } from './pages/verify-email/verify-email.componen
 import { authGuard } from '../guards/auth.guard';
 import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
 import { NewpasswordComponent } from './pages/newpassword/newpassword.component';
-import { TransparencyComponent } from './pages/transparency/transparency.component';
-
 
 // Child routes of the auth model
 const routes: Routes = [
@@ -27,10 +25,6 @@ const routes: Routes = [
     path: 'newpassword',
     component: NewpasswordComponent
   },
-  {
-    path: 'transparency',
-    component: TransparencyComponent
-  }
 ];
 
 @NgModule({

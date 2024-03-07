@@ -1,62 +1,65 @@
-<div class="flex flex-col min-h-screen bg-white">
-    <div class="flex-1 flex justify-center bg-darkslategray">
-        <div class="text-white flex flex-col justify-center items-center px-6">
+<div class="flex flex-row">
+
+
+    <div class="flex-1 flex flex-col min-h-screen bg-white">
+        <a routerLink="/auth" class="text-gray-600 p-2 text-start bg-gray-200 hover:text-white"> <i
+                class="fa-solid fa-chevron-left pr-1 cursor-pointer"></i>
+            {{'regresar_a_iniciar_sesión' | translate}}</a>
+        <div class="flex-1 flex flex-col bg-gray-200 justify-center items-center text-gray-600">
             <h1 class="text-3xl font-bold mb-2">{{'titulo' | translate}}</h1>
             <p class="text-sm mb-2">{{'subTitulo' | translate}}</p>
         </div>
-    </div>
-    <div class=" p-2 border-b-4 border-gray-400 bg-darkslategray">
-        <a class="text-white"> <i routerLink="/auth"
-                class="fa-solid fa-chevron-left pr-1 text-yellow-500 hover:text-white cursor-pointer"></i>
-            {{'regresar_a_iniciar_sesión' | translate}}</a>
-    </div>
-    <div class="flex flex-1 flex-col justify-center bg-white">
 
-        <div class="flex-1 flex justify-center flex-wrap items-center bg-white border-r-2 space-x-3">
-            <div>
-                <img src="/./assets/img/sitio-web.png" alt="" class="w-32">
-            </div>
-            <div>
-                <p class="text-sm text-gray-500">{{'ahora_selecciona_tu_tipo_de_registro' | translate}}</p>
-            </div>
-        </div>
 
-        <div class=" flex-1 flex flex-wrap">
-            <div class="flex-1 flex flex-col hover:bg-gray-100 border-2 pt-2">
-                <h1 class="w-full px-2 text-gray-700 flex justify-start"> <i class="fa-solid fa-user text-yellow-500 pr-3"></i>{{'usuarios' | translate}}:
-                </h1>
-                <div class=" flex flex-col justify-center items-center space-y-2 ">
-                    <button
-                        class="inline-block px-4 py-2 text-gray-700 bg-white hover:bg-gray-300 rounded-lg transition duration-300 ease-in-out"
+
+        <div class="flex flex-1 justify-center bg-white">
+            <div class="flex-1 flex flex-col">
+                <div class="flex-1 flex flex-col space-y-2 md:flex-row md:space-y-0 p-3 hover:bg-gray-100 pt-2 items-center justify-center space-x-2 pl-2">
+
+                    <h1 class=" px-2 text-gray-700 "> <i
+                            class="fa-solid fa-user text-darkslategray pr-3"></i>{{'usuarios'
+                        | translate}}:
+                    </h1>
+
+                    <button (click)="signOut()"
+                        class="inline-block p-2 text-gray-700 bg-white border hover:bg-gray-300  transition duration-300 ease-in-out"
                         routerLink="/onboarding/onboarding-register-claimant">
                         {{'reclamante' | translate}}
                     </button>
 
                     <button
-                        class="inline-block px-4 py-2 text-gray-700 bg-white hover:bg-gray-300 rounded-lg transition duration-300 ease-in-out"
+                        class="inline-block p-2 text-gray-700 bg-white border hover:bg-gray-300  transition duration-300 ease-in-out"
                         routerLink="/onboarding/onboarding-register-sub-client">
                         {{'suscriptor_cliente' | translate}}
                     </button>
                 </div>
-            </div>
 
-            <div class="flex-1 flex flex-col hover:bg-gray-100 border-2 border-l-0 pt-2">
-                <h1 class=" w-full px-2 text-gray-700 flex justify-start"><i
-                        class="fa-solid fa-people-group text-yellow-500 pr-3"></i>{{'equipo_OSD' | translate}}:</h1>
-                <div class=" flex flex-col justify-center items-center  space-y-2 ">
+                <div class="flex-1 flex flex-col space-y-2 md:flex-row md:space-y-0 p-3  hover:bg-gray-100 pt-2 items-center justify-center space-x-2 pl-2 ">
+
+                    <h1 class="px-2 text-gray-700 "><i
+                            class="fa-solid fa-people-group text-darkslategray pr-3"></i>{{'equipo_OSD' | translate}}:
+                    </h1>
+
+
                     <button
-                        class="inline-block p-2 text-gray-700 bg-white hover:bg-gray-300 rounded-lg transition duration-300 ease-in-out"
+                        class="inline-block p-2 text-gray-700 bg-white border hover:bg-gray-300 transition duration-300 ease-in-out"
                         routerLink="/onboarding/onboarding-register-cfh">
                         {{'CFH' | translate}}
                     </button>
 
                     <button
-                        class="inline-block px-4 py-2 text-gray-700 bg-white hover:bg-gray-300 rounded-lg transition duration-300 ease-in-out"
+                        class="inline-block p-2 text-gray-700 bg-white border hover:bg-gray-300 transition duration-300 ease-in-out"
                         routerLink="/onboarding/onboarding-register-free-professional">
                         {{'profesional_libre' | translate}}
                     </button>
+
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="flex-1 bg-darkslategray flex justify-center items-center ">
+        <img src="/./assets/img/OSD.png" alt="Logo OSD" class="  ">
+    </div>
+
 </div>
