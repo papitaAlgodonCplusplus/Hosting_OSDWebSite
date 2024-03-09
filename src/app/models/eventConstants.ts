@@ -24,7 +24,7 @@ export class EventConstants {
 
 //#region Security
   public static USERNAME: string = "Username";
-  public static PASSWORD: string = "Password";
+  public static PASSWORD: string = "password";
   public static EMAIL_VERIFICATION_CODE: string = "EmailVerificationCode";
   public static DEVICE_IDENTIFIER: string = "DeviceIdentifier";
   
@@ -58,7 +58,7 @@ export class EventConstants {
   //#region Logic
   public static FIRST_NAME: string = "FirstName";
   public static LAST_NAME: string = "LastName";
-  public static EMAIL: string = "Email";
+  public static EMAIL: string = "email";
   //#endregion
 
 

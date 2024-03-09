@@ -27,6 +27,9 @@ import { TranslateModule } from '@ngx-translate/core';
     SharedModule,
     FormsModule,
     TranslateModule
+  ],
+  exports:[
+    InputPasswordComponent
   ]
 })
 export class AuthModule { }

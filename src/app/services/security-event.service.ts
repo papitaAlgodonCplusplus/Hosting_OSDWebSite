@@ -43,11 +43,11 @@ export class SecurityEventService {
 
   public userLogin(loginForm: UserLoginEvent) {
     const userLoginEvent: WebBaseEvent = this.eventFactoryService.CreateUserLoginEvent(loginForm);
-    this.websocketService.sendSecurityEvent(userLoginEvent);
+    this.websocketService.sendOSDEvent(userLoginEvent);
   }
 
-  public userRegister(accountForm: RegisterUserEvent, personalForm: RegisterUserEvent, accountType :string) {
-    const registerUserEvent: WebBaseEvent = this.eventFactoryService.CreateRegisterUserEvent(accountForm, personalForm, accountType);  
+  public userRegister(accountForm: RegisterUserEvent, personalForm: RegisterUserEvent, accountType: string) {
+    const registerUserEvent: WebBaseEvent = this.eventFactoryService.CreateRegisterUserEvent(accountForm, personalForm, accountType);
     this.websocketService.sendOSDEvent(registerUserEvent);
   }
 
@@ -62,9 +62,7 @@ export class SecurityEventService {
   }
 
   private processSecurityEvent(securityEvent: WebBaseEvent) {
-   
     switch (securityEvent.Action) {
-
       case EventAction.HANDLE_CONNECTION_INITIALIZED:
         {
           this.HandleConnectionInitialized(securityEvent);
@@ -77,7 +75,7 @@ export class SecurityEventService {
         }
       case EventAction.HANDLE_REGISTER_USER_RESPONSE:
         {
-       
+
           this.HandleRegisterUserResponse(securityEvent);
           break;
         }
@@ -131,39 +129,18 @@ export class SecurityEventService {
     let userAuthenticationSuccess: boolean;
     let userAuthenticationResultMessage: string;
     let sessionKey: string;
-
+    
     try {
       userAuthenticationSuccess = JSON.parse(webBaseEvent.getBodyProperty(EventConstants.USER_AUTHENTICATION_SUCCESS));
       userAuthenticationResultMessage = webBaseEvent.getBodyProperty(EventConstants.USER_AUTHENTICATION_RESULT_MESSAGE);
 
       if (userAuthenticationSuccess) {
-        sessionKey = webBaseEvent.getBodyProperty(EventConstants.GENERATED_SESSION_KEY);
-        this.authenticationService.startSession(sessionKey);
-
-        if (userAuthenticationResultMessage == "Need to verify email") {
-          this.securityDataService.emitUserAuthenticationSuccess("/auth/verify-email");
-          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: 'Es necesario verificar su correo electrónico.' }));
-          this.store.dispatch(ModalActions.changeAlertType({ alertType: 'warning' }));
-          this.store.dispatch(ModalActions.openAlert());
-        } else {
-          this.securityDataService.emitUserAuthenticationSuccess("/home");
-          //this.securityDataService.emitUserAuthSuccess("/onboarding/account-type"); //TODO: Delete this line and uncomment the previous one
-        }
-
+        this.securityDataService.emitUserAuthenticationSuccess("/home");
         this.store.dispatch(AuthenticationActions.signIn());
       }
       else {
         if (userAuthenticationResultMessage == 'Credentials are invalid') {
           this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Las credenciales son inválidas' }));
-        }
-        else if (userAuthenticationResultMessage == 'The account is still locked due to password errors when logging in. Please try again later.') {
-          this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'La cuenta aún está bloqueada debido a errores de contraseña al iniciar sesión. Por favor, inténtalo de nuevo más tarde' }));
-        }
-        else if (userAuthenticationResultMessage == 'Account is locked for 3 minutes. Try again later.') {
-          this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'La cuenta está bloqueada durante 3 minutos. Inténtalo de nuevo más tarde' }));
-        }
-        else {
-          this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: userAuthenticationResultMessage }));
         }
         this.store.dispatch(ModalActions.toggleErrorModal());
       }
@@ -177,19 +154,19 @@ export class SecurityEventService {
     let registerSuccess: boolean;
     let registerResultMessage: string;
     let sessionKey: string;
-  
+
     try {
       registerSuccess = JSON.parse(webBaseEvent.getBodyProperty(EventConstants.REGISTER_USER_SUCCESS));
       registerResultMessage = webBaseEvent.getBodyProperty(EventConstants.REGISTER_USER_RESULT_MESSAGE);
 
       this.securityDataService.emitActionRegisterSuccess(registerSuccess);
-      
+
       if (registerSuccess) {
 
         this.securityDataService.emitUserAuthenticationSuccess("/home");
 
         sessionKey = webBaseEvent.getBodyProperty(EventConstants.GENERATED_SESSION_KEY);
-        this.authenticationService.startSession(sessionKey);
+        //this.authenticationService.startSession(sessionKey);
         this.store.dispatch(AuthenticationActions.signIn());
         if (registerResultMessage == 'Your account has been created.') {
           this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: 'Tu cuenta ha sido creada.' }));

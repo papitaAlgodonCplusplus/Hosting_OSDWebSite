@@ -11,6 +11,7 @@ import { OnboardingRegisterFreeProfessionalComponent } from './pages/onboarding-
 import { OnboardingRegisterTypeComponent } from './pages/onboarding-register-type/onboarding-register-type.component';
 import { OnboardingRegisterSubClientComponent } from './pages/onboarding-register-sub-client/onboarding-register-sub-client.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { AuthModule } from '../auth/auth.module';
 
 
 
@@ -28,7 +29,8 @@ import { TranslateModule } from '@ngx-translate/core';
     ReactiveFormsModule,
     SharedModule,
     FormsModule,
-    TranslateModule
+    TranslateModule,
+    AuthModule
   ]
 })
 export class OnboardingModule { }
