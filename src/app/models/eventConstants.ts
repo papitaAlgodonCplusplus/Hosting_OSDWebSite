@@ -30,8 +30,9 @@ export class EventConstants {
   
   public static ACTION_REGISTER_SUCCESS: string = "ActionRegisterSuccess";
   public static ACTION_REGISTER_RESULT_MESSAGE: string = "ActionRegisterResultMessage";
-  public static REGISTER_USER_SUCCESS: string = "RegisterUserSuccess";
-  public static REGISTER_USER_RESULT_MESSAGE: string = "RegisterUserResultMessage";
+
+  public static REGISTER_USER_SUCCESS: string = "ActionRegisterSuccess";
+  public static REGISTER_USER_RESULT_MESSAGE: string = "ActionRegisterResultMessage";
 
   public static VERIFY_EMAIL_SUCCESS: string = "VerifyEmailSuccess";
   public static VERIFY_EMAIL_RESULT_MESSAGE: string = "VerifyEmailResultMessage";
@@ -64,6 +65,11 @@ export class EventConstants {
   // #region OSD
   public static ACCOUNT_FORM: string = "AccountForm";
   public static PERSONAL_FORM: string = "PersonalForm";
+  public static ACCOUNT_TYPE: string = "AccountType";
+
+  public static FREE_PROFESSIONAL: string = "FreeProfessional";
+  public static SUBSCRIBER_COSTUMER: string = "SubscriberCustomer";
+
   //#endregion
   constructor()
   {

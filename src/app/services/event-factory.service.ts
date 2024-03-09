@@ -68,7 +68,7 @@ export class EventFactoryService {
     return event;
   }
 
-  public CreateRegisterUserEvent(accountForm: RegisterUserEvent, personalForm: RegisterUserEvent): WebBaseEvent {
+  public CreateRegisterUserEvent(accountForm: RegisterUserEvent, personalForm: RegisterUserEvent, accounType : String): WebBaseEvent {
     let event: WebBaseEvent;
 
     event = new WebBaseEvent();
@@ -81,6 +81,7 @@ export class EventFactoryService {
     event.ApplicationIdentifier = "WebClient"; //TODO: change to use an application identifier
     event.setBodyProperty(EventConstants.ACCOUNT_FORM, accountForm);
     event.setBodyProperty(EventConstants.PERSONAL_FORM, personalForm);
+    event.setBodyProperty(EventConstants.ACCOUNT_TYPE, accounType);
     return event;
   }
 

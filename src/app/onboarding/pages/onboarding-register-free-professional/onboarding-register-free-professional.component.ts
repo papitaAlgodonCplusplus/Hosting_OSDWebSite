@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
 import { EventAction } from 'src/app/models/eventAction';
+import { EventConstants } from 'src/app/models/eventConstants';
 import { SecurityEventService } from 'src/app/services/security-event.service';
 import { ValidationsService } from 'src/app/services/validations.service';
 import { UiActions } from 'src/app/store/actions';
@@ -19,12 +20,12 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   selectedWorkspace: string | undefined;
   isDropdownOpen = false;
   workspace: DropDownItem[] = [
-    { value: this.translate.instant('DT'), key: 'key1' },
-    { value: this.translate.instant('FC'), key: 'Key2' },
-    { value: this.translate.instant('TR'), key: 'key3' },
-    { value: this.translate.instant('TC'), key: 'Key4' },
-    { value: this.translate.instant('TM'), key: 'key5' },
-    { value: this.translate.instant('TS'), key: 'Key6' }
+    { value: this.translate.instant('DT'), key: '2fc2a66a-69ca-4832-a90e-1ff590b80d24' },
+    { value: this.translate.instant('FC'), key: '2fc2a66a-69ca-4832-a90e-1ff590b80d24' },
+    { value: this.translate.instant('TR'), key: '2fc2a66a-69ca-4832-a90e-1ff590b80d24' },
+    { value: this.translate.instant('TC'), key: '2fc2a66a-69ca-4832-a90e-1ff590b80d24' },
+    { value: this.translate.instant('TM'), key: '2fc2a66a-69ca-4832-a90e-1ff590b80d24' },
+    { value: this.translate.instant('TS'), key: '2fc2a66a-69ca-4832-a90e-1ff590b80d24' }
   ];
   selectedpayTPV: string | undefined;
   payTPV: DropDownItem[] = [
@@ -72,7 +73,6 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
         lastReceiptCLI: [null, [Validators.required]],
         servicerates: ['', [Validators.required]],
         payTPV: ['', Validators.required],
-        accountType : [EventAction.FREE_PROFESSIONAL]
     });
     return accountForm;
   }
@@ -128,6 +128,6 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
 
     const userEmail = this.personalForm.value.email;
     localStorage.setItem('userEmail', userEmail);
-    this.securityEventService.userRegister(this.accountForm.value,this.personalForm.value);
+    this.securityEventService.userRegister(this.accountForm.value,this.personalForm.value,EventConstants.FREE_PROFESSIONAL);
   }
 }
