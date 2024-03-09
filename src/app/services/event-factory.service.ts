@@ -46,7 +46,7 @@ export class EventFactoryService {
     event.SessionKey = this.authenticationService.sessionKey;
     event.SecurityToken = "3746736473";
     event.TraceIdentifier = Guid.create().toString();
-    event.Type = EventType.Security;
+    event.Type = EventType.OSD;
     event.Action = EventAction.USER_LOGIN;
     event.Date = new Date().toUTCString();
     event.ApplicationIdentifier = 'WebClient'; //TODO: change to use an application identifier
@@ -76,7 +76,7 @@ export class EventFactoryService {
     event.SecurityToken = "3746736473";
     event.TraceIdentifier = Guid.create().toString();
     event.Type = EventType.OSD;
-    event.Action = EventAction.REGISTER_COSTUMER;
+    event.Action = EventAction.REGISTER_CUSTOMER; 
     event.Date = (new Date()).toUTCString();
     event.ApplicationIdentifier = "WebClient"; //TODO: change to use an application identifier
     event.setBodyProperty(EventConstants.ACCOUNT_FORM, accountForm);

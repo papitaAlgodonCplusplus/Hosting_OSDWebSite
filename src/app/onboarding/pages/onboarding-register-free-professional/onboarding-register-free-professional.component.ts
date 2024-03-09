@@ -90,6 +90,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
       mobilePhone: ['', [Validators.required]],
       email: ['', [Validators.required, this.validationsService.isValidEmail]],
       web: [''],
+      password:['', [Validators.required, this.validationsService.isValidPassword, Validators.minLength(6)], []],
       acceptConditions: [false]
     });
     return personalForm;

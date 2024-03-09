@@ -50,24 +50,20 @@ export class LoginComponent implements OnDestroy {
   }
 
   onSubmit(): void {
-    this.store.dispatch(AuthenticationActions.signIn()) //TODO: Delete until login is implemented
-    // if (this.loginForm.invalid) {
-    //   this.loginForm.markAllAsTouched();
-    //   return;
-    // }
-    // this.securityEventService.userLogin(this.loginForm.value);
+    if (this.loginForm.invalid) {
+     this.loginForm.markAllAsTouched();
+    return;
+    }
+    this.securityEventService.userLogin(this.loginForm.value);
   }
 
   private createLoginForm(): FormGroup {
     return this.formBuilder.group({
-      email: ['', [Validators.required, this.validationsService.isValidEmail], []],
-      password: ['', [Validators.required, this.validationsService.isValidPassword, Validators.minLength(6)], []],
+      email: ['jaencarlo@gmail.com', [Validators.required, this.validationsService.isValidEmail], []],
+      password: ['Liga142003', [Validators.required, this.validationsService.isValidPassword, Validators.minLength(6)], []],
     });
   }
 
-  signOut(): void{
-    this.store.dispatch(AuthenticationActions.signOut()) //TODO: Delete until login is implemented
-  }
   // Trigger the sign-in action, simulate an HTTP request
   // signIn(): void {
 
