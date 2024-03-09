@@ -11,7 +11,7 @@ export class EventAction {
   public static VERIFY_EMAIL: string = "VerifyEmail";
   public static RESEND_EMAIL_VERIFICATION_CODE: string = "ResendEmailVerificationCode";
   public static HANDLE_AUTHENTICATION_RESPONSE: string = "HandleAuthenticationResponse";
-  public static HANDLE_REGISTER_USER_RESPONSE: string = "HandleRegisterUserResponse";
+  public static HANDLE_REGISTER_USER_RESPONSE: string = "HandleRegisterResponse";
   public static HANDLE_VERIFY_EMAIL_RESPONSE: string = "HandleVerifyEmailResponse";
   public static HANDLE_RESEND_EMAIL_VERIFICATION_CODE_RESPONSE: string = "HandleResendEmailVerificationCodeResponse";
   public static GENERATE_MAIL_PASSWORD_RESET_TOKEN: string = "GenerateMailPasswordResetToken";

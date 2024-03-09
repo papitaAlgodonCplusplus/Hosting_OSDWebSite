@@ -37,7 +37,7 @@ export class SecurityEventService {
 
   private subscribeToSecurityEvents(): void {
     console.log("subscribeToSecurityEvents");
-    this.securityEventSubscriber = this.websocketService.securityEventHandler.subscribe((webBaseEvent: WebBaseEvent) =>
+    this.securityEventSubscriber = this.websocketService.osdEventHandler.subscribe((webBaseEvent: WebBaseEvent) =>
       this.processSecurityEvent(webBaseEvent));
   }
 
@@ -46,8 +46,8 @@ export class SecurityEventService {
     this.websocketService.sendSecurityEvent(userLoginEvent);
   }
 
-  public userRegister(accountForm: RegisterUserEvent, personalForm: RegisterUserEvent) {
-    const registerUserEvent: WebBaseEvent = this.eventFactoryService.CreateRegisterUserEvent(accountForm, personalForm);  
+  public userRegister(accountForm: RegisterUserEvent, personalForm: RegisterUserEvent, accountType :string) {
+    const registerUserEvent: WebBaseEvent = this.eventFactoryService.CreateRegisterUserEvent(accountForm, personalForm, accountType);  
     this.websocketService.sendOSDEvent(registerUserEvent);
   }
 
@@ -62,6 +62,7 @@ export class SecurityEventService {
   }
 
   private processSecurityEvent(securityEvent: WebBaseEvent) {
+   
     switch (securityEvent.Action) {
 
       case EventAction.HANDLE_CONNECTION_INITIALIZED:
@@ -76,6 +77,7 @@ export class SecurityEventService {
         }
       case EventAction.HANDLE_REGISTER_USER_RESPONSE:
         {
+       
           this.HandleRegisterUserResponse(securityEvent);
           break;
         }
@@ -175,14 +177,16 @@ export class SecurityEventService {
     let registerSuccess: boolean;
     let registerResultMessage: string;
     let sessionKey: string;
-
+  
     try {
       registerSuccess = JSON.parse(webBaseEvent.getBodyProperty(EventConstants.REGISTER_USER_SUCCESS));
       registerResultMessage = webBaseEvent.getBodyProperty(EventConstants.REGISTER_USER_RESULT_MESSAGE);
 
       this.securityDataService.emitActionRegisterSuccess(registerSuccess);
-
+      
       if (registerSuccess) {
+
+        this.securityDataService.emitUserAuthenticationSuccess("/home");
 
         sessionKey = webBaseEvent.getBodyProperty(EventConstants.GENERATED_SESSION_KEY);
         this.authenticationService.startSession(sessionKey);

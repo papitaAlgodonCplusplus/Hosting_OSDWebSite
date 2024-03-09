@@ -7,72 +7,68 @@
         </div>
         <div class="py-2 border-t text-darkslategray text-sm flex flex-col text-start md:flex-row">
             <a routerLink="/onboarding/onboarding-register-claimant" routerLinkActive="text-yellow-500"
-                class="pointer-events-none pr-3"><i class="fa-solid fa-circle text-xs"></i> {{'reclamante' | translate}}</a>
+                class="pointer-events-none pr-3"><i class="fa-solid fa-circle text-xs"></i> {{'reclamante' |
+                translate}}</a>
             <a routerLink="/onboarding/onboarding-register-sub-client" routerLinkActive="text-yellow-500"
-                class="pointer-events-none pr-3"><i class="fa-solid fa-circle text-xs"></i> {{'suscriptor_cliente' | translate}}</a>
+                class="pointer-events-none pr-3"><i class="fa-solid fa-circle text-xs"></i> {{'suscriptor_cliente' |
+                translate}}</a>
             <a routerLink="/onboarding/onboarding-register-free-professional text-xs" routerLinkActive="text-yellow-500"
-                class="pointer-events-none pr-3"><i class="fa-solid fa-circle text-xs"></i>{{'profesional_libre' | translate}}</a>
+                class="pointer-events-none pr-3"><i class="fa-solid fa-circle text-xs"></i>{{'profesional_libre' |
+                translate}}</a>
             <a routerLink="/onboarding/onboarding-register-cfh" routerLinkActive="text-yellow-500"
                 class="pointer-events-none pr-3"><i class="fa-solid fa-circle text-xs"></i> CFH</a>
         </div>
-        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" autocomplete="off" class="flex flex-col space-y-3 p-2">
-
+        <form [formGroup]="accountForm" (ngSubmit)="onSubmit()" autocomplete="off" class="flex flex-wrap items-center ">
+            <shared-simple-dropdown class="w-full md:w-1/3" fieldName="clientType"
+                label="{{'tipo_cliente' | translate}}" [formGroup]="accountForm" [dropdownItems]="clientType"
+                [selectedItem]="selectedClientType">
+            </shared-simple-dropdown>
+            <shared-simple-dropdown class="w-full md:w-1/3" fieldName="plCode" label="{{'cod_PL' | translate}}"
+                [formGroup]="accountForm" [dropdownItems]="plCode" [selectedItem]="selectedPLcode">
+            </shared-simple-dropdown>
+        </form>
+        <form [formGroup]="personalForm" (ngSubmit)="onSubmit()" autocomplete="off" class="flex flex-col space-y-3 p-2">
             <div class="flex flex-wrap items-center">
-
-                <shared-simple-dropdown class="w-full md:w-1/3" fieldName="clientType" label="{{'tipo_cliente' | translate}}"
-                    [formGroup]="registerForm" [dropdownItems]="clientType" [selectedItem]="selectedClientType">
-                </shared-simple-dropdown>
-
                 <shared-input-field class="w-full md:w-1/3" fieldName="identity" label="{{'DNI' | translate}}*"
-                    inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-                <shared-input-field class="w-full md:w-1/3" fieldName="name" label="{{'nombre' | translate}}" inputType="text"
-                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-                <shared-input-field class="w-full md:w-1/3" fieldName="firstSurname" label="{{'primer_apellido' | translate}}"
-                    inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-                <shared-input-field class="w-full md:w-1/3" fieldName="middleSurname" label="{{'segundo_apellido' | translate}}"
-                    inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-                <shared-text-area class="w-full md:w-1/3" fieldName="address" label="{{'direccion' | translate}}" inputType="text"
-                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-text-area>
-
-                <shared-input-field class="w-full md:w-1/3" fieldName="zipCode" label="{{'cod_postal' | translate}}" inputType="number"
-                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-                <shared-input-field class="w-full md:w-1/3" fieldName="landline" label="{{'tel_fijo' | translate}}" inputType="tel"
-                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
+                    inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                <shared-input-field class="w-full md:w-1/3" fieldName="name" label="{{'nombre' | translate}}"
+                    inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                <shared-input-field class="w-full md:w-1/3" fieldName="firstSurname"
+                    label="{{'primer_apellido' | translate}}" inputType="text" [formGroup]="personalForm"
+                    [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                <shared-input-field class="w-full md:w-1/3" fieldName="middleSurname"
+                    label="{{'segundo_apellido' | translate}}" inputType="text" [formGroup]="personalForm"
+                    [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                <shared-text-area class="w-full md:w-1/3" fieldName="address" label="{{'direccion' | translate}}"
+                    inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-text-area>
+                <shared-input-field class="w-full md:w-1/3" fieldName="zipCode" label="{{'cod_postal' | translate}}"
+                    inputType="number" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                <shared-input-field class="w-full md:w-1/3" fieldName="landline" label="{{'tel_fijo' | translate}}"
+                    inputType="tel" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
                 <shared-input-field class="w-full md:w-1/3" fieldName="mobilePhone" label="{{'tel_movil' | translate}}"
-                    inputType="tel" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-                <shared-input-field class="w-full md:w-1/3" fieldName="email" label="{{'correo_electronico' | translate}}" inputType="email"
-                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-                <shared-input-field class="w-full md:w-1/3" fieldName="web" label="{{'pagina_web' | translate}}" inputType="text"
-                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-                <shared-simple-dropdown class="w-full md:w-1/3" fieldName="plCode" label="{{'cod_PL' | translate}}"
-                    [formGroup]="registerForm" [dropdownItems]="plCode" [selectedItem]="selectedPLcode">
-                </shared-simple-dropdown>
+                    inputType="tel" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                <shared-input-field class="w-full md:w-1/3" fieldName="email"
+                    label="{{'correo_electronico' | translate}}" inputType="email" [formGroup]="personalForm"
+                    [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                <shared-input-field class="w-full md:w-1/3" fieldName="web" label="{{'pagina_web' | translate}}"
+                    inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
             </div>
             <div class="pt-2 flex flex-row space-x-2 border-t">
                 <input type="checkbox" id="acceptConditions" formControlName="acceptConditions">
                 <label for="acceptConditions"> {{'aceptar_condiciones' | translate}}</label>
-                <div *ngIf="!registerForm.value.acceptConditions" class="text-red-700 pl-1">
+                <div *ngIf="!personalForm.value.acceptConditions" class="text-red-700 pl-1">
                     {{'error_condiciones' | translate}}
                 </div>
             </div>
         </form>
     </div>
     <div class="flex flex-wrap justify-end items-center space-x-2 p-1">
-        <button routerLink="/onboarding/onboarding-register" class="p-2  bg-darkslategray text-white hover:bg-hover-darkblue"
-            i18n="@@signin">
+        <button routerLink="/onboarding/onboarding-register"
+            class="p-2  bg-darkslategray text-white hover:bg-hover-darkblue" i18n="@@signin">
             {{'cancelar' | translate}}
         </button>
-        <button type="submit" (click)="onSubmit()"
-            class="p-2  bg-yellow-500 text-white  hover:bg-hover-darkblue" i18n="@@signin">
+        <button type="submit" (click)="onSubmit()" class="p-2  bg-yellow-500 text-white  hover:bg-hover-darkblue"
+            i18n="@@signin">
             {{'registrarse' | translate}}
         </button>
     </div>
