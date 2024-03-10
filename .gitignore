@@ -82,3 +82,4 @@ Thumbs.db
 *.mov
 *.wmv
 .vscode/launch.json
+dist/*
