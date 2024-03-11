@@ -104,6 +104,12 @@ export class OnboardingRegisterClaimantComponent {
       this.showPersonalInfo = false;
     }
   }
+  
+  mostrarMenu = false;
+
+  toggleMenu() {
+    this.mostrarMenu = !this.mostrarMenu;
+  }
 
   displayFileName(): void {
     const fileNameDocument1 = document.getElementById('supportingDocument1') as HTMLInputElement;
