@@ -166,8 +166,9 @@ export class SecurityEventService {
         this.securityDataService.emitUserAuthenticationSuccess("/home");
 
         sessionKey = webBaseEvent.getBodyProperty(EventConstants.GENERATED_SESSION_KEY);
-        //this.authenticationService.startSession(sessionKey);
+        this.authenticationService.startSession(sessionKey);
         this.store.dispatch(AuthenticationActions.signIn());
+        
         if (registerResultMessage == 'Your account has been created.') {
           this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: 'Tu cuenta ha sido creada.' }));
         } else {

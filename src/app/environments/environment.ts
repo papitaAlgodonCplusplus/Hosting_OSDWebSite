@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  websocketUrl: 'http://localhost:5000/clientEventsHub'
+  websocketUrl: 'http://localhost:5001/clientEventsHub'
 };
 
 /*
