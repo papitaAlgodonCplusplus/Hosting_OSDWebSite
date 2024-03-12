@@ -48,6 +48,7 @@ export class SecurityEventService {
 
   public userRegister(accountForm: RegisterUserEvent, personalForm: RegisterUserEvent, accountType: string) {
     const registerUserEvent: WebBaseEvent = this.eventFactoryService.CreateRegisterUserEvent(accountForm, personalForm, accountType);
+    console.log("Enviando mensaje al websocketService.sendOSDEvent");
     this.websocketService.sendOSDEvent(registerUserEvent);
   }
 

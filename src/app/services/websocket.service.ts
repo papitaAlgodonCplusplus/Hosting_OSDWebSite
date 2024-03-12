@@ -87,6 +87,7 @@ private registerOnServiceChannelSecurityEvents(): void {
     var jsonEvent:string;
 
     jsonEvent = JSON.stringify(webBaseEvent);
+    console.log("Enviando mensaje al webSocketConnection.invoke('ProcessOSDEvent', jsonEvent)");
     this.webSocketConnection.invoke('ProcessOSDEvent', jsonEvent)
     .catch(err => console.error(err)); //TODO: send error to local log file or ZeptooBrowser
   }
