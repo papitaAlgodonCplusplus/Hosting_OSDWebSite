@@ -73,12 +73,13 @@ export class OnboardingRegisterClaimantComponent {
       landline: [''],
       mobilePhone: ['', [Validators.required]],
       email: ['', [Validators.required, this.validationsService.isValidEmail]],
+      password:['',[Validators.required, this.validationsService.isValidPassword, Validators.minLength(6)], []],
       web: [''],
       claimant: ['', [Validators.required]],
-      subscriberClaimed: ['', []],
-      serviceProvided: ['', []],
-      amountClaimed: ['', []],
-      facts: ['', []],
+      subscriberClaimed: ['', [Validators.required]],
+      serviceProvided: ['', [Validators.required]],
+      amountClaimed: ['', [Validators.required]],
+      facts: ['', [Validators.required]],
       supportingDocument1: ['', [Validators.required]],
       supportingDocument2: ['', [Validators.required]],
       acceptConditions: [false]
@@ -105,7 +106,7 @@ export class OnboardingRegisterClaimantComponent {
     }
   }
   
-  mostrarMenu = false;
+  mostrarMenu = true;
 
   toggleMenu() {
     this.mostrarMenu = !this.mostrarMenu;

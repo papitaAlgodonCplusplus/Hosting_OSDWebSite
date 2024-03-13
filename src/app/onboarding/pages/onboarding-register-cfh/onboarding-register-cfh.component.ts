@@ -59,6 +59,7 @@ export class OnboardingRegisterCfhComponent {
       landline: [''],
       mobilePhone: ['', [Validators.required]],
       email: ['', [Validators.required, this.validationsService.isValidEmail]],
+      password: ['',[Validators.required, this.validationsService.isValidPassword, Validators.minLength(6)], []],
       web: [''],
       acceptConditions: [false]
     });
@@ -66,7 +67,12 @@ export class OnboardingRegisterCfhComponent {
     return form;
   }
 
+  mostrarMenu = true;
 
+  toggleMenu() {
+    this.mostrarMenu = !this.mostrarMenu;
+  }
+  
   onSubmit(): void {
     console.log(this.registerForm.value)
     
