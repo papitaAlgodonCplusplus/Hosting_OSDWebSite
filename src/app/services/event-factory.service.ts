@@ -47,7 +47,7 @@ export class EventFactoryService {
     event.SecurityToken = "3746736473";
     event.TraceIdentifier = Guid.create().toString();
     event.Type = EventType.OSD;
-    event.Action = EventAction.USER_LOGIN;
+    event.Action = EventAction.OSD_USER_LOGIN;
     event.Date = new Date().toUTCString();
     event.ApplicationIdentifier = 'WebClient'; //TODO: change to use an application identifier
     event.setBodyProperty(EventConstants.EMAIL, loginForm.email);

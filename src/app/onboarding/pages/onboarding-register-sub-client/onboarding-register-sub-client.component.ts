@@ -4,9 +4,10 @@ import { Store } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
 import { EventConstants } from 'src/app/models/eventConstants';
-import { SecurityEventService } from 'src/app/services/security-event.service';
+import { OSDService } from 'src/app/services/osd-event.services';
 import { ValidationsService } from 'src/app/services/validations.service';
 import { UiActions } from 'src/app/store/actions';
+
 @Component({
   selector: 'app-register-sub-client',
   templateUrl: './onboarding-register-sub-client.component.html',
@@ -28,7 +29,7 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
   constructor(private store: Store,
     private formBuilder: FormBuilder,
     private validationsService: ValidationsService,
-    private securityEventService: SecurityEventService,
+    private osdEventService: OSDService,
     private translate: TranslateService
   ) {
     this.accountForm = this.createAccountForm();
@@ -69,8 +70,14 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
     });
     return accountForm;
   }
-  onSubmit(): void {
 
+  mostrarMenu = true;
+
+  toggleMenu() {
+    this.mostrarMenu = !this.mostrarMenu;
+  }
+
+  onSubmit(): void {
     if (this.personalForm.invalid || this.accountForm.invalid) {
       this.accountForm.markAllAsTouched();
       this.personalForm.markAllAsTouched();
@@ -84,6 +91,6 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
     const userEmail = this.personalForm.value.email;
     localStorage.setItem('userEmail', userEmail);
     console.log("Enviando mensaje al securityEventService.userRegister");
-    this.securityEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.SUBSCRIBER_COSTUMER);
+    this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.SUBSCRIBER_COSTUMER);
   }
 }

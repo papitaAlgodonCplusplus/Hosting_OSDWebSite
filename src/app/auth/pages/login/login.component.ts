@@ -11,6 +11,8 @@ import { ValidationsService } from '../../../services/validations.service';
 import { ModalSelectors } from 'src/app/store/selectors';
 import { SecurityEventService } from 'src/app/services/security-event.service';
 import { authenticationReducers } from 'src/app/store/reducers/authentication.reducer';
+import { OSDDataService } from 'src/app/services/osd-data.service';
+import { OSDService } from 'src/app/services/osd-event.services';
 
 @Component({
   selector: 'auth-login',
@@ -30,7 +32,7 @@ export class LoginComponent implements OnDestroy {
     private validationsService: ValidationsService,
     public eventFactoryService: EventFactoryService,
     public websocketService: WebsocketService,
-    private securityEventService: SecurityEventService,
+    private osdEventService: OSDService,
     private router: Router
   )
   {
@@ -54,12 +56,12 @@ export class LoginComponent implements OnDestroy {
      this.loginForm.markAllAsTouched();
     return;
     }
-    this.securityEventService.userLogin(this.loginForm.value);
+    this.osdEventService.userLogin(this.loginForm.value);
   }
 
   private createLoginForm(): FormGroup {
     return this.formBuilder.group({
-      email: ['jaencarlo@gmail.com', [Validators.required, this.validationsService.isValidEmail], []],
+      email: ['jaenca@gmail.com', [Validators.required, this.validationsService.isValidEmail], []],
       password: ['Liga142003', [Validators.required, this.validationsService.isValidPassword, Validators.minLength(6)], []],
     });
   }

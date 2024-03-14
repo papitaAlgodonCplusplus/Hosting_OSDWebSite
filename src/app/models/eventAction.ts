@@ -6,7 +6,7 @@ export class EventAction {
   public static SHOW_LOGIN_FAILURE: string = "ShowLoginFailure";
 
   //#region OSD
-  public static USER_LOGIN: string = "UserLogin";
+  public static OSD_USER_LOGIN: string = "OsdUserLogin";
   public static REGISTER_CUSTOMER: string = "RegisterCustomer";
   public static VERIFY_EMAIL: string = "VerifyEmail";
   public static RESEND_EMAIL_VERIFICATION_CODE: string = "ResendEmailVerificationCode";

@@ -1,24 +1,27 @@
 <div class="flex flex-col justify-center items-end px-10 py-2">
-    <div class="flex flex-col py-3 bg-white text-darkslategray border rounded-xl shadow-2xl">
+    <div class="flex flex-col py-3 bg-white text-black">
 
         <div class="flex flex-row px-2 items-center">
             <img src="/./assets/img/OSD.png" alt="Logo OSD" class="w-10">
-            <h1 class="text-4xl p-3">{{'CFH' | translate}}
+            <h1 class="text-4xl p-3 text-darkslategray">{{'CFH' | translate}}
             </h1>
         </div>
-        <div class="pl-3 py-2 space-x-5 border bg-darkslategray text-white">
+        <div class="py-2 border-t text-darkslategray text-sm flex flex-wrap justify-center md:justify-start">
             <a routerLink="/onboarding/onboarding-register-claimant" routerLinkActive="text-yellow-500"
-                class="pointer-events-none text-sm"><i class="fa-solid fa-circle"></i> {{'reclamante' | translate}} </a>
+                class="pointer-events-none pr-3"><i class="fa-solid fa-circle text-xs"></i> {{'reclamante' | translate}}
+            </a>
             <a routerLink="/onboardisng/onboarding-register-claimant" routerLinkActive="text-yellow-500"
-                class="pointer-events-none text-sm"><i class="fa-solid fa-circle"></i> {{'suscriptor_cliente' | translate}}</a>
+                class="pointer-events-none pr-3"><i class="fa-solid fa-circle text-xs"></i> {{'suscriptor_cliente' |
+                translate}}</a>
             <a routerLink="/onboardisng/onboarding-register-claimant" routerLinkActive="text-yellow-500"
-                class="pointer-events-none text-sm"><i class="fa-solid fa-circle"></i> {{'profesional_libre' | translate}}</a>
+                class="pointer-events-none pr-3"><i class="fa-solid fa-circle text-xs"></i> {{'profesional_libre' |
+                translate}}</a>
             <a routerLink="/onboarding/onboarding-register-cfh" routerLinkActive="text-yellow-500"
-                class="pointer-events-none text-sm"><i class="fa-solid fa-circle"></i> CFH</a>
+                class="pointer-events-none pr-3"><i class="fa-solid fa-circle text-xs"></i> CFH</a>
         </div>
-        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" autocomplete="off" class="flex flex-col space-y-3 p-2">
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" autocomplete="off" class="flex flex-wrap items-center">
 
-            <div class="flex flex-wrap items-center">
+            
                 <shared-simple-dropdown class="w-full md:w-1/3" fieldName="entity" label="{{'entidad' | translate}}"
                     [formGroup]="registerForm" [dropdownItems]="entity" [selectedItem]="selectedEntity">
                 </shared-simple-dropdown>
@@ -26,34 +29,46 @@
                 <shared-input-field class="w-full md:w-1/3" fieldName="identity" label="{{'DNI' | translate}}"
                     inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-                <shared-input-field class="w-full md:w-1/3" fieldName="name" label="{{'nombre' | translate}}" inputType="text"
-                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-                <shared-input-field class="w-full md:w-1/3" fieldName="firstSurname" label="{{'primer_apellido' | translate}}"
+                <shared-input-field class="w-full md:w-1/3" fieldName="name" label="{{'nombre' | translate}}"
                     inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-                <shared-input-field class="w-full md:w-1/3" fieldName="middleSurname" label="{{'segundo_apellido' | translate}}"
-                    inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                <shared-input-field class="w-full md:w-1/3" fieldName="firstSurname"
+                    label="{{'primer_apellido' | translate}}" inputType="text" [formGroup]="registerForm"
+                    [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-                <shared-text-area class="w-full md:w-1/3" fieldName="address" label="{{'direccion' | translate}}" inputType="text"
-                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-text-area>
+                <shared-input-field class="w-full md:w-1/3" fieldName="middleSurname"
+                    label="{{'segundo_apellido' | translate}}" inputType="text" [formGroup]="registerForm"
+                    [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-                <shared-input-field class="w-full md:w-1/3" fieldName="zipCode" label="{{'cod_postal' | translate}}" inputType="number"
-                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                <shared-text-area class="w-full md:w-1/3" fieldName="address" label="{{'direccion' | translate}}"
+                    inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-text-area>
 
-                <shared-input-field class="w-full md:w-1/3" fieldName="landline" label="{{'tel_fijo' | translate}}" inputType="tel"
-                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                <shared-input-field class="w-full md:w-1/3" fieldName="zipCode" label="{{'cod_postal' | translate}}"
+                    inputType="number" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+                <shared-input-field class="w-full md:w-1/3" fieldName="landline" label="{{'tel_fijo' | translate}}"
+                    inputType="tel" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
                 <shared-input-field class="w-full md:w-1/3" fieldName="mobilePhone" label="{{'tel_movil' | translate}}"
                     inputType="tel" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-                <shared-input-field class="w-full md:w-1/3" fieldName="email" label="{{'correo_electronico' | translate}}" inputType="email"
-                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                <shared-input-field class="w-full md:w-1/3" fieldName="email"
+                    label="{{'correo_electronico' | translate}}" inputType="email" [formGroup]="registerForm"
+                    [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-                <shared-input-field class="w-full md:w-1/3" fieldName="web" label="{{'pagina_web' | translate}}" inputType="text"
-                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                <shared-input-field class="w-full md:w-1/3" fieldName="web" label="{{'pagina_web' | translate}}"
+                    inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+            <div class="w-full flex flex-wrap justify-center items-center rounded-md bg-gray-100 ">
+                <h1 class="m-3">{{'iniciar_sesion' | translate}}:</h1>
+                <shared-input-field class="w-full md:w-1/3" fieldName="email"
+                    label="{{'correo_electronico' | translate}}" inputType="email" [formGroup]="registerForm"
+                    [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                <auth-input-password class="w-full md:w-1/3" [formGroup]="registerForm" fieldName="password"
+                    label="{{'contraseña' | translate}}"></auth-input-password>
 
             </div>
+            
             <div class="pt-2 flex flex-row space-x-2">
                 <input type="checkbox" id="acceptConditions" formControlName="acceptConditions">
                 <label for="acceptConditions"> {{'aceptar_condiciones' | translate}}</label>
@@ -61,16 +76,32 @@
                     {{'error_condiciones' | translate}}
                 </div>
             </div>
+
         </form>
     </div>
     <div class="flex flex-wrap justify-end items-center space-x-2 p-1">
-        <button routerLink="/onboarding/onboarding-register" class="p-2  bg-darkslategray text-white rounded-lg  hover:bg-hover-darkblue"
-            i18n="@@signin">
-            {{'cancelar' | translate}}
-        </button>
-        <button type="submit" (click)="onSubmit()"
-            class="p-2 bg-yellow-500 text-white  rounded-lg hover:bg-hover-darkblue" i18n="@@signin">
-            {{'registrarse' | translate}}
-        </button>
+        <div class="fixed top-5 right-5">
+            <button (click)="toggleMenu()" class="text-black font-medium flex flex-col items-center ">
+                Opciones
+                <i [ngClass]="{'fa-chevron-up': mostrarMenu, 'fa-chevron-down': !mostrarMenu}"
+                    class="fa-solid text-sm animate-pulse"></i>
+            </button>
+        </div>
+
+
+        <div *ngIf="mostrarMenu" class="fixed top-16 right-8 flex flex-col space-y-1 ">
+
+            <button type="submit" (click)="onSubmit()"
+                class="animate__animated animate__fadeInDown"
+                title="{{'registrarse' | translate}}">
+                <img src="../../../../assets/img/verificar.png" alt="" class="">
+            </button>
+            <button routerLink="/onboarding/onboarding-register"
+                class="animate__animated animate__fadeInDown">
+                <img src="../../../../assets/img/rechazar.png" alt="" title="{{'cancelar' | translate}}">
+            </button>
+
+        </div>
+
     </div>
 </div>

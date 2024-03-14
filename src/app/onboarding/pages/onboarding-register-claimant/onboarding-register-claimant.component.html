@@ -4,9 +4,10 @@
             <img src="/./assets/img/OSD.png" alt="Logo OSD" class="w-10">
             <h1 class="text-4xl p-3">{{'reclamante' | translate}}</h1>
         </div>
-        <div class="py-2 border-t-2 text-darkslategray text-sm flex flex-col text-start md:flex-row">
+        <div class="py-2 border-t text-darkslategray text-sm flex flex-wrap justify-center md:justify-start">
             <a routerLink="/onboarding/onboarding-register-claimant" routerLinkActive="text-yellow-500"
-                class="pointer-events-none pr-3"><i class="fa-solid fa-circle text-xs"></i> {{'reclamante' | translate}}</a>
+                class="pointer-events-none pr-3"><i class="fa-solid fa-circle text-xs"></i> {{'reclamante' |
+                translate}}</a>
             <a routerLink="/onboardisng/onboarding-register-claimant" routerLinkActive="text-yellow-500"
                 class="pointer-events-none pr-3"><i class="fa-solid fa-circle text-xs"></i> {{'suscriptor_cliente' |
                 translate}}</a>
@@ -56,33 +57,36 @@
                 <shared-input-field class="w-full md:w-1/3" fieldName="web" label="{{'pagina_web' | translate}}"
                     inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-                <div class=" mt-2 flex px-3 items-center text-black w-full">
-                    <div class="flex-1 flex flex-col justify-center space-y-2">
-                        <div class="flex flex-row space-x-2">
-                            <input type="checkbox" id="register" formControlName="zipCode">
-                            <label for="register"> {{'registrarse_plataforma' | translate}}</label>
-                        </div>
-                        <div class=" flex flex-row space-x-2">
-                            <input type="checkbox" id="" formControlName="zipCode">
-                            <label for=""> {{'no_registrarse' | translate}}</label>
-                        </div>
-                    </div>
-                    <div class="flex-1 flex flex-wrap text-black">
-                        <shared-input-field class="w-full md:w-72" fieldName="zipCode"
-                            label="{{'nombre_usuario' | translate}}" inputType="text" [formGroup]="registerForm"
-                            [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                <div class=" flex flex-col text-black w-full bg-gray-100 rounded-md my-2 py-2">
 
-                        <shared-input-field class="w-full md:w-72" fieldName="zipCode"
-                            label="{{'contraseña' | translate}}" inputType="text" [formGroup]="registerForm"
+                    <div class="flex-1 flex flex-wrap items-center justify-center md:justify-center text-black">
+                        <h1 class=" m-3">{{'iniciar_sesion' | translate}}:</h1>
+                        <shared-input-field class="w-full md:w-1/3" fieldName="email"
+                            label="{{'correo_electronico' | translate}}" inputType="email" [formGroup]="registerForm"
                             [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                        <auth-input-password class="w-full md:w-1/3" [formGroup]="registerForm" fieldName="password"
+                            label="{{'contraseña' | translate}}"></auth-input-password>
                     </div>
+                    <div class="flex-1 flex flex-wrap justify-center items-center space-x-2">
+                        <div class="space-x-2">
+                            <input type="radio" id="register" formControlName="zipCode" name="registrationOption"
+                                value="register">
+                            <label for="register">{{'registrarse_plataforma' | translate}}</label>
+                        </div>
+                        <div class="space-x-2">
+                            <input type="radio" id="noRegister" formControlName="zipCode" name="registrationOption"
+                                value="noRegister">
+                            <label for="noRegister">{{'no_registrarse' | translate}}</label>
+                        </div>
+                    </div>
+
                 </div>
 
-                <div class="w-full text-end text-base border-t-2">
-                    <a class="border cursor-pointer hover:bg-gray-100 mt-2 p-2" type="button"
-                        (click)="toggleForm('claimInfo')">
+                <div class="w-full flex justify-end">
+                    <a class="flex items-center cursor-pointer mt-2 p-2 text-darkslategray font-medium hover:text-gray-500"
+                        type="button" (click)="toggleForm('claimInfo')">
                         {{'ir_informacion_reclmacion'
-                        | translate}}</a>
+                        | translate}} <i class="fa-solid fa-chevron-right animate-pulse pl-2"></i></a>
                 </div>
 
             </div>
@@ -137,9 +141,10 @@
                     </div>
                 </div>
 
-                <div *ngIf="!(isValidToken$ | async)" class="w-full py-3 flex justify-start border-t-2">
-                    <a class="cursor-pointer border p-2 hover:bg-gray-100 " type="button"
-                        (click)="toggleForm('personalInfo')"> {{'volver_info_personal'
+                <div *ngIf="!(isValidToken$ | async)" class="w-full flex justify-end">
+                    <a class="flex items-center cursor-pointer p-2 text-darkslategray font-medium hover:text-gray-500 " type="button"
+                        (click)="toggleForm('personalInfo')"><i class="fa-solid fa-chevron-left animate-pulse pr-2"></i>
+                        {{'volver_info_personal'
                         | translate}}</a>
                 </div>
             </div>
@@ -155,38 +160,49 @@
 
         </form>
     </div>
-    <div class="flex  flex-wrap justify-end items-center w-full space-x-2 ">
-        <div *ngIf="!(isValidToken$ | async)" class="">
-            <button routerLink="/onboarding/onboarding-register"
-                class="p-2  bg-darkslategray text-white  hover:bg-hover-darkblue">
-                {{'cancelar' | translate}}
+    <div class="flex flex-col justify-end items-center w-full space-x-2 ">
+
+        <div class="fixed top-5 right-5">
+            <button (click)="toggleMenu()" class="text-black font-medium flex flex-col items-center">
+                Opciones
+                <i [ngClass]="{'fa-chevron-up': mostrarMenu, 'fa-chevron-down': !mostrarMenu}"
+                    class="fa-solid text-sm animate-pulse"></i>
             </button>
         </div>
 
+        <div *ngIf="mostrarMenu" class=" fixed top-16 right-8 flex flex-row space-x-2">
 
-        <div *ngIf="(isValidToken$ | async) else isValidToken" class=""> <button (click)="onSubmit()"
-                class="p-2  bg-yellow-500 text-white hover:bg-hover-darkblue" i18n="@@signin">
+
+            <button *ngIf="(isValidToken$ | async) else isValidToken" (click)="onSubmit()"
+                class=" bg-yellow-500 text-white hover:bg-hover-darkblue">
                 {{'presentar_reclamación' | translate}}
             </button>
-        </div>
 
-        <ng-template #isValidToken>
-            <div *ngIf="!showPersonalInfo" class=""> <button (click)="onSubmit()"
-                    class="p-2  bg-yellow-500 text-white hover:bg-hover-darkblue" i18n="@@signin">
-                    {{'registrarse_reclamación' | translate}}
-                </button>
-            </div>
-        </ng-template>
-
-    </div>
-    <ng-template #isValidToken>
-        <div class="flex flex-wrap justify-end items-center space-x-2 p-1">
-            <button routerLink="/home" class="p-2  bg-darkslategray text-white rounded-lg  hover:bg-hover-darkblue"
-                i18n="@@signin">
-                {{'cancelar' | translate}}
+            <button *ngIf="!(isValidToken$ | async)" routerLink="/onboarding/onboarding-register"
+                class="text-darkslategray animate__animated animate__fadeInDown" title="{{'cancelar' | translate}}">
+                <i class="fa-solid fa-xmark text-2xl"></i>
             </button>
+
+            <ng-template #isValidToken>
+                <button *ngIf="!showPersonalInfo" (click)="onSubmit()"
+                    class="text-darkslategray animate__animated animate__fadeInDown"
+                    title="{{'registrarse_reclamación' | translate}}">
+                    <i class="fa-solid fa-user-plus text-lg "></i>
+                </button>
+            </ng-template>
+
+            <ng-template #isValidToken>
+                <div class="flex flex-wrap justify-end items-center space-x-2 p-1">
+                    <button routerLink="/home"
+                        class="p-2  bg-darkslategray text-white rounded-lg  hover:bg-hover-darkblue" i18n="@@signin">
+                        {{'cancelar' | translate}}
+                    </button>
+                </div>
+            </ng-template>
         </div>
-    </ng-template>
+    </div>
+
+
 </div>
 
 <!-- 

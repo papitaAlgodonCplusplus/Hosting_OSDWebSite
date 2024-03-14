@@ -37,21 +37,11 @@ export class SecurityEventService {
 
   private subscribeToSecurityEvents(): void {
     console.log("subscribeToSecurityEvents");
-    this.securityEventSubscriber = this.websocketService.osdEventHandler.subscribe((webBaseEvent: WebBaseEvent) =>
+    this.securityEventSubscriber = this.websocketService.securityEventHandler.subscribe((webBaseEvent: WebBaseEvent) =>
       this.processSecurityEvent(webBaseEvent));
   }
 
-  public userLogin(loginForm: UserLoginEvent) {
-    const userLoginEvent: WebBaseEvent = this.eventFactoryService.CreateUserLoginEvent(loginForm);
-    this.websocketService.sendOSDEvent(userLoginEvent);
-  }
-
-  public userRegister(accountForm: RegisterUserEvent, personalForm: RegisterUserEvent, accountType: string) {
-    const registerUserEvent: WebBaseEvent = this.eventFactoryService.CreateRegisterUserEvent(accountForm, personalForm, accountType);
-    console.log("Enviando mensaje al websocketService.sendOSDEvent");
-    this.websocketService.sendOSDEvent(registerUserEvent);
-  }
-
+  
   public verifyEmail(verifyEmailForm: VerifyEmailEvent) {
     const verifyEmailEvent: WebBaseEvent = this.eventFactoryService.CreateVerifyEmailEvent(verifyEmailForm);
     this.websocketService.sendSecurityEvent(verifyEmailEvent);
@@ -68,18 +58,7 @@ export class SecurityEventService {
         {
           this.HandleConnectionInitialized(securityEvent);
           break;
-        }
-      case EventAction.HANDLE_AUTHENTICATION_RESPONSE:
-        {
-          this.HandleAuthenticationResponse(securityEvent);
-          break;
-        }
-      case EventAction.HANDLE_REGISTER_USER_RESPONSE:
-        {
-
-          this.HandleRegisterUserResponse(securityEvent);
-          break;
-        }
+        }   
       case EventAction.HANDLE_VERIFY_EMAIL_RESPONSE:
         {
           this.HandleVerifyEmailResponse(securityEvent);
@@ -118,73 +97,8 @@ export class SecurityEventService {
     let sessionlessKey: string;
     try {
       sessionlessKey = webBaseEvent.SessionKey;
+      console.log(sessionlessKey)
       this.authenticationService.initialize(sessionlessKey);
-    }
-    catch (err) {
-      //TODO: create exception event and send to local file or core
-    }
-  }
-
-
-  public HandleAuthenticationResponse(webBaseEvent: WebBaseEvent) {
-    let userAuthenticationSuccess: boolean;
-    let userAuthenticationResultMessage: string;
-    let sessionKey: string;
-    
-    try {
-      userAuthenticationSuccess = JSON.parse(webBaseEvent.getBodyProperty(EventConstants.USER_AUTHENTICATION_SUCCESS));
-      userAuthenticationResultMessage = webBaseEvent.getBodyProperty(EventConstants.USER_AUTHENTICATION_RESULT_MESSAGE);
-
-      if (userAuthenticationSuccess) {
-        this.securityDataService.emitUserAuthenticationSuccess("/home");
-        this.store.dispatch(AuthenticationActions.signIn());
-      }
-      else {
-        if (userAuthenticationResultMessage == 'Credentials are invalid') {
-          this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Las credenciales son inválidas' }));
-        }
-        this.store.dispatch(ModalActions.toggleErrorModal());
-      }
-    }
-    catch (err) {
-      //TODO: create exception event and send to local file or core
-    }
-  }
-
-  public HandleRegisterUserResponse(webBaseEvent: WebBaseEvent) {
-    let registerSuccess: boolean;
-    let registerResultMessage: string;
-    let sessionKey: string;
-
-    try {
-      registerSuccess = JSON.parse(webBaseEvent.getBodyProperty(EventConstants.REGISTER_USER_SUCCESS));
-      registerResultMessage = webBaseEvent.getBodyProperty(EventConstants.REGISTER_USER_RESULT_MESSAGE);
-
-      this.securityDataService.emitActionRegisterSuccess(registerSuccess);
-
-      if (registerSuccess) {
-
-        this.securityDataService.emitUserAuthenticationSuccess("/home");
-
-        sessionKey = webBaseEvent.getBodyProperty(EventConstants.GENERATED_SESSION_KEY);
-        //this.authenticationService.startSession(sessionKey);
-        this.store.dispatch(AuthenticationActions.signIn());
-        if (registerResultMessage == 'Your account has been created.') {
-          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: 'Tu cuenta ha sido creada.' }));
-        } else {
-          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: registerResultMessage }));
-        }
-        this.store.dispatch(ModalActions.openAlert());
-
-      }
-      else {
-        if (registerResultMessage == 'An account already exists with that email.') {
-          this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Ya existe una cuenta con ese correo electrónico.' }));
-        } else {
-          this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: registerResultMessage }));
-        }
-        this.store.dispatch(ModalActions.toggleErrorModal());
-      }
     }
     catch (err) {
       //TODO: create exception event and send to local file or core

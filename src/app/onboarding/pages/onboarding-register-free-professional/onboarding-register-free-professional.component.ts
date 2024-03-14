@@ -3,9 +3,8 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
-import { EventAction } from 'src/app/models/eventAction';
 import { EventConstants } from 'src/app/models/eventConstants';
-import { SecurityEventService } from 'src/app/services/security-event.service';
+import { OSDService } from 'src/app/services/osd-event.services';
 import { ValidationsService } from 'src/app/services/validations.service';
 import { UiActions } from 'src/app/store/actions';
 
@@ -18,7 +17,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   accountForm: FormGroup;
   personalForm: FormGroup;
   selectedWorkspace: string | undefined;
-  isDropdownOpen = false;
+  isDropdownOpen = true;
   workspace: DropDownItem[] = [
     { value: this.translate.instant('DT'), key: '2fc2a66a-69ca-4832-a90e-1ff590b80d24' },
     { value: this.translate.instant('FC'), key: '2fc2a66a-69ca-4832-a90e-1ff590b80d24' },
@@ -42,7 +41,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   constructor(private store: Store,
     private formBuilder: FormBuilder,
     private validationsService: ValidationsService,
-    private securityEventService: SecurityEventService,
+    private osdEventService: OSDService,
     private translate: TranslateService
   ) {
     this.accountForm = this.createAccountForm();
@@ -115,6 +114,12 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     }
   }
 
+  mostrarMenu = true;
+
+  toggleMenu() {
+    this.mostrarMenu = !this.mostrarMenu;
+  }
+
   onSubmit(): void {
     if (this.accountForm.invalid || this.personalForm.invalid) {
       this.accountForm.markAllAsTouched();
@@ -129,6 +134,6 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
 
     const userEmail = this.personalForm.value.email;
     localStorage.setItem('userEmail', userEmail);
-    this.securityEventService.userRegister(this.accountForm.value,this.personalForm.value,EventConstants.FREE_PROFESSIONAL);
+    this.osdEventService.userRegister(this.accountForm.value,this.personalForm.value,EventConstants.FREE_PROFESSIONAL);
   }
 }

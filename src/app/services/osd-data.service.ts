@@ -4,7 +4,7 @@ import { Subject } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class SecurityDataService {
+export class OSDDataService {
   private actionRegisterSuccessSubject = new Subject<boolean>();
   private userAuthenticationSuccessSubject = new Subject<string>();
   private userRegisterSuccessSubject = new Subject<boolean>();
@@ -18,7 +18,7 @@ export class SecurityDataService {
   emitUserAuthenticationSuccess(data: string) {
     this.userAuthenticationSuccessSubject.next(data);
   }
-  
+
   emitActionRegisterSuccess(data: boolean) {
     this.userRegisterSuccessSubject.next(data);
   }
