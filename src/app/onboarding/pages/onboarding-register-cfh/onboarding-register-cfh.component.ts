@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
+import { EventConstants } from 'src/app/models/eventConstants';
+import { OSDService } from 'src/app/services/osd-event.services';
 import { SecurityEventService } from 'src/app/services/security-event.service';
 import { ValidationsService } from 'src/app/services/validations.service';
 import { UiActions } from 'src/app/store/actions';
@@ -14,7 +16,8 @@ import { UiActions } from 'src/app/store/actions';
 })
 export class OnboardingRegisterCfhComponent {
 
-  registerForm: FormGroup;
+  accountForm: FormGroup;
+  personalForm: FormGroup;
   selectedEntity: string | undefined;
   entity: DropDownItem[] = [
     { value: this.translate.instant("entidad_publica"), key: 'key1' },
@@ -24,14 +27,16 @@ export class OnboardingRegisterCfhComponent {
   plCode: DropDownItem[] = [
     { value: 'PL Code 1', key: 'KeyplCode1' }
   ];
+  isAcceptConditions!: boolean;
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
     private validationsService: ValidationsService,
-    private securityEventService: SecurityEventService,
+    private OSDEventService: OSDService,
     private translate : TranslateService
   ) {
-    this.registerForm = this.createRegisterForm();
+    this.personalForm = this.createPersonalForm();
+    this.accountForm = this.createAccountForm();
   }
 
   ngOnInit(): void {
@@ -46,14 +51,12 @@ export class OnboardingRegisterCfhComponent {
     }, 0);
   }
 
-  private createRegisterForm(): FormGroup {
+  private createPersonalForm(): FormGroup {
     const form = this.formBuilder.group({
-      entity: ['', [Validators.required]],
       identity: ['', [Validators.required]],
       name: ['', [Validators.required]],
       firstSurname: ['', [Validators.required]],
-      middleSurname: ['', [Validators.required]],
-      country: ['',Validators.required],
+      middleSurname: ['', [Validators.required]],    
       zipCode: ['',Validators.required],
       address: ['', [Validators.required]],
       landline: [''],
@@ -61,7 +64,16 @@ export class OnboardingRegisterCfhComponent {
       email: ['', [Validators.required, this.validationsService.isValidEmail]],
       password: ['',[Validators.required, this.validationsService.isValidPassword, Validators.minLength(6)], []],
       web: [''],
+      accountType:['8e539a42-4108-4be6-8f77-2d16671d1069'],
       acceptConditions: [false]
+    });
+
+    return form;
+  }
+
+  private createAccountForm(): FormGroup {
+    const form = this.formBuilder.group({
+       entity: ['', [Validators.required]],   
     });
 
     return form;
@@ -74,19 +86,21 @@ export class OnboardingRegisterCfhComponent {
   }
   
   onSubmit(): void {
-    console.log(this.registerForm.value)
-    
-    if (this.registerForm.invalid) {
-      this.registerForm.markAllAsTouched();
+    console.log(this.accountForm.value)
+    console.log(this.personalForm.value)
+    if (this.accountForm.invalid || this.personalForm.invalid) {
+      this.accountForm.markAllAsTouched();
+      this.personalForm.markAllAsTouched();
       return;
-      
+    }
+  
+    if (!this.personalForm.value.acceptConditions) {
+      this.isAcceptConditions = true;
+      return;
     }
 
-    if(this.registerForm.value.acceptConditions){
-      const userEmail = this.registerForm.value.email;
-      localStorage.setItem('userEmail', userEmail);
-      //  this.securityEventService.userRegister(this.registerForm.value);
-    }
-
+    const userEmail = this.personalForm.value.email;
+    localStorage.setItem('userEmail', userEmail);
+    this.OSDEventService.userRegister(this.accountForm.value,this.personalForm.value,EventConstants.APPROVED_TRAINING_CENTER);
   }
 }

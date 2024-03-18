@@ -69,6 +69,8 @@ export class EventConstants {
 
   public static FREE_PROFESSIONAL: string = "FreeProfessional";
   public static SUBSCRIBER_COSTUMER: string = "SubscriberCustomer";
+  public static CLAIMANT: string = "Claimant";
+  public static APPROVED_TRAINING_CENTER : string = "ApprovedTrainingCenter";
 
   //#endregion
   constructor()

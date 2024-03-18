@@ -33,6 +33,7 @@ export class LoginComponent implements OnDestroy {
     public eventFactoryService: EventFactoryService,
     public websocketService: WebsocketService,
     private osdEventService: OSDService,
+    private securityEventService: SecurityEventService,
     private router: Router
   )
   {
@@ -61,7 +62,7 @@ export class LoginComponent implements OnDestroy {
 
   private createLoginForm(): FormGroup {
     return this.formBuilder.group({
-      email: ['jaenca@gmail.com', [Validators.required, this.validationsService.isValidEmail], []],
+      email: ['jaen@gmail.com', [Validators.required, this.validationsService.isValidEmail], []],
       password: ['Liga142003', [Validators.required, this.validationsService.isValidPassword, Validators.minLength(6)], []],
     });
   }

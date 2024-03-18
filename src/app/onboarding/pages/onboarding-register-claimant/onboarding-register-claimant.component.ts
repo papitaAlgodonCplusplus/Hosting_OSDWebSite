@@ -7,6 +7,8 @@ import { Observable } from 'rxjs';
 import { Action } from 'rxjs/internal/scheduler/Action';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
 import { AuthService } from 'src/app/auth/services/auth.service';
+import { EventConstants } from 'src/app/models/eventConstants';
+import { OSDService } from 'src/app/services/osd-event.services';
 import { SecurityEventService } from 'src/app/services/security-event.service';
 import { ValidationsService } from 'src/app/services/validations.service';
 import { AuthenticationActions, UiActions } from 'src/app/store/actions';
@@ -19,7 +21,8 @@ import { AuthSelectors } from 'src/app/store/selectors';
 })
 export class OnboardingRegisterClaimantComponent {
   isValidToken$: Observable<boolean> = this.store.select(AuthSelectors.authenticationToken);
-  registerForm: FormGroup;
+  accountForm: FormGroup;
+  personalForm: FormGroup;
   showPersonalInfo!: boolean;
   selectedClaimant: string | undefined;
   claimant: DropDownItem[] = [
@@ -28,17 +31,18 @@ export class OnboardingRegisterClaimantComponent {
     { value: this.translate.instant('reclamacion_sostenibilidad'), key: 'key3' },
     { value: this.translate.instant('mediacion_arbitraje'), key: 'Key4' }
   ];
-
   documentNames: string[] = new Array(2);
+  isAcceptConditions!: boolean;
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
     private validationsService: ValidationsService,
-    private securityEventService: SecurityEventService,
     private translate: TranslateService,
-    private guard: AuthService
+    private osdEventService : OSDService
   ) {
-    this.registerForm = this.createRegisterForm();
+  
+    this.personalForm = this.createPersonalForm();
+    this.accountForm = this.createAccountForm();
   }
 
   ngOnInit(): void {
@@ -61,7 +65,7 @@ export class OnboardingRegisterClaimantComponent {
     }, 0);
   }
 
-  private createRegisterForm(): FormGroup {
+  private createPersonalForm(): FormGroup {
     const form = this.formBuilder.group({
       identity: ['', [Validators.required]],
       name: ['', [Validators.required]],
@@ -74,28 +78,25 @@ export class OnboardingRegisterClaimantComponent {
       mobilePhone: ['', [Validators.required]],
       email: ['', [Validators.required, this.validationsService.isValidEmail]],
       password:['',[Validators.required, this.validationsService.isValidPassword, Validators.minLength(6)], []],
-      web: [''],
-      claimant: ['', [Validators.required]],
-      subscriberClaimed: ['', [Validators.required]],
-      serviceProvided: ['', [Validators.required]],
-      amountClaimed: ['', [Validators.required]],
-      facts: ['', [Validators.required]],
-      supportingDocument1: ['', [Validators.required]],
-      supportingDocument2: ['', [Validators.required]],
+      web: [''], 
+      registrationOption : [, [Validators.required]],
+      accountType: ['7b04ef6e-b6b6-4b4c-98e5-3008512f610e'],
       acceptConditions: [false]
     });
     return form;
   }
 
-  onSubmit(): void {
-    if (this.registerForm.invalid) {
-      this.registerForm.markAllAsTouched();
-      return;
-    }
-
-    const userEmail = this.registerForm.value.email;
-    localStorage.setItem('userEmail', userEmail);
-    //  this.securityEventService.userRegister(this.registerForm.value);
+  private createAccountForm(): FormGroup {
+    const form = this.formBuilder.group({
+      claimtype: ['', [Validators.required]],
+      subscriberClaimed: ['', [Validators.required]],
+      serviceProvided: ['', [Validators.required]],
+      amountClaimed: ['', [Validators.required]],
+      facts: ['', [Validators.required]],
+      supportingDocument1: ['', [Validators.required]],
+      supportingDocument2: ['', [Validators.required]]
+    });
+    return form;
   }
 
   toggleForm(formType: string): void {
@@ -106,12 +107,6 @@ export class OnboardingRegisterClaimantComponent {
     }
   }
   
-  mostrarMenu = true;
-
-  toggleMenu() {
-    this.mostrarMenu = !this.mostrarMenu;
-  }
-
   displayFileName(): void {
     const fileNameDocument1 = document.getElementById('supportingDocument1') as HTMLInputElement;
     const fileNameDocument2 = document.getElementById('supportingDocument2') as HTMLInputElement;
@@ -122,4 +117,22 @@ export class OnboardingRegisterClaimantComponent {
     }
   }
 
+  onSubmit(): void {
+    console.log(this.accountForm.value)
+    console.log(this.personalForm.value)
+    if (this.accountForm.invalid || this.personalForm.invalid) {
+      this.accountForm.markAllAsTouched();
+      this.personalForm.markAllAsTouched();
+      return;
+    }
+  
+    if (!this.personalForm.value.acceptConditions) {
+      this.isAcceptConditions = true;
+      return;
+    }
+
+    const userEmail = this.personalForm.value.email;
+    localStorage.setItem('userEmail', userEmail);
+    this.osdEventService.userRegister(this.accountForm.value,this.personalForm.value,EventConstants.CLAIMANT);
+  }
 }
