@@ -25,14 +25,16 @@ module.exports = {
         '200': '200px',
       },
       backgroundColor:{
-        'darkslategray' : '#1b3e57'
+        'darkslategray' : '#1b3e57',
+        'line' : '#e5e7eb'
       },
       textColor:{
-        'darkslategray' : '#1b3e57'
+        'darkslategray' : '#1b3e57',
+        'line' : '#e5e7eb'
       },
       borderColor:{
-        'darkslategray' : '#1b3e57'
-      }
+        'line' : '#e5e7eb'
+      },
     },
   },
   plugins: [],

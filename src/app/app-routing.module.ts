@@ -6,7 +6,7 @@ import { authGuard } from './guards/auth.guard';
 const routes: Routes = [
   {
     path: 'home',
-    //canMatch: [authGuard], //TODO: Uncomment until Login is implemented 
+    canMatch: [authGuard],
     loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule)
   },
   {

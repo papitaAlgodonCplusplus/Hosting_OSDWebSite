@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { WebsocketService } from './websocket.service';
-//import { OSDDataService } from './security-data.service';
 import { EventFactoryService } from './event-factory.service';
 import { Subscription } from 'rxjs';
 import { UserLoginEvent } from '../auth/interfaces/login.interface';
@@ -12,7 +11,9 @@ import { ModalActions, AuthenticationActions } from '../store/actions';
 import { Store } from '@ngrx/store';
 import { NotificationService } from './notification.service';
 import { RegisterUserEvent } from '../auth/interfaces/register.interface';
+import { SecurityDataService } from './security-data.service';
 import { OSDDataService } from './osd-data.service';
+
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +25,7 @@ export class OSDService {
         private store: Store,
         private websocketService: WebsocketService,
         private osdDataService: OSDDataService,
+        private securityDataService : SecurityDataService,
         private eventFactoryService: EventFactoryService,
         public authenticationService: AuthenticationService,
         public notificationService: NotificationService
@@ -51,8 +53,8 @@ export class OSDService {
     }
 
     private processOSDEvent(osdEvent: WebBaseEvent) {
+      console.log("Llegue al switch");
         switch (osdEvent.Action) {
-
             case EventAction.HANDLE_REGISTER_USER_RESPONSE:
                 {
 
@@ -76,13 +78,17 @@ export class OSDService {
       let userAuthenticationSuccess: boolean;
       let userAuthenticationResultMessage: string;
       let sessionKey: string;
-      
+
+      console.log(webBaseEvent)
       try {
         userAuthenticationSuccess = JSON.parse(webBaseEvent.getBodyProperty(EventConstants.USER_AUTHENTICATION_SUCCESS));
         userAuthenticationResultMessage = webBaseEvent.getBodyProperty(EventConstants.USER_AUTHENTICATION_RESULT_MESSAGE);
   
         if (userAuthenticationSuccess) {
-          this.osdDataService.emitUserAuthenticationSuccess("/home");
+          console.log("Estoy registrado")
+          sessionKey = webBaseEvent.getBodyProperty(EventConstants.GENERATED_SESSION_KEY);
+          this.authenticationService.startSession(sessionKey);
+          this.securityDataService.emitUserAuthenticationSuccess("/home");
           this.store.dispatch(AuthenticationActions.signIn());
         }
         else {
@@ -106,11 +112,12 @@ export class OSDService {
           registerSuccess = JSON.parse(webBaseEvent.getBodyProperty(EventConstants.REGISTER_USER_SUCCESS));
           registerResultMessage = webBaseEvent.getBodyProperty(EventConstants.REGISTER_USER_RESULT_MESSAGE);
     
-          this.osdDataService.emitActionRegisterSuccess(registerSuccess);
-    
+          this.securityDataService.emitActionRegisterSuccess(registerSuccess);
+
+          console.log(registerSuccess);
           if (registerSuccess) {
-    
-            this.osdDataService.emitUserAuthenticationSuccess("/home");
+
+            this.securityDataService.emitUserAuthenticationSuccess("/home");
     
             sessionKey = webBaseEvent.getBodyProperty(EventConstants.GENERATED_SESSION_KEY);
             this.authenticationService.startSession(sessionKey);
@@ -130,6 +137,7 @@ export class OSDService {
             } else {
               this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: registerResultMessage }));
             }
+            this.securityDataService.emitUserAuthenticationSuccess("/onboarding");
             this.store.dispatch(ModalActions.toggleErrorModal());
           }
         }

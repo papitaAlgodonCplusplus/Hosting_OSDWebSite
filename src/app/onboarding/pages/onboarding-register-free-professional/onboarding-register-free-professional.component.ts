@@ -5,6 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
 import { EventConstants } from 'src/app/models/eventConstants';
 import { OSDService } from 'src/app/services/osd-event.services';
+import { SecurityEventService } from 'src/app/services/security-event.service';
 import { ValidationsService } from 'src/app/services/validations.service';
 import { UiActions } from 'src/app/store/actions';
 
@@ -42,7 +43,9 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     private formBuilder: FormBuilder,
     private validationsService: ValidationsService,
     private osdEventService: OSDService,
-    private translate: TranslateService
+    private translate: TranslateService,
+   // private securityEventService: SecurityEventService,
+
   ) {
     this.accountForm = this.createAccountForm();
     this.personalForm = this.createPersonalForm();
@@ -71,7 +74,8 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
         collegiateCardArchive: [null, [Validators.required]],
         lastReceiptCLI: [null, [Validators.required]],
         servicerates: ['', [Validators.required]],
-        payTPV: ['', Validators.required],
+        payTPV: ['', Validators.required]
+       
     });
     return accountForm;
   }
@@ -90,6 +94,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
       email: ['', [Validators.required, this.validationsService.isValidEmail]],
       web: [''],
       password:['', [Validators.required, this.validationsService.isValidPassword, Validators.minLength(6)], []],
+      accountType: ['0c61160c-d087-42b6-9fa0-1fc8673a00b2'],
       acceptConditions: [false]
     });
     return personalForm;
@@ -112,12 +117,6 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
       this.documentNames[0] = fileNameDisplay.value
       this.documentNames[1] = fileNameDispla2y.value
     }
-  }
-
-  mostrarMenu = true;
-
-  toggleMenu() {
-    this.mostrarMenu = !this.mostrarMenu;
   }
 
   onSubmit(): void {

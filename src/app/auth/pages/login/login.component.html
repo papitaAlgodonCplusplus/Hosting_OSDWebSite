@@ -1,5 +1,6 @@
 <div class="flex flex-col h-full md:flex-row-reverse">
   <div class="flex-1 flex justify-center items-center">
+    
     <div
       class="relative w-full xl:w-full md:w-11/12 h-full rounded-l-3xl rounded-r-8xl bg-white-lightbone md:bg-darkblue-cyan max-w-screen-lg max-h-[800px]">
       <shared-error-modal *ngIf="errorModalOpen$ | async"></shared-error-modal>
@@ -21,7 +22,7 @@
                 routerLink="/auth/forgot-password">{{'olvidaste_tu_contraseña' | translate}}</a>
             </div>
             <button type="submit"
-              class="w-full bg-darkslategray text-white text-lg py-3 font-bold hover:bg-hover-darkblue">
+              class="w-96 bg-darkslategray text-white text-lg p-2 font-bold hover:bg-hover-darkblue">
               {{'iniciar_sesion' | translate}}
             </button>
             <a class="w-full text-center text-sm underline cursor-pointer" routerLink="/onboarding">

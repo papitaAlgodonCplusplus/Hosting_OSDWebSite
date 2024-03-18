@@ -58,7 +58,7 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
       email: ['', [Validators.required, this.validationsService.isValidEmail]],
       password:['', [Validators.required, this.validationsService.isValidPassword, Validators.minLength(6)], []],
       web: [''],
-      plCode: [''],
+      accountType:['063e12fa-33db-47f3-ac96-a5bdb08ede61'],
       acceptConditions: [false]
     });
     return personalForm;
