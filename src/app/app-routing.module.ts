@@ -6,7 +6,7 @@ import { authGuard } from './guards/auth.guard';
 const routes: Routes = [
   {
     path: 'home',
-    canMatch: [authGuard],
+    //canMatch: [authGuard],
     loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule)
   },
   {
@@ -20,6 +20,10 @@ const routes: Routes = [
   {
     path: 'reports',
     loadChildren: () => import('./reports/reports.module').then(m => m.ReportsModule)
+  },
+  {
+    path: 'functions',
+    loadChildren: () => import('./functions/functions.module').then(m => m.FunctionsModule)
   },
   {
     path: '404',
