@@ -1,0 +1,95 @@
+<div class="flex items-center mb-4 p-2 mr-3">
+    <p class="mr-2 text-gray-700">Búsqueda por Reclamo:</p>
+    <input type="text" [(ngModel)]="searchTerm" (input)="setPage(1)" placeholder="Buscar por tipo..." class="py-2 px-3 border rounded w-full">
+</div>
+
+<div class="m-8">
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <table class="w-full text-sm text-left rtl:text-right text-slate-950 text-center">
+            <thead class="text-xs text-slate-950 uppercase bg-slate-200">
+                <tr>
+                    <th scope="col" class="px-6 py-3">
+                        Reclamaciones
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Acciones
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="bg-slate-50 border-b dark:border-gray-700" *ngFor="let reclamacion of reclamacionesPaginaActual"> 
+                    <th scope="row" class="px-6 py-4 font-medium text-slate-950 whitespace-nowrap">
+                        {{reclamacion.id}}. {{reclamacion.tipo}}
+                    </th>
+                    <td class="px-6 py-4">
+                        <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                        (click)="toggleModal(reclamacion)">
+                        Asociar
+                    </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="flex justify-between mt-4 text-center">
+            <button [disabled]="currentPage === 1" (click)="setPage(currentPage - 1)" class="bg-gray-200 hover:bg-gray-300 text-gray-600 font-bold py-2 px-4 rounded">
+                Anterior
+            </button>
+            <button [disabled]="currentPage === totalPages" (click)="setPage(currentPage + 1)" class="bg-gray-200 hover:bg-gray-300 text-gray-600 font-bold py-2 px-4 rounded">
+                Siguiente
+            </button>
+        </div>
+    </div>
+    <div class="modal" [class.visible]="modalVisible">
+        <div class="modal-content">
+            <!-- Contenido del modal -->
+            <div class="modal-header">
+                <h2>Detalles del Reclamo</h2>
+                <span class="close" (click)="toggleModal()">×</span>
+            </div>
+            <div class="modal-body">
+                <!-- Aquí se mostrará la información completa del reclamo -->
+                <p>ID: {{ reclamoSeleccionado?.id }}</p>
+                <p>Nombre: {{ reclamoSeleccionado?.nombre }}</p>
+                <p>Tipo: {{ reclamoSeleccionado?.tipo }}</p>
+                <!-- Agrega más campos según la información que desees mostrar -->
+            </div>
+            <table class="w-full text-sm text-left rtl:text-right text-slate-950 text-center">
+                <thead class="text-xs text-slate-950 uppercase bg-slate-200">
+                    <tr class="bg-slate-50 border-b dark:border-gray-700"> 
+                        <th scope="col" class="px-6 py-3">
+                            Profesionales Libres
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Seleccionar
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="bg-slate-50 border-b dark:border-gray-700" *ngFor="let professional of profesionalesLibres"> 
+                        <td class="px-6 py-4 font-medium text-slate-950 whitespace-nowrap">
+                            {{ professional.nombre }}
+                        </td>
+                        <td class="px-6 py-4">
+                            <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                            (click)="selectProfessional(professional)">
+                                Seleccionar
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="flex justify-between mt-4 text-center">
+                <button [disabled]="currentPageProfessionals === 1" (click)="setPageProfessionals(currentPageProfessionals - 1)"
+                    class="bg-gray-200 hover:bg-gray-300 text-gray-600 font-bold py-2 px-4 rounded">
+                    Anterior
+                </button>
+                <button [disabled]="currentPageProfessionals * pageSizeProfessionals >= profesionalesLibres.length"
+                    (click)="setPageProfessionals(currentPageProfessionals + 1)"
+                    class="bg-gray-200 hover:bg-gray-300 text-gray-600 font-bold py-2 px-4 rounded">
+                    Siguiente
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+

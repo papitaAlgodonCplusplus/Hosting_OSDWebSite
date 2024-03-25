@@ -5,16 +5,20 @@ import { FunctionsRoutingModule } from './functions-routing.module';
 import { SharedModule } from 'src/app/shared/shared.module';
 
 import { AutorizationPlComponent } from './autorization-pl/autorization-pl.component';
+import { AssignPLTRClaimsComponent } from './assign-pltr-claims/assign-pltr-claims.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
     AutorizationPlComponent,
+    AssignPLTRClaimsComponent,
     
     ],
   imports: [
     CommonModule,
     FunctionsRoutingModule,
-    SharedModule
+    SharedModule,
+    FormsModule 
   ]
 })
 export class FunctionsModule { }
