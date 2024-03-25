@@ -17,6 +17,7 @@ import { SearchDropdownComponent } from './components/search-dropdown/search-dro
 import { SwitchLanguagesComponent } from './components/switch-languages/switch-languages.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { LeftSidebarComponent } from './components/left-sidebar/left-sidebar.component';
+import { MatPaginatorIntl } from '@angular/material/paginator';
  
 @NgModule({
   declarations: [

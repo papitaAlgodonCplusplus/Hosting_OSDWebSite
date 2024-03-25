@@ -62,7 +62,7 @@ export class LoginComponent implements OnDestroy {
 
   private createLoginForm(): FormGroup {
     return this.formBuilder.group({
-      email: ['jaen@gmail.com', [Validators.required, this.validationsService.isValidEmail], []],
+      email: ['jaencarlo14@gmail.com', [Validators.required, this.validationsService.isValidEmail], []],
       password: ['Liga142003', [Validators.required, this.validationsService.isValidPassword, Validators.minLength(6)], []],
     });
   }

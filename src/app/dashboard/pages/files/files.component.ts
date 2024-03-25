@@ -40,7 +40,7 @@ export class FilesComponent implements OnDestroy {
     { value: this.translate.instant('running'), key: 'Key2' },
     { value: this.translate.instant('finalized'), key: 'Key2' }
   ];
-  isDropdownOpen = false;
+  isDropdownOpen = true;
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
@@ -64,13 +64,15 @@ export class FilesComponent implements OnDestroy {
   private createRegisterForm(): FormGroup {
     const form = this.formBuilder.group({
           claimant: ['', [Validators.required]],
+          state:['',[Validators.required]],
           subscriber:['',[Validators.required]],
           amountClaimed:['',[Validators.required]],
           AAsavingsPP:['',[Validators.required]],
           creditingDate:['',[Validators.required]],
           OSDvaluation:['',[Validators.required]],
           valuationClaimant:['',[Validators.required]],
-          valuationFreeOSDprofessionals:['',[Validators.required]]
+          valuationFreeOSDprofessionals:['',[Validators.required]],
+          freeProfessional:['']
     });
     return form;
   }

@@ -11,6 +11,7 @@ import { UserLoginEvent } from '../auth/interfaces/login.interface';
 import { RegisterUserEvent } from '../auth/interfaces/register.interface';
 import { VerifyEmailEvent } from '../auth/interfaces/verify-email.interface';
 import { EmailVerificationCodeResendEvent } from '../auth/interfaces/resend-email-verification-code.interface';
+import { Form } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root',
@@ -53,6 +54,49 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.EMAIL, loginForm.email);
     event.setBodyProperty(EventConstants.PASSWORD, loginForm.password);
 
+    return event;
+  }
+
+  public CreatePerformanceEvent(performanceForm: Form, claimId: string): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.CREATE_PERFORMANCE;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient'; //TODO: change to use an application identifier
+    event.setBodyProperty(EventConstants.PERFORMANCE_FORM, performanceForm);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_ID, this.authenticationService.userInfo?.id);
+    event.setBodyProperty(EventConstants.CLAIM_ID, claimId);
+    return event;
+  }
+  public CreateGetClaims(): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.GET_CLAIMS;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient'; //TODO: change to use an application identifier
+ 
+    return event;
+  }
+
+  public CreateGetSubscribers(): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.GET_SUBSCRIBERS;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient'; //TODO: change to use an application identifier
+ 
     return event;
   }
 

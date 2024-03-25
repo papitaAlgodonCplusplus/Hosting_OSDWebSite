@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
+import { Claim } from 'src/app/models/claim';
 import { EventConstants } from 'src/app/models/eventConstants';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { SecurityEventService } from 'src/app/services/security-event.service';
@@ -36,6 +37,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     { value: this.translate.instant('tramitador_reclamaciones_ORD'), key: 'Key1' },
     { value: this.translate.instant('formador_consultor'), key: 'Key2' }
   ];
+  subcribersList : DropDownItem[] = [];
   documentNames: string[] = new Array(2);
   isAcceptConditions!: boolean;
 
@@ -44,8 +46,6 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     private validationsService: ValidationsService,
     private osdEventService: OSDService,
     private translate: TranslateService,
-   // private securityEventService: SecurityEventService,
-
   ) {
     this.accountForm = this.createAccountForm();
     this.personalForm = this.createPersonalForm();
@@ -58,6 +58,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   ngOnInit(): void {
     setTimeout(() => {
       this.store.dispatch(UiActions.hideAll());
+      this.osdEventService.GetSubscribers();
     }, 0);
   }
 
@@ -74,8 +75,8 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
         collegiateCardArchive: [null, [Validators.required]],
         lastReceiptCLI: [null, [Validators.required]],
         servicerates: ['', [Validators.required]],
-        payTPV: ['', Validators.required]
-       
+        payTPV: ['', Validators.required],
+        subscriber:['' , Validators.required]
     });
     return accountForm;
   }
