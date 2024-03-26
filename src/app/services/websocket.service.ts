@@ -9,7 +9,7 @@ import { environment } from '../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
-export class WebsocketService {
+export class WebsocketServicePast {
 
   private webSocketConnection: HubConnection;
   public securityEventHandler : Subject<WebBaseEvent>;
@@ -19,7 +19,7 @@ export class WebsocketService {
   constructor(private eventFactoryService : EventFactoryService)
   {
     this.webSocketConnection = new HubConnectionBuilder()
-                                  .withUrl(environment.websocketUrl)
+                                  //.withUrl(environment.websocketUrl)
                                   .build();
     this.logicEventHandler = new Subject<WebBaseEvent>();
     this.securityEventHandler = new Subject<WebBaseEvent>();

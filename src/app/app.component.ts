@@ -3,9 +3,9 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { ModalSelectors, UiSelectors } from './store/selectors';
-import { WebsocketService } from './services/websocket.service';
 import { SecurityDataService } from './services/security-data.service';
 import { TranslateService } from '@ngx-translate/core';
+import { RestAPIService } from './services/rest-api.service';
 
 @Component({
   selector: 'app-root',
@@ -26,7 +26,7 @@ export class AppComponent implements OnDestroy {
 
   constructor(private store: Store,
     private router: Router,
-    public websocketService: WebsocketService,
+    private restApiService: RestAPIService,
     private securityDataService: SecurityDataService,
     private translate: TranslateService) {
     this.showHeader = false;
@@ -42,8 +42,14 @@ export class AppComponent implements OnDestroy {
 
   ngOnInit() {
     if (!this.initialized) {
-      this.websocketService.startConnection(); //OJO: puede que se llame varias veces
-      this.initialized = true;
+      this.restApiService.connectAPI().subscribe({
+        next: (response) => {
+          this.initialized = true;
+        },
+        error: (error) => {
+          this.initialized = false;
+        }
+      });      
     }
     this.securityDataService.userAuthenticationSuccess$.subscribe((userAuthenticationSuccess: string) => {
       if (userAuthenticationSuccess !== "") {
@@ -53,7 +59,14 @@ export class AppComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.websocketService.disconnect();
+    this.restApiService.connectAPI().subscribe({
+        next: (response) => {
+          this.initialized = false;
+        },
+        error: (error) => {
+          this.initialized = false; 
+        }
+      });   
   }
 
 }

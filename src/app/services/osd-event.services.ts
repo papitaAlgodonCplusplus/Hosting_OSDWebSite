@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { WebsocketService } from './websocket.service';
-//import { OSDDataService } from './security-data.service';
+import { RestAPIService } from 'src/app/services/rest-api.service';
 import { EventFactoryService } from './event-factory.service';
 import { Subscription } from 'rxjs';
 import { UserLoginEvent } from '../auth/interfaces/login.interface';
@@ -18,36 +17,52 @@ import { OSDDataService } from './osd-data.service';
   providedIn: 'root'
 })
 export class OSDService {
-    osdEventSubscriber: Subscription;
+    //osdEventSubscriber: Subscription;
 
     constructor(
         private store: Store,
-        private websocketService: WebsocketService,
+        private restApiService: RestAPIService, 
         private osdDataService: OSDDataService,
         private eventFactoryService: EventFactoryService,
         public authenticationService: AuthenticationService,
         public notificationService: NotificationService
     ) {
 
-        this.osdEventSubscriber = new Subscription();
-        this.subscribeToOSDEvents();
+        //this.osdEventSubscriber = new Subscription();
+        //this.subscribeToOSDEvents();
     }
 
-    private subscribeToOSDEvents(): void {
+/*    private subscribeToOSDEvents(): void {
         console.log("subscribeToOSDEvents");
         this.osdEventSubscriber = this.websocketService.osdEventHandler.subscribe((webBaseEvent: WebBaseEvent) =>
             this.processOSDEvent(webBaseEvent));
-    }
+    }*/
 
     public userLogin(loginForm: UserLoginEvent) {
       const userLoginEvent: WebBaseEvent = this.eventFactoryService.CreateUserLoginEvent(loginForm);
-      this.websocketService.sendOSDEvent(userLoginEvent);
+      this.restApiService.SendOSDEvent(userLoginEvent).subscribe({
+        next: (response) => {
+          var osdEvent = this.eventFactoryService.ConvertJsonToWebBaseEvent(response);
+          this.HandleAuthenticationResponse(osdEvent);
+        },
+        error: (error) => {
+          //TODO: Pending implementation
+        }
+      });   
     }
   
     public userRegister(accountForm: RegisterUserEvent, personalForm: RegisterUserEvent, accountType: string) {
         const registerUserEvent: WebBaseEvent = this.eventFactoryService.CreateRegisterUserEvent(accountForm, personalForm, accountType);
-        console.log("Enviando mensaje al websocketService.sendOSDEvent");
-        this.websocketService.sendOSDEvent(registerUserEvent);
+        console.log("Enviando mensaje al restAPIService.sendOSDEvent");
+        this.restApiService.SendOSDEvent(registerUserEvent).subscribe({
+          next: (response) => {
+            var osdEvent = this.eventFactoryService.ConvertJsonToWebBaseEvent(response);
+            this.HandleRegisterUserResponse(osdEvent);
+          },
+          error: (error) => {
+            //TODO: Pending implementation
+          }
+        });
     }
 
     private processOSDEvent(osdEvent: WebBaseEvent) {

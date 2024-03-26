@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  websocketUrl: 'http://localhost:5001/clientEventsHub'
+  restAPIUrl: 'http://localhost:4200/api'
+  //websocketUrl: 'ws://18.188.135.15:5001/clientEventsHub'
 };
 
 /*

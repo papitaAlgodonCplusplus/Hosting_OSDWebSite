@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { WebsocketService } from './websocket.service';
+import { RestAPIService } from 'src/app/services/rest-api.service';
 import { SecurityDataService } from './security-data.service';
 import { EventFactoryService } from './event-factory.service';
 import { Subscription } from 'rxjs';
@@ -20,36 +20,52 @@ import { EmailVerificationCodeResendEvent } from '../auth/interfaces/resend-emai
 })
 export class SecurityEventService {
 
-  securityEventSubscriber: Subscription;
+  //securityEventSubscriber: Subscription;
 
   constructor(
     private store: Store,
-    private websocketService: WebsocketService,
+    private restApiService: RestAPIService, 
     private securityDataService: SecurityDataService,
     private eventFactoryService: EventFactoryService,
     public authenticationService: AuthenticationService,
     public notificationService: NotificationService
   ) {
 
-    this.securityEventSubscriber = new Subscription();
-    this.subscribeToSecurityEvents();
+    //this.securityEventSubscriber = new Subscription();
+    //this.subscribeToSecurityEvents();
   }
 
-  private subscribeToSecurityEvents(): void {
+/*  private subscribeToSecurityEvents(): void {
     console.log("subscribeToSecurityEvents");
     this.securityEventSubscriber = this.websocketService.securityEventHandler.subscribe((webBaseEvent: WebBaseEvent) =>
       this.processSecurityEvent(webBaseEvent));
-  }
+  }*/
 
   
   public verifyEmail(verifyEmailForm: VerifyEmailEvent) {
     const verifyEmailEvent: WebBaseEvent = this.eventFactoryService.CreateVerifyEmailEvent(verifyEmailForm);
-    this.websocketService.sendSecurityEvent(verifyEmailEvent);
+    this.restApiService.SendSecurityEvent(verifyEmailEvent).subscribe({
+      next: (response) => {
+        var securityEvent = this.eventFactoryService.ConvertJsonToWebBaseEvent(response);
+        this.HandleVerifyEmailResponse(securityEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });    
   }
 
   public resendEmailVerificationCode(emailVerificationCodeResendForm: EmailVerificationCodeResendEvent) {
     const emailVerificationCodeResendEvent: WebBaseEvent = this.eventFactoryService.CreateEmailVerificationCodeResendEvent(emailVerificationCodeResendForm);
-    this.websocketService.sendSecurityEvent(emailVerificationCodeResendEvent);
+    this.restApiService.SendSecurityEvent(emailVerificationCodeResendEvent).subscribe({
+      next: (response) => {
+        var securityEvent = this.eventFactoryService.ConvertJsonToWebBaseEvent(response);
+        this.HandleResendEmailVerificationCodeResponse(securityEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
   }
 
   private processSecurityEvent(securityEvent: WebBaseEvent) {
