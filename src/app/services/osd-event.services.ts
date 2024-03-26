@@ -13,6 +13,7 @@ import { NotificationService } from './notification.service';
 import { RegisterUserEvent } from '../auth/interfaces/register.interface';
 import { SecurityDataService } from './security-data.service';
 import { OSDDataService } from './osd-data.service';
+import { EventManager } from '@angular/platform-browser';
 
 
 @Injectable({
@@ -43,7 +44,16 @@ export class OSDService {
 
     public userLogin(loginForm: UserLoginEvent) {
       const userLoginEvent: WebBaseEvent = this.eventFactoryService.CreateUserLoginEvent(loginForm);
+      console.log("Lo que se envia del logeo:")
+      console.log(userLoginEvent)
       this.websocketService.sendOSDEvent(userLoginEvent);
+    }
+
+    public getClaims() {
+      const gettingClaimsEvent: WebBaseEvent = this.eventFactoryService.CreateGettingClaimsDataEvent();
+      console.log("Lo que se envia del reclamo:")
+      console.log(gettingClaimsEvent)
+      this.websocketService.sendOSDEvent(gettingClaimsEvent);
     }
   
     public userRegister(accountForm: RegisterUserEvent, personalForm: RegisterUserEvent, accountType: string) {
@@ -54,6 +64,7 @@ export class OSDService {
 
     private processOSDEvent(osdEvent: WebBaseEvent) {
       console.log("Llegue al switch");
+      console.log(osdEvent)
         switch (osdEvent.Action) {
             case EventAction.HANDLE_REGISTER_USER_RESPONSE:
                 {
@@ -66,6 +77,12 @@ export class OSDService {
                     this.HandleAuthenticationResponse(osdEvent);
                     break;
                   } 
+                case EventAction.HANDLE_OSD_GETTING_CLAIMS_RESPONSE:
+                  {
+                    console.log('Se recuperan los reclamos:')
+                    console.log(osdEvent)
+                    break;
+                  }
             default:
                 {
                     //TODO: Send event warning to web socket or local log file

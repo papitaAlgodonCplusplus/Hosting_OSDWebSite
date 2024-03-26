@@ -42,7 +42,8 @@
         <span class="ml-3">{{'Autorizar profesional libre' | translate}}</span>
       </li>
       
-      <li class="cursor-pointer" routerLink="/functions/assign-pltr-claims">
+      <li class="cursor-pointer" routerLink="/functions/assign-pltr-claims" 
+          (click)="onSubmitAssignClaimsToFreeProfessionalsTR()">
         <i class="fa-solid fa-user"></i>
         <span class="ml-3">{{'Asignar Tramitador a Reclamo' | translate}}</span>
       </li>
