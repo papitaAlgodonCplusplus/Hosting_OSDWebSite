@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
-  selector: 'app-confirmation-modal',
+  selector: 'shared-confirmation-modal',
   templateUrl: './confirmation-modal.component.html',
 })
 export class ConfirmationModalComponent {

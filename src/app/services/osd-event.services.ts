@@ -52,6 +52,11 @@ export class OSDService {
         this.websocketService.sendOSDEvent(registerUserEvent);
     }
 
+    public GetSubscribers() {
+      const createPerformanceEvent: WebBaseEvent = this.eventFactoryService.CreateGetSubscribers();
+      this.websocketService.sendOSDEvent(createPerformanceEvent);
+    }
+
     private processOSDEvent(osdEvent: WebBaseEvent) {
       console.log("Llegue al switch");
         switch (osdEvent.Action) {

@@ -68,6 +68,20 @@ export class EventFactoryService {
     return event;
   }
 
+  public CreateGetSubscribers(): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.GET_SUBSCRIBERS;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient'; //TODO: change to use an application identifier
+ 
+    return event;
+  }
+
   public CreateRegisterUserEvent(accountForm: RegisterUserEvent, personalForm: RegisterUserEvent, accounType : String): WebBaseEvent {
     let event: WebBaseEvent;
 

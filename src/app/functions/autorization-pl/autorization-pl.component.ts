@@ -1,6 +1,9 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { UiActions } from 'src/app/store/actions';
+import { ModalActions } from 'src/app/store/actions';
+import { MatPaginator } from '@angular/material/paginator';
+import { OSDService } from 'src/app/services/osd-event.services';
 
 @Component({
   selector: 'app-autorization-pl',
@@ -8,32 +11,54 @@ import { UiActions } from 'src/app/store/actions';
   styleUrls: ['./autorization-pl.component.css']
 })
 export class AutorizationPlComponent implements OnDestroy {
-  abogados = [
-    { id: 1, nombre: 'Juan Pérez' },
-    { id: 2, nombre: 'María González' },
-    { id: 3, nombre: 'Luisa Martínez' },
-    { id: 4, nombre: 'Pedro Sánchez' }
-  ];
+  items: any[] = [];
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  displayedItems: any;
+  showModalConfirm! :boolean;
+  messageModal! : string;
+  constructor(private store: Store,
+              private osdEventService : OSDService) {
+    for (let i = 1; i <= 50; i++) {
+      this.items.push({ field1: 'Campo 1 - ' + i, field2: 'Campo 2 - ' + i });
+    }
+    if (this.items.length <= 0) {
+      this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "No hay subscriptores para mostrar" }))
+      this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }))
+      this.store.dispatch(ModalActions.openAlert())
+    }
+    this.displayedItems = this.items.slice(0, 10);
+  }
+ 
 
-  constructor(private store: Store
-  ) {
+  showModal(){
+    this.showModalConfirm = true;
+    this.messageModal = "Confirmar Autorizacion!"
   }
 
-  modalVisible = false; 
+  onConfirmHandler() {
+    this.showModalConfirm = false;
+  }
+  onCancelHandler(){
+    this.showModalConfirm = false;
+  }
 
-  ngOnInit(): void {
-    setTimeout(() => {
-      this.store.dispatch(UiActions.hideAll());
-    }, 0);
+  onPageChange(event: any) {
+    const startIndex = event.pageIndex * event.pageSize;
+    const endIndex = startIndex + event.pageSize;
+    this.displayedItems = this.items.slice(startIndex, endIndex);
   }
 
   ngOnDestroy(): void {
     setTimeout(() => {
-      this.store.dispatch(UiActions.showAll());
+      this.store.dispatch(UiActions.showAll())
     }, 0);
   }
 
-  toggleModal() {
-    this.modalVisible = !this.modalVisible;
+  ngOnInit(): void {
+    setTimeout(() => {
+      this.osdEventService.GetSubscribers();
+      this.store.dispatch(UiActions.hideLeftSidebar())
+      this.store.dispatch(UiActions.hideFooter())
+    }, 0);
   }
 }

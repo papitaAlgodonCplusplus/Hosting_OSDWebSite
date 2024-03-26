@@ -18,6 +18,7 @@ export class EventAction {
   public static UPDATE_ACCOUNT_PASSWORD: string = "UpdateAccountPassword";
   public static HANDLE_PASSWORD_RESET_EMAIL_RESPONSE: string = "HandlePasswordResetEmailResponse";
   public static HANDLE_UPDATE_ACCOUNT_PASSWORD_RESPONSE: string = "HandleUpdateAccountPasswordResponse";
+  public static GET_SUBSCRIBERS: string = "GetSubscribers";
 
   public static FREE_PROFESSIONAL: string = "FreeProfessional";
   //#endregion 
