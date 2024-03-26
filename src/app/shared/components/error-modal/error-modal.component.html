@@ -3,15 +3,15 @@
   <div class="relative w-full max-w-md max-h-full">
     <div class="relative bg-white rounded-xl shadow">
       <div class="p-6 text-center h-80 flex flex-col items-center justify-center">
-        <div class="mx-auto bg-red rounded-full flex items-center justify-center w-20 h-20 mb-5">
-          <i class="fa-solid fa-xmark text-white text-5xl"></i>
+        <div class="mx-auto bg-red-500 rounded-full flex items-center justify-center w-20 h-20 mb-5">
+          <i class="fa-solid fa-xmark text-black text-5xl"></i>
         </div>
-        <h3 class="text-xl text-red font-bold">Mensaje de error</h3>
+        <h3 class="text-xl text-red-500 font-bold">Mensaje de error</h3>
         <p  class="mb-5 font-normal">{{ errorMessage$ | async }}</p>
         <button
           type="button"
           (click)="toggleErrorModal()"
-          class="focus:outline-none text-white text-base bg-red hover:bg-lightred font-medium rounded-xl px-10 py-1.5 mt-2 mx-auto block popup-button"
+          class="focus:outline-none text-black text-base border font-medium  px-10 py-1.5 mt-2 mx-auto block popup-button"
         >Cerrar</button>
       </div>
     </div>

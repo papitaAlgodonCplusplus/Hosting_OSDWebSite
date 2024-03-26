@@ -1,6 +1,8 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
 import { AuthenticationActions, UiActions } from 'src/app/store/actions';
+import { ModalSelectors } from 'src/app/store/selectors';
 
 @Component({
   selector: 'app-register-type',
@@ -9,6 +11,7 @@ import { AuthenticationActions, UiActions } from 'src/app/store/actions';
 })
 export class OnboardingRegisterTypeComponent implements OnDestroy{
   
+  errorModalOpen$: Observable<boolean> = this.store.select(ModalSelectors.errorModalOpen);
   constructor(private store: Store){
 
   }
@@ -25,7 +28,4 @@ export class OnboardingRegisterTypeComponent implements OnDestroy{
     }, 0);
   }
   
-  signOut(): void{
-    this.store.dispatch(AuthenticationActions.signOut()) //TODO: Delete until login is implemented
-  }
 }

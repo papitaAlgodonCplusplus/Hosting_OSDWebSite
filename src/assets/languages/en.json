@@ -1,5 +1,4 @@
 {
-
   "es_requerido": "is required",
   "CFH": "CFH (Approved Training Center)",
   "profesional_libre": "Free Professional",
@@ -36,9 +35,8 @@
   "registrarse": "Register",
   "cuantia_reclamada": "Amount claimed",
   "home": "Home",
-  "OSDservices" : "OSD Services",
-  "registerNewUser" : "Register new user",
-
+  "OSDservices": "OSD Services",
+  "registerNewUser": "Register new user",
   "transparencia": "Transparency",
   "olvidaste_tu_contraseña": "Forgot your password?",
   "contraseña": "Password",
@@ -46,8 +44,6 @@
   "presentar_reclamación": "File a Claim",
   "nuevo_en_OSD": "New to OSD?",
   "crea_una_cuenta": "Create an account",
-
-  
   "registrarse_plataforma": "Register on the platform",
   "no_registrarse": "Do Not Register",
   "nombre_usuario": "Username",
@@ -59,8 +55,6 @@
   "hechos": "Facts",
   "documento1": "Exhibit 1 (Attachment)",
   "documento2": "Exhibit 2 (Attachment)",
-
- 
   "titulo": "Welcome to our website",
   "subTitulo": "Thank you for trusting us!",
   "regresar_a_iniciar_sesión": "Return",
@@ -68,12 +62,8 @@
   "equipo_OSD": "OSD Team",
   "usuarios": "Users",
   "reclamante": "Claimant",
-  
-
   "tipo_cliente": "Client Type",
   "cod_PL": "PL Code",
-
-
   "area_trabajo": "Workspace",
   "otra": "Other",
   "seleccionar_archivo": "Select File",
@@ -83,8 +73,6 @@
   "tramitador_reclamaciones_ORD": "ORD Claims Processor - 125€",
   "formador_consultor": "Trainer/Consultant - 250€",
   "engineer": "Kuarctec engineer. OSD digital platform - 750€",
-
-
   "file_claim": "File (Complaint)",
   "state": "State",
   "earring": "Earring",
@@ -100,8 +88,6 @@
   "freeProfessionalsIntervention": "Free Professionals intervening",
   "performances": "Performances",
   "newAction": "Create New Action",
-
- 
   "CreatePerformance": "Create new Performance",
   "TypePerformance": "Type",
   "Date": "Date",
@@ -111,14 +97,10 @@
   "Remuneration": "Remuneration",
   "TechnicalDirector": "Technical director",
   "TitlePerformance": "Create New Performance",
-
- 
   "status": "Status",
   "course-record": "Course Record",
   "compra": "Purchase",
   "final-grade": "Final Grade",
-
-  
   "guardar": "Save",
   "studentName": "Student Name",
   "formacion": "Training",
@@ -132,14 +114,11 @@
   "enEjecucion": "In Progress",
   "finalizado": "Completed",
   "freeInterveningProfessional": "Free Intervening Professionals",
-  
- 
   "Solicitud productos/servicios": "Request for products/services",
   "Identificación Producto/Servicio": "Product/Service Identification",
   "Unidades min-max": "Units min-max",
   "Coste Unitario": "Unit Cost",
   "Vida útil": "Lifespan",
-
   "osdStudentIncomeResult": "CFH: Student Income/Financial Result",
   "exercise": "EXERCISE",
   "CFHIncomes": "CFH INCOMES",
@@ -149,36 +128,33 @@
   "online": "Online",
   "acceptance": "OSD PROCESSOR/COORDINATOR",
   "presential": "Presential",
-
-   "claimantRating": "RATING CLAIMANT/DEFENDANT EVALUATION / OSD",
-   "institutionEntity": "INSTITUTION ENTITY",
-   "claimAmount": "Claim Amount",
-   "claimantCompensation": "Compensation Obtained by the Claimant",
-   "institutionEntitySavings": "Institution/Entity Savings Improvement",
-   "entityRating": "Claimant Rating 0 to 5",
-   "defendantRating": "Defendant Rating",
-   "OSDRating": "OSD Rating",
-
-   "osdEconomicResult": "OSD: Income-Expenses/ Economic Result",
-   "OSDIncome": "OSD INCOME",
-   "OSDExpenses": "OSD EXPENSES",
-   "savingsPublicAdministration": "Compensation Obtained by the Claimant Public Administration Savings Improvement",
-   "total": "Total",
-   "workspaceArea": "Workspace Area",
-   "PLProfessionals": "PL- PROFESSIONALS LIBRES",
-   "DTDirecccionTecnica": "DT- TECHNICAL DIRECTION",
-   "COContabilidad": "CO- ACCOUNTING",
-   "MKMarketing": "MK- MARKETING",
-   "INFInformatica": "INF- INFORMATION TECHNOLOGY",
-   "SACServiceCustomerCare": "SAC- CUSTOMER SERVICE",
-
-    "compensationToProfessionals": "COMPENSATION/RESULTS FOR FREELANCE PROFESSIONALS",
-    "fullName": "Full Name",
-    "results": "Results",
-    "OSDCertificate": "OSD CERTIFICATE",
-    "outsourcing": "OUTSOURCING",
-    "training": "TRAINING",
-    "marketing": "Marketing Premium Commercial",
-    "accumulatedAnnualCompensation": "Accumulated Annual Compensation"
- 
+  "claimantRating": "RATING CLAIMANT/DEFENDANT EVALUATION / OSD",
+  "institutionEntity": "INSTITUTION ENTITY",
+  "claimAmount": "Claim Amount",
+  "claimantCompensation": "Compensation Obtained by the Claimant",
+  "institutionEntitySavings": "Institution/Entity Savings Improvement",
+  "entityRating": "Claimant Rating 0 to 5",
+  "defendantRating": "Defendant Rating",
+  "OSDRating": "OSD Rating",
+  "osdEconomicResult": "OSD: Income-Expenses/ Economic Result",
+  "OSDIncome": "OSD INCOME",
+  "OSDExpenses": "OSD EXPENSES",
+  "savingsPublicAdministration": "Compensation Obtained by the Claimant Public Administration Savings Improvement",
+  "total": "Total",
+  "workspaceArea": "Workspace Area",
+  "PLProfessionals": "PL- PROFESSIONALS LIBRES",
+  "DTDirecccionTecnica": "DT- TECHNICAL DIRECTION",
+  "COContabilidad": "CO- ACCOUNTING",
+  "MKMarketing": "MK- MARKETING",
+  "INFInformatica": "INF- INFORMATION TECHNOLOGY",
+  "SACServiceCustomerCare": "SAC- CUSTOMER SERVICE",
+  "compensationToProfessionals": "COMPENSATION/RESULTS FOR FREELANCE PROFESSIONALS",
+  "fullName": "Full Name",
+  "results": "Results",
+  "OSDCertificate": "OSD CERTIFICATE",
+  "outsourcing": "OUTSOURCING",
+  "training": "TRAINING",
+  "marketing": "Marketing Premium Commercial",
+  "accumulatedAnnualCompensation": "Accumulated Annual Compensation",
+  "loginInRegister": "Our platform is designed with security and privacy in mind. You can rest assured that your data is protected and will only be used in accordance with our privacy policy."
 }
