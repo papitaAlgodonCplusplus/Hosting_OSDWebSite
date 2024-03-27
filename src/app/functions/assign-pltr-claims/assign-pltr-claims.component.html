@@ -5,13 +5,32 @@
     <shared-confirmation-modal [showModal]="showModalConfirm" [message]="messageModal" (confirm)="onConfirmHandler()"
         (cancel)="onCancelHandler()">
     </shared-confirmation-modal>
-    <div class="flex justify-center flex-col" *ngIf="claims.length > 0">
-        <div class="overflow-x-auto">
+    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity duration-300 ease-in-out z-50"
+        *ngIf="showDialogState">
+        <div class="flex items-center justify-center min-h-screen px-4 py-8">
+            <div class="bg-white rounded-lg shadow-md max-w-md overflow-hidden">
+                <div class="px-4 py-5 sm:p-6">
+                    <h1 class="text-xl font-medium text-center">{{ 'Realizado' | translate }}</h1>
+                    <p class="text-gray-700 text-base mt-3">{{ 'Se asigno un Tramitador al Reclamo' | translate }}</p>
+                </div>
+                <div class="flex justify-center items-center space-x-4 p-4">
+                    <button
+                        class="inline-flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white rounded-md focus:outline-none"
+                        (click)="closeDialog()">
+                        {{ 'Cerrar' | translate }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex mt-0 flex-col" *ngIf="claims.length > 0">
+        <div class="overflow-x-auto mt-0">
             <table class="table-auto w-full">
                 <thead>
                     <tr class="bg-line text-black">
-                        <th class="px-4 py-2">{{'Reclamacion' | translate}}</th>
-                        <th class="px-4 py-2">{{'Asignacion' | translate}} </th>
+                        <th class="px-4 py-2">{{'Reclamación' | translate}}</th>
+                        <th class="px-4 py-2">{{'Asignación' | translate}} </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -36,18 +55,87 @@
 
 
 
-    <div class="modal" [class.visible]="modalState">
+    <div class="modal mt-0" [class.visible]="modalState">
         <div class="modal-content">
-            <!-- Contenido del modal -->
             <div class="modal-header">
                 <h2>Detalles del Reclamo</h2>
-                <span class="close" (click)="closeModal()">×</span>
+                <span class="close" (click)="closeModal()"><i class="fa-solid fa-rectangle-xmark"></i></span>
             </div>
             <div class="modal-body">
                 <p><b>{{'Reclamo Suscrito:' | translate}}</b> {{ claim?.Subscriberclaimed }}</p>
-                <p><b>{{'Servicio Proveedido: '}}</b> {{ claim?.Serviceprovided }}</p>
+                <p><b>{{'Servicio Proveído: '}}</b> {{ claim?.Serviceprovided }}</p>
                 <p><b>{{'Hechos: ' | translate}}</b> {{ claim?.Facts }}</p>
                 <p><b>{{'Monto Reclamado: ' | translate}}</b> {{ claim?.Amountclaimed }}</p>
+                <div *ngIf="userName.length > 0">
+                    <tr>
+                        <th class="px-0 py-3">
+                            <p><b>{{'Tramitador a asignar: ' | translate}}</b> {{userName}}</p>
+                        </th>
+                        <th class="px-6 py-3">
+                            <button
+                                class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                                (click)="assignFreeProfessionalToClaim(); closeModal()"
+                                data-modal-target="default-modal">
+                                {{'Terminar Asignacion' | translate}}
+                            </button>
+                        </th>
+                    </tr>
+
+                </div>
             </div>
+            <div class="m-8" *ngIf="freeProfessionalsTr.length > 0">
+
+                <div class="relative overflow-x-auto ">
+                    <table class="w-full text-sm text-left rtl:text-right text-slate-950 text-center">
+                        <thead class="text-xs text-slate-950 uppercase bg-slate-200">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">
+                                    {{'Tramitador' | translate}}
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    {{"Tarifas de servicio" | translate}}
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    {{"Accion" | translate}}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-slate-50 dark:border-gray-700"
+                                *ngFor="let fp of freeProfessionalsTr; let i = index">
+                                <th scope="row" class="px-6 py-4 font-medium text-slate-950 whitespace-nowrap">
+                                    <ng-container *ngIf="users[i]">
+                                        {{ users[i].Firstname }} {{users[i].Middlesurname}}
+                                    </ng-container>
+                                </th>
+                                <th scope="row" class="px-6 py-4 font-medium text-slate-950 whitespace-nowrap">
+                                    {{ fp.Servicerates }}
+                                </th>
+                                <td class="px-6 py-4">
+                                    <button
+                                        class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                                        (click)="setDataToAssignFreeProfessionalTRToClaim(claim.Id, fp.Id, users[i].Firstname + ' ' + users[i].Middlesurname+ ' '+ users[i].Name)">
+                                        {{ 'Asociar' | translate }}
+                                    </button>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+                    <div class="flex justify-between mt-4" *ngIf="freeProfessionalsTr.length > 5">
+                        <button [disabled]="actualSegment === 1" (click)="setPage(actualSegment - 1)"
+                            class="modal-navigation-button bg-gray-200 hover:bg-gray-300 text-gray-600 font-bold py-2 px-4 rounded">
+                            Anterior
+                        </button>
+                        <button [disabled]="actualSegment === totalSegments" (click)="setPage(actualSegment + 1)"
+                            class="modal-navigation-button bg-gray-200 hover:bg-gray-300 text-gray-600 font-bold py-2 px-4 rounded">
+                            Siguiente
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>

@@ -18,11 +18,14 @@ export class EventAction {
   public static UPDATE_ACCOUNT_PASSWORD: string = "UpdateAccountPassword";
   public static HANDLE_PASSWORD_RESET_EMAIL_RESPONSE: string = "HandlePasswordResetEmailResponse";
   public static HANDLE_UPDATE_ACCOUNT_PASSWORD_RESPONSE: string = "HandleUpdateAccountPasswordResponse";
-  public static OSD_GETTING_CLAIMS: string = "OsdGettingClaims";
-  public static HANDLE_OSD_GETTING_CLAIMS_RESPONSE: string = "HandleOsdGettingClaimsResponse";
+  public static GETTING_CLAIMS: string = "GettingClaims";
+  public static HANDLE_GETTING_CLAIMS_RESPONSE: string = "HandleGettingClaimsResponse";
   public static FREE_PROFESSIONAL: string = "FreeProfessional";
-  public static OSD_GETTING_FREE_PROFESSIONALS_TR: string = "OsdGettingFreeProfessionalsTR";
-  public static HANDLE_OSD_GETTING_FREE_PROFESSIONALS_TR_RESPONSE: string = "HandleOsdGettingFreeProfessionalsTRResponse";
+  public static GETTING_FREE_PROFESSIONALS_TR: string = "GettingFreeProfessionalsTR";
+  public static HANDLE_GETTING_FREE_PROFESSIONALS_TR_RESPONSE: string = "HandleGettingFreeProfessionalsTRResponse";
+  public static ASSIGN_CLAIMS_TO_FREE_PROFESSIONALS: string = "AssignClaimsToFreeProfessionalTR";
+  public static HANDLE_ASSIGN_CLAIMS_TO_FREE_PROFESSIONALS_RESPONSE: string = "HandleAssignClaimsToFreeProfessionalTRResponse";
+
   //#endregion 
 
   //#region Monitoring

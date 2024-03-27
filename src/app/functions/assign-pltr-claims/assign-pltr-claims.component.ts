@@ -12,27 +12,23 @@ import { OSDService } from 'src/app/services/osd-event.services';
 export class AssignPLTRClaimsComponent implements OnDestroy {
   claims: any[] = [];
   freeProfessionalsTr: any[] = [];
+  users: any[] = [];
+  idTRSelected: string = '';
+  idClaim: string = '';
+  userName: string = '';
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   displayedItems: any;
   showModalConfirm! :boolean;
   messageModal! : string;
   modalState : boolean = false;
+  showDialogState: boolean = false;
   claim: any = null;
 
 
   constructor(private store: Store,
               private osdEventService : OSDService) {
-    this.osdEventService.getClaimList().then(claims => {
-      this.claims = claims
-    }, )
-    this.osdEventService.getFreeProfessionalsTRList().then(fp => {
-      this.freeProfessionalsTr = fp
-    })
     
-    console.log('Reclamos en constructor')
-    console.log(this.claims)
-    console.log('FP en constructor')
-    console.log(this.freeProfessionalsTr)
   }
  
 
@@ -63,20 +59,73 @@ export class AssignPLTRClaimsComponent implements OnDestroy {
 
   ngOnInit(): void {
     setTimeout(() => {
-      //this.osdEventService.GetSubscribers();
       this.store.dispatch(UiActions.hideLeftSidebar())
       this.store.dispatch(UiActions.hideFooter())
     }, 0);
+    this.osdEventService.getClaimList().then(claims => {
+      this.claims = claims
+    }, )
+    this.osdEventService.getFreeProfessionalsTRList().then(fp => {
+      this.freeProfessionalsTr = fp
+    })
+    this.osdEventService.getUsersFreeProfessionalsTRList().then(users => {
+      this.users = users
+    })
+    
+  }
+
+  assignFreeProfessionalToClaim(){
+    this.showDialog()
+    this.osdEventService.cleanClaimList();
+    this.osdEventService.assignFreeProfessionalsTRToClaim(this.idClaim, this.idTRSelected);
+    this.claims = this.claims.filter(claim => claim.Id !== this.idClaim);
+    this.osdEventService.gettingClaimsData();
+
+    this.osdEventService.getClaimList().then(claims => {
+      this.claims = claims
+    }, )
+
+    this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: 'Se asigno el Tramitador' }));
   }
 
   openModal(claim: any): void{
     this.claim = claim
     this.modalState=true
-    console.log("Se abre el modal", claim)
   }
   closeModal(): void{
-
+    this.cleanDataToAssignFreeProfessionalTRToClaim();
     this.modalState=false
   }
 
+
+  actualSegment = 0;
+  freeProfessionalsTRPerPage = 5;
+  totalSegments = 0;
+
+  setPage(page: number) {
+    if(this.totalSegments){
+      if (page < 1 || page > this.totalSegments) {
+        return;
+      }
+      this.actualSegment = page;
+    }
+  }
+
+  setDataToAssignFreeProfessionalTRToClaim(idClaim: string, idTR: string, userName: string){
+    this.idClaim = idClaim;
+    this.idTRSelected = idTR;
+    this.userName = userName;
+  }
+  cleanDataToAssignFreeProfessionalTRToClaim(){
+    this.idClaim = '';
+    this.idTRSelected = '';
+    this.userName = '';
+  }
+
+  closeDialog() {
+    this.showDialogState = false;
+  }
+  showDialog() {
+    this.showDialogState = true;
+  }
 }

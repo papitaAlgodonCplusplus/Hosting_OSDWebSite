@@ -44,6 +44,7 @@ export class OSDService {
 
     cleanClaimList(){
       this.claims = []
+      this.claimsResponse = false;
     }
 
     getClaimList(): Promise<any[]> {
@@ -73,6 +74,19 @@ export class OSDService {
         checkResponse();
       });
     }
+    getUsersFreeProfessionalsTRList(): Promise<any[]> {
+      return new Promise((resolve, reject) => {
+        const checkResponse = () => {
+          if (this.freeProfessionalsTRResponse) {
+            resolve(this.usersFreeProfessionalsTR);
+          } else {
+            setTimeout(checkResponse, 1000); 
+          }
+        };
+    
+        checkResponse();
+      });
+    }
 
     private subscribeToOSDEvents(): void {
         console.log("subscribeToOSDEvents");
@@ -82,22 +96,21 @@ export class OSDService {
 
     public userLogin(loginForm: UserLoginEvent) {
       const userLoginEvent: WebBaseEvent = this.eventFactoryService.CreateUserLoginEvent(loginForm);
-      console.log("Lo que se envia del logeo:")
-      console.log(userLoginEvent)
       this.websocketService.sendOSDEvent(userLoginEvent);
     }
 
     public gettingClaimsData() {
       const gettingClaimsEvent: WebBaseEvent = this.eventFactoryService.CreateGettingClaimsDataEvent();
-      console.log("Lo que se envia del reclamo:")
-      console.log(gettingClaimsEvent)
       this.websocketService.sendOSDEvent(gettingClaimsEvent);
     }
     public gettingFreeProfessionalsTRData() {
       const gettingFPTREvent: WebBaseEvent = this.eventFactoryService.gettingFreeProfessionalsTRData();
-      console.log("Lo que se envia del FPTR:")
-      console.log(gettingFPTREvent)
       this.websocketService.sendOSDEvent(gettingFPTREvent);
+    }
+
+    public assignFreeProfessionalsTRToClaim(idClaim: string, idFreeProfesionalTR: string) {
+      const assignFPTRClaim: WebBaseEvent = this.eventFactoryService.assingFreeProfessionalsTRToClaim(idClaim, idFreeProfesionalTR);
+      this.websocketService.sendOSDEvent(assignFPTRClaim);
     }
   
     public userRegister(accountForm: RegisterUserEvent, personalForm: RegisterUserEvent, accountType: string) {
@@ -121,20 +134,21 @@ export class OSDService {
                     this.HandleAuthenticationResponse(osdEvent);
                     break;
                   } 
-                case EventAction.HANDLE_OSD_GETTING_CLAIMS_RESPONSE:
+                case EventAction.HANDLE_GETTING_CLAIMS_RESPONSE:
                   {
-                    console.log('Se recuperan los reclamos:')
-                    console.log(osdEvent);
                     this.HandleGettingClaimListResponse(osdEvent);
                     break;
                   }
-                case EventAction.HANDLE_OSD_GETTING_FREE_PROFESSIONALS_TR_RESPONSE:
+                case EventAction.HANDLE_GETTING_FREE_PROFESSIONALS_TR_RESPONSE:
                   {
-                    console.log('Se recuperan los FPTR:')
-                    console.log(osdEvent);
-                    this.HandleOsdGettingFreeProfessionalsTRResponse(osdEvent);
+                    this.HandleGettingFreeProfessionalsTRResponse(osdEvent);
                     break;
                   }
+                case EventAction.HANDLE_ASSIGN_CLAIMS_TO_FREE_PROFESSIONALS_RESPONSE:
+                    {
+                      this.HandleAssignFreeProfessionalsTRToClaimsResponse(osdEvent);
+                      break;
+                    }
             default:
                 {
                     //TODO: Send event warning to web socket or local log file
@@ -156,11 +170,11 @@ export class OSDService {
       }
     }
 
-    public HandleOsdGettingFreeProfessionalsTRResponse(webBaseEvent: WebBaseEvent) {
+    public HandleGettingFreeProfessionalsTRResponse(webBaseEvent: WebBaseEvent) {
       try {
-        if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['UsersList']) {
-          this.usersFreeProfessionalsTR = webBaseEvent.Body['UsersList'];
-          this.freeProfessionalsTR = webBaseEvent.Body['FreeProfessionalsList'];
+        if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['FreeProfessionalList']) {
+          this.usersFreeProfessionalsTR = webBaseEvent.Body['OsdUserList'];
+          this.freeProfessionalsTR = webBaseEvent.Body['FreeProfessionalList'];
           this.freeProfessionalsTRResponse = true;
         } else {
           this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'No hay reclamaciones existentes' }));
@@ -170,7 +184,19 @@ export class OSDService {
         this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Error inesperado' }));
       }
     }
-    
+    public HandleAssignFreeProfessionalsTRToClaimsResponse(webBaseEvent: WebBaseEvent) {
+      try {
+        if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['AssignationClaimToFreeProfessionalId']) {
+          let message = webBaseEvent.Body['AssignationClaimToFreeProfessionalId'];
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
+        } else {
+          this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'No hay reclamaciones existentes' }));
+        }
+      }
+      catch (err) {
+        this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Error inesperado' }));
+      }
+    }
     public HandleAuthenticationResponse(webBaseEvent: WebBaseEvent) {
       let userAuthenticationSuccess: boolean;
       let userAuthenticationResultMessage: string;
