@@ -46,7 +46,7 @@ export class SecurityEventService {
     const verifyEmailEvent: WebBaseEvent = this.eventFactoryService.CreateVerifyEmailEvent(verifyEmailForm);
     this.restApiService.SendSecurityEvent(verifyEmailEvent).subscribe({
       next: (response) => {
-        var securityEvent = this.eventFactoryService.ConvertJsonToWebBaseEvent(response);
+        var securityEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
         this.HandleVerifyEmailResponse(securityEvent);
       },
       error: (error) => {
@@ -59,7 +59,7 @@ export class SecurityEventService {
     const emailVerificationCodeResendEvent: WebBaseEvent = this.eventFactoryService.CreateEmailVerificationCodeResendEvent(emailVerificationCodeResendForm);
     this.restApiService.SendSecurityEvent(emailVerificationCodeResendEvent).subscribe({
       next: (response) => {
-        var securityEvent = this.eventFactoryService.ConvertJsonToWebBaseEvent(response);
+        var securityEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
         this.HandleResendEmailVerificationCodeResponse(securityEvent);
       },
       error: (error) => {

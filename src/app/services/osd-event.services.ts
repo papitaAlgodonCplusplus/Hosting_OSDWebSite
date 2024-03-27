@@ -45,7 +45,7 @@ export class OSDService {
       const userLoginEvent: WebBaseEvent = this.eventFactoryService.CreateUserLoginEvent(loginForm);
       this.restApiService.SendOSDEvent(userLoginEvent).subscribe({
         next: (response) => {
-          var osdEvent = this.eventFactoryService.ConvertJsonToWebBaseEvent(response);
+          var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
           this.HandleAuthenticationResponse(osdEvent);
         },
         error: (error) => {
@@ -59,7 +59,7 @@ export class OSDService {
         console.log("Enviando mensaje al restAPIService.sendOSDEvent");
         this.restApiService.SendOSDEvent(registerUserEvent).subscribe({
           next: (response) => {
-            var osdEvent = this.eventFactoryService.ConvertJsonToWebBaseEvent(response);
+            var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
             this.HandleRegisterUserResponse(osdEvent);
           },
           error: (error) => {
@@ -108,6 +108,7 @@ export class OSDService {
           this.store.dispatch(AuthenticationActions.signIn());
         }
         else {
+          console.log("Credenciales inválidas")
           if (userAuthenticationResultMessage == 'Credentials are invalid') {
             this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Las credenciales son inválidas' }));
           }
@@ -115,7 +116,7 @@ export class OSDService {
         }
       }
       catch (err) {
-        //TODO: create exception event and send to local file or core
+        console.log(err);
       }
     }
 
