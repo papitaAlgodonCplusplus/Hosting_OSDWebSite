@@ -5,7 +5,7 @@ import {Validators} from '@angular/forms';
 import { FormBuilder, FormGroup} from '@angular/forms';
 import { ValidationsService } from 'src/app/services/validations.service';
 import { WebBaseEvent } from 'src/app/models/webBaseEvent';
-import { WebsocketService } from 'src/app/services/websocket.service';
+import { RestAPIService } from 'src/app//services/rest-api.service';
 import { SecurityDataService } from 'src/app/services/security-data.service';
 import { EventFactoryService } from 'src/app/services/event-factory.service';
 import { Router } from '@angular/router';
@@ -32,7 +32,7 @@ export class ForgotPasswordComponent implements OnDestroy {
     private store: Store, private formBuilder: FormBuilder,
     private validationsService: ValidationsService,
     public eventFactoryService: EventFactoryService,
-    public websocketService: WebsocketService,
+    private restApiService: RestAPIService,
     private securityDataService: SecurityDataService,
     private router: Router,
     private securityEventService: SecurityEventService,)
@@ -43,10 +43,6 @@ export class ForgotPasswordComponent implements OnDestroy {
   }
 
   ngOnInit() {
-    if (!this.initialized) {
-      this.websocketService.startConnection(); //OJO: puede que se llame varias veces
-      this.initialized = true;
-    }
     setTimeout(() => {
       this.store.dispatch(UiActions.hideAll());
     }, 0);
@@ -58,7 +54,6 @@ export class ForgotPasswordComponent implements OnDestroy {
   }
 
   ngOnDestroy() {
-    this.websocketService.disconnect();
     setTimeout(() => {
       this.store.dispatch(UiActions.showAll());
     }, 0);
@@ -74,8 +69,7 @@ export class ForgotPasswordComponent implements OnDestroy {
   onSubmit(): void{
     const emailValue = this.forgotForm.value.email;
     const passwordResetToken: WebBaseEvent = this.eventFactoryService.CreatePasswordResetToken(emailValue);
-    this.websocketService.sendSecurityEvent(passwordResetToken);
-    this.websocketService.startConnection();
+    this.restApiService.SendSecurityEvent(passwordResetToken);
   }
 
 }

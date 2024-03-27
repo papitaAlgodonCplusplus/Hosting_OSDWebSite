@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { WebsocketService } from './websocket.service';
+import { RestAPIService } from 'src/app/services/rest-api.service';
 import { LogicDataService } from './logic-data.service';
 import { EventFactoryService } from './event-factory.service';
 import { Subscription } from 'rxjs';
@@ -17,19 +17,19 @@ export class LogicEventService {
 
   constructor(
     private store: Store,
-    private websocketService: WebsocketService,
+    private restApiService: RestAPIService, 
     private logicDataService: LogicDataService,
     private eventFactoryService: EventFactoryService,
   ) {
     this.logicEventSubscriber = new Subscription();
-    this.subscribeToLogicEvents();
+    //this.subscribeToLogicEvents();
   }
-  private subscribeToLogicEvents(): void {
+  /*private subscribeToLogicEvents(): void {
     this.logicEventSubscriber =
       this.websocketService.logicEventHandler.subscribe(
         (webBaseEvent: WebBaseEvent) => this.processLogicEvent(webBaseEvent)
       );
-  }
+  }*/
  
   //#region RESPONSE HANDLING METHODS
   private processLogicEvent(logicEvent: WebBaseEvent) {
