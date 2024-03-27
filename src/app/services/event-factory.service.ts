@@ -58,13 +58,34 @@ export class EventFactoryService {
   public CreateGettingClaimsDataEvent(): WebBaseEvent {
     let event: WebBaseEvent;
 
-    var sessionkey: string | null = localStorage.getItem('prueba');
+    var sessionkey: string | null = localStorage.getItem('sk');
     
     event = new WebBaseEvent();
     event.SecurityToken = "3746736473";
     event.TraceIdentifier = Guid.create().toString();
     event.Type = EventType.OSD;
     event.Action = EventAction.OSD_GETTING_CLAIMS;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    if(sessionkey != null){
+      event.SessionKey = sessionkey;
+      return event;
+    }
+    else{
+      event.SessionKey = this.authenticationService.sessionKey;
+      return event;
+    }
+  }
+  public gettingFreeProfessionalsTRData(): WebBaseEvent {
+    let event: WebBaseEvent;
+
+    var sessionkey: string | null = localStorage.getItem('sk');
+    
+    event = new WebBaseEvent();
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.OSD_GETTING_FREE_PROFESSIONALS_TR;
     event.Date = new Date().toUTCString();
     event.ApplicationIdentifier = 'WebClient';
     if(sessionkey != null){

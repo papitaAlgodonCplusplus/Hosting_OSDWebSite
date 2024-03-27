@@ -36,6 +36,7 @@ export class LeftSidebarComponent {
   }
 
   onSubmitAssignClaimsToFreeProfessionalsTR(): void {
-    this.osdEventService.getClaims();
+    this.osdEventService.gettingClaimsData();
+    this.osdEventService.gettingFreeProfessionalsTRData();
   }
 }

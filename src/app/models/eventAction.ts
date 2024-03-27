@@ -21,6 +21,8 @@ export class EventAction {
   public static OSD_GETTING_CLAIMS: string = "OsdGettingClaims";
   public static HANDLE_OSD_GETTING_CLAIMS_RESPONSE: string = "HandleOsdGettingClaimsResponse";
   public static FREE_PROFESSIONAL: string = "FreeProfessional";
+  public static OSD_GETTING_FREE_PROFESSIONALS_TR: string = "OsdGettingFreeProfessionalsTR";
+  public static HANDLE_OSD_GETTING_FREE_PROFESSIONALS_TR_RESPONSE: string = "HandleOsdGettingFreeProfessionalsTRResponse";
   //#endregion 
 
   //#region Monitoring

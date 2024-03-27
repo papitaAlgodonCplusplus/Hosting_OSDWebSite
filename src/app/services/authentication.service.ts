@@ -14,8 +14,7 @@ export class AuthenticationService {
   public initialize(sessionlessKey : string)
   {
     localStorage.setItem('sessionlessKey', sessionlessKey);
-    localStorage.setItem('prueba', sessionlessKey);
-    //problemas con el session less key
+    localStorage.setItem('sk', sessionlessKey);
   }
 
   public startSession(sessionKey : string)
