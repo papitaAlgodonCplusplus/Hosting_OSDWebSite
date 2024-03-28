@@ -55,7 +55,7 @@ export class LoginComponent implements OnDestroy {
      this.loginForm.markAllAsTouched();
     return;
     }
-    //this.osdEventService.userLogin(this.loginForm.value);
+    this.osdEventService.userLogin(this.loginForm.value);
   }
 
   private createLoginForm(): FormGroup {

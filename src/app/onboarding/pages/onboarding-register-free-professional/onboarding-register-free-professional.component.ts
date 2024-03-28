@@ -58,7 +58,6 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   ngOnInit(): void {
     setTimeout(() => {
       this.store.dispatch(UiActions.hideAll());
-      this.osdEventService.GetSubscribers();
     }, 0);
   }
 
@@ -76,7 +75,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
         lastReceiptCLI: [null, [Validators.required]],
         servicerates: ['', [Validators.required]],
         payTPV: ['', Validators.required],
-        subscriber:['' , Validators.required]
+       // subscriber:['' , Validators.required]
     });
     return accountForm;
   }

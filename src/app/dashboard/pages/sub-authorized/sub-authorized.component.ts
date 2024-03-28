@@ -1,32 +1,29 @@
 import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { ModalActions, UiActions } from 'src/app/store/actions';
-import { MatPaginator } from '@angular/material/paginator';
 import { OSDDataService } from 'src/app/services/osd-data.service';
 import { UserInfo } from 'src/app/models/userInfo';
-import { get } from 'http';
-import { subscribe } from 'diagnostics_channel';
-import { th } from 'date-fns/locale';
 import { Subscriber } from 'src/app/models/subscriber';
-
-
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-sub-authorized',
   templateUrl: './sub-authorized.component.html',
   styleUrls: ['./sub-authorized.component.css']
 })
+
 export class SubAuthorizedComponent implements OnDestroy {
   items: any[] = [];
   displayedItems: any[] = [];
-  showModalConfirm: boolean = false;
   showAuthorizatedModal: boolean = false;
-  messageModal: string = "Datos de la cuenta de subscriptor cliente";
+  messageModal: string = this.translate.instant('MessageModalAuthorizedCostumer');
   user!: any;
   subscribers: any[] = [];
   subscriber: any;
+  userId!: string;
 
-  constructor(private store: Store, private osdDataService: OSDDataService) { }
+  constructor(private store: Store, private osdDataService: OSDDataService,
+    private translate: TranslateService) { }
 
   ngOnInit(): void {
     this.osdDataService.getOsdUsersSubscribersSuccess$.subscribe(osdUsersSubscribers => {
@@ -60,18 +57,10 @@ export class SubAuthorizedComponent implements OnDestroy {
     this.displayedItems = this.items.slice(startIndex, endIndex);
   }
 
-  showModal() {
-    this.showModalConfirm = true;
-    this.messageModal = "Confirmar Autorizacion!"
-  }
-
-  onConfirmHandler() {
-    this.showModalConfirm = false;
-    this.showAuthorizatedModal = false;
-  }
-
   selectUser(userId: string) {
     var foundUser = this.displayedItems.find(item => item.id === userId);
+    this.userId = foundUser.id;
+    console.log(this.userId)
     const userDTO: UserInfo = {} as UserInfo;
     userDTO.identity = foundUser.identity;
     userDTO.name = foundUser.name;
@@ -86,8 +75,21 @@ export class SubAuthorizedComponent implements OnDestroy {
     this.showAuthorizatedModal = true;
   }
 
+  onConfirmHandler() {
+    this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: this.translate.instant('UserAuthorized')}))
+    this.store.dispatch(ModalActions.openAlert());
+    const newItems = this.items.map(item => {
+      if (item.id === this.userId) {
+        return { ...item, isActive: "true" };
+      }
+      return item;
+    });
+    this.items = newItems;
+    this.updateDisplayedItems()
+    this.showAuthorizatedModal = false;
+  }
+
   onCancelHandler() {
-    this.showModalConfirm = false;
     this.showAuthorizatedModal = false
   }
 }

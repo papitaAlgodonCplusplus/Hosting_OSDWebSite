@@ -34,15 +34,7 @@ export class OSDService {
     public notificationService: NotificationService
   ) {
 
-    //this.osdEventSubscriber = new Subscription();
-    //this.subscribeToOSDEvents();
   }
-
-  /*    private subscribeToOSDEvents(): void {
-          console.log("subscribeToOSDEvents");
-          this.osdEventSubscriber = this.websocketService.osdEventHandler.subscribe((webBaseEvent: WebBaseEvent) =>
-              this.processOSDEvent(webBaseEvent));
-      }*/
 
   public userLogin(loginForm: UserLoginEvent) {
     const userLoginEvent: WebBaseEvent = this.eventFactoryService.CreateUserLoginEvent(loginForm);
@@ -71,61 +63,34 @@ export class OSDService {
     });
   }
 
+  public GetSubscribers() {
+    const createGetSubscribersEvent: WebBaseEvent = this.eventFactoryService.CreateGetSubscribers();
+    this.restApiService.SendOSDEvent(createGetSubscribersEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleGetSubscriberResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+    // this.websocketService.sendOSDEvent(createPerformanceEvent);
+  }
 
-  // public createPerformance(performance: Form, claimId: string) {
-  //   const createPerformanceEvent: WebBaseEvent = this.eventFactoryService.CreatePerformanceEvent(performance, claimId);
-  //   this.websocketService.sendOSDEvent(createPerformanceEvent);
-  // }
+  public createPerformance(performance: Form, claimId: string) {
+    const createPerformanceEvent: WebBaseEvent = this.eventFactoryService.CreatePerformanceEvent(performance, claimId);
+    //this.websocketService.sendOSDEvent(createPerformanceEvent);
+  }
 
-  // public GetClaims() {
-  //   const createPerformanceEvent: WebBaseEvent = this.eventFactoryService.CreateGetClaims();
-  //   this.websocketService.sendOSDEvent(createPerformanceEvent);
-  // }
-
-  // public GetSubscribers() {
-  //   const createPerformanceEvent: WebBaseEvent = this.eventFactoryService.CreateGetSubscribers();
-  //   this.websocketService.sendOSDEvent(createPerformanceEvent);
-  // }
-
-  private processOSDEvent(osdEvent: WebBaseEvent) {
-    console.log("Llegue al switch");
-    switch (osdEvent.Action) {
-      case EventAction.HANDLE_REGISTER_USER_RESPONSE:
-        {
-          this.HandleRegisterUserResponse(osdEvent);
-          break;
-        }
-      case EventAction.HANDLE_AUTHENTICATION_RESPONSE:
-        {
-          this.HandleAuthenticationResponse(osdEvent);
-          break;
-        }
-      case EventAction.HANDLE_CREATE_PERFORMANCE_RESPONSE:
-        {
-          this.HandleCreatePerformanceResponse(osdEvent);
-          break;
-        }
-      case EventAction.HANDLE_GET_CLAIMS_RESPONSE:
-        {
-          this.HandleGetClaimsResponse(osdEvent);
-          break;
-        }
-      case EventAction.HANDLE_GET_SUBSCRIBERS_RESPONSE:
-        {
-          this.HandleGetSubscriberResponse(osdEvent);
-          break;
-        }
-      default:
-        {
-          //TODO: Send event warning to web socket or local log file
-          break;
-        }
-    }
+  public GetClaims() {
+    const createPerformanceEvent: WebBaseEvent = this.eventFactoryService.CreateGetClaims();
+    //this.websocketService.sendOSDEvent(createPerformanceEvent);
   }
 
   public HandleGetSubscriberResponse(webBaseEvent: WebBaseEvent) {
     try {
       var actionGetOsdUsersSusbscriberResultMessage = webBaseEvent.getBodyProperty(EventConstants.LIST_OSD_USERS_SUBSCRIBERS);
+      
       if (actionGetOsdUsersSusbscriberResultMessage != null) {
         var actionGetSusbscribersResultMessage = webBaseEvent.getBodyProperty(EventConstants.LIST_SUBSCRIBERS);
         const osdUsersSubscribersModels = actionGetOsdUsersSusbscriberResultMessage;
@@ -133,10 +98,7 @@ export class OSDService {
         this.osdDataService.emitGetOsdUsersSubscribersSuccess(osdUsersSubscribersModels);
         this.osdDataService.emitGetSubscribersSuccess(subscribersModels);
       }
-      else {
-        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "No hay subscriptores para mostrar" }));
-      }
-      this.store.dispatch(ModalActions.openAlert());
+      
     }
     catch (err) {
       //TODO: create exception event and send to local file or core
@@ -182,7 +144,7 @@ export class OSDService {
     try {
       userAuthenticationSuccess = JSON.parse(webBaseEvent.getBodyProperty(EventConstants.USER_AUTHENTICATION_SUCCESS));
       userAuthenticationResultMessage = webBaseEvent.getBodyProperty(EventConstants.USER_AUTHENTICATION_RESULT_MESSAGE);
-
+      console.log(this.authenticationService.sessionKey)
       if (userAuthenticationSuccess) {
 
         userInfo = webBaseEvent.getBodyProperty(EventConstants.USER_INFO);
@@ -198,8 +160,8 @@ export class OSDService {
         }
         this.store.dispatch(ModalActions.toggleErrorModal());
       }
-    }catch{
-      
+    } catch {
+
     }
   }
 

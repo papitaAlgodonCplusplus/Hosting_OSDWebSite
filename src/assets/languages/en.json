@@ -67,7 +67,7 @@
   "area_trabajo": "Workspace",
   "otra": "Other",
   "seleccionar_archivo": "Select File",
-  "documentacion_adjunta": "Attached Documentation (both docs required)",
+  "documentacion_adjunta": "Upload documentation (both documents required)",
   "carnet_colegiado": "Collegiate Card",
   "seguro_responsabilidad_civil": "Copy of Last Receipt Civil Liability Insurance",
   "tramitador_reclamaciones_ORD": "ORD Claims Processor - 125€",
@@ -165,5 +165,7 @@
   "NextPage" : "Next page",
   "PreviousPage" : "Previous page",
   "FirstPage": "First page",
-  "LastPage": "Last page"
+  "LastPage": "Last page",
+  "UserAuthorized" : "User Authorized",
+  "MessageModalAuthorizedCostumer" : "Subscriber/Customer Data"
 }

@@ -20,7 +20,7 @@
         </div>
         <form [formGroup]="accountForm" (ngSubmit)="onSubmit()" autocomplete="off" class="flex flex-wrap items-center ">
             <shared-simple-dropdown class="w-full md:w-1/3" fieldName="clientType"
-                label="{{'tipo_cliente' | translate}}" [formGroup]="accountForm" [dropdownItems]="clientType"
+                label="{{'clientType' | translate}}" [formGroup]="accountForm" [dropdownItems]="clientType"
                 [selectedItem]="selectedClientType">
             </shared-simple-dropdown>
             <shared-simple-dropdown class="w-full md:w-1/3" fieldName="plCode" label="{{'cod_PL' | translate}}"

@@ -36,7 +36,7 @@
     "area_trabajo": "Área de trabajo",
     "otra": "Otra",
     "seleccionar_archivo": "Seleccionar archivo",
-    "documentacion_adjunta": "Documentación Adjunta (ambos documentos necesarios)",
+    "documentacion_adjunta": "Subir documentación (ambos documentos necesarios)",
     "carnet_colegiado": "Carnet Colegiado",
     "seguro_responsabilidad_civil": "Copia Último recibo Seguro Responsabilidad Civil",
     "tramitador_reclamaciones_ORD": "Tramitador de Reclamaciones ORD - 125€",
@@ -165,5 +165,7 @@
     "NextPage" : "Página siguiente",
     "PreviousPage" : "Página anterior",
     "FirstPage": "Primera página",
-    "LastPage": "Última página"
+    "LastPage": "Última página",
+    "UserAuthorized" : "Se autorizó el usuario",
+    "MessageModalAuthorizedCostumer" : "Datos Suscriptor/Cliente"
 }
