@@ -72,6 +72,52 @@ export class EventFactoryService {
 
     return event;
   }
+  public CreateGettingClaimsDataEvent(): WebBaseEvent {
+    let event: WebBaseEvent;
+
+    event = new WebBaseEvent();
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.GETTING_CLAIMS;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    event.SessionKey = this.authenticationService.sessionKey;
+    
+    return event;
+  }
+  public gettingFreeProfessionalsTRDataEvent(): WebBaseEvent {
+    let event: WebBaseEvent;
+    
+    event = new WebBaseEvent();
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.GETTING_FREE_PROFESSIONALS_TR;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    event.SessionKey = this.authenticationService.sessionKey;
+
+    return event;
+  }
+  public assingFreeProfessionalsTRToClaimEvent(idClaim: string, idFreeProfesionalTR: string): WebBaseEvent {
+    let event: WebBaseEvent;
+    
+    event = new WebBaseEvent();
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.ASSIGN_CLAIMS_TO_FREE_PROFESSIONALS;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+
+    event.setBodyProperty(EventConstants.CLAIM_ID, idClaim);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_ID, idFreeProfesionalTR);
+
+    event.SessionKey = this.authenticationService.sessionKey;
+
+    return event;
+  }
 
   public CreateLoginErrorNotificationEvent(webBaseEvent: WebBaseEvent, message: string): NotificationEvent {
     let event: NotificationEvent;

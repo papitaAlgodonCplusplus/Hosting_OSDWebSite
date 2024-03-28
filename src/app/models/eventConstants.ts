@@ -72,6 +72,8 @@ export class EventConstants {
   public static CLAIMANT: string = "Claimant";
   public static APPROVED_TRAINING_CENTER : string = "ApprovedTrainingCenter";
 
+  public static CLAIM_ID: string = "ClaimId";
+  public static FREE_PROFESSIONAL_ID: string = "FreeProfessionalId";
   //#endregion
   constructor()
   {

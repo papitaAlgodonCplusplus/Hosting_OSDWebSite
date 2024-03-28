@@ -13,6 +13,8 @@ import { NotificationService } from './notification.service';
 import { RegisterUserEvent } from '../auth/interfaces/register.interface';
 import { SecurityDataService } from './security-data.service';
 import { OSDDataService } from './osd-data.service';
+import { EventManager } from '@angular/platform-browser';
+import { tr } from 'date-fns/locale';
 
 
 @Injectable({
@@ -20,6 +22,11 @@ import { OSDDataService } from './osd-data.service';
 })
 export class OSDService {
     //osdEventSubscriber: Subscription;
+    claims: any[] = [];
+    usersFreeProfessionalsTR: any[] = [];
+    freeProfessionalsTR: any[] = [];
+    claimsResponse: boolean = false;
+    freeProfessionalsTRResponse: boolean = false;
 
     constructor(
         private store: Store,
@@ -35,7 +42,53 @@ export class OSDService {
         //this.subscribeToOSDEvents();
     }
 
-/*    private subscribeToOSDEvents(): void {
+    cleanClaimList(){
+      this.claims = []
+      this.claimsResponse = false;
+    }
+
+    getClaimList(): Promise<any[]> {
+      return new Promise((resolve, reject) => {
+        const checkResponse = () => {
+          if (this.claimsResponse) {
+            resolve(this.claims);
+          } else {
+            setTimeout(checkResponse, 1000); 
+          }
+        };
+    
+        checkResponse();
+      });
+    }
+
+    getFreeProfessionalsTRList(): Promise<any[]> {
+      return new Promise((resolve, reject) => {
+        const checkResponse = () => {
+          if (this.freeProfessionalsTRResponse) {
+            resolve(this.freeProfessionalsTR);
+          } else {
+            setTimeout(checkResponse, 1000); 
+          }
+        };
+    
+        checkResponse();
+      });
+    }
+    getUsersFreeProfessionalsTRList(): Promise<any[]> {
+      return new Promise((resolve, reject) => {
+        const checkResponse = () => {
+          if (this.freeProfessionalsTRResponse) {
+            resolve(this.usersFreeProfessionalsTR);
+          } else {
+            setTimeout(checkResponse, 1000); 
+          }
+        };
+    
+        checkResponse();
+      });
+    }
+
+    /*private subscribeToOSDEvents(): void {
         console.log("subscribeToOSDEvents");
         this.osdEventSubscriber = this.websocketService.osdEventHandler.subscribe((webBaseEvent: WebBaseEvent) =>
             this.processOSDEvent(webBaseEvent));
@@ -52,6 +105,44 @@ export class OSDService {
           //TODO: Pending implementation
         }
       });   
+    }
+
+    public gettingClaimsData() {
+      const gettingClaimsEvent: WebBaseEvent = this.eventFactoryService.CreateGettingClaimsDataEvent();
+      this.restApiService.SendOSDEvent(gettingClaimsEvent).subscribe({
+        next: (response) => {
+          var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+          this.HandleGettingClaimListResponse(osdEvent);
+        },
+        error: (error) => {
+          //TODO: Pending implementation
+        }
+      });  
+    }
+    public gettingFreeProfessionalsTRData() {
+      const gettingFPTREvent: WebBaseEvent = this.eventFactoryService.gettingFreeProfessionalsTRDataEvent();
+      this.restApiService.SendOSDEvent(gettingFPTREvent).subscribe({
+        next: (response) => {
+          var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+          this.HandleGettingFreeProfessionalsTRResponse(osdEvent);
+        },
+        error: (error) => {
+          //TODO: Pending implementation
+        }
+      });
+    }
+
+    public assignFreeProfessionalsTRToClaim(idClaim: string, idFreeProfesionalTR: string) {
+      const assignFPTRClaim: WebBaseEvent = this.eventFactoryService.assingFreeProfessionalsTRToClaimEvent(idClaim, idFreeProfesionalTR);
+      this.restApiService.SendOSDEvent(assignFPTRClaim).subscribe({
+        next: (response) => {
+          var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+          this.HandleAssignFreeProfessionalsTRToClaimsResponse(osdEvent);
+        },
+        error: (error) => {
+          //TODO: Pending implementation
+        }
+      });
     }
   
     public userRegister(accountForm: RegisterUserEvent, personalForm: RegisterUserEvent, accountType: string) {
@@ -70,6 +161,7 @@ export class OSDService {
 
     private processOSDEvent(osdEvent: WebBaseEvent) {
       console.log("Llegue al switch");
+      console.log(osdEvent)
         switch (osdEvent.Action) {
             case EventAction.HANDLE_REGISTER_USER_RESPONSE:
                 {
@@ -82,6 +174,21 @@ export class OSDService {
                     this.HandleAuthenticationResponse(osdEvent);
                     break;
                   } 
+                case EventAction.HANDLE_GETTING_CLAIMS_RESPONSE:
+                  {
+                    this.HandleGettingClaimListResponse(osdEvent);
+                    break;
+                  }
+                case EventAction.HANDLE_GETTING_FREE_PROFESSIONALS_TR_RESPONSE:
+                  {
+                    this.HandleGettingFreeProfessionalsTRResponse(osdEvent);
+                    break;
+                  }
+                case EventAction.HANDLE_ASSIGN_CLAIMS_TO_FREE_PROFESSIONALS_RESPONSE:
+                    {
+                      this.HandleAssignFreeProfessionalsTRToClaimsResponse(osdEvent);
+                      break;
+                    }
             default:
                 {
                     //TODO: Send event warning to web socket or local log file
@@ -89,7 +196,50 @@ export class OSDService {
                 }
         }
     }
+    public HandleGettingClaimListResponse(webBaseEvent: WebBaseEvent) {
+      try {
+        console.log('Entra respuesta', webBaseEvent)
+        if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['ClaimList']) {
+          this.claims = webBaseEvent.Body['ClaimList'];
+          this.claimsResponse = true;
+        } else {
+          this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'No hay reclamaciones existentes' }));
+        }
+      }
+      catch (err) {
+        this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Error inesperado' }));
+      }
+    }
 
+    public HandleGettingFreeProfessionalsTRResponse(webBaseEvent: WebBaseEvent) {
+      try {
+        if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['FreeProfessionalList']) {
+          this.usersFreeProfessionalsTR = webBaseEvent.Body['OsdUserList'];
+          this.freeProfessionalsTR = webBaseEvent.Body['FreeProfessionalList'];
+          this.freeProfessionalsTRResponse = true;
+          console.log('FR')
+          console.log(this.freeProfessionalsTR)
+        } else {
+          this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'No hay reclamaciones existentes' }));
+        }
+      }
+      catch (err) {
+        this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Error inesperado' }));
+      }
+    }
+    public HandleAssignFreeProfessionalsTRToClaimsResponse(webBaseEvent: WebBaseEvent) {
+      try {
+        if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['AssignationClaimToFreeProfessionalId']) {
+          let message = webBaseEvent.Body['AssignationClaimToFreeProfessionalId'];
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
+        } else {
+          this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'No hay reclamaciones existentes' }));
+        }
+      }
+      catch (err) {
+        this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Error inesperado' }));
+      }
+    }
     public HandleAuthenticationResponse(webBaseEvent: WebBaseEvent) {
       let userAuthenticationSuccess: boolean;
       let userAuthenticationResultMessage: string;
@@ -102,8 +252,8 @@ export class OSDService {
   
         if (userAuthenticationSuccess) {
           console.log("Estoy registrado")
-          sessionKey = webBaseEvent.getBodyProperty(EventConstants.GENERATED_SESSION_KEY);
-          this.authenticationService.startSession(sessionKey);
+          //sessionKey = webBaseEvent.getBodyProperty(EventConstants.GENERATED_SESSION_KEY);
+          //this.authenticationService.startSession(sessionKey);
           this.securityDataService.emitUserAuthenticationSuccess("/home");
           this.store.dispatch(AuthenticationActions.signIn());
         }
