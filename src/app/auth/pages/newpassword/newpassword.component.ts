@@ -5,13 +5,13 @@ import { Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { ValidationsService } from 'src/app/services/validations.service';
 import { confirmPasswordValidator } from 'src/app/auth/pages/newpassword/validators';
 import { Router } from '@angular/router';
-import { WebsocketService } from 'src/app/services/websocket.service';
 import { EventFactoryService } from 'src/app/services/event-factory.service';
 import { WebBaseEvent } from 'src/app/models/webBaseEvent';
 import { Observable, Subscription } from 'rxjs';
 import { AuthSelectors, ModalSelectors } from 'src/app/store/selectors';
 import { SecurityDataService } from 'src/app/services/security-data.service';
 import { SecurityEventService } from 'src/app/services/security-event.service';
+import { RestAPIService } from 'src/app/services/rest-api.service';
 
 @Component({
   selector: 'app-newpassword',
@@ -34,8 +34,9 @@ export class NewpasswordComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private validationsService: ValidationsService,
     private securityDataService: SecurityDataService,
-    public eventFactoryService: EventFactoryService, public websocketService: WebsocketService,
-    private securityEventService: SecurityEventService) {
+    public eventFactoryService: EventFactoryService, 
+    private securityEventService: SecurityEventService,
+    private restApiService: RestAPIService) {
     this.passwordForm = this.createLoginForm();
     this.securityEventSubscriber = new Subscription();
     this.initialized = false;
@@ -46,10 +47,6 @@ export class NewpasswordComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    if (!this.initialized) {
-      this.websocketService.startConnection();
-      this.initialized = true;
-    }
     setTimeout(() => {
       this.store.dispatch(UiActions.hideAll());
     }, 0);
@@ -65,7 +62,6 @@ export class NewpasswordComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.websocketService.disconnect();
     setTimeout(() => {
       this.store.dispatch(UiActions.showAll());
     }, 0);
@@ -88,8 +84,7 @@ export class NewpasswordComponent implements OnInit, OnDestroy {
     const hashWithoutHashSymbol = hash.substring(1);
     const passwordValue = this.passwordForm.value.password;
     const updatePassword: WebBaseEvent = this.eventFactoryService.UpdatePassword(hashWithoutHashSymbol,passwordValue);
-    this.websocketService.sendSecurityEvent(updatePassword);
-    this.websocketService.startConnection();
+    this.restApiService.SendSecurityEvent(updatePassword);
   }
 
 }

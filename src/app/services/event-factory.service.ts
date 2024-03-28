@@ -40,6 +40,23 @@ export class EventFactoryService {
     return event;
   }
 
+  public ConvertJsonObjectToWebBaseEvent(jsonObject: any): WebBaseEvent {
+    const event = new WebBaseEvent();
+    let bodyObj = { ...jsonObject.Body }
+
+    event.Body = bodyObj;
+    event.TraceIdentifier = bodyObj.TraceIdentifier;
+    event.Type = bodyObj.Type;
+    event.Action = bodyObj.Action;
+    event.Date = bodyObj.Date;
+    event.ApplicationIdentifier = bodyObj.ApplicationIdentifier;
+
+    event.SessionKey = jsonObject.SessionKey;
+    event.SecurityToken = jsonObject.SecurityToken;
+
+    return event;
+  }
+
   public CreateUserLoginEvent(loginForm: UserLoginEvent): WebBaseEvent {
     let event: WebBaseEvent;
 
@@ -48,7 +65,7 @@ export class EventFactoryService {
     event.SecurityToken = "3746736473";
     event.TraceIdentifier = Guid.create().toString();
     event.Type = EventType.OSD;
-    event.Action = EventAction.OSD_USER_LOGIN;
+    event.Action = EventAction.USER_LOGIN;
     event.Date = new Date().toUTCString();
     event.ApplicationIdentifier = 'WebClient'; //TODO: change to use an application identifier
     event.setBodyProperty(EventConstants.EMAIL, loginForm.email);

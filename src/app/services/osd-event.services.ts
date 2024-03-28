@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { WebsocketService } from './websocket.service';
+import { RestAPIService } from 'src/app/services/rest-api.service';
 import { EventFactoryService } from './event-factory.service';
 import { Subscription } from 'rxjs';
 import { UserLoginEvent } from '../auth/interfaces/login.interface';
@@ -22,11 +22,11 @@ import { Claim } from '../models/claim';
   providedIn: 'root'
 })
 export class OSDService {
-  osdEventSubscriber: Subscription;
+  //osdEventSubscriber: Subscription;
 
   constructor(
     private store: Store,
-    private websocketService: WebsocketService,
+    private restApiService: RestAPIService,
     private osdDataService: OSDDataService,
     private securityDataService: SecurityDataService,
     private eventFactoryService: EventFactoryService,
@@ -34,41 +34,58 @@ export class OSDService {
     public notificationService: NotificationService
   ) {
 
-    this.osdEventSubscriber = new Subscription();
-    this.subscribeToOSDEvents();
+    //this.osdEventSubscriber = new Subscription();
+    //this.subscribeToOSDEvents();
   }
 
-  private subscribeToOSDEvents(): void {
-    console.log("subscribeToOSDEvents");
-    this.osdEventSubscriber = this.websocketService.osdEventHandler.subscribe((webBaseEvent: WebBaseEvent) =>
-      this.processOSDEvent(webBaseEvent));
-  }
+  /*    private subscribeToOSDEvents(): void {
+          console.log("subscribeToOSDEvents");
+          this.osdEventSubscriber = this.websocketService.osdEventHandler.subscribe((webBaseEvent: WebBaseEvent) =>
+              this.processOSDEvent(webBaseEvent));
+      }*/
 
   public userLogin(loginForm: UserLoginEvent) {
     const userLoginEvent: WebBaseEvent = this.eventFactoryService.CreateUserLoginEvent(loginForm);
-    this.websocketService.sendOSDEvent(userLoginEvent);
+    this.restApiService.SendOSDEvent(userLoginEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleAuthenticationResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
   }
 
   public userRegister(accountForm: RegisterUserEvent, personalForm: RegisterUserEvent, accountType: string) {
     const registerUserEvent: WebBaseEvent = this.eventFactoryService.CreateRegisterUserEvent(accountForm, personalForm, accountType);
-    console.log("Enviando mensaje al websocketService.sendOSDEvent");
-    this.websocketService.sendOSDEvent(registerUserEvent);
+    console.log("Enviando mensaje al restAPIService.sendOSDEvent");
+    this.restApiService.SendOSDEvent(registerUserEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleRegisterUserResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
   }
 
-  public createPerformance(performance: Form, claimId: string) {
-    const createPerformanceEvent: WebBaseEvent = this.eventFactoryService.CreatePerformanceEvent(performance, claimId);
-    this.websocketService.sendOSDEvent(createPerformanceEvent);
-  }
 
-  public GetClaims() {
-    const createPerformanceEvent: WebBaseEvent = this.eventFactoryService.CreateGetClaims();
-    this.websocketService.sendOSDEvent(createPerformanceEvent);
-  }
+  // public createPerformance(performance: Form, claimId: string) {
+  //   const createPerformanceEvent: WebBaseEvent = this.eventFactoryService.CreatePerformanceEvent(performance, claimId);
+  //   this.websocketService.sendOSDEvent(createPerformanceEvent);
+  // }
 
-  public GetSubscribers() {
-    const createPerformanceEvent: WebBaseEvent = this.eventFactoryService.CreateGetSubscribers();
-    this.websocketService.sendOSDEvent(createPerformanceEvent);
-  }
+  // public GetClaims() {
+  //   const createPerformanceEvent: WebBaseEvent = this.eventFactoryService.CreateGetClaims();
+  //   this.websocketService.sendOSDEvent(createPerformanceEvent);
+  // }
+
+  // public GetSubscribers() {
+  //   const createPerformanceEvent: WebBaseEvent = this.eventFactoryService.CreateGetSubscribers();
+  //   this.websocketService.sendOSDEvent(createPerformanceEvent);
+  // }
 
   private processOSDEvent(osdEvent: WebBaseEvent) {
     console.log("Llegue al switch");
@@ -181,9 +198,8 @@ export class OSDService {
         }
         this.store.dispatch(ModalActions.toggleErrorModal());
       }
-    }
-    catch (err) {
-      //TODO: create exception event and send to local file or core
+    }catch{
+      
     }
   }
 
