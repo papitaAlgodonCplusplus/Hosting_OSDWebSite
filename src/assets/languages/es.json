@@ -167,5 +167,23 @@
     "FirstPage": "Primera página",
     "LastPage": "Última página",
     "UserAuthorized" : "Se autorizó el usuario",
-    "MessageModalAuthorizedCostumer" : "Datos Suscriptor/Cliente"
+    "MessageModalAuthorizedCostumer" : "Datos Suscriptor/Cliente",
+    "Assign_Processor_to_Claim": "Asignar Tramitador a Reclamo",
+    "Finished": "Realizado",
+    "assignedTRClaim": "Se asignó un Tramitador al reclamo correspondiente.",
+    "Close": "Cerrar",
+    "Assignation": "Asignación",
+    "assignProcessor": "Asignar un tramitador",
+    "noClaims": "No hay reclamos",
+    "SubscribedClaim": "Reclamación suscrita",
+    "servicecProveded": "Servicio Proveído: ",
+    "facts":"Hechos: ",
+    "ClaimedAmount":"Monto Reclamado: ",
+    "processorAssigned":"Tramitador a asignar: ",
+    "finishAssignment" : "Terminar Asignación",
+    "processor" : "Tramitador",
+    "ServiceFees" : "Tarifas de servicios",
+    "Action":"Acción",
+    "Associate":"Asociar"
+
 }

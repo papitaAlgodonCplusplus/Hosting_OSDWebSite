@@ -167,5 +167,21 @@
   "FirstPage": "First page",
   "LastPage": "Last page",
   "UserAuthorized" : "User Authorized",
-  "MessageModalAuthorizedCostumer" : "Subscriber/Customer Data"
+  "MessageModalAuthorizedCostumer" : "Subscriber/Customer Data",
+  "Finished": "Done",
+  "assignedTRClaim": "A processor was assigned to the corresponding claim",
+  "Close": "Close",
+  "Assignation": "Assignment",
+  "assignProcessor": "Assign a processor",
+  "noClaims": "No claims",
+  "SubscribedClaim": "Subscribed claim",
+  "servicecProveded": "Service Provided: ",
+  "facts": "Facts: ",
+  "ClaimedAmount": "Claimed Amount: ",
+  "processorAssigned": "Processor to assign ",
+  "finishAssignment": "Finish Assignment",
+  "processor": "Processor",
+  "ServiceFees": "Service Fees",
+  "Action": "Action",
+  "Associate": "Associate"
 }

@@ -47,6 +47,16 @@
         <span class="ml-3">{{'authorizeCustomers' | translate}}</span>
       </li>
 
+      <li class="cursor-pointer" routerLink="/functions/autorization-pl">
+        <i class="fa-solid fa-book"></i>
+        <span class="ml-3">{{'Autorizar profesional libre' | translate}}</span>
+      </li>
+      
+      <li class="cursor-pointer" routerLink="/functions/assign-pltr-claims" 
+          (click)="onSubmitAssignClaimsToFreeProfessionalsTR()">
+        <i class="fa-solid fa-user"></i>
+        <span class="ml-3">{{'Assign_Processor_to_Claim' | translate}}</span>
+      </li>
     </ul>
   </div>
 </ng-template>

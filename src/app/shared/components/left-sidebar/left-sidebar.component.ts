@@ -17,8 +17,7 @@ export class LeftSidebarComponent {
   leftSidebarOpen$: Observable<boolean> = this.store.select(UiSelectors.leftSidebarOpen);
   arrowLeftSidebar: boolean = false;
 
-  constructor(private store: Store, private router: Router,
-    private osdEventService: OSDService) { }
+  constructor(private store: Store, private router: Router, private osdEventService: OSDService,) { }
 
   toggleLeftSidebar(): void {
     this.store.dispatch(UiActions.toggleLeftSidebar());
@@ -38,5 +37,10 @@ export class LeftSidebarComponent {
 
   getSubscribers() {
     this.osdEventService.GetSubscribers();
+  }
+  
+  onSubmitAssignClaimsToFreeProfessionalsTR(): void {
+    this.osdEventService.gettingClaimsData();
+    this.osdEventService.gettingFreeProfessionalsTRData();
   }
 }

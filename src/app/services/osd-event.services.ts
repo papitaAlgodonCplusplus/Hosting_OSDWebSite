@@ -16,6 +16,8 @@ import { OSDDataService } from './osd-data.service';
 import { Form } from '@angular/forms';
 import { UserInfo } from '../models/userInfo';
 import { Claim } from '../models/claim';
+import { EventManager } from '@angular/platform-browser';
+import { tr } from 'date-fns/locale';
 
 
 @Injectable({
@@ -23,6 +25,11 @@ import { Claim } from '../models/claim';
 })
 export class OSDService {
   //osdEventSubscriber: Subscription;
+  claims: any[] = [];
+  usersFreeProfessionalsTR: any[] = [];
+  freeProfessionalsTR: any[] = [];
+  claimsResponse: boolean = false;
+  freeProfessionalsTRResponse: boolean = false;
 
   constructor(
     private store: Store,
@@ -36,12 +43,102 @@ export class OSDService {
 
   }
 
+  cleanClaimList() {
+    this.claims = []
+    this.claimsResponse = false;
+  }
+
+  getClaimList(): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const checkResponse = () => {
+        if (this.claimsResponse) {
+          resolve(this.claims);
+        } else {
+          setTimeout(checkResponse, 1000);
+        }
+      };
+
+      checkResponse();
+    });
+  }
+
+  getFreeProfessionalsTRList(): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const checkResponse = () => {
+        if (this.freeProfessionalsTRResponse) {
+          resolve(this.freeProfessionalsTR);
+        } else {
+          setTimeout(checkResponse, 1000);
+        }
+      };
+
+      checkResponse();
+    });
+  }
+  getUsersFreeProfessionalsTRList(): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const checkResponse = () => {
+        if (this.freeProfessionalsTRResponse) {
+          resolve(this.usersFreeProfessionalsTR);
+        } else {
+          setTimeout(checkResponse, 1000);
+        }
+      };
+
+      checkResponse();
+    });
+  }
+
+  /*private subscribeToOSDEvents(): void {
+      console.log("subscribeToOSDEvents");
+      this.osdEventSubscriber = this.websocketService.osdEventHandler.subscribe((webBaseEvent: WebBaseEvent) =>
+          this.processOSDEvent(webBaseEvent));
+  }*/
+
   public userLogin(loginForm: UserLoginEvent) {
     const userLoginEvent: WebBaseEvent = this.eventFactoryService.CreateUserLoginEvent(loginForm);
     this.restApiService.SendOSDEvent(userLoginEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
         this.HandleAuthenticationResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+
+  public gettingClaimsData() {
+    const gettingClaimsEvent: WebBaseEvent = this.eventFactoryService.CreateGettingClaimsDataEvent();
+    this.restApiService.SendOSDEvent(gettingClaimsEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleGettingClaimListResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+  public gettingFreeProfessionalsTRData() {
+    const gettingFPTREvent: WebBaseEvent = this.eventFactoryService.gettingFreeProfessionalsTRDataEvent();
+    this.restApiService.SendOSDEvent(gettingFPTREvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleGettingFreeProfessionalsTRResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+
+  public assignFreeProfessionalsTRToClaim(idClaim: string, idFreeProfesionalTR: string) {
+    const assignFPTRClaim: WebBaseEvent = this.eventFactoryService.assingFreeProfessionalsTRToClaimEvent(idClaim, idFreeProfesionalTR);
+    this.restApiService.SendOSDEvent(assignFPTRClaim).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleAssignFreeProfessionalsTRToClaimsResponse(osdEvent);
       },
       error: (error) => {
         //TODO: Pending implementation
@@ -61,6 +158,52 @@ export class OSDService {
         //TODO: Pending implementation
       }
     });
+  }
+
+
+  public HandleGettingClaimListResponse(webBaseEvent: WebBaseEvent) {
+    try {
+      console.log('Entra respuesta', webBaseEvent)
+      if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['ClaimList']) {
+        this.claims = webBaseEvent.Body['ClaimList'];
+        this.claimsResponse = true;
+      } else {
+        this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'No hay reclamaciones existentes' }));
+      }
+    }
+    catch (err) {
+      this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Error inesperado' }));
+    }
+  }
+
+  public HandleGettingFreeProfessionalsTRResponse(webBaseEvent: WebBaseEvent) {
+    try {
+      if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['FreeProfessionalList']) {
+        this.usersFreeProfessionalsTR = webBaseEvent.Body['OsdUserList'];
+        this.freeProfessionalsTR = webBaseEvent.Body['FreeProfessionalList'];
+        this.freeProfessionalsTRResponse = true;
+        console.log('FR')
+        console.log(this.freeProfessionalsTR)
+      } else {
+        this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'No hay reclamaciones existentes' }));
+      }
+    }
+    catch (err) {
+      this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Error inesperado' }));
+    }
+  }
+  public HandleAssignFreeProfessionalsTRToClaimsResponse(webBaseEvent: WebBaseEvent) {
+    try {
+      if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['AssignationClaimToFreeProfessionalId']) {
+        let message = webBaseEvent.Body['AssignationClaimToFreeProfessionalId'];
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
+      } else {
+        this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'No hay reclamaciones existentes' }));
+      }
+    }
+    catch (err) {
+      this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Error inesperado' }));
+    }
   }
 
   public GetSubscribers() {
@@ -90,7 +233,7 @@ export class OSDService {
   public HandleGetSubscriberResponse(webBaseEvent: WebBaseEvent) {
     try {
       var actionGetOsdUsersSusbscriberResultMessage = webBaseEvent.getBodyProperty(EventConstants.LIST_OSD_USERS_SUBSCRIBERS);
-      
+
       if (actionGetOsdUsersSusbscriberResultMessage != null) {
         var actionGetSusbscribersResultMessage = webBaseEvent.getBodyProperty(EventConstants.LIST_SUBSCRIBERS);
         const osdUsersSubscribersModels = actionGetOsdUsersSusbscriberResultMessage;
@@ -98,7 +241,7 @@ export class OSDService {
         this.osdDataService.emitGetOsdUsersSubscribersSuccess(osdUsersSubscribersModels);
         this.osdDataService.emitGetSubscribersSuccess(subscribersModels);
       }
-      
+
     }
     catch (err) {
       //TODO: create exception event and send to local file or core

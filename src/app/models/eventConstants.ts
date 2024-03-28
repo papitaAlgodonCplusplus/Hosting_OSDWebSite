@@ -74,14 +74,13 @@ export class EventConstants {
 
   public static PERFORMANCE_FORM: string = "PerformanceForm";
   public static USER_INFO: string = "UserInfo";
-  public static CLAIM_ID: string = "ClaimId";
-  public static FREE_PROFESSIONAL_ID: string = "FreeProfessionalId";
-
   public static ACTION_OSD_RESULT_MESSAGE: string = "ActionOSDResultMessage";
 
   public static LIST_CLAIM: string = "ListClaim"
   public static LIST_SUBSCRIBERS: string = "ListSubscribers"
   public static LIST_OSD_USERS_SUBSCRIBERS: string = "ListOsdUsersSubscribers"
+  public static CLAIM_ID: string = "ClaimId";
+  public static FREE_PROFESSIONAL_ID: string = "FreeProfessionalId";
   //#endregion
   constructor() {
 

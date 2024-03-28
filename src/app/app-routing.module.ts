@@ -22,6 +22,10 @@ const routes: Routes = [
     loadChildren: () => import('./reports/reports.module').then(m => m.ReportsModule)
   },
   {
+    path: 'functions',
+    loadChildren: () => import('./functions/functions.module').then(m => m.FunctionsModule)
+  },
+  {
     path: '404',
     loadChildren: () => import('./shared/shared.module').then(m => m.SharedModule)
   },

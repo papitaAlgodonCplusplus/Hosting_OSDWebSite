@@ -1,0 +1,30 @@
+<div class="max-w-2xl mx-auto">
+  <h1 class="text-2xl mb-4">Lista de profesionales libres</h1>
+  <table class="w-full border-collapse border border-gray-300">
+    <thead>
+      <tr>
+        <th class="border border-gray-300 px-4 py-2">DNI</th>
+        <th class="border border-gray-300 px-4 py-2">Nombre Completo</th>
+        <th class="border border-gray-300 px-4 py-2">Autorizaciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let abogado of abogados">
+        <td class="border border-gray-300 px-2 py-2">{{ abogado.id }}</td>
+        <td class="border border-gray-300 px-2 py-2">{{ abogado.nombre }}</td>
+        <td class="border border-gray-300 px-2 py-2 flex justify-center items-center gap-2">
+          <button class="bg-darkslategray text-white py-1 px-4" (click)="toggleModal()">Modal</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="modal fixed inset-0 flex items-center justify-center bg-opacity-50 bg-gray-900" [ngStyle]="{ display: modalVisible ? 'flex' : 'none' }">
+  <div class="modal-content bg-white border border-darkslategray text-darkslategray p-4">
+    <h2 class="text-darkslategray">Informacion de el profesional libre</h2>
+    <button (click)="toggleModal()" class="bg-darkslategray text-white py-1 px-4 m-2">Autorizar</button>
+    <button (click)="toggleModal()" class="bg-darkslategray text-white py-1 px-4 m-2">Quitar autorizacion</button>
+    <button (click)="toggleModal()" class="bg-darkslategray text-white py-1 px-4 m-2">Cerrar Modal</button>
+  </div>
+</div>
