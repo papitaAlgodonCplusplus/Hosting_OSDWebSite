@@ -75,8 +75,6 @@ export class EventFactoryService {
   public CreateGettingClaimsDataEvent(): WebBaseEvent {
     let event: WebBaseEvent;
 
-    var sessionkey: string | null = localStorage.getItem('sk');
-    
     event = new WebBaseEvent();
     event.SecurityToken = "3746736473";
     event.TraceIdentifier = Guid.create().toString();
@@ -84,19 +82,12 @@ export class EventFactoryService {
     event.Action = EventAction.GETTING_CLAIMS;
     event.Date = new Date().toUTCString();
     event.ApplicationIdentifier = 'WebClient';
-    if(sessionkey != null){
-      event.SessionKey = sessionkey;
-      return event;
-    }
-    else{
-      event.SessionKey = this.authenticationService.sessionKey;
-      return event;
-    }
+    event.SessionKey = this.authenticationService.sessionKey;
+    
+    return event;
   }
-  public gettingFreeProfessionalsTRData(): WebBaseEvent {
+  public gettingFreeProfessionalsTRDataEvent(): WebBaseEvent {
     let event: WebBaseEvent;
-
-    var sessionkey: string | null = localStorage.getItem('sk');
     
     event = new WebBaseEvent();
     event.SecurityToken = "3746736473";
@@ -105,20 +96,12 @@ export class EventFactoryService {
     event.Action = EventAction.GETTING_FREE_PROFESSIONALS_TR;
     event.Date = new Date().toUTCString();
     event.ApplicationIdentifier = 'WebClient';
+    event.SessionKey = this.authenticationService.sessionKey;
 
-    if(sessionkey != null){
-      event.SessionKey = sessionkey;
-      return event;
-    }
-    else{
-      event.SessionKey = this.authenticationService.sessionKey;
-      return event;
-    }
+    return event;
   }
-  public assingFreeProfessionalsTRToClaim(idClaim: string, idFreeProfesionalTR: string): WebBaseEvent {
+  public assingFreeProfessionalsTRToClaimEvent(idClaim: string, idFreeProfesionalTR: string): WebBaseEvent {
     let event: WebBaseEvent;
-
-    var sessionkey: string | null = localStorage.getItem('sk');
     
     event = new WebBaseEvent();
     event.SecurityToken = "3746736473";
@@ -131,14 +114,9 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.CLAIM_ID, idClaim);
     event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_ID, idFreeProfesionalTR);
 
-    if(sessionkey != null){
-      event.SessionKey = sessionkey;
-      return event;
-    }
-    else{
-      event.SessionKey = this.authenticationService.sessionKey;
-      return event;
-    }
+    event.SessionKey = this.authenticationService.sessionKey;
+
+    return event;
   }
 
   public CreateLoginErrorNotificationEvent(webBaseEvent: WebBaseEvent, message: string): NotificationEvent {

@@ -156,5 +156,23 @@
     "training": "FORMACIÓN",
     "marketing": "Marketing Prima Comercial",
     "accumulatedAnnualCompensation": "Retribución anual acumulada",
-    "loginInRegister": "Nuestra plataforma está diseñada con la seguridad y la privacidad en mente. Puedes estar seguro de que tus datos están protegidos y que solo se utilizarán de acuerdo con nuestra política de privacidad."
+    "loginInRegister": "Nuestra plataforma está diseñada con la seguridad y la privacidad en mente. Puedes estar seguro de que tus datos están protegidos y que solo se utilizarán de acuerdo con nuestra política de privacidad.",
+    "Assign_Processor_to_Claim": "Asignar Tramitador a Reclamo",
+    "Finished": "Realizado",
+    "assignedTRClaim": "Se asignó un Tramitador al reclamo correspondiente.",
+    "Close": "Cerrar",
+    "Assignation": "Asignación",
+    "assignProcessor": "Asignar un tramitador",
+    "noClaims": "No hay reclamos",
+    "SubscribedClaim": "Reclamación suscrita",
+    "servicecProveded": "Servicio Proveído: ",
+    "facts":"Hechos: ",
+    "ClaimedAmount":"Monto Reclamado: ",
+    "processorAssigned":"Tramitador a asignar: ",
+    "finishAssignment" : "Terminar Asignación",
+    "processor" : "Tramitador",
+    "ServiceFees" : "Tarifas de servicios",
+    "Action":"Acción",
+    "Associate":"Asociar"
+
 }

@@ -21,7 +21,7 @@ import { tr } from 'date-fns/locale';
   providedIn: 'root'
 })
 export class OSDService {
-    osdEventSubscriber: Subscription;
+    //osdEventSubscriber: Subscription;
     claims: any[] = [];
     usersFreeProfessionalsTR: any[] = [];
     freeProfessionalsTR: any[] = [];
@@ -109,16 +109,40 @@ export class OSDService {
 
     public gettingClaimsData() {
       const gettingClaimsEvent: WebBaseEvent = this.eventFactoryService.CreateGettingClaimsDataEvent();
-      this.websocketService.sendOSDEvent(gettingClaimsEvent);
+      this.restApiService.SendOSDEvent(gettingClaimsEvent).subscribe({
+        next: (response) => {
+          var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+          this.HandleGettingClaimListResponse(osdEvent);
+        },
+        error: (error) => {
+          //TODO: Pending implementation
+        }
+      });  
     }
     public gettingFreeProfessionalsTRData() {
-      const gettingFPTREvent: WebBaseEvent = this.eventFactoryService.gettingFreeProfessionalsTRData();
-      this.websocketService.sendOSDEvent(gettingFPTREvent);
+      const gettingFPTREvent: WebBaseEvent = this.eventFactoryService.gettingFreeProfessionalsTRDataEvent();
+      this.restApiService.SendOSDEvent(gettingFPTREvent).subscribe({
+        next: (response) => {
+          var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+          this.HandleGettingFreeProfessionalsTRResponse(osdEvent);
+        },
+        error: (error) => {
+          //TODO: Pending implementation
+        }
+      });
     }
 
     public assignFreeProfessionalsTRToClaim(idClaim: string, idFreeProfesionalTR: string) {
-      const assignFPTRClaim: WebBaseEvent = this.eventFactoryService.assingFreeProfessionalsTRToClaim(idClaim, idFreeProfesionalTR);
-      this.websocketService.sendOSDEvent(assignFPTRClaim);
+      const assignFPTRClaim: WebBaseEvent = this.eventFactoryService.assingFreeProfessionalsTRToClaimEvent(idClaim, idFreeProfesionalTR);
+      this.restApiService.SendOSDEvent(assignFPTRClaim).subscribe({
+        next: (response) => {
+          var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+          this.HandleAssignFreeProfessionalsTRToClaimsResponse(osdEvent);
+        },
+        error: (error) => {
+          //TODO: Pending implementation
+        }
+      });
     }
   
     public userRegister(accountForm: RegisterUserEvent, personalForm: RegisterUserEvent, accountType: string) {
@@ -174,6 +198,7 @@ export class OSDService {
     }
     public HandleGettingClaimListResponse(webBaseEvent: WebBaseEvent) {
       try {
+        console.log('Entra respuesta', webBaseEvent)
         if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['ClaimList']) {
           this.claims = webBaseEvent.Body['ClaimList'];
           this.claimsResponse = true;
@@ -192,6 +217,8 @@ export class OSDService {
           this.usersFreeProfessionalsTR = webBaseEvent.Body['OsdUserList'];
           this.freeProfessionalsTR = webBaseEvent.Body['FreeProfessionalList'];
           this.freeProfessionalsTRResponse = true;
+          console.log('FR')
+          console.log(this.freeProfessionalsTR)
         } else {
           this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'No hay reclamaciones existentes' }));
         }
@@ -225,8 +252,8 @@ export class OSDService {
   
         if (userAuthenticationSuccess) {
           console.log("Estoy registrado")
-          sessionKey = webBaseEvent.getBodyProperty(EventConstants.GENERATED_SESSION_KEY);
-          this.authenticationService.startSession(sessionKey);
+          //sessionKey = webBaseEvent.getBodyProperty(EventConstants.GENERATED_SESSION_KEY);
+          //this.authenticationService.startSession(sessionKey);
           this.securityDataService.emitUserAuthenticationSuccess("/home");
           this.store.dispatch(AuthenticationActions.signIn());
         }

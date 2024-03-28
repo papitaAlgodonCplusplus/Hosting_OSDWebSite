@@ -156,5 +156,21 @@
   "training": "TRAINING",
   "marketing": "Marketing Premium Commercial",
   "accumulatedAnnualCompensation": "Accumulated Annual Compensation",
-  "loginInRegister": "Our platform is designed with security and privacy in mind. You can rest assured that your data is protected and will only be used in accordance with our privacy policy."
+  "loginInRegister": "Our platform is designed with security and privacy in mind. You can rest assured that your data is protected and will only be used in accordance with our privacy policy.",
+  "Finished": "Done",
+  "assignedTRClaim": "A processor was assigned to the corresponding claim",
+  "Close": "Close",
+  "Assignation": "Assignment",
+  "assignProcessor": "Assign a processor",
+  "noClaims": "No claims",
+  "SubscribedClaim": "Subscribed claim",
+  "servicecProveded": "Service Provided: ",
+  "facts": "Facts: ",
+  "ClaimedAmount": "Claimed Amount: ",
+  "processorAssigned": "Processor to assign ",
+  "finishAssignment": "Finish Assignment",
+  "processor": "Processor",
+  "ServiceFees": "Service Fees",
+  "Action": "Action",
+  "Associate": "Associate"
 }

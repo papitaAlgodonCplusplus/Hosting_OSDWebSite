@@ -14,7 +14,6 @@ export class AuthenticationService {
   public initialize(sessionlessKey : string)
   {
     localStorage.setItem('sessionlessKey', sessionlessKey);
-    localStorage.setItem('sk', sessionlessKey);
   }
 
   public startSession(sessionKey : string)
