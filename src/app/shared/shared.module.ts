@@ -18,6 +18,7 @@ import { SwitchLanguagesComponent } from './components/switch-languages/switch-l
 import { TranslateModule } from '@ngx-translate/core';
 import { LeftSidebarComponent } from './components/left-sidebar/left-sidebar.component';
 import { MatPaginatorIntl } from '@angular/material/paginator';
+import { AuthorizedModalComponent } from './components/authorized-modal/authorized-modal.component';
  
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { MatPaginatorIntl } from '@angular/material/paginator';
     AlertComponent,
     SearchDropdownComponent,
     LeftSidebarComponent,
-    SwitchLanguagesComponent
+    SwitchLanguagesComponent,
+    AuthorizedModalComponent
   ],
   imports: [
     CommonModule,
@@ -55,7 +57,8 @@ import { MatPaginatorIntl } from '@angular/material/paginator';
     ConfirmationModalComponent,
     SearchDropdownComponent,
     LeftSidebarComponent,
-    SwitchLanguagesComponent
+    SwitchLanguagesComponent,
+    AuthorizedModalComponent
   ]
 })
 export class SharedModule { }

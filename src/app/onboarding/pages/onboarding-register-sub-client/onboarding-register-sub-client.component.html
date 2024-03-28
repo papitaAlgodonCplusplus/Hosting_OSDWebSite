@@ -31,7 +31,7 @@
             <div class="flex flex-wrap items-center">
                 <shared-input-field class="w-full md:w-1/3" fieldName="identity" label="{{'DNI' | translate}}*"
                     inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-                <shared-input-field class="w-full md:w-1/3" fieldName="name" label="{{'nombre' | translate}}"
+                <shared-input-field class="w-full md:w-1/3" fieldName="name" label="{{'name' | translate}}"
                     inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
                 <shared-input-field class="w-full md:w-1/3" fieldName="firstSurname"
                     label="{{'primer_apellido' | translate}}" inputType="text" [formGroup]="personalForm"
@@ -60,7 +60,7 @@
 
                     <div class="flex-1 flex flex-col text-black p-2">
                         <shared-input-field class="w-full" fieldName="email"
-                            label="{{'correo_electronico' | translate}}" inputType="email" [formGroup]="personalForm"
+                            label="{{'email' | translate}}" inputType="email" [formGroup]="personalForm"
                             [bgColor]="'bg-white-lightbone'"></shared-input-field>
                         <auth-input-password class="w-full " [formGroup]="personalForm" fieldName="password"
                             label="{{'contraseña' | translate}}"></auth-input-password>

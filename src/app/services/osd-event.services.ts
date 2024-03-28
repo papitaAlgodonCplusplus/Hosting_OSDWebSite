@@ -65,7 +65,7 @@ export class OSDService {
     this.websocketService.sendOSDEvent(createPerformanceEvent);
   }
 
- public GetSubscribers() {
+  public GetSubscribers() {
     const createPerformanceEvent: WebBaseEvent = this.eventFactoryService.CreateGetSubscribers();
     this.websocketService.sendOSDEvent(createPerformanceEvent);
   }
@@ -93,7 +93,7 @@ export class OSDService {
           this.HandleGetClaimsResponse(osdEvent);
           break;
         }
-        case EventAction.HANDLE_GET_SUBSCRIBERS_RESPONSE:
+      case EventAction.HANDLE_GET_SUBSCRIBERS_RESPONSE:
         {
           this.HandleGetSubscriberResponse(osdEvent);
           break;
@@ -108,11 +108,13 @@ export class OSDService {
 
   public HandleGetSubscriberResponse(webBaseEvent: WebBaseEvent) {
     try {
-      var actionGetSusbscriberResultMessage = webBaseEvent.getBodyProperty(EventConstants.LIST_SUBSCRIBER);
-      if (actionGetSusbscriberResultMessage != null) {
-        const subscriberModels = actionGetSusbscriberResultMessage;
-        console.log(subscriberModels)
-        this.osdDataService.emitGetSubscribersSuccess(subscriberModels);
+      var actionGetOsdUsersSusbscriberResultMessage = webBaseEvent.getBodyProperty(EventConstants.LIST_OSD_USERS_SUBSCRIBERS);
+      if (actionGetOsdUsersSusbscriberResultMessage != null) {
+        var actionGetSusbscribersResultMessage = webBaseEvent.getBodyProperty(EventConstants.LIST_SUBSCRIBERS);
+        const osdUsersSubscribersModels = actionGetOsdUsersSusbscriberResultMessage;
+        const subscribersModels = actionGetSusbscribersResultMessage;
+        this.osdDataService.emitGetOsdUsersSubscribersSuccess(osdUsersSubscribersModels);
+        this.osdDataService.emitGetSubscribersSuccess(subscribersModels);
       }
       else {
         this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "No hay subscriptores para mostrar" }));
@@ -168,7 +170,7 @@ export class OSDService {
 
         userInfo = webBaseEvent.getBodyProperty(EventConstants.USER_INFO);
         sessionKey = webBaseEvent.getBodyProperty(EventConstants.GENERATED_SESSION_KEY);
-       // this.authenticationService.startSession(sessionKey);
+        // this.authenticationService.startSession(sessionKey);
         this.authenticationService.userInfo = userInfo;
         this.securityDataService.emitUserAuthenticationSuccess("/home");
         this.store.dispatch(AuthenticationActions.signIn());

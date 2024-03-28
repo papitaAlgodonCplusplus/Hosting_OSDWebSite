@@ -1,0 +1,33 @@
+<div *ngIf="showModal" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
+    <div class="bg-opacity-75 bg-black absolute inset-0 "></div>
+    <div class="relative z-50 bg-white shadow-md space-y-1 w-1/3 h">
+        <div class="justify-center">
+            <h1 class="bg-darkslategray text-white text-center py-2">{{message}} <i
+                    class="fa-solid fa-id-card animate-pulse text-yellow-500"></i></h1>
+            <div class="p-3 flex flex-col items-center">
+                <ng-container *ngFor="let attr of personalAccountDataAttributes()">
+                    <div class="pr-3 pb-3">
+                        <h1 class="text-darkslategray font-bold text-center border-b">{{ attr | translate }}:</h1>
+                        <p class="px-3  text-center ">{{
+                            personalAccountValueForAttribute(attr) }}</p>
+                    </div>
+                </ng-container>
+
+                <ng-container *ngFor="let attr of professionalAccountDataAttributes()">
+                    <div class="pr-3 pb-3">
+                        <h1 class="text-darkslategray font-bold text-center border-b">{{ attr | translate }}:</h1>
+                        <p class="px-3 text-center ">{{
+                            professionalAccountValueForAttribute(attr) }}</p>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+
+        <div class="flex justify-center p-3">
+            <button (click)="onConfirm()"
+                class="bg-darkslategray text-white font-medium px-4 py-2 mr-2 rounded">Autorizar</button>
+            <button (click)="onCancel()"
+                class="bg-line text-darkslategray font-medium px-4 py-2 rounded">Cancelar</button>
+        </div>
+    </div>
+</div>

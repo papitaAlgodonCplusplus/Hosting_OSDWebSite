@@ -68,7 +68,7 @@ export class EventFactoryService {
     event.Date = new Date().toUTCString();
     event.ApplicationIdentifier = 'WebClient'; //TODO: change to use an application identifier
     event.setBodyProperty(EventConstants.PERFORMANCE_FORM, performanceForm);
-    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_ID, this.authenticationService.userInfo?.id);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_ID, this.authenticationService.userInfo?.identity);
     event.setBodyProperty(EventConstants.CLAIM_ID, claimId);
     return event;
   }

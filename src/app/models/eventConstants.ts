@@ -80,7 +80,8 @@ export class EventConstants {
   public static ACTION_OSD_RESULT_MESSAGE: string = "ActionOSDResultMessage";
 
   public static LIST_CLAIM: string = "ListClaim"
-  public static LIST_SUBSCRIBER: string = "ListSubscribers"
+  public static LIST_SUBSCRIBERS: string = "ListSubscribers"
+  public static LIST_OSD_USERS_SUBSCRIBERS: string = "ListOsdUsersSubscribers"
   //#endregion
   constructor() {
 
