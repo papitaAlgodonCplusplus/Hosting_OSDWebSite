@@ -1,10 +1,7 @@
 export class UserInfo {
-  public username: string = "";
+  public id : string = "";
+  public identity : string = "";
   public name: string = "";
-  public lastname: string = "";
-
-  constructor()
-  {
-
-  }
+  public email: string = "";
+  public isActive : string = ""
 }

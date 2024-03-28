@@ -22,6 +22,11 @@
         <div class="flex flex-wrap space-y-3 p-2">
             <form [formGroup]="accountForm" autocomplete="off" class="flex flex-wrap items-center">
 
+                <!-- <shared-simple-dropdown class="w-full md:w-1/3" fieldName="subscriber"
+                    label="Subscriptores" [formGroup]="accountForm" [dropdownItems]="subcribersList"
+                    [selectedItem]="selectedWorkspace">
+                </shared-simple-dropdown> -->
+
                 <shared-simple-dropdown class="w-full md:w-1/3" fieldName="workspace"
                     label="{{'area_trabajo' | translate}}" [formGroup]="accountForm" [dropdownItems]="workspace"
                     [selectedItem]="selectedWorkspace">
@@ -40,35 +45,35 @@
                     <div [class.show]="isDropdownOpen"
                         class="dropdown-menu flex flex-col p-5 space-y-2 z-50 bg-white absolute top-auto w-80 border ring-1 ring-black ring-opacity-5 animate__animated animate__fadeInUp">
                         <button class="absolute right-3 top-2 animate-pulse" (click)="toggleDropdown()"><i
-                                class="fa-solid fa-chevron-up"></i></button>
-                        <div class="mb-4">
+                                class="fa-solid fa-xmark"></i></button>
+                        <div class="flex flex-col items-center px-2 space-x-1">
                             <label for="collegiateCardArchive"
-                                class="block text-sm text-darkslategray  mb-1">{{'carnet_colegiado' |
+                                class="block text-sm mb-1">{{'carnet_colegiado' |
                                 translate}}</label>
-                            <div class="flex items-center">
+                            <div class="flex items-center justify-center flex-col space-y-1">
                                 <input type="file" id="collegiateCardArchive" formControlName="collegiateCardArchive"
                                     class="hidden" (change)="displayFileName()">
                                 <label for="collegiateCardArchive"
-                                    class="cursor-pointer py-2 px-4 text-sm border hover:bg-gray-100 focus:outline-none focus:ring focus:border-blue-300">
+                                    class="cursor-pointer p-2 text-sm border bg-darkslategray text-white">
                                     {{'seleccionar_archivo' | translate}}
                                 </label>
-                                <span class="ml-2 text-red-600">{{this.documentNames[0]}}</span>
+                                <span class="ml-2 text-sm text-darkslategray">{{this.documentNames[0]}}</span>
                             </div>
                         </div>
 
                         <div class="mb-4">
                             <label for="lastReceiptCLI"
-                                class="block text-sm text-darkslategray mb-1">{{'seguro_responsabilidad_civil' |
+                                class="block text-sm mb-1">{{'seguro_responsabilidad_civil' |
                                 translate}}
                             </label>
-                            <div class="flex items-center">
+                            <div class="flex items-center justify-center flex-col space-y-1">
                                 <input type="file" id="lastReceiptCLI" formControlName="lastReceiptCLI" class="hidden"
                                     (change)="displayFileName()">
                                 <label for="lastReceiptCLI"
-                                    class="cursor-pointer py-2 px-4 text-sm border hover:bg-gray-100 focus:outline-none focus:ring focus:border-blue-300">
+                                    class="cursor-pointer p-2 text-sm border bg-darkslategray text-white">
                                     {{'seleccionar_archivo' | translate}}
                                 </label>
-                                <span class="ml-2 text-red-600">{{this.documentNames[1]}}</span>
+                                <span class="ml-2 text-sm text-darkslategray">{{this.documentNames[1]}}</span>
                             </div>
                         </div>
                     </div>
@@ -91,7 +96,7 @@
                 <shared-input-field class="w-full md:w-1/3" fieldName="identity" label="{{'DNI' | translate}}"
                     inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-                <shared-input-field class="w-full md:w-1/3" fieldName="name" label="{{'nombre' | translate}}"
+                <shared-input-field class="w-full md:w-1/3" fieldName="name" label="{{'name' | translate}}"
                     inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
                 <shared-input-field class="w-full md:w-1/3" fieldName="firstSurname"
@@ -129,7 +134,7 @@
 
                     <div class="flex-1 flex flex-col text-black p-2">
                         <shared-input-field class="w-full" fieldName="email"
-                            label="{{'correo_electronico' | translate}}" inputType="email" [formGroup]="personalForm"
+                            label="{{'email' | translate}}" inputType="email" [formGroup]="personalForm"
                             [bgColor]="'bg-white-lightbone'"></shared-input-field>
                         <auth-input-password class="w-full " [formGroup]="personalForm" fieldName="password"
                             label="{{'contraseña' | translate}}"></auth-input-password>

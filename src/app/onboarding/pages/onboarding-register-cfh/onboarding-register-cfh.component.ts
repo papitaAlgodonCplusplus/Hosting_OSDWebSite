@@ -20,8 +20,8 @@ export class OnboardingRegisterCfhComponent {
   personalForm: FormGroup;
   selectedEntity: string | undefined;
   entity: DropDownItem[] = [
-    { value: this.translate.instant("entidad_publica"), key: 'key1' },
-    { value: this.translate.instant("entidad_privada"), key: 'Key2' },
+    { value: this.translate.instant("entidad_publica"), key: this.translate.instant("entidad_publica") },
+    { value: this.translate.instant("entidad_privada"), key: this.translate.instant("entidad_privada") },
   ];
   selectedPLcode: string | undefined;
   plCode: DropDownItem[] = [
@@ -73,7 +73,7 @@ export class OnboardingRegisterCfhComponent {
 
   private createAccountForm(): FormGroup {
     const form = this.formBuilder.group({
-       entity: ['', [Validators.required]],   
+      clientType: ['', [Validators.required]],   
     });
 
     return form;

@@ -18,6 +18,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core'
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClient } from '@angular/common/http';
+import { claimReducers } from './store/reducers/claim.reducer';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { HttpClient } from '@angular/common/http';
       uiState: uiReducers,
       modalState: modalReducers,
       authenticationState: authenticationReducers,
+      claimState : claimReducers
     }),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
     ServiceWorkerModule.register('ngsw-worker.js', {
@@ -56,7 +58,8 @@ import { HttpClient } from '@angular/common/http';
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptorService,
       multi: true
-    }
+    },
+    
   ],
   bootstrap: [AppComponent]
 })

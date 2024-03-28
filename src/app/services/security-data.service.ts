@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
+import { Claim } from '../models/claim';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ export class SecurityDataService {
   userRegisterSuccess$ = this.userRegisterSuccessSubject.asObservable();
   verifyEmailSuccess$ = this.verifyEmailSuccessSubject.asObservable();
   userAuthenticationSuccess$ = this.userAuthenticationSuccessSubject.asObservable();
+
   constructor() { }
 
   emitUserAuthenticationSuccess(data: string) {
@@ -26,4 +28,6 @@ export class SecurityDataService {
   emitActionVerifyEmailSuccess(data: boolean) {
     this.verifyEmailSuccessSubject.next(data);
   }
+
+ 
 }

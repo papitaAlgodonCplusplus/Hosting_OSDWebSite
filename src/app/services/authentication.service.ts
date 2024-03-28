@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { UserInfo } from '../models/userInfo';
 
 @Injectable({
   providedIn: 'root'
@@ -56,4 +57,20 @@ export class AuthenticationService {
       return true;
   };
 
+  get userInfo(): UserInfo | null {
+    let userInfo: UserInfo | null = null;
+
+    const userInfoString = localStorage.getItem('userInfo');
+
+    if (userInfoString !== null) {
+      userInfo = JSON.parse(userInfoString);
+    }
+
+    return userInfo;
+  }
+
+  set userInfo(value: UserInfo)
+  {
+    localStorage.setItem('userInfo', JSON.stringify(value));
+  }
 }

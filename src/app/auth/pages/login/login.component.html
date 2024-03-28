@@ -13,7 +13,7 @@
 
           <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" autocomplete="off"
             class="flex flex-col items-center justify-center h-4/5 w-full md:w-4/5 px-2 pb-20 2xl:px-10 gap-6">
-            <shared-input-field class="w-full" fieldName="email" label="{{ 'correo_electronico' | translate }}"
+            <shared-input-field class="w-full" fieldName="email" label="{{ 'email' | translate }}"
               inputType="email" [formGroup]="loginForm"></shared-input-field>
             <auth-input-password class="w-full" [formGroup]="loginForm" fieldName="password"
               label="{{'contraseña' | translate}}"></auth-input-password>
@@ -21,7 +21,7 @@
               <a class="cursor-pointer underline decoration-1 text-blue text-sm"
                 routerLink="/auth/forgot-password">{{'olvidaste_tu_contraseña' | translate}}</a>
             </div>
-            <button type="submit"
+            <button type="submit" routerLink="/home"
               class="w-96 bg-darkslategray text-white text-lg p-2 font-bold hover:bg-hover-darkblue">
               {{'iniciar_sesion' | translate}}
             </button>

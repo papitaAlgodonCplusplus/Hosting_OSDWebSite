@@ -1,89 +1,86 @@
-<div class="flex flex-col md:flex-row">
+<div class="flex flex-row">
     <div class="flex-1 bg-white py-5 flex justify-center px-2">
         <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" autocomplete="off"
             class="flex flex-col items-center px-1">
-            <div class="w-full rounded-xl bg-darkslategray rounded-b-none">
-                <h1 class=" px-1 py-3 text-white ">{{'file_claim' | translate}}</h1>
+            <div class="w-full rounded-xl border-b text-darkslategray text-lg">
+                <h1 class=" px-1 py-3 ">{{'file_claim' | translate}}</h1>
             </div>
-            <shared-simple-dropdown class="w-full" fieldName="claimant" label="{{'reclamacion' | translate}}" [formGroup]="registerForm"
-                [dropdownItems]="claimant" [selectedItem]="selectedClaimant">
+            <shared-simple-dropdown class="w-full" fieldName="claimant" label="{{'reclamacion' | translate}}"
+                [formGroup]="registerForm" [dropdownItems]="claimant" [selectedItem]="selectedClaimant">
             </shared-simple-dropdown>
 
-            <shared-simple-dropdown class="w-full" label="{{'status' | translate}}" fieldName="finalGrade"
-            [formGroup]="registerForm" [dropdownItems]="Status" [selectedItem]="selectedStatus">
-            </shared-simple-dropdown>
-        
-            <shared-simple-dropdown class="w-full" fieldName="Subscriber" label="{{'subscriber' | translate}}" [formGroup]="registerForm"
-                [dropdownItems]="subscriber" [selectedItem]="selectedSubscriber">
+            <shared-simple-dropdown class="w-full" label="{{'status' | translate}}" fieldName="state"
+                [formGroup]="registerForm" [dropdownItems]="Status" [selectedItem]="selectedStatus">
             </shared-simple-dropdown>
 
-            <shared-input-field class="w-full" fieldName="amountClaimed" label="{{'cuantia_reclamada' | translate}}" inputType="text"
-                [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+            <shared-simple-dropdown class="w-full" fieldName="subscriber" label="{{'subscriber' | translate}}"
+                [formGroup]="registerForm" [dropdownItems]="subscriber" [selectedItem]="selectedSubscriber">
+            </shared-simple-dropdown>
+
+            <shared-input-field class="w-full" fieldName="amountClaimed" label="{{'cuantia_reclamada' | translate}}"
+                inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
             <shared-input-field class="w-full" fieldName="AAsavingsPP" label="{{'amountPaidByOtherParty' | translate}}"
                 inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-            <shared-input-field class="w-full" fieldName="AAsavingsPP" label="{{'institutionalImprovementSavings' | translate}}"
-                inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+            <shared-input-field class="w-full" fieldName="AAsavingsPP"
+                label="{{'institutionalImprovementSavings' | translate}}" inputType="text" [formGroup]="registerForm"
+                [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
 
-            <shared-input-field class="w-full" fieldName="creditingDate" label="{{'creditingDate' | translate}}" inputType="date"
+            <shared-input-field class="w-full" fieldName="creditingDate" label="{{'creditingDate' | translate}}"
+                inputType="date" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+            <shared-input-field class="w-full" fieldName="OSDvaluation"
+                label="{{'institutionOsdValuation' | translate}}" inputType="number" [formGroup]="registerForm"
+                [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+            <shared-input-field class="w-full" fieldName="valuationClaimant"
+                label="{{'institutionClaimantRating' | translate}}" inputType="number" [formGroup]="registerForm"
+                [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+            <shared-input-field class="w-full" fieldName="valuationFreeOSDprofessionals"
+                label="{{'institutionValuationFreeOsdProfessionals' | translate}}" inputType="number"
                 [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-            <shared-input-field class="w-full" fieldName="OSDvaluation" label="{{'institutionOsdValuation' | translate}}"
-                inputType="number" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-            <shared-input-field class="w-full" fieldName="valuationClaimant" label="{{'institutionClaimantRating' | translate}}" inputType="number" [formGroup]="registerForm"
-                [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-            <shared-input-field class="w-full" fieldName="valuationFreeOSDprofessionals" label="{{'institutionValuationFreeOsdProfessionals' | translate}}" inputType="number" [formGroup]="registerForm"
-                [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-            <div class="flex flex-row space-x-2 w-full">
-                <button
-                    routerLink="/home"
-                    class="w-60 h-12  border bg-darkslategray text-white text-lg mt-4 rounded-lg font-bold hover:bg-hover-darkblue"
-                    i18n="@@signin">
-                    Cancelar
+            <div class="flex flex-row space-x-2 w-full justify-end  ">
+                <button routerLink="/home"
+                    class="p-2 bg-line text-darkslategray font-normal  animate__animated animate__fadeInDown">
+                    {{'cancelar' | translate}}
                 </button>
 
                 <button type="submit"
-                    class="w-full h-12  bg-yellow-500 text-white text-lg mt-4 rounded-lg font-bold hover:bg-hover-darkblue"
-                    i18n="@@signin">
-                    Registrarse
+                    class="p-2 bg-darkslategray text-white font-normal  animate__animated animate__fadeInDown">
+                    {{'registrarse'|translate}}
                 </button>
             </div>
         </form>
     </div>
 
-    <div class="flex-1 flex justify-center items-center bg-darkslategray md:border-l-4 md:border-t-0 border-t-4 border-gray-400 text-white">
-        <div class="w-96 bottom-0 flex flex-col items-center pt-5 pb-40 md:top-56 md:fixed">
-            <shared-simple-dropdown class="w-full" label="{{'freeProfessionalsIntervention' | translate}}" fieldName="subscriber"
-                [formGroup]="registerForm" [dropdownItems]="freeProfessionals"
-                [selectedItem]="selectedfreeProfessionals">
-            </shared-simple-dropdown>
-            <div *ngIf="!this.isDropdownOpen">
-                <button (click)="toggleDropdown()" type="button"
-                    class="inline-flex justify-center font-semibold items-center px-4 py-2 text-base text-yellow-500 hover:underline rounded-lg">
-                    {{'performances' | translate}} <i class="fa-solid fa-chevron-down pl-2 text-xs"></i>
-                </button>
-            </div>
+    <div class="flex-1 flex justify-center bg-darkslategray border-gray-400 text-white">
+        <div class=" fixed flex flex-col items-center bottom-1/2">
 
-            <div *ngIf="this.isDropdownOpen">
-                <button (click)="toggleDropdown()" type="button"
-                    class="inline-flex justify-center font-medium items-center px-4 py-2 text-base text-yellow-500 hover:underline rounded-lg">
-                    {{'performances' | translate}} <i class="fa-solid fa-x pl-2 text-xs"></i>
-                </button>
-            </div>
+            <shared-input-field [readOnly]="true" class="w-full" label="{{'freeProfessionalsIntervention' | translate}}"
+                fieldName="freeProfessional" [formGroup]="registerForm">
+            </shared-input-field>
+
+            <button (click)="toggleDropdown()" type="button"
+                class="inline-flex justify-center font-semibold items-center px-4 py-2 text-base text-white bg-yellow-500 hover:underline rounded-lg">
+                {{'performances' | translate}}
+                <i class="fa-solid pl-2 text-xs" 
+                [ngClass]="{'fa-xmark' : isDropdownOpen, 'fa-chevron-down' : !isDropdownOpen}" 
+                ></i>            
+            </button>
 
             <div [class.show]="isDropdownOpen"
-                class="dropdown-menu flex py-3 origin-top-right absolute right-auto mt-36 w-96 animate__animated animate__fadeInUp">
+                class="dropdown-menu flex py-3 origin-top-right absolute right-auto top-44 w-96 animate__animated animate__fadeInUp">
                 <div class="flex flex-col justify-center items-center space-y-5 font-bold">
                     <span class="hover:underline cursor-pointer">{{'performances' | translate}} 2214</span>
 
-                    <button class=" rounded-xl p-3 text-white hover:bg-gray-600 space-x-2"
-                    routerLink="/home/performance">
-                        <span>{{'newAction' | translate }}</span> <i class="fa-solid fa-chevron-right text-base"></i>
+                    <button class="rounded-xl p-3 text-white hover:bg-gray-600 space-x-2 flex items-center"
+                        routerLink="/home/performance">
+                        <span>{{'newAction' | translate }}</span> <i
+                            class="fa-solid fa-chevron-right text-base animate-pulse"></i>
                     </button>
                 </div>
             </div>
