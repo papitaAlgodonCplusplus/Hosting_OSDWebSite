@@ -20,7 +20,8 @@ import { OSDDataService } from './osd-data.service';
 })
 export class OSDService {
     osdEventSubscriber: Subscription;
-
+    freeProfessionals: any[] = [];
+    freeProfessionalsResponse: boolean = false;
     constructor(
         private store: Store,
         private websocketService: WebsocketService,
@@ -33,6 +34,32 @@ export class OSDService {
 
         this.osdEventSubscriber = new Subscription();
         this.subscribeToOSDEvents();
+    }
+
+    cleanFreeProfessionalsList(){
+      this.freeProfessionals = []
+    }
+
+    getFreeProfessionalsList(): Promise<any[]> {
+      return new Promise((resolve, reject) => {
+        const checkResponse = () => {
+          if (this.freeProfessionalsResponse) {
+            resolve(this.freeProfessionals);
+          } else {
+            setTimeout(checkResponse, 1000); 
+          }
+        };
+    
+        checkResponse();
+      });
+    }
+
+    //Evento para recuperar la lista de profesionales
+    public gettingFreeProfessionalsData() {
+      const gettingFreeProfesionalsEvent: WebBaseEvent = this.eventFactoryService.CreateGettingFreeProfessionalsDataEvent();
+      console.log("Lo que se envia de los profesionales:")
+      console.log(gettingFreeProfesionalsEvent)
+      this.websocketService.sendOSDEvent(gettingFreeProfesionalsEvent);
     }
 
     private subscribeToOSDEvents(): void {
@@ -57,27 +84,49 @@ export class OSDService {
       this.websocketService.sendOSDEvent(createPerformanceEvent);
     }
 
-    private processOSDEvent(osdEvent: WebBaseEvent) {
-      console.log("Llegue al switch");
-        switch (osdEvent.Action) {
-            case EventAction.HANDLE_REGISTER_USER_RESPONSE:
-                {
+  private processOSDEvent(osdEvent: WebBaseEvent) {
+    console.log("Llegue al switch");
+    console.log(osdEvent);
+    switch (osdEvent.Action) {
+      case EventAction.HANDLE_REGISTER_USER_RESPONSE:
+        {
 
-                    this.HandleRegisterUserResponse(osdEvent);
-                    break;
-                }
-                case EventAction.HANDLE_AUTHENTICATION_RESPONSE:
-                  {
-                    this.HandleAuthenticationResponse(osdEvent);
-                    break;
-                  } 
-            default:
-                {
-                    //TODO: Send event warning to web socket or local log file
-                    break;
-                }
+          this.HandleRegisterUserResponse(osdEvent);
+          break;
+        }
+      case EventAction.HANDLE_AUTHENTICATION_RESPONSE:
+        {
+          this.HandleAuthenticationResponse(osdEvent);
+          break;
+        }
+      case EventAction.HANDLE_GET_FREE_PROFESSIONALS_RESPONSE:
+        {
+          console.log('Se recuperan los profesionales libres:')
+          console.log(osdEvent);
+          this.HandleGettingFreeProfessionalsListResponse(osdEvent);
+          break;
+        }
+      default:
+        {
+          //TODO: Send event warning to web socket or local log file
+          break;
         }
     }
+  }
+
+  public HandleGettingFreeProfessionalsListResponse(webBaseEvent: WebBaseEvent) {
+    try {
+      if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['ListFreeProfessionals']) {
+        this.freeProfessionals = webBaseEvent.Body['ListFreeProfessionals'];
+        this.freeProfessionalsResponse = true;
+      } else {
+        this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'No hay profesionales libres registrados' }));
+      }
+    }
+    catch (err) {
+      this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Error inesperado' }));
+    }
+  }
 
     public HandleAuthenticationResponse(webBaseEvent: WebBaseEvent) {
       let userAuthenticationSuccess: boolean;

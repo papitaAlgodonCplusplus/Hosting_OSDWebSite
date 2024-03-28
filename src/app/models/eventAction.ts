@@ -21,6 +21,8 @@ export class EventAction {
   public static GET_SUBSCRIBERS: string = "GetSubscribers";
 
   public static FREE_PROFESSIONAL: string = "FreeProfessional";
+  public static GET_FREE_PROFESSIONALS: string = "GetFreeProfessionals"
+  public static HANDLE_GET_FREE_PROFESSIONALS_RESPONSE: string = "HandleGetFreeProfessionalsResponse";
   //#endregion 
 
   //#region Monitoring

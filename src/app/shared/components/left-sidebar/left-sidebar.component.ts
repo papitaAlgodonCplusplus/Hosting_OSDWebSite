@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 import { UiSelectors } from 'src/app/store/selectors';
 import { AuthenticationActions, UiActions } from 'src/app/store/actions';
 import { Router } from '@angular/router';
+import { OSDService } from 'src/app/services/osd-event.services';
 
 @Component({
   selector: 'shared-left-sidebar',
@@ -16,7 +17,7 @@ export class LeftSidebarComponent {
   leftSidebarOpen$: Observable<boolean> = this.store.select(UiSelectors.leftSidebarOpen);
   arrowLeftSidebar : boolean = false;
 
-  constructor(private store: Store, private router: Router) {}
+  constructor(private store: Store, private router: Router,private osdEventService: OSDService,) {}
 
   toggleLeftSidebar(): void {
     this.store.dispatch(UiActions.toggleLeftSidebar());
@@ -32,5 +33,9 @@ export class LeftSidebarComponent {
   
   hideArrow(): void{
     this.arrowLeftSidebar = false;
+  }
+
+  autorizationFreeProfessionals(): void {
+    this.osdEventService.gettingFreeProfessionalsData();
   }
 }

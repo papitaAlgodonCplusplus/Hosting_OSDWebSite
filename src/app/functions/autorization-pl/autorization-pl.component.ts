@@ -12,33 +12,46 @@ import { OSDService } from 'src/app/services/osd-event.services';
 })
 export class AutorizationPlComponent implements OnDestroy {
   items: any[] = [];
+  freeProfessionals: any[] = [];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   displayedItems: any;
-  showModalConfirm! :boolean;
-  messageModal! : string;
+  showModalConfirm: boolean = false; // Nueva propiedad para controlar la visibilidad del modal
+  messageModal: string = ''; // Nueva propiedad para el mensaje del modal
+  selectedUser: any = null; // Nueva propiedad para almacenar la información del usuario seleccionado
+  
   constructor(private store: Store,
               private osdEventService : OSDService) {
-    for (let i = 1; i <= 50; i++) {
-      this.items.push({ field1: 'Campo 1 - ' + i, field2: 'Campo 2 - ' + i });
-    }
-    if (this.items.length <= 0) {
-      this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "No hay subscriptores para mostrar" }))
-      this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }))
-      this.store.dispatch(ModalActions.openAlert())
-    }
-    this.displayedItems = this.items.slice(0, 10);
   }
- 
 
-  showModal(){
+  ngOnInit(): void {
+    this.osdEventService.getFreeProfessionalsList().then(freeProfessionals => {
+      this.freeProfessionals = freeProfessionals;
+      this.items = this.freeProfessionals;
+      this.displayedItems = this.items.slice(0, 10);
+      console.log("Ya en el componente:", freeProfessionals);
+
+      if (this.items.length <= 0) {
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "No hay subscriptores para mostrar" }))
+        this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }))
+        this.store.dispatch(ModalActions.openAlert())
+      }
+    });
+
+    setTimeout(() => {
+      this.osdEventService.GetSubscribers();
+      this.store.dispatch(UiActions.hideLeftSidebar())
+      this.store.dispatch(UiActions.hideFooter())
+    }, 0);
+  }
+
+  showModal(user: any) { 
+    this.selectedUser = user; 
     this.showModalConfirm = true;
     this.messageModal = "Confirmar Autorizacion!"
   }
 
-  onConfirmHandler() {
-    this.showModalConfirm = false;
-  }
-  onCancelHandler(){
+  closeModal() {
+    this.selectedUser = null;
     this.showModalConfirm = false;
   }
 
@@ -52,13 +65,6 @@ export class AutorizationPlComponent implements OnDestroy {
     setTimeout(() => {
       this.store.dispatch(UiActions.showAll())
     }, 0);
-  }
-
-  ngOnInit(): void {
-    setTimeout(() => {
-      this.osdEventService.GetSubscribers();
-      this.store.dispatch(UiActions.hideLeftSidebar())
-      this.store.dispatch(UiActions.hideFooter())
-    }, 0);
+    this.osdEventService.cleanFreeProfessionalsList()
   }
 }

@@ -39,6 +39,29 @@ export class EventFactoryService {
     return event;
   }
 
+  //Evento para los profesionales libres
+  public CreateGettingFreeProfessionalsDataEvent(): WebBaseEvent {
+    let event: WebBaseEvent;
+
+    var sessionkey: string | null = localStorage.getItem('sk');
+    
+    event = new WebBaseEvent();
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.GET_FREE_PROFESSIONALS;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    if(sessionkey != null){
+      event.SessionKey = sessionkey;
+      return event;
+    }
+    else{
+      event.SessionKey = this.authenticationService.sessionKey;
+      return event;
+    }
+  }
+
   public CreateUserLoginEvent(loginForm: UserLoginEvent): WebBaseEvent {
     let event: WebBaseEvent;
 
