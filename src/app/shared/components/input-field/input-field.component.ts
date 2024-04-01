@@ -12,7 +12,7 @@ import { ValidationsService } from 'src/app/services/validations.service';
 export class InputFieldComponent {
   @Input() fieldName!: string;
   @Input() label!: string;
-  @Input() inputType: 'text' | 'email' | 'number' | 'file' | 'date' |'tel' = 'text';
+  @Input() inputType: 'text' | 'email' | 'number' | 'file' | 'date' | 'time' |'tel' = 'text';
   @Input() formGroup!: FormGroup;
   @Input() bgColor: string = 'bg-white';
   @Input() readOnly!: boolean;

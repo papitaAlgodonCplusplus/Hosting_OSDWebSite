@@ -5,7 +5,6 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
 import { AuthenticationActions, UiActions } from 'src/app/store/actions';
-import { WebsocketService } from 'src/app/services/websocket.service';
 import { EventFactoryService } from 'src/app/services/event-factory.service';
 import { ValidationsService } from '../../../services/validations.service';
 import { ModalSelectors } from 'src/app/store/selectors';
@@ -31,7 +30,6 @@ export class LoginComponent implements OnDestroy {
     private store: Store,
     private validationsService: ValidationsService,
     public eventFactoryService: EventFactoryService,
-    public websocketService: WebsocketService,
     private osdEventService: OSDService,
     private securityEventService: SecurityEventService,
     private router: Router
@@ -62,19 +60,8 @@ export class LoginComponent implements OnDestroy {
 
   private createLoginForm(): FormGroup {
     return this.formBuilder.group({
-      email: ['jaen@gmail.com', [Validators.required, this.validationsService.isValidEmail], []],
-      password: ['Liga142003', [Validators.required, this.validationsService.isValidPassword, Validators.minLength(6)], []],
+      email: ['', [Validators.required, this.validationsService.isValidEmail], []],
+      password: ['', [Validators.required, this.validationsService.isValidPassword, Validators.minLength(6)], []],
     });
   }
-
-  // Trigger the sign-in action, simulate an HTTP request
-  // signIn(): void {
-
-  //   // Simulate an HTTP request, and log the response.
-  //   this.authService.simulateHttpRequest().subscribe((response) => {
-  //     console.log('Simulated HTTP Response:', response);
-  //   });
-
-  // }
-
 }

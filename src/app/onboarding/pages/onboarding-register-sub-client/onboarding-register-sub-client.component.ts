@@ -19,8 +19,8 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
   personalForm: FormGroup;
   selectedClientType: string | undefined;
   clientType: DropDownItem[] = [
-    { value: this.translate.instant('entidad_publica'), key: 'key1' }, //TODO: Implement language switching
-    { value: this.translate.instant('entidad_privada'), key: 'Key2' },
+    { value: this.translate.instant('entidad_publica'), key: this.translate.instant('entidad_publica') }, //TODO: Implement language switching
+    { value: this.translate.instant('entidad_privada'), key: this.translate.instant('entidad_privada') },
   ];
   selectedPLcode: string | undefined;
   plCode: DropDownItem[] = [
@@ -56,9 +56,9 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
       landline: [''],
       mobilePhone: ['', [Validators.required]],
       email: ['', [Validators.required, this.validationsService.isValidEmail]],
-      password:['', [Validators.required, this.validationsService.isValidPassword, Validators.minLength(6)], []],
+      password: ['', [Validators.required, this.validationsService.isValidPassword, Validators.minLength(6)], []],
       web: [''],
-      accountType:['063e12fa-33db-47f3-ac96-a5bdb08ede61'],
+      accountType: ['063e12fa-33db-47f3-ac96-a5bdb08ede61'],
       acceptConditions: [false]
     });
     return personalForm;
@@ -83,11 +83,11 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
       this.personalForm.markAllAsTouched();
       return
     }
-    
+
     if (this.personalForm.value.acceptConditions) {
       this.isAcceptConditions = true;
     }
-    
+
     const userEmail = this.personalForm.value.email;
     localStorage.setItem('userEmail', userEmail);
     console.log("Enviando mensaje al securityEventService.userRegister");

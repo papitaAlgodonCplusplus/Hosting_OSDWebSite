@@ -23,12 +23,12 @@ export class EventConstants {
   public static UPDATE_PASSWORD_SUCCESS: string = "UpdatePasswordSucces";
   public static UPDATE_PASSWORD_MESSAGES: string = "UpdatePasswordMessages";
 
-//#region Security
+  //#region Security
   public static USERNAME: string = "Username";
   public static PASSWORD: string = "Password";
   public static EMAIL_VERIFICATION_CODE: string = "EmailVerificationCode";
   public static DEVICE_IDENTIFIER: string = "DeviceIdentifier";
-  
+
   public static ACTION_REGISTER_SUCCESS: string = "ActionRegisterSuccess";
   public static ACTION_REGISTER_RESULT_MESSAGE: string = "ActionRegisterResultMessage";
 
@@ -40,23 +40,23 @@ export class EventConstants {
 
   public static EMAIL_VERIFICATION_CODE_SUCCESS: string = "EmailVerificationCodeSuccess";
   public static EMAIL_VERIFICATION_CODE_RESULT_MESSAGE: string = "EmailVerificationCodeResultMessage";
-//#endregion Security
+  //#endregion Security
 
-//#region Monitoring
+  //#region Monitoring
   public static SOURCE_CONTAINER: string = "SourceContainer";
   public static SOURCE_CONTROL: string = "SourceControl";
   public static SOURCE_CONTROL_EVENT: string = "SourceControlEvent";
-//#endregion Monitoring
+  //#endregion Monitoring
 
- //RESOURCETYPE
- public static ERROR_LOGIN_MESSAGE: string = "ErrorLoginMessage";
+  //RESOURCETYPE
+  public static ERROR_LOGIN_MESSAGE: string = "ErrorLoginMessage";
 
- public static SUCCESS: string = "Success";
- public static ERROR: string = "Error";
- public static INFORMATION: string = "Information";
+  public static SUCCESS: string = "Success";
+  public static ERROR: string = "Error";
+  public static INFORMATION: string = "Information";
 
- public static SESSION_EXPIRED: string = "SessionExpired";
- 
+  public static SESSION_EXPIRED: string = "SessionExpired";
+
   //#region Logic
   public static FIRST_NAME: string = "FirstName";
   public static LAST_NAME: string = "LastName";
@@ -69,13 +69,21 @@ export class EventConstants {
   public static ACCOUNT_TYPE: string = "AccountType";
 
   public static FREE_PROFESSIONAL: string = "FreeProfessional";
-  public static SUBSCRIBER_COSTUMER: string = "SubscriberCustomer";
+  public static SUBSCRIBER_COSTUMER: string = "Subscriber Customer";
   public static CLAIMANT: string = "Claimant";
-  public static APPROVED_TRAINING_CENTER : string = "ApprovedTrainingCenter";
+  public static APPROVED_TRAINING_CENTER: string = "ApprovedTrainingCenter";
 
+  public static PERFORMANCE_FORM: string = "PerformanceForm";
+  public static USER_INFO: string = "UserInfo";
+  public static ACTION_OSD_RESULT_MESSAGE: string = "ActionOSDResultMessage";
+
+  public static LIST_CLAIM: string = "ListClaim"
+  public static LIST_SUBSCRIBERS: string = "ListSubscribers"
+  public static LIST_OSD_USERS_SUBSCRIBERS: string = "ListOsdUsersSubscribers"
+  public static CLAIM_ID: string = "ClaimId";
+  public static FREE_PROFESSIONAL_ID: string = "FreeProfessionalId";
   //#endregion
-  constructor()
-  {
+  constructor() {
 
   }
 

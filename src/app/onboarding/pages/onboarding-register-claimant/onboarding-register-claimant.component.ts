@@ -123,11 +123,14 @@ export class OnboardingRegisterClaimantComponent {
     if (this.accountForm.invalid || this.personalForm.invalid) {
       this.accountForm.markAllAsTouched();
       this.personalForm.markAllAsTouched();
+      console.log("Hubo error en los campos del formulario")
       return;
     }
   
     if (!this.personalForm.value.acceptConditions) {
       this.isAcceptConditions = true;
+      console.log("Hubo error en las condiciones " + this.personalForm.value.acceptConditions )
+
       return;
     }
 

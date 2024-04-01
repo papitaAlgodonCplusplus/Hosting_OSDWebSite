@@ -15,27 +15,36 @@ export class LeftSidebarComponent {
   // leftSidebarOpen$: Observable<boolean> gets the 'leftSidebarOpen' state from the store
   // and exposes it as an observable that can be subscribed to from the template
   leftSidebarOpen$: Observable<boolean> = this.store.select(UiSelectors.leftSidebarOpen);
-  arrowLeftSidebar : boolean = false;
+  arrowLeftSidebar: boolean = false;
 
   constructor(private store: Store, private router: Router,private osdEventService: OSDService,) {}
 
   toggleLeftSidebar(): void {
     this.store.dispatch(UiActions.toggleLeftSidebar());
-    if(this.arrowLeftSidebar === true){
+    if (this.arrowLeftSidebar === true) {
       this.arrowLeftSidebar = false;
     }
   }
 
-  showArrow(): void{
-      this.arrowLeftSidebar = true;
-      
+  showArrow(): void {
+    this.arrowLeftSidebar = true;
+
   }
-  
-  hideArrow(): void{
+
+  hideArrow(): void {
     this.arrowLeftSidebar = false;
   }
 
   autorizationFreeProfessionals(): void {
     this.osdEventService.gettingFreeProfessionalsData();
+  }
+  
+  getSubscribers() {
+    this.osdEventService.GetSubscribers();
+  }
+  
+  onSubmitAssignClaimsToFreeProfessionalsTR(): void {
+    this.osdEventService.gettingClaimsData();
+    this.osdEventService.gettingFreeProfessionalsTRData();
   }
 }

@@ -1,6 +1,6 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { FunctionsRoutingModule } from './functions-routing.module';
 import { SharedModule } from 'src/app/shared/shared.module';
 
@@ -8,30 +8,22 @@ import { AutorizationPlComponent } from './autorization-pl/autorization-pl.compo
 import { CustomPaginator } from './service/custom-paginator';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginator';
+import { AssignPLTRClaimsComponent } from './assign-pltr-claims/assign-pltr-claims.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
     AutorizationPlComponent,
+    AssignPLTRClaimsComponent,
     
     ],
   imports: [
     CommonModule,
     FunctionsRoutingModule,
     SharedModule,
-    TranslateModule,
-    MatPaginatorModule,
-    ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    TranslateModule
   ],
-  providers: [
-    {
-      provide: MatPaginatorIntl,
-      useFactory: (translateService: TranslateService) => {
-        const customPaginator = new CustomPaginator(translateService);
-        return customPaginator.getSpanishPaginatorIntl();
-      },
-      deps: [TranslateService]
-    }
-  ]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class FunctionsModule { }

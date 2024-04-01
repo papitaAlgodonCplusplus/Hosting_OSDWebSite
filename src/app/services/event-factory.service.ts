@@ -11,6 +11,7 @@ import { UserLoginEvent } from '../auth/interfaces/login.interface';
 import { RegisterUserEvent } from '../auth/interfaces/register.interface';
 import { VerifyEmailEvent } from '../auth/interfaces/verify-email.interface';
 import { EmailVerificationCodeResendEvent } from '../auth/interfaces/resend-email-verification-code.interface';
+import { Form } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root',
@@ -86,6 +87,23 @@ export class EventFactoryService {
       return event;
     }
   }
+  
+  public ConvertJsonObjectToWebBaseEvent(jsonObject: any): WebBaseEvent {
+    const event = new WebBaseEvent();
+    let bodyObj = { ...jsonObject.Body }
+
+    event.Body = bodyObj;
+    event.TraceIdentifier = bodyObj.TraceIdentifier;
+    event.Type = bodyObj.Type;
+    event.Action = bodyObj.Action;
+    event.Date = bodyObj.Date;
+    event.ApplicationIdentifier = bodyObj.ApplicationIdentifier;
+
+    event.SessionKey = jsonObject.SessionKey;
+    event.SecurityToken = jsonObject.SecurityToken;
+
+    return event;
+  }
 
   public CreateUserLoginEvent(loginForm: UserLoginEvent): WebBaseEvent {
     let event: WebBaseEvent;
@@ -95,12 +113,87 @@ export class EventFactoryService {
     event.SecurityToken = "3746736473";
     event.TraceIdentifier = Guid.create().toString();
     event.Type = EventType.OSD;
-    event.Action = EventAction.OSD_USER_LOGIN;
+    event.Action = EventAction.USER_LOGIN;
     event.Date = new Date().toUTCString();
     event.ApplicationIdentifier = 'WebClient'; //TODO: change to use an application identifier
     event.setBodyProperty(EventConstants.EMAIL, loginForm.email);
     event.setBodyProperty(EventConstants.PASSWORD, loginForm.password);
 
+    return event;
+  }
+  public CreateGettingClaimsDataEvent(): WebBaseEvent {
+    let event: WebBaseEvent;
+
+    event = new WebBaseEvent();
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.GETTING_CLAIMS;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    event.SessionKey = this.authenticationService.sessionKey;
+    
+    return event;
+  }
+  public gettingFreeProfessionalsTRDataEvent(): WebBaseEvent {
+    let event: WebBaseEvent;
+    
+    event = new WebBaseEvent();
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.GETTING_FREE_PROFESSIONALS_TR;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    event.SessionKey = this.authenticationService.sessionKey;
+
+    return event;
+  }
+  public assingFreeProfessionalsTRToClaimEvent(idClaim: string, idFreeProfesionalTR: string): WebBaseEvent {
+    let event: WebBaseEvent;
+    
+    event = new WebBaseEvent();
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.ASSIGN_CLAIMS_TO_FREE_PROFESSIONALS;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+
+    event.setBodyProperty(EventConstants.CLAIM_ID, idClaim);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_ID, idFreeProfesionalTR);
+
+    event.SessionKey = this.authenticationService.sessionKey;
+
+    return event;
+  }
+
+  public CreatePerformanceEvent(performanceForm: Form, claimId: string): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.CREATE_PERFORMANCE;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient'; //TODO: change to use an application identifier
+    event.setBodyProperty(EventConstants.PERFORMANCE_FORM, performanceForm);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_ID, this.authenticationService.userInfo?.identity);
+    event.setBodyProperty(EventConstants.CLAIM_ID, claimId);
+    return event;
+  }
+  public CreateGetClaims(): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.GET_CLAIMS;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient'; //TODO: change to use an application identifier
+ 
     return event;
   }
 
