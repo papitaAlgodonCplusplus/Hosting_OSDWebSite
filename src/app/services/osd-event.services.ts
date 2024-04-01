@@ -22,6 +22,9 @@ export class OSDService {
     osdEventSubscriber: Subscription;
     freeProfessionals: any[] = [];
     freeProfessionalsResponse: boolean = false;
+    message: string = "";
+    messageResponse: boolean = false;
+    
     constructor(
         private store: Store,
         private websocketService: WebsocketService,
@@ -54,16 +57,17 @@ export class OSDService {
       });
     }
 
-    //Evento para recuperar la lista de profesionales
+    public changingUsdUserAutorizationStatusEvent(selectedUser: any) {
+      const changingUsdUserAutorizationStatusEvent: WebBaseEvent = this.eventFactoryService.CreateChangingUsdUserAutorizationStatusEvent(selectedUser);
+      this.websocketService.sendOSDEvent(changingUsdUserAutorizationStatusEvent);
+    }
+
     public gettingFreeProfessionalsData() {
       const gettingFreeProfesionalsEvent: WebBaseEvent = this.eventFactoryService.CreateGettingFreeProfessionalsDataEvent();
-      console.log("Lo que se envia de los profesionales:")
-      console.log(gettingFreeProfesionalsEvent)
       this.websocketService.sendOSDEvent(gettingFreeProfesionalsEvent);
     }
 
     private subscribeToOSDEvents(): void {
-        console.log("subscribeToOSDEvents");
         this.osdEventSubscriber = this.websocketService.osdEventHandler.subscribe((webBaseEvent: WebBaseEvent) =>
             this.processOSDEvent(webBaseEvent));
     }
@@ -75,7 +79,6 @@ export class OSDService {
   
     public userRegister(accountForm: RegisterUserEvent, personalForm: RegisterUserEvent, accountType: string) {
         const registerUserEvent: WebBaseEvent = this.eventFactoryService.CreateRegisterUserEvent(accountForm, personalForm, accountType);
-        console.log("Enviando mensaje al websocketService.sendOSDEvent");
         this.websocketService.sendOSDEvent(registerUserEvent);
     }
 
@@ -85,8 +88,6 @@ export class OSDService {
     }
 
   private processOSDEvent(osdEvent: WebBaseEvent) {
-    console.log("Llegue al switch");
-    console.log(osdEvent);
     switch (osdEvent.Action) {
       case EventAction.HANDLE_REGISTER_USER_RESPONSE:
         {
@@ -101,11 +102,16 @@ export class OSDService {
         }
       case EventAction.HANDLE_GET_FREE_PROFESSIONALS_RESPONSE:
         {
-          console.log('Se recuperan los profesionales libres:')
-          console.log(osdEvent);
           this.HandleGettingFreeProfessionalsListResponse(osdEvent);
           break;
         }
+        case EventAction.HANDLE_CHANGING_OSD_USER_AUTORIZATION_STATUS_RESPONSE:
+          {
+            console.log('Recupera el mensaje de respuesta para confirmar el autorizar:')
+            console.log(osdEvent);
+            this.HandleChangingOsdUserAutorizationResponse(osdEvent);
+            break;
+          }
       default:
         {
           //TODO: Send event warning to web socket or local log file
@@ -121,6 +127,21 @@ export class OSDService {
         this.freeProfessionalsResponse = true;
       } else {
         this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'No hay profesionales libres registrados' }));
+      }
+    }
+    catch (err) {
+      this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Error inesperado' }));
+    }
+  }
+
+  public HandleChangingOsdUserAutorizationResponse(webBaseEvent: WebBaseEvent) {
+    try {
+      if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['Message']) {
+        this.message = webBaseEvent.Body['Message'];
+        this.messageResponse = true;
+        this.store.dispatch(ModalActions.addAlertMessage({alertMessage: this.message}));
+      } else {
+        this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'No hay mensaje' }));
       }
     }
     catch (err) {

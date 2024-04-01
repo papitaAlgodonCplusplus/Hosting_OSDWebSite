@@ -23,6 +23,9 @@ export class EventAction {
   public static FREE_PROFESSIONAL: string = "FreeProfessional";
   public static GET_FREE_PROFESSIONALS: string = "GetFreeProfessionals"
   public static HANDLE_GET_FREE_PROFESSIONALS_RESPONSE: string = "HandleGetFreeProfessionalsResponse";
+
+  public static CHANGING_OSD_USER_AUTORIZATION_STATUS: string = "ChangingOsdUserAutorizationStatus";
+  public static HANDLE_CHANGING_OSD_USER_AUTORIZATION_STATUS_RESPONSE: string = "HandleChangingOsdUserAutorizationStatusResponse";
   //#endregion 
 
   //#region Monitoring

@@ -15,9 +15,9 @@ export class AutorizationPlComponent implements OnDestroy {
   freeProfessionals: any[] = [];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   displayedItems: any;
-  showModalConfirm: boolean = false; // Nueva propiedad para controlar la visibilidad del modal
-  messageModal: string = ''; // Nueva propiedad para el mensaje del modal
-  selectedUser: any = null; // Nueva propiedad para almacenar la información del usuario seleccionado
+  showModalConfirm: boolean = false; 
+  selectedUser: any = null; 
+  message: string = "";
   
   constructor(private store: Store,
               private osdEventService : OSDService) {
@@ -28,13 +28,6 @@ export class AutorizationPlComponent implements OnDestroy {
       this.freeProfessionals = freeProfessionals;
       this.items = this.freeProfessionals;
       this.displayedItems = this.items.slice(0, 10);
-      console.log("Ya en el componente:", freeProfessionals);
-
-      if (this.items.length <= 0) {
-        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "No hay subscriptores para mostrar" }))
-        this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }))
-        this.store.dispatch(ModalActions.openAlert())
-      }
     });
 
     setTimeout(() => {
@@ -47,12 +40,24 @@ export class AutorizationPlComponent implements OnDestroy {
   showModal(user: any) { 
     this.selectedUser = user; 
     this.showModalConfirm = true;
-    this.messageModal = "Confirmar Autorizacion!"
   }
 
   closeModal() {
     this.selectedUser = null;
     this.showModalConfirm = false;
+  }
+
+  AuthorizeUser(selectedUser: any) {
+    this.osdEventService.changingUsdUserAutorizationStatusEvent(selectedUser.Id)
+    this.closeModal();
+    this.store.dispatch(ModalActions.openAlert());
+
+    this.items.forEach(item => {
+      if (item.Id === selectedUser.Id) {
+        item.Isauthorized = true; 
+      }
+    });
+    this.displayedItems = this.items.slice(this.paginator.pageIndex * this.paginator.pageSize, (this.paginator.pageIndex + 1) * this.paginator.pageSize);
   }
 
   onPageChange(event: any) {
