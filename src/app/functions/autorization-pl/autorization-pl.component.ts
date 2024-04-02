@@ -1,6 +1,9 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { UiActions } from 'src/app/store/actions';
+import { ModalActions } from 'src/app/store/actions';
+import { MatPaginator } from '@angular/material/paginator';
+import { OSDService } from 'src/app/services/osd-event.services';
 
 @Component({
   selector: 'app-autorization-pl',
@@ -8,32 +11,68 @@ import { UiActions } from 'src/app/store/actions';
   styleUrls: ['./autorization-pl.component.css']
 })
 export class AutorizationPlComponent implements OnDestroy {
-  abogados = [
-    { id: 1, nombre: 'Juan Pérez' },
-    { id: 2, nombre: 'María González' },
-    { id: 3, nombre: 'Luisa Martínez' },
-    { id: 4, nombre: 'Pedro Sánchez' }
-  ];
-
-  constructor(private store: Store
-  ) {
+  items: any[] = [];
+  freeProfessionals: any[] = [];
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  displayedItems: any;
+  showModalConfirm: boolean = false; 
+  selectedUser: any = null; 
+  message: string = "";
+  
+  constructor(private store: Store,
+              private osdEventService : OSDService) {
   }
 
-  modalVisible = false; 
-
   ngOnInit(): void {
+    this.osdEventService.getFreeProfessionalsList().then(freeProfessionals => {
+      this.freeProfessionals = freeProfessionals;
+      this.items = this.freeProfessionals;
+      this.displayedItems = this.items.slice(0, 10);
+    });
+
     setTimeout(() => {
-      this.store.dispatch(UiActions.hideAll());
+      this.osdEventService.GetSubscribers();
+      this.store.dispatch(UiActions.hideLeftSidebar())
+      this.store.dispatch(UiActions.hideFooter())
     }, 0);
+  }
+
+  showModal(user: any) { 
+    this.selectedUser = user; 
+    this.showModalConfirm = true;
+  }
+
+  closeModal() {
+    this.selectedUser = null;
+    this.showModalConfirm = false;
+  }
+
+  onPageChange(event: any) {
+    const startIndex = event.pageIndex * event.pageSize;
+    const endIndex = startIndex + event.pageSize;
+    this.updateDisplayedItems(startIndex, endIndex);
+  }
+
+  updateDisplayedItems(startIndex: number = 0, endIndex: number = 10) {
+    this.displayedItems = this.items.slice(startIndex, endIndex);
+  }
+
+  AuthorizeUser(selectedUser: any) {
+    this.osdEventService.changingUsdUserAutorizationStatusEvent(selectedUser.Id)
+    this.closeModal();
+    this.store.dispatch(ModalActions.openAlert());
+
+    this.items.forEach(item => {
+      if (item.Id === selectedUser.Id) {
+        item.Isauthorized = true; 
+      }
+    });
   }
 
   ngOnDestroy(): void {
     setTimeout(() => {
-      this.store.dispatch(UiActions.showAll());
+      this.store.dispatch(UiActions.showAll())
     }, 0);
-  }
-
-  toggleModal() {
-    this.modalVisible = !this.modalVisible;
+    this.osdEventService.cleanFreeProfessionalsList()
   }
 }

@@ -5,6 +5,7 @@ import { OSDDataService } from 'src/app/services/osd-data.service';
 import { UserInfo } from 'src/app/models/userInfo';
 import { Subscriber } from 'src/app/models/subscriber';
 import { TranslateService } from '@ngx-translate/core';
+import { OSDService } from 'src/app/services/osd-event.services';
 
 @Component({
   selector: 'app-sub-authorized',
@@ -23,7 +24,8 @@ export class SubAuthorizedComponent implements OnDestroy {
   userId!: string;
 
   constructor(private store: Store, private osdDataService: OSDDataService,
-    private translate: TranslateService) { }
+    private translate: TranslateService,
+    ) { }
 
   ngOnInit(): void {
     this.osdDataService.getOsdUsersSubscribersSuccess$.subscribe(osdUsersSubscribers => {
