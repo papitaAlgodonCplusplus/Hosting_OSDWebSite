@@ -161,6 +161,7 @@
   "actions": "Actions",
   "viewData": "View data",
   "authorizeCustomers" : "Authorize Customer Subscribers",
+  "authorizeFreeProfessionals" : "Authorize Free Professionals",
   "ItemsPerPage" : "Items per page",
   "NextPage" : "Next page",
   "PreviousPage" : "Previous page",

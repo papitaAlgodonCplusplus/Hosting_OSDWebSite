@@ -40,12 +40,9 @@ export class EventFactoryService {
     return event;
   }
 
-  //Evento para autorizar a un osdUser
-  public CreateChangingUsdUserAutorizationStatusEvent(selectedUser: any): WebBaseEvent {
+  public CreateChangingUsdUserAutorizationStatusEvent(selectedUserId: any): WebBaseEvent {
     let event: WebBaseEvent;
 
-    var sessionkey: string | null = localStorage.getItem('sk');
-    
     event = new WebBaseEvent();
     event.SecurityToken = "3746736473";
     event.TraceIdentifier = Guid.create().toString();
@@ -53,23 +50,14 @@ export class EventFactoryService {
     event.Action = EventAction.CHANGING_OSD_USER_AUTORIZATION_STATUS;
     event.Date = new Date().toUTCString();
     console.log("Probando aqui");
-    event.setBodyProperty(EventConstants.ID, selectedUser);
+    event.setBodyProperty(EventConstants.ID, selectedUserId);
     event.ApplicationIdentifier = 'WebClient';
-    if(sessionkey != null){
-      event.SessionKey = sessionkey;
-      return event;
-    }
-    else{
-      event.SessionKey = this.authenticationService.sessionKey;
-      return event;
-    }
+    event.SessionKey = this.authenticationService.sessionKey;
+    return event;
   }
 
-  //Evento para los profesionales libres
   public CreateGettingFreeProfessionalsDataEvent(): WebBaseEvent {
     let event: WebBaseEvent;
-
-    var sessionkey: string | null = localStorage.getItem('sk');
     
     event = new WebBaseEvent();
     event.SecurityToken = "3746736473";
@@ -78,14 +66,8 @@ export class EventFactoryService {
     event.Action = EventAction.GET_FREE_PROFESSIONALS;
     event.Date = new Date().toUTCString();
     event.ApplicationIdentifier = 'WebClient';
-    if(sessionkey != null){
-      event.SessionKey = sessionkey;
-      return event;
-    }
-    else{
-      event.SessionKey = this.authenticationService.sessionKey;
-      return event;
-    }
+    event.SessionKey = this.authenticationService.sessionKey;
+    return event;
   }
   
   public ConvertJsonObjectToWebBaseEvent(jsonObject: any): WebBaseEvent {

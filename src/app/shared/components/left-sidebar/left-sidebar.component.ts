@@ -36,7 +36,7 @@ export class LeftSidebarComponent {
   }
 
   autorizationFreeProfessionals(): void {
-    this.osdEventService.gettingFreeProfessionalsData();
+    this.osdEventService.CreateGettingFreeProfessionalsDataEvent();
   }
   
   getSubscribers() {

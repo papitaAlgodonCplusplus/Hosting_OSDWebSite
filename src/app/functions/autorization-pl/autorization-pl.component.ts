@@ -47,6 +47,16 @@ export class AutorizationPlComponent implements OnDestroy {
     this.showModalConfirm = false;
   }
 
+  onPageChange(event: any) {
+    const startIndex = event.pageIndex * event.pageSize;
+    const endIndex = startIndex + event.pageSize;
+    this.updateDisplayedItems(startIndex, endIndex);
+  }
+
+  updateDisplayedItems(startIndex: number = 0, endIndex: number = 10) {
+    this.displayedItems = this.items.slice(startIndex, endIndex);
+  }
+
   AuthorizeUser(selectedUser: any) {
     this.osdEventService.changingUsdUserAutorizationStatusEvent(selectedUser.Id)
     this.closeModal();
@@ -57,13 +67,6 @@ export class AutorizationPlComponent implements OnDestroy {
         item.Isauthorized = true; 
       }
     });
-    this.displayedItems = this.items.slice(this.paginator.pageIndex * this.paginator.pageSize, (this.paginator.pageIndex + 1) * this.paginator.pageSize);
-  }
-
-  onPageChange(event: any) {
-    const startIndex = event.pageIndex * event.pageSize;
-    const endIndex = startIndex + event.pageSize;
-    this.displayedItems = this.items.slice(startIndex, endIndex);
   }
 
   ngOnDestroy(): void {
