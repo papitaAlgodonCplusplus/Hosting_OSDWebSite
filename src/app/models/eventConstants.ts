@@ -81,6 +81,14 @@ export class EventConstants {
   public static LIST_OSD_USERS_SUBSCRIBERS: string = "ListOsdUsersSubscribers"
   public static CLAIM_ID: string = "ClaimId";
   public static FREE_PROFESSIONAL_ID: string = "FreeProfessionalId";
+
+  public static PERFORMANCE_BUY = "PerformanceBuy"
+  public static PRODUCT_SERVICE_ID = "ProductServiceId";
+  public static MINIMUN_UNITS = "MinimumUnits";
+  public static MAXIMUM_UNITS = "MaximumUnits";
+  public static UNITARY_COST = "UnitaryCost";
+  public static SHELF_LIFE = "ShelfLife";
+  public static JUSTIFYING_DOCUMENT = "JustifyingDocument";
   //#endregion
   constructor() {
 

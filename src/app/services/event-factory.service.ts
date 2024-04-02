@@ -12,6 +12,7 @@ import { RegisterUserEvent } from '../auth/interfaces/register.interface';
 import { VerifyEmailEvent } from '../auth/interfaces/verify-email.interface';
 import { EmailVerificationCodeResendEvent } from '../auth/interfaces/resend-email-verification-code.interface';
 import { Form } from '@angular/forms';
+import { PerformanceBuy } from '../project-manager/Models/performanceBuy';
 
 @Injectable({
   providedIn: 'root',
@@ -135,6 +136,28 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.CLAIM_ID, claimId);
     return event;
   }
+
+  public CreatePerformanceBuyEvent(performanceForm: PerformanceBuy): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.CREATE_PERFORMANCE_BUY;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient'; //TODO: change to use an application identifier
+    event.setBodyProperty(EventConstants.DATE, performanceForm.date);
+    event.setBodyProperty(EventConstants.PRODUCT_SERVICE_ID, performanceForm.productServiceId);
+    event.setBodyProperty(EventConstants.MINIMUN_UNITS, performanceForm.minimumUnits);
+    event.setBodyProperty(EventConstants.MAXIMUM_UNITS, performanceForm.maximumUnits);
+    event.setBodyProperty(EventConstants.UNITARY_COST, performanceForm.unitaryCost);
+    event.setBodyProperty(EventConstants.SHELF_LIFE, performanceForm.shelfLife);
+    event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, performanceForm.justifyingDocument);
+
+    return event;
+  }
+
   public CreateGetClaims(): WebBaseEvent {
     let event: WebBaseEvent;
     event = new WebBaseEvent();

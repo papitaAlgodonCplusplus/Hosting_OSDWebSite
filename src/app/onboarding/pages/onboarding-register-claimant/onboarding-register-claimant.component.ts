@@ -11,7 +11,7 @@ import { EventConstants } from 'src/app/models/eventConstants';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { SecurityEventService } from 'src/app/services/security-event.service';
 import { ValidationsService } from 'src/app/services/validations.service';
-import { AuthenticationActions, UiActions } from 'src/app/store/actions';
+import { AuthenticationActions, ModalActions, UiActions } from 'src/app/store/actions';
 import { AuthSelectors } from 'src/app/store/selectors';
 
 @Component({
@@ -123,7 +123,9 @@ export class OnboardingRegisterClaimantComponent {
     if (this.accountForm.invalid || this.personalForm.invalid) {
       this.accountForm.markAllAsTouched();
       this.personalForm.markAllAsTouched();
-      console.log("Hubo error en los campos del formulario")
+      this.store.dispatch(ModalActions.addAlertMessage({alertMessage:"Faltan campos por llenar"}))
+      this.store.dispatch(ModalActions.changeAlertType({alertType:"warning"}))
+      this.store.dispatch(ModalActions.openAlert())
       return;
     }
   

@@ -7,7 +7,7 @@ import { EventConstants } from 'src/app/models/eventConstants';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { SecurityEventService } from 'src/app/services/security-event.service';
 import { ValidationsService } from 'src/app/services/validations.service';
-import { UiActions } from 'src/app/store/actions';
+import { ModalActions, UiActions } from 'src/app/store/actions';
 
 @Component({
   selector: 'app-register-cfh',
@@ -91,6 +91,9 @@ export class OnboardingRegisterCfhComponent {
     if (this.accountForm.invalid || this.personalForm.invalid) {
       this.accountForm.markAllAsTouched();
       this.personalForm.markAllAsTouched();
+      this.store.dispatch(ModalActions.addAlertMessage({alertMessage:"Faltan campos por llenar"}))
+      this.store.dispatch(ModalActions.changeAlertType({alertType:"warning"}))
+      this.store.dispatch(ModalActions.openAlert())
       return;
     }
   
