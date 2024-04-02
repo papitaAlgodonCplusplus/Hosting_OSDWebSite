@@ -99,6 +99,13 @@ export class EventConstants {
   public static TECHNICAL_DIRECTOR_REMUNERATION: string = 'TD_Remuneration';
   public static PERFORMANCE_FREE_PROFESSIONAL: string = 'PerformanceFreeProfessional';
   public static PERFORMANCE_FREE_PROFESSIONAL_MESSAGE: string = 'PerformanceFreeProfessional';
+
+  public static PERFORMANCE_BUY = "PerformanceBuy"
+  public static PRODUCT_SERVICE_ID = "ProductServiceId";
+  public static MINIMUN_UNITS = "MinimumUnits";
+  public static MAXIMUM_UNITS = "MaximumUnits";
+  public static UNITARY_COST = "UnitaryCost";
+  public static SHELF_LIFE = "ShelfLife";
   //#endregion
   constructor() {
 

@@ -19,6 +19,7 @@ import { Claim } from '../models/claim';
 import { EventManager } from '@angular/platform-browser';
 import { tr } from 'date-fns/locale';
 import { PerformanceFreeProfessional } from '../models/performanceFreeProfessional';
+import { PerformanceBuy } from '../project-manager/Models/performanceBuy';
 
 
 @Injectable({
@@ -134,6 +135,7 @@ export class OSDService {
       }
     });
   }
+
   public gettingFreeProfessionalsTRData() {
     const gettingFPTREvent: WebBaseEvent = this.eventFactoryService.gettingFreeProfessionalsTRDataEvent();
     this.restApiService.SendOSDEvent(gettingFPTREvent).subscribe({
@@ -174,6 +176,19 @@ export class OSDService {
     });
   }
 
+  public performanceBuy(performanceForm: PerformanceBuy) {
+    const performanceBuyEvent: WebBaseEvent = this.eventFactoryService.CreatePerformanceBuyEvent(performanceForm);
+    console.log(performanceBuyEvent)
+    this.restApiService.SendOSDEvent(performanceBuyEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleRegisterUserResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
 
   public HandleGettingClaimListResponse(webBaseEvent: WebBaseEvent) {
     try {
@@ -206,6 +221,7 @@ export class OSDService {
       this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Error inesperado' }));
     }
   }
+
   public HandleAssignFreeProfessionalsTRToClaimsResponse(webBaseEvent: WebBaseEvent) {
     try {
       if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['AssignationClaimToFreeProfessionalId']) {
@@ -317,8 +333,8 @@ export class OSDService {
         }
         this.store.dispatch(ModalActions.toggleErrorModal());
       }
-    } catch {
-
+    } catch(err) {
+        //TODO: create exception event and send to local file or core
     }
   }
 

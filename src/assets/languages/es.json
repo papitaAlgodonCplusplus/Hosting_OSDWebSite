@@ -185,5 +185,6 @@
     "ServiceFees" : "Tarifas de servicios",
     "Action":"Acción",
     "Associate":"Asociar",
-    "Justifying_Document":"Documento Justificativo"
+    "Justifying_Document":"Documento Justificativo",
+    "justifyingDocument": "Documento Justificativo"
 }

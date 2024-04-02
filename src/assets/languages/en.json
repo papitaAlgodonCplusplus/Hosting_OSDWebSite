@@ -184,5 +184,6 @@
   "ServiceFees": "Service Fees",
   "Action": "Action",
   "Associate": "Associate",
-  "Justifying_Document": "Justifying Document"
+  "Justifying_Document": "Justifying Document",
+  "justifyingDocument" : "Justifying Document"
 }

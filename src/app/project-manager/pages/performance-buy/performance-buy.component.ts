@@ -2,9 +2,8 @@ import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
-import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
-import { ValidationsService } from 'src/app/services/validations.service';
-import { UiActions } from 'src/app/store/actions';
+import { OSDService } from 'src/app/services/osd-event.services';
+import { ModalActions, UiActions } from 'src/app/store/actions';
 
 @Component({
   selector: 'app-performance-buy',
@@ -12,36 +11,20 @@ import { UiActions } from 'src/app/store/actions';
   styleUrls: ['./performance-buy.component.css']
 })
 export class PerformanceBuyComponent implements OnDestroy {
-  registerForm: FormGroup;
-  selectedClaimant: string | undefined;
-  claimant: DropDownItem[] = [
-    { value: this.translate.instant('reclamacion_simple'), key: 'key1' }, //'Reclamación Simple - 75€ /10€ /7,5€ '
-    { value: this.translate.instant('reclamacion_compleja'), key: 'Key2' },
-    { value: this.translate.instant('reclamacion_sostenibilidad'), key: 'key3' },
-    { value: this.translate.instant('mediacion_arbitraje'), key: 'Key4' }
-  ];
+  performanceForm: FormGroup;
   documentName: string | undefined;
-  selectedSubscriber: string | undefined;
-  subscriber: DropDownItem[] = [
-    { value: 'PL', key: 'key1' }
-  ];
-  selectedfreeProfessionals: string | undefined;
-  freeProfessionals: DropDownItem[] = [
-    { value: this.translate.instant('CFH'), key: 'key1' },
-    { value: this.translate.instant('FC'), key: 'Key2' }
-  ];
-  isDropdownOpen = false;
 
   constructor(private store: Store,
+    private osdEventService : OSDService,
     private formBuilder: FormBuilder,
-    private validationsService: ValidationsService,
     private translate: TranslateService) {
-    this.registerForm = this.createRegisterForm();
+    this.performanceForm = this.createForm();
   }
 
   ngOnInit() {
     setTimeout(() => {
-      this.store.dispatch(UiActions.hideAll());
+      this.store.dispatch(UiActions.hideLeftSidebar());
+      this.store.dispatch(UiActions.hideFooter());
     }, 0);
   }
 
@@ -51,38 +34,32 @@ export class PerformanceBuyComponent implements OnDestroy {
     }, 0);
   }
 
-  private createRegisterForm(): FormGroup {
+  private createForm(): FormGroup {
     const form = this.formBuilder.group({
       date: ['', [Validators.required]],
-      supportingDocument1: ['',[Validators.required]]
+      productServiceId: ['', [Validators.required]],
+      minimumUnits: ['', [Validators.required]],
+      maximumUnits: ['', [Validators.required]],
+      unitaryCost: ['', [Validators.required]],
+      shelfLife: ['', [Validators.required]],
+      justifyingDocument: ['', [Validators.required]]
     });
     return form;
   }
 
-  toggleDropdown() {
-    this.isDropdownOpen = !this.isDropdownOpen;
-  }
-
   onSubmit(): void {
-    console.log(this.registerForm.value)
-
-    if (this.registerForm.invalid) {
-      this.registerForm.markAllAsTouched();
+    if (this.performanceForm.invalid) {
+      this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Faltan campos por llenar" }))
+      this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }))
+      this.store.dispatch(ModalActions.openAlert())
+      this.performanceForm.markAllAsTouched();
       return;
-
     }
-
-    if (this.registerForm.value.acceptConditions) {
-      const userEmail = this.registerForm.value.email;
-      localStorage.setItem('userEmail', userEmail);
-      //  this.securityEventService.userRegister(this.registerForm.value);
-    }
-
+      this.osdEventService.performanceBuy(this.performanceForm.value);  
   }
+
   displayFileName(): void {
-    const fileNameDocument1 = document.getElementById('supportingDocument1') as HTMLInputElement;
-
-
+    const fileNameDocument1 = document.getElementById('justifyingDocument') as HTMLInputElement;
     if (fileNameDocument1.value !== null) {
       this.documentName = fileNameDocument1.value;
     }
