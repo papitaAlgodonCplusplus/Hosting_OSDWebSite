@@ -7,11 +7,11 @@ import { ValidationsService } from 'src/app/services/validations.service';
 import { UiActions } from 'src/app/store/actions';
 
 @Component({
-  selector: 'app-sale',
-  templateUrl: './sale.component.html',
-  styleUrls: ['./sale.component.css']
+  selector: 'app-performance-buy',
+  templateUrl: './performance-buy.component.html',
+  styleUrls: ['./performance-buy.component.css']
 })
-export class SaleComponent implements OnDestroy {
+export class PerformanceBuyComponent implements OnDestroy {
   registerForm: FormGroup;
   selectedClaimant: string | undefined;
   claimant: DropDownItem[] = [
@@ -53,18 +53,8 @@ export class SaleComponent implements OnDestroy {
 
   private createRegisterForm(): FormGroup {
     const form = this.formBuilder.group({
-      identity: ['', [Validators.required]],
-      name: ['', [Validators.required]],
-      firstSurname: ['', [Validators.required]],
-      middleSurname: ['', [Validators.required]],
-      country: ['', Validators.required],
-      zipCode: ['', Validators.required],
-      address: ['', [Validators.required]],
-      landline: [''],
-      mobilePhone: ['', [Validators.required]],
-      email: ['', [Validators.required, this.validationsService.isValidEmail]],
-      web: [''],
-      finalGrade: ['', [Validators.required]],
+      date: ['', [Validators.required]],
+      supportingDocument1: ['',[Validators.required]]
     });
     return form;
   }

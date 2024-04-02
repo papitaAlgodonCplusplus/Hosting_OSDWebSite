@@ -6,7 +6,7 @@
         <div class="flex flex-col space-x-4">
             <div class="flex flex-col items-start space-y-2 py-2">
 
-                <shared-input-field class="w-full" fieldName="name" label="{{'Date' | translate}}" inputType="date"
+                <shared-input-field class="w-full" fieldName="date" label="{{'Date' | translate}}" inputType="date"
                     [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
                 <button>{{'Solicitud productos/servicios'|translate}}</button>
@@ -48,42 +48,7 @@
             </div>
         </div>
 
-        <div class="flex flex-row space-x-4">
-            <div class="w-full">
-                <shared-input-field class="w-full" fieldName="identity" label="{{'DNI' | translate}}*" inputType="text"
-                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-                <shared-input-field class="w-full" fieldName="name" label="{{'nombre' | translate}}" inputType="text"
-                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-                <shared-input-field class="w-full" fieldName="firstSurname" label="{{'primer_apellido' | translate}}"
-                    inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-                <shared-input-field class="w-full" fieldName="middleSurname" label="{{'segundo_apellido' | translate}}"
-                    inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-                <shared-text-area class="w-full" fieldName="address" label="{{'direccion' | translate}}"
-                    inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-text-area>
-            </div>
-
-            <div class="w-full">
-                <shared-input-field class="w-full" fieldName="zipCode" label="{{'cod_postal' | translate}}"
-                    inputType="number" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-                <shared-input-field class="w-full" fieldName="landline" label="{{'tel_fijo' | translate}}"
-                    inputType="tel" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-                <shared-input-field class="w-full" fieldName="mobilePhone" label="{{'tel_movil' | translate}}"
-                    inputType="tel" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-                <shared-input-field class="w-full" fieldName="email" label="{{'correo_electronico' | translate}}"
-                    inputType="email" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-                <shared-input-field class="w-full" fieldName="web" label="{{'pagina_web' | translate}}" inputType="text"
-                    [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-            </div>
-        </div>
-
+    
         <div class="flex flex-row space-x-4 justify-end">
             <button routerLink="/home"
                 class="p-2  bg-darkslategray text-white rounded-lg "

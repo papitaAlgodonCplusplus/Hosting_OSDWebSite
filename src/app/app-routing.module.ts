@@ -26,6 +26,10 @@ const routes: Routes = [
     loadChildren: () => import('./functions/functions.module').then(m => m.FunctionsModule)
   },
   {
+    path: 'project-manager',
+    loadChildren: () => import('./project-manager/project-manager.module').then(m => m.ProjectManagerModule)
+  },
+  {
     path: '404',
     loadChildren: () => import('./shared/shared.module').then(m => m.SharedModule)
   },

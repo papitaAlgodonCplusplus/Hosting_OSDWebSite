@@ -4,23 +4,25 @@ import { CommonModule } from '@angular/common';
 import { FunctionsRoutingModule } from './functions-routing.module';
 import { SharedModule } from 'src/app/shared/shared.module';
 
-import { AutorizationPlComponent } from './autorization-pl/autorization-pl.component';
-import { AssignPLTRClaimsComponent } from './assign-pltr-claims/assign-pltr-claims.component';
+import { AutorizationPlComponent } from './pages/autorization-pl/autorization-pl.component';
+import { AssignPLTRClaimsComponent } from './pages/assign-pltr-claims/assign-pltr-claims.component';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { SubAuthorizedComponent } from './pages/sub-authorized/sub-authorized.component';
 
 @NgModule({
   declarations: [
     AutorizationPlComponent,
     AssignPLTRClaimsComponent,
-    
+    SubAuthorizedComponent
     ],
   imports: [
     CommonModule,
     FunctionsRoutingModule,
     SharedModule,
     FormsModule,
-    TranslateModule
+    TranslateModule,
+
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

@@ -78,6 +78,7 @@ export class SubAuthorizedComponent implements OnDestroy {
   onConfirmHandler() {
     this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: this.translate.instant('UserAuthorized')}))
     this.store.dispatch(ModalActions.openAlert());
+    
     const newItems = this.items.map(item => {
       if (item.id === this.userId) {
         return { ...item, isActive: "true" };
