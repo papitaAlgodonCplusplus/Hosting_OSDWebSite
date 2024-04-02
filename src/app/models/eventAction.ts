@@ -15,6 +15,7 @@ export class EventAction {
   public static CREATE_PERFORMANCE: string = "CreatePerformance";
   public static GET_CLAIMS: string = "GetClaims";
   public static GET_SUBSCRIBERS: string = "GetSubscribers";
+  public static ADD_PERFORMANCE_FREE_PROFESSIONAL: string = "AddPerformanceFreeProfessional";
 
   //Response
   public static HANDLE_AUTHENTICATION_RESPONSE: string = "HandleAuthenticationResponse";

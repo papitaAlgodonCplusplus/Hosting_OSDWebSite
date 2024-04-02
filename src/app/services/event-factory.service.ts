@@ -11,8 +11,8 @@ import { UserLoginEvent } from '../auth/interfaces/login.interface';
 import { RegisterUserEvent } from '../auth/interfaces/register.interface';
 import { VerifyEmailEvent } from '../auth/interfaces/verify-email.interface';
 import { EmailVerificationCodeResendEvent } from '../auth/interfaces/resend-email-verification-code.interface';
-import { Form } from '@angular/forms';
-
+import { Form, FormGroup } from '@angular/forms';
+import { PerformanceFreeProfessional } from '../models/performanceFreeProfessional';
 @Injectable({
   providedIn: 'root',
 })
@@ -73,6 +73,37 @@ export class EventFactoryService {
 
     return event;
   }
+
+  public CreateAddPerformanceFreeProfessionalEvent(performanceFP: PerformanceFreeProfessional): WebBaseEvent {
+    let event: WebBaseEvent;
+
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.ADD_PERFORMANCE_FREE_PROFESSIONAL;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    event.setBodyProperty(EventConstants.PROJECT_MANAGER_ID, performanceFP.proyectManagerId);
+    event.setBodyProperty(EventConstants.DATE_PERFORMANCE, performanceFP.date);
+    event.setBodyProperty(EventConstants.TYPE_Performance, performanceFP.type);
+    event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, performanceFP.justifyingDocument);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_WORK_HOURS, performanceFP.freeProfessionalWorkHours);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_TRAVEL_HOURS, performanceFP.freeProfessionalTravelHours);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_TRAVEL_EXPENSES, performanceFP.freeProfessionalTravelExpenses);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_REMUNERATION, performanceFP.freeProfessionalRemuneration);
+    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_DATE, performanceFP.technicalDirectorDate);
+    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_WORK_HOURS, performanceFP.technicalDirectorWorkHours);
+    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_TRAVEL_HOURS, performanceFP.freeProfessionalTravelHours);
+    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_TRAVEL_EXPENSES, performanceFP.technicalDirectorTravelExpenses);
+    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_REMUNERATION, performanceFP.technicalDirectorRemuneration);
+    event.setBodyProperty(EventConstants.SUMARY, performanceFP.sumary);
+
+    console.log('Se arma el evento Performance: ', event)
+    return event;
+  }
+
   public CreateGettingClaimsDataEvent(): WebBaseEvent {
     let event: WebBaseEvent;
 

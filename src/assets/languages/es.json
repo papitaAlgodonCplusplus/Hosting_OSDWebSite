@@ -184,6 +184,6 @@
     "processor" : "Tramitador",
     "ServiceFees" : "Tarifas de servicios",
     "Action":"Acción",
-    "Associate":"Asociar"
-
+    "Associate":"Asociar",
+    "Justifying_Document":"Documento Justificativo"
 }

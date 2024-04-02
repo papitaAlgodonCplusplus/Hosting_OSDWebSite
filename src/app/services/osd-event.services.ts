@@ -18,6 +18,7 @@ import { UserInfo } from '../models/userInfo';
 import { Claim } from '../models/claim';
 import { EventManager } from '@angular/platform-browser';
 import { tr } from 'date-fns/locale';
+import { PerformanceFreeProfessional } from '../models/performanceFreeProfessional';
 
 
 @Injectable({
@@ -98,6 +99,19 @@ export class OSDService {
   public userLogin(loginForm: UserLoginEvent) {
     const userLoginEvent: WebBaseEvent = this.eventFactoryService.CreateUserLoginEvent(loginForm);
     this.restApiService.SendOSDEvent(userLoginEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleAuthenticationResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+  public addPerformanceFreeProfessional(performanceFP: PerformanceFreeProfessional) {
+    const event: WebBaseEvent = this.eventFactoryService.CreateAddPerformanceFreeProfessionalEvent(performanceFP);
+    console.log('Se envia el evento:', event)
+    this.restApiService.SendOSDEvent(event).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
         this.HandleAuthenticationResponse(osdEvent);
@@ -303,6 +317,18 @@ export class OSDService {
         }
         this.store.dispatch(ModalActions.toggleErrorModal());
       }
+    } catch {
+
+    }
+  }
+
+  public HandleAddPerformanceFreeProfessionalResponse(webBaseEvent: WebBaseEvent) {
+    let message: string;
+
+    try {
+      message = webBaseEvent.getBodyProperty(EventConstants.PERFORMANCE_FREE_PROFESSIONAL_MESSAGE);
+      this.store.dispatch(ModalActions.addAlertMessage({alertMessage: message}));
+      this.store.dispatch(ModalActions.openAlert())
     } catch {
 
     }
