@@ -12,7 +12,7 @@ import { PerformanceBuy } from '../project-manager/Models/performanceBuy';
   providedIn: 'root'
 })
 export class OSDDataService {
-  performanceFP: any = null;
+  performanceFP: any = "";
   
   private actionRegisterSuccessSubject = new Subject<boolean>();
   private userAuthenticationSuccessSubject = new Subject<string>();

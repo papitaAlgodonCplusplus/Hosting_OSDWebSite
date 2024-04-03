@@ -38,9 +38,8 @@
                 <div *ngIf="showOptions" class="animate__animated animate__fadeInRight flex flex-row space-x-3">
                     <i (click)="cleanPerformance()" routerLink="/project-manager/performance-buy"
                         class="cursor-pointer px-2 py-1 fa-solid fa-cart-shopping text-xl bg-line text-darkslategray rounded-full"></i>
-                    <i (click)="cleanPerformance()"
-                        class="cursor-pointer px-2 py-1 fa-solid fa-user-tie text-xl bg-line text-darkslategray rounded-full"
-                        routerLink="/project-manager/performance-free-professional"></i>
+                    <i routerLink="/project-manager/performance-free-professional" (click)="cleanPerformance()" 
+                        class="cursor-pointer px-2 py-1 fa-solid fa-user-tie text-xl bg-line text-darkslategray rounded-full"></i>
                 </div>
                 <button class="flex items-center bg-darkslategray p-2 rounded-lg text-line text-sm"
                     (click)="showOptionsPerformance()">

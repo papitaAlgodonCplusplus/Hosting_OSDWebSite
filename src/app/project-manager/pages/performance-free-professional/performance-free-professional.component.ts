@@ -8,6 +8,7 @@ import { OSDService } from 'src/app/services/osd-event.services';
 import { UiActions } from 'src/app/store/actions';
 import { ClaimSelectors } from 'src/app/store/selectors';
 import { OSDDataService } from 'src/app/services/osd-data.service';
+import { AuthSelectors } from 'src/app/store/selectors';
 
 @Component({
   selector: 'app-performance-free-professional',
@@ -15,6 +16,7 @@ import { OSDDataService } from 'src/app/services/osd-data.service';
   styleUrls: ['./performance-free-professional.component.css']
 })
 export class PerformanceFreeProfessionalComponent {
+  isAuthenticated$: Observable<boolean> = this.store.select(AuthSelectors.authenticationToken)
   performanceFP: any;
   modalStateFreeProfessionals: boolean = false;
   modalStateTechnicalDirector: boolean = false;
@@ -26,10 +28,10 @@ export class PerformanceFreeProfessionalComponent {
   validationsService: any;
   selectedType: string | undefined;
   type: DropDownItem[] = [
-    { value: 'Escritos', key: 'key1' },
-    { value: 'E-mails', key: 'Key2' },
-    { value: 'Video Conferencias', key: 'key3' },
-    { value: 'Reuniones/Juzgado', key: 'Key4' }
+    { value: 'Escritos', key: 'Escritos' },
+    { value: 'E-mails', key: 'E-mails' },
+    { value: 'Video Conferencias', key: 'Video Conferencias' },
+    { value: 'Reuniones/Juzgado', key: 'Reuniones/Juzgado' }
   ];
   PL_FreeProfessional: string | undefined;
   FreeProfessional: DropDownItem[] = [];
@@ -42,37 +44,49 @@ export class PerformanceFreeProfessionalComponent {
     private formBuilder: FormBuilder,
     private OSDEventService: OSDService,
     private OSDDataService: OSDDataService) {
-    this.performanceForm = this.createRegisterForm();
+    //this.performanceForm = this.createRegisterForm();
     this.performanceForm = this.validatePerformanceOnDataService()
+    this.OSDDataService.setPerformance("")
   }
 
   validatePerformanceOnDataService(): FormGroup{
     this.performanceFP = this.OSDDataService.getPerformance()
-    const form = this.formBuilder.group({
-      Date: [this.performanceFP.Date, [Validators.required]],
-      Type: [this.performanceFP.Type, [Validators.required]],
-      JustifyingDocument: [this.performanceFP.JustifyingDocument, [Validators.required]],
-      FP_WorkHours: [this.performanceFP.FreeProfessionalWorkHours, [Validators.required]],
-      FP_TravelTime: [this.performanceFP.FreeProfessionalTravelHours, [Validators.required]],
-      FP_TravelExpenses: [this.performanceFP.FreeProfessionalTravelExpenses, [Validators.required]],
-      FP_Remuneration: [this.performanceFP.FreeProfessionalRemuneration, [Validators.required]],
-      TD_Date: [this.performanceFP.TechnicalDirectorDate, [Validators.required]],
-      TD_WorkHours: [this.performanceFP.TechnicalDirectorWorkHours, [Validators.required]],
-      TD_TravelTime: [this.performanceFP.TechnicalDirectorTravelHours, [Validators.required]],
-      TD_TravelExpenses: [this.performanceFP.TechnicalDirectorTravelExpenses, [Validators.required]],
-      TD_Remuneration: [this.performanceFP.TechnicalDirectorRemuneration, [Validators.required]],
-      Summary: [this.performanceFP.Summary, [Validators.required]]
-    });
+    if(this.performanceFP !== ""){
+      const form = this.formBuilder.group({
+        Date: [this.performanceFP.Date, [Validators.required]],
+        Type: [this.performanceFP.Type, [Validators.required]],
+        JustifyingDocument: [this.performanceFP.JustifyingDocument, [Validators.required]],
+        FP_WorkHours: [this.performanceFP.FreeProfessionalWorkHours, [Validators.required]],
+        FP_TravelTime: [this.performanceFP.FreeProfessionalTravelHours, [Validators.required]],
+        FP_TravelExpenses: [this.performanceFP.FreeProfessionalTravelExpenses, [Validators.required]],
+        FP_Remuneration: [this.performanceFP.FreeProfessionalRemuneration, [Validators.required]],
+        TD_Date: [this.performanceFP.TechnicalDirectorDate, [Validators.required]],
+        TD_WorkHours: [this.performanceFP.TechnicalDirectorWorkHours, [Validators.required]],
+        TD_TravelTime: [this.performanceFP.TechnicalDirectorTravelHours, [Validators.required]],
+        TD_TravelExpenses: [this.performanceFP.TechnicalDirectorTravelExpenses, [Validators.required]],
+        TD_Remuneration: [this.performanceFP.TechnicalDirectorRemuneration, [Validators.required]],
+        Summary: [this.performanceFP.Summary, [Validators.required]]
+      });
+      console.log("El formulario:",form)
+      return form;
 
-    console.log("El formulario:",form)
-    return form;
+    }
+    else{
+      return this.createRegisterForm()
+    }
 
+    
   }
 
   ngOnInit() {
     setTimeout(() => {
       this.store.dispatch(UiActions.hideAll());
     }, 0);
+    this.isAuthenticated$.subscribe((isAuthenticated: boolean) => {
+      if (isAuthenticated === false) {
+        this.editOtherInformation = false
+      }
+    });
   }
   ngOnDestroy() {
     setTimeout(() => {
