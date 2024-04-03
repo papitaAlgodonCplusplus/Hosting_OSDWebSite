@@ -1,7 +1,7 @@
 export class PerformanceFreeProfessional {
   id: string = "";
   proyectManagerId: string = "";
-  sumary: string = "";
+  summary: string = "";
   date: string = "";
   type: string = "";
   justifyingDocument: string = "";

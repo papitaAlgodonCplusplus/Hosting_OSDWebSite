@@ -63,7 +63,7 @@ export class EventConstants {
   public static LAST_NAME: string = "LastName";
   public static EMAIL: string = "Email";
   public static NAME: string = "Name";
-  public static SUMARY: string = "Sumary";
+  public static SUMMARY: string = "Summary";
   //#endregion
 
   // #region OSD

@@ -100,7 +100,7 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_TRAVEL_HOURS, performanceFP.freeProfessionalTravelHours);
     event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_TRAVEL_EXPENSES, performanceFP.technicalDirectorTravelExpenses);
     event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_REMUNERATION, performanceFP.technicalDirectorRemuneration);
-    event.setBodyProperty(EventConstants.SUMARY, performanceFP.sumary);
+    event.setBodyProperty(EventConstants.SUMMARY, performanceFP.summary);
 
     console.log('Se arma el evento Performance: ', event)
     return event;

@@ -73,7 +73,8 @@ export class PerformanceFreeProfessionalComponent {
       TD_WorkHours: ['', [Validators.required]],
       TD_TravelTime: ['', [Validators.required]],
       TD_TravelExpenses: ['', [Validators.required]],
-      TD_Remuneration: ['', [Validators.required]]
+      TD_Remuneration: ['', [Validators.required]],
+      Summary: ['', [Validators.required]]
     });
     return form;
   }
@@ -106,8 +107,11 @@ export class PerformanceFreeProfessionalComponent {
     performanceData.technicalDirectorTravelHours = formValues.TD_TravelTime;
     performanceData.technicalDirectorTravelExpenses = formValues.TD_TravelExpenses;
     performanceData.technicalDirectorRemuneration = formValues.TD_Remuneration;
+    performanceData.summary = formValues.Summary;
 
     performanceData.proyectManagerId = '065d461a-cc09-4162-b4e9-f121c11d3348'
+
+    console.log('Lo que tiene summary', performanceData)
 
     this.OSDEventService.addPerformanceFreeProfessional(performanceData);
   }
