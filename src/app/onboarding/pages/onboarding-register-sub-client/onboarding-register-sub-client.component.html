@@ -123,8 +123,8 @@
 
                 <br>
 
+                <h2 class="text-darkslategray font-bold justify-center text-center text-xl md:text-2xl">{{'Soluciones_OSD'| translate }}</h2>
                 <div class="p-2 bg-white flex flex-col items-center">
-                    <p class="text-darkslategray mb-2 font-bold">{{'Soluciones_OSD'| translate }}</p>
                     <div class="flex flex-col">
                         <p class="text-darkslategray mb-2">{{'-Consulta_Simple_95€'| translate }}</p>
                         <p class="text-darkslategray mb-2">{{'-Informe_Sostenible_450€'| translate }}</p>
@@ -136,7 +136,15 @@
                     </button>
                 </div>
 
-                <br><br><br><br><br><br><br><br><br>
+                <div class="p-2 bg-white flex flex-col items-center">
+                    <p class="text-darkslategray mb-2 font-bold">{{'Realizar_Pago'| translate }}</p>
+                    <button
+                        class="p-3 bg-darkslategray text-white font-normal animate__animated animate__fadeInDown w-10/12" (click)="makeAPurchaseSolutionsOsd()"><i class="fa-solid fa-money-bill"></i>
+                        {{'Enlace_Pago'| translate }}
+                    </button>
+                </div>
+
+                <br><br><br><br><br>
 
             </div>
         </div>

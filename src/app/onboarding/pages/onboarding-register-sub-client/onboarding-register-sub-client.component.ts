@@ -57,6 +57,10 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
   openVideoSolutionsOsd() {
     window.open('https://www.youtube.com/watch?v=2HTLx9uvvqw', '_blank');
   }
+
+  makeAPurchaseSolutionsOsd() {
+    window.open('https://buy.stripe.com/00g5ln69CeF35Hi28b', '_blank');
+  }
   
   downloadContranct() {
     window.open('https://oficinasolucionesdigital.com/wp-content/uploads/2024/02/18-2-24-Contrato-Suscriptor-Cliente.pdf', '_blank');
