@@ -68,11 +68,11 @@ export class ProjectManagementDossierComponent implements OnDestroy {
     }, 1525);
   }
 
-
   sortDateLowestHighest(ascending: boolean = true) {
     return this.allPerformances.sort((a, b) => {
       let dateA = new Date(a.Date);
       let dateB = new Date(b.Date);
+      
       return ascending ? dateA.getTime() - dateB.getTime() : dateB.getTime() - dateA.getTime();
     });
   }
@@ -115,16 +115,16 @@ export class ProjectManagementDossierComponent implements OnDestroy {
     return form;
   }
 
-  chargePerformanceFP(performance: any){
-    this.osdDataService.setPerformance(performance)
-  }
-
   showOptionsPerformance() {
     this.showOptions = !this.showOptions;
   }
 
   cleanPerformance() {
     this.store.dispatch(PerformanceActions.setPerformance({ performance: this.emptyPerformance }))
+  }
+
+  chargePerformanceFP(performance: any){
+    this.osdDataService.setPerformance(performance)
   }
 
   selectPerformance(id: string) {
