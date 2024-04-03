@@ -107,7 +107,7 @@ export class PerformanceFreeProfessionalComponent {
     performanceData.technicalDirectorTravelExpenses = formValues.TD_TravelExpenses;
     performanceData.technicalDirectorRemuneration = formValues.TD_Remuneration;
 
-    performanceData.proyectManagerId = '047bd8b3-939b-4e27-bdff-18bcf1a66e51'
+    performanceData.proyectManagerId = '065d461a-cc09-4162-b4e9-f121c11d3348'
 
     this.OSDEventService.addPerformanceFreeProfessional(performanceData);
   }

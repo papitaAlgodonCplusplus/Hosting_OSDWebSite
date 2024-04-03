@@ -115,7 +115,7 @@ export class OSDService {
     this.restApiService.SendOSDEvent(event).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
-        this.HandleAuthenticationResponse(osdEvent);
+        this.HandleAddPerformanceFreeProfessionalResponse(osdEvent);
       },
       error: (error) => {
         //TODO: Pending implementation
