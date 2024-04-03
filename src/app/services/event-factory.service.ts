@@ -42,6 +42,36 @@ export class EventFactoryService {
     return event;
   }
 
+  public CreateChangingUsdUserAutorizationStatusEvent(selectedUserId: any): WebBaseEvent {
+    let event: WebBaseEvent;
+
+    event = new WebBaseEvent();
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.CHANGING_OSD_USER_AUTORIZATION_STATUS;
+    event.Date = new Date().toUTCString();
+    console.log("Probando aqui");
+    event.setBodyProperty(EventConstants.ID, selectedUserId);
+    event.ApplicationIdentifier = 'WebClient';
+    event.SessionKey = this.authenticationService.sessionKey;
+    return event;
+  }
+
+  public CreateGettingFreeProfessionalsDataEvent(): WebBaseEvent {
+    let event: WebBaseEvent;
+    
+    event = new WebBaseEvent();
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.GET_FREE_PROFESSIONALS;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    event.SessionKey = this.authenticationService.sessionKey;
+    return event;
+  }
+  
   public ConvertJsonObjectToWebBaseEvent(jsonObject: any): WebBaseEvent {
     const event = new WebBaseEvent();
     let bodyObj = { ...jsonObject.Body }
@@ -193,6 +223,7 @@ export class EventFactoryService {
     event.Date = new Date().toUTCString();
     event.ApplicationIdentifier = 'WebClient'; //TODO: change to use an application identifier
     event.setBodyProperty(EventConstants.DATE, performanceForm.date);
+    event.setBodyProperty(EventConstants.PROJECT_MANAGER_ID, "065d461a-cc09-4162-b4e9-f121c11d3348");
     event.setBodyProperty(EventConstants.PRODUCT_SERVICE_ID, performanceForm.productServiceId);
     event.setBodyProperty(EventConstants.MINIMUN_UNITS, performanceForm.minimumUnits);
     event.setBodyProperty(EventConstants.MAXIMUM_UNITS, performanceForm.maximumUnits);
@@ -217,6 +248,18 @@ export class EventFactoryService {
     return event;
   }
 
+  public CreateLoginErrorNotificationEvent(webBaseEvent: WebBaseEvent, message: string): NotificationEvent {
+    let event: NotificationEvent;
+
+    event = new NotificationEvent();
+    event.TraceIdentifier = webBaseEvent.TraceIdentifier;
+    event.Component = EventComponent.Login;
+    event.Action = EventAction.SHOW_LOGIN_FAILURE;
+    event.Message = message;
+
+    return event;
+  }
+
   public CreateGetSubscribers(): WebBaseEvent {
     let event: WebBaseEvent;
     event = new WebBaseEvent();
@@ -228,18 +271,6 @@ export class EventFactoryService {
     event.Date = new Date().toUTCString();
     event.ApplicationIdentifier = 'WebClient'; //TODO: change to use an application identifier
  
-    return event;
-  }
-
-  public CreateLoginErrorNotificationEvent(webBaseEvent: WebBaseEvent, message: string): NotificationEvent {
-    let event: NotificationEvent;
-
-    event = new NotificationEvent();
-    event.TraceIdentifier = webBaseEvent.TraceIdentifier;
-    event.Component = EventComponent.Login;
-    event.Action = EventAction.SHOW_LOGIN_FAILURE;
-    event.Message = message;
-
     return event;
   }
 
