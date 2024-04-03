@@ -42,10 +42,6 @@ export class LeftSidebarComponent {
   getSubscribers() {
     this.osdEventService.GetSubscribers();
   }
-
-  getPerformances() {
-    this.osdEventService.getPerformanceList();
-  }
   
   onSubmitAssignClaimsToFreeProfessionalsTR(): void {
     this.osdEventService.gettingClaimsData();

@@ -62,7 +62,6 @@ export class SubAuthorizedComponent implements OnDestroy {
   selectUser(userId: string) {
     var foundUser = this.displayedItems.find(item => item.id === userId);
     this.userId = foundUser.id;
-    console.log(this.userId)
     const userDTO: UserInfo = {} as UserInfo;
     userDTO.identity = foundUser.identity;
     userDTO.name = foundUser.name;

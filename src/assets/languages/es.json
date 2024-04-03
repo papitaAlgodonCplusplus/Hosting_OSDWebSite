@@ -188,5 +188,9 @@
     "Associate":"Asociar",
     "justifyingDocument": "Documento Justificativo",
     "Summary": "Resumen",
-    "Cod": "Código"
+    "Cod": "Código",
+    "customer_subscribers_results" : "CLIENTES-SUSCRIPTORES: RESULTADOS",
+    "osd_results" : "OSD: RESULTADOS",
+    "income_expenses_benefits" : "INGRESOS / GASTOS/ BENEFICIOS",
+    "transparent_project": "GESTIÓN ÉTICA Y TRANSPARENTE DE PROYECTO"
 }

@@ -1,5 +1,5 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 
 import { ProjectManagerRoutingModule } from './project-manager-routing.module';
 import { SharedModule } from '../shared/shared.module';
@@ -25,5 +25,8 @@ import { PerformanceFreeProfessionalComponent } from './pages/performance-free-p
     FormsModule,
     ReactiveFormsModule,
   ],
+  providers:[
+    DatePipe
+  ]
 })
 export class ProjectManagerModule { }

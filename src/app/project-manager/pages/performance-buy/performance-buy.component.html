@@ -1,14 +1,16 @@
 <div class="flex justify-center p-3">
-    <form [formGroup]="performanceForm" (ngSubmit)="onSubmit()" autocomplete="off" class="flex flex-col">
-        <div class="w-full rounded-xl text-darkslategray border-b rounded-b-none">
-            <h1 class="text-lg font-medium ">{{'compra' | translate}}</h1>
+    <form [formGroup]="performanceForm" (ngSubmit)="onSubmit()" autocomplete="off" class="flex flex-col ">
+
+        <div class="w-full rounded-xl  text-darkslategray border-b rounded-b-none">
+            <h1 class="text-xl font-medium ">{{'compra' | translate}}</h1>
         </div>
 
         <div class="flex flex-col space-y-2 py-2">
             <shared-input-field class="w-full lg:w-1/3" fieldName="date" label="{{'Date' | translate}}" inputType="date"
                 [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-            <span class="bg-line ml-1 text-lg font-medium text-center text-darkslategray">{{'Solicitud productos/servicios'|translate}}</span>
+            <span class="bg-line ml-1 text-lg font-medium text-center text-darkslategray">
+                {{'Solicitud productos/servicios'|translate}}</span>
 
             <div class="flex flex-wrap">
                 <shared-input-field class="w-full lg:w-1/3" fieldName="productServiceId"
@@ -26,7 +28,12 @@
 
                 <shared-input-field class="w-full lg:w-1/3" fieldName="shelfLife" label="Vida util" inputType="text"
                     [formGroup]="performanceForm"></shared-input-field>
+
             </div>
+
+            <shared-text-area class="w-full md:w-1/3" fieldName="summary" label="{{'Summary'|translate}}"
+                inputType="text" [formGroup]="performanceForm"></shared-text-area>
+
             <div class="flex flex-wrap pt-3">
                 <div class="mb-4 flex flex-col ">
                     <label for="justifyingDocument" class="block mb-1 pr-1">{{'justifyingDocument' |

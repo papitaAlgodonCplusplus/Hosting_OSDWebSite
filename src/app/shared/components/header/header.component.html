@@ -5,7 +5,7 @@
   </div>
   <div class="flex-1 flex items-center justify-end space-x-3 pr-3">
     <div class="relative inline-block text-left">
-      <button type="button"
+      <button *ngIf="showButton" type="button"
         class="flex-col flex items-center border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
         id="dropdown-menu" aria-haspopup="true" aria-expanded="true" (click)="toggleDropdown()">
         <img [src]="imgProfile" class="w-8 h-8 rounded-full" alt="">

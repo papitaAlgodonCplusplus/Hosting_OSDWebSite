@@ -8,4 +8,5 @@ export class PerformanceBuy {
     unitaryCost : string = "";
     shelfLife : string = "";
     justifyingDocument: string = "";
+    summary: string = ""
 }

@@ -187,5 +187,9 @@
   "Associate": "Associate",
   "Justifying_Document": "Justifying Document",
   "justifyingDocument" : "Justifying Document",
-  "Summary": "Summary"
+  "Summary": "Summary",
+  "customer_subscribers_results" : "CUSTOMER-SUBSCRIBERS: RESULTS",
+  "osd_results" : "OSD: RESULTS",
+  "income_expenses_benefits" : "INCOME/EXPENSES/PROFITS",
+  "transparent_project": "ETHICAL AND TRANSPARENT PROJECT MANAGEMENT"
 }

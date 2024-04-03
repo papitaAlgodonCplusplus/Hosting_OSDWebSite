@@ -2,8 +2,13 @@ import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
+import { Observable } from 'rxjs';
+import { OSDDataService } from 'src/app/services/osd-data.service';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { ModalActions, UiActions } from 'src/app/store/actions';
+import { PerformanceSelectors } from 'src/app/store/selectors';
+import { PerformanceBuy } from '../../Models/performanceBuy';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-performance-buy',
@@ -11,20 +16,34 @@ import { ModalActions, UiActions } from 'src/app/store/actions';
   styleUrls: ['./performance-buy.component.css']
 })
 export class PerformanceBuyComponent implements OnDestroy {
+
   performanceForm: FormGroup;
   documentName: string | undefined;
+  performance$: Observable<PerformanceBuy> = this.store.select(PerformanceSelectors.performance)
+  performance!: any;
+  isView: boolean = false;
 
   constructor(private store: Store,
-    private osdEventService : OSDService,
+    private osdEventService: OSDService,
     private formBuilder: FormBuilder,
-    private translate: TranslateService) {
-    this.performanceForm = this.createForm();
+    private datePipe: DatePipe
+  ) {
+    this.performanceForm = this.createForm()
   }
 
   ngOnInit() {
     setTimeout(() => {
       this.store.dispatch(UiActions.hideLeftSidebar());
       this.store.dispatch(UiActions.hideFooter());
+      this.performance$.subscribe(performance => {
+        this.performance = performance
+      })
+
+      if (this.performance) {
+        this.performanceForm = this.fillForm()
+      }
+
+      console.log(this.performance)
     }, 0);
   }
 
@@ -34,6 +53,23 @@ export class PerformanceBuyComponent implements OnDestroy {
     }, 0);
   }
 
+  private fillForm(): FormGroup {
+    const fechaOriginal = this.performance.Date;
+    const fechaFormateada = this.datePipe.transform(fechaOriginal, 'dd/MM/yyyy');
+    this.documentName = this.performance.JustifyingDocument;
+    const form = this.formBuilder.group({
+      date: [fechaFormateada || '', [Validators.required]],
+      productServiceId: [this.performance.ProductServiceId || '', [Validators.required]],
+      minimumUnits: [this.performance.MinimumUnits || '', [Validators.required]],
+      maximumUnits: [this.performance.MaximumUnits || '', [Validators.required]],
+      unitaryCost: [this.performance.UnitaryCost || '', [Validators.required]],
+      shelfLife: [this.performance.ShelfLife || '', [Validators.required]],
+      summary: [this.performance.Summary || '', [Validators.required]]
+    });
+    return form;
+  }
+
+
   private createForm(): FormGroup {
     const form = this.formBuilder.group({
       date: ['', [Validators.required]],
@@ -42,7 +78,8 @@ export class PerformanceBuyComponent implements OnDestroy {
       maximumUnits: ['', [Validators.required]],
       unitaryCost: ['', [Validators.required]],
       shelfLife: ['', [Validators.required]],
-      justifyingDocument: ['', [Validators.required]]
+      justifyingDocument: ['', [Validators.required]],
+      summary: ['', [Validators.required]]
     });
     return form;
   }
@@ -55,7 +92,7 @@ export class PerformanceBuyComponent implements OnDestroy {
       this.performanceForm.markAllAsTouched();
       return;
     }
-      this.osdEventService.performanceBuy(this.performanceForm.value);  
+    this.osdEventService.performanceBuy(this.performanceForm.value);
   }
 
   displayFileName(): void {
