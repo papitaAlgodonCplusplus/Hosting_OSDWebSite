@@ -46,19 +46,23 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
     }, 0);
   }
 
-  openVideoLink() {
+  openVideo() {
     window.open('https://www.youtube.com/embed/I80vR3wOUqc', '_blank');
   }
 
-  openBuyLink() {
+  makeAPurchase() {
     window.open('https://buy.stripe.com/5kA0139lO0Od2v67ss', '_blank');
   }
 
   openVideoSolutionsOsd() {
     window.open('https://www.youtube.com/watch?v=2HTLx9uvvqw', '_blank');
   }
+
+  makeAPurchaseSolutionsOsd() {
+    window.open('https://buy.stripe.com/00g5ln69CeF35Hi28b', '_blank');
+  }
   
-  openContratoLink() {
+  downloadContranct() {
     window.open('https://oficinasolucionesdigital.com/wp-content/uploads/2024/02/18-2-24-Contrato-Suscriptor-Cliente.pdf', '_blank');
   }
   
