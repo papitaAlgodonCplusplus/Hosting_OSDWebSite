@@ -18,6 +18,7 @@ import { UserInfo } from '../models/userInfo';
 import { Claim } from '../models/claim';
 import { EventManager } from '@angular/platform-browser';
 import { tr } from 'date-fns/locale';
+import { PerformanceFreeProfessional } from '../models/performanceFreeProfessional';
 import { PerformanceBuy } from '../project-manager/Models/performanceBuy';
 
 
@@ -108,6 +109,19 @@ export class OSDService {
       }
     });
   }
+  public addPerformanceFreeProfessional(performanceFP: PerformanceFreeProfessional) {
+    const event: WebBaseEvent = this.eventFactoryService.CreateAddPerformanceFreeProfessionalEvent(performanceFP);
+    console.log('Se envia el evento:', event)
+    this.restApiService.SendOSDEvent(event).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleAddPerformanceFreeProfessionalResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
 
   public gettingClaimsData() {
     const gettingClaimsEvent: WebBaseEvent = this.eventFactoryService.CreateGettingClaimsDataEvent();
@@ -169,6 +183,20 @@ export class OSDService {
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
         this.HandleAddPerformanceBuyResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+
+  public getPerformanceList() {
+    const performanceBuyEvent: WebBaseEvent = this.eventFactoryService.CreateGetPerformancesList();
+    console.log(performanceBuyEvent)
+    this.restApiService.SendOSDEvent(performanceBuyEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleGetPerformancesResponse(osdEvent);
       },
       error: (error) => {
         //TODO: Pending implementation
@@ -279,6 +307,25 @@ export class OSDService {
     }
   }
 
+  public HandleGetPerformancesResponse(webBaseEvent: WebBaseEvent) {
+    try {
+      console.log('Lista de performances Recuperadas:', webBaseEvent)
+      var performancesFreeProfessionals = webBaseEvent.getBodyProperty(EventConstants.PERFORMANCE_FREE_PROFESSIONAL_LIST);
+
+      if (performancesFreeProfessionals != null) {
+        var performancesBuy = webBaseEvent.getBodyProperty(EventConstants.PERFORMANCE_BUY_LIST);
+        const performancesFreeProfessionalsModels = performancesFreeProfessionals;
+        const performancesBuyModels = performancesBuy;
+        this.osdDataService.emitGetOsdUsersSubscribersSuccess(performancesFreeProfessionalsModels);
+        this.osdDataService.emitGetSubscribersSuccess(performancesBuyModels);
+      }
+
+    }
+    catch (err) {
+      //TODO: create exception event and send to local file or core
+    }
+  }
+
   public HandleGetClaimsResponse(webBaseEvent: WebBaseEvent) {
     try {
       var actionGetClaimsResultMessage = webBaseEvent.getBodyProperty(EventConstants.LIST_CLAIM);
@@ -336,6 +383,18 @@ export class OSDService {
       }
     } catch(err) {
         //TODO: create exception event and send to local file or core
+    }
+  }
+
+  public HandleAddPerformanceFreeProfessionalResponse(webBaseEvent: WebBaseEvent) {
+    let message: string;
+
+    try {
+      message = webBaseEvent.getBodyProperty(EventConstants.PERFORMANCE_FREE_PROFESSIONAL_MESSAGE);
+      this.store.dispatch(ModalActions.addAlertMessage({alertMessage: message}));
+      this.store.dispatch(ModalActions.openAlert())
+    } catch {
+
     }
   }
 

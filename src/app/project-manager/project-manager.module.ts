@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { ProjectManagerRoutingModule } from './project-manager-routing.module';
@@ -8,12 +8,14 @@ import { ProjectManagementDossierComponent } from './pages/project-management-do
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PerformanceBuyComponent } from './pages/performance-buy/performance-buy.component';
+import { PerformanceFreeProfessionalComponent } from './pages/performance-free-professional/performance-free-professional.component';
 
 
 @NgModule({
   declarations: [
     ProjectManagementDossierComponent,
-    PerformanceBuyComponent
+    PerformanceBuyComponent,
+    PerformanceFreeProfessionalComponent,
   ],
   imports: [
     CommonModule,
@@ -21,7 +23,7 @@ import { PerformanceBuyComponent } from './pages/performance-buy/performance-buy
     SharedModule,
     TranslateModule,
     FormsModule,
-    ReactiveFormsModule
-  ]
+    ReactiveFormsModule,
+  ],
 })
 export class ProjectManagerModule { }
