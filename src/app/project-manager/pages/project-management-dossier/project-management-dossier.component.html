@@ -63,29 +63,19 @@
                 </tr>
             </thead>
             <tbody>
-                <tr class="font-light" *ngFor="let performanceFP of performancesFreeProfesional">
-                    <td routerLink="/project-manager/performance-free-professional"
-                        class="text-center text-s border-y px-2 py-2 hover:underline cursor-pointer"
-                        (click)="selectPerformance(performanceFP.Id)"
-                        [title]="performanceFP.Id">{{
-                        performanceFP.Id.slice(0, 8) + '...' }}</td>
-                    <td class="text-center text-s border-y px-2 py-2">{{'profesional_libre' | translate}}</td>
-                    <td class="text-center text-s border-y px-2 py-2">{{performanceFP.Summary}}</td>
-                    <td class="text-center border-y px-3 py-2">{{ performanceFP.Date | date:'dd-MM-yyyy' }}</td>
-                </tr>
-                <tr class="font-light" *ngFor="let performanceBuy of performancesBuys">
+                <tr class="font-light" *ngFor="let performance of allPerformances">
                     <td routerLink="/project-manager/performance-buy"
                         class="text-center text-s border-y px-2 py-2 hover:underline cursor-pointer"
-                        (click)="selectPerformance(performanceBuy.Id)"
-                        [title]="performanceBuy.Id">{{
-                        performanceBuy.Id.slice(0, 8) + '...' }}</td>
-                    <td class="text-center text-s border-y px-2 py-2">{{'compra' | translate}}</td>
-                    <td class="text-center text-s border-y px-2 py-2">{{performanceBuy.Summary}}</td>
-                    <td class="text-center border-y px-3 py-2">{{ performanceBuy.Date | date:'dd-MM-yyyy' }}</td>
+                        (click)="selectPerformance(performance.Id)"
+                        [title]="performance.Id" *ngIf="performance.Type === 'Compra'">{{
+                        performance.Id.slice(0, 8) + '...' }}</td>
+                    <td routerLink="/project-manager/performance-free-professional"
+                        class="text-center text-s border-y px-2 py-2 hover:underline cursor-pointer"
+                        (click)="chargePerformanceFP(performance)"
+                        [title]="performance.Id" *ngIf="performance.Type !== 'Compra'">{{
+                        performance.Id.slice(0, 8) + '...' }}</td>
                     
-                <tr class="font-light" *ngFor="let performance of allPerformances">
-                    <td class="text-center text-s border-y px-2 py-2" [title]="performance.Id">{{ performance.Id.slice(0, 8) + '...' }}</td>
-                    <td class="text-center text-s border-y px-2 py-2">{{performance.Type}}</td>
+                    <td class="text-center text-s border-y px-2 py-2"  >{{performance.Type}}</td>
                     <td class="text-center text-s border-y px-2 py-2">{{performance.Summary}}</td>
                     <td class="text-center border-y px-3 py-2">{{ performance.Date | date:'dd-MM-yyyy' }}</td>
                 </tr>

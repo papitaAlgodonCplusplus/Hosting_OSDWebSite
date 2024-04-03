@@ -12,6 +12,8 @@ import { PerformanceBuy } from '../project-manager/Models/performanceBuy';
   providedIn: 'root'
 })
 export class OSDDataService {
+  performanceFP: any = null;
+  
   private actionRegisterSuccessSubject = new Subject<boolean>();
   private userAuthenticationSuccessSubject = new Subject<string>();
   private userRegisterSuccessSubject = new Subject<boolean>();
@@ -33,7 +35,14 @@ export class OSDDataService {
   performanceBuyList$ = this.performanceBuyList.asObservable();
 
   constructor() { }
-
+  setPerformance(performance: any){
+    this.performanceFP = performance
+    console.log('El performance FP', this.performanceFP)
+  }
+  getPerformance(){
+    console.log('El performance Que Retorna', this.performanceFP)
+    return this.performanceFP
+  }
   emitUserAuthenticationSuccess(data: string) {
     this.userAuthenticationSuccessSubject.next(data);
   }

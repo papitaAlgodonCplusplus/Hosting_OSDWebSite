@@ -115,6 +115,10 @@ export class ProjectManagementDossierComponent implements OnDestroy {
     return form;
   }
 
+  chargePerformanceFP(performance: any){
+    this.osdDataService.setPerformance(performance)
+  }
+
   showOptionsPerformance() {
     this.showOptions = !this.showOptions;
   }
