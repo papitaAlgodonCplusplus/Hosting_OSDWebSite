@@ -45,6 +45,23 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
       this.store.dispatch(UiActions.showAll());
     }, 0);
   }
+
+  openVideoLink() {
+    window.open('https://www.youtube.com/embed/I80vR3wOUqc', '_blank');
+  }
+
+  openBuyLink() {
+    window.open('https://buy.stripe.com/5kA0139lO0Od2v67ss', '_blank');
+  }
+
+  openVideoSolutionsOsd() {
+    window.open('https://www.youtube.com/watch?v=2HTLx9uvvqw', '_blank');
+  }
+  
+  openContratoLink() {
+    window.open('https://oficinasolucionesdigital.com/wp-content/uploads/2024/02/18-2-24-Contrato-Suscriptor-Cliente.pdf', '_blank');
+  }
+  
   private createPersonalForm(): FormGroup {
     const personalForm = this.formBuilder.group({
       identity: ['', [Validators.required]],
