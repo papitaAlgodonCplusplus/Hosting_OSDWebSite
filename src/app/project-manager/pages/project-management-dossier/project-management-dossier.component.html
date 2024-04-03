@@ -39,6 +39,20 @@
                     [ngClass]="{'fa-chevron-right' : showOptions, 'fa-chevron-left':!showOptions}"></i> Actuaciones
             </button>
         </div>
+        <div class="text-darkslategray text-xl mt-3 font-bold text-center p-2">
+            <h1>
+                {{'performances' | translate}}
+            </h1>
+        </div> 
+        <div class="text-center text-xs font-extralight">
+            <span class="m-1 cursor-pointer border-b" (click)="sortByType(true)">Tipo Menor a Mayor</span>
+            <span class="m-1 cursor-pointer border-b" (click)="sortByType(false)">Tipo Mayor a Menor</span>
+            <span class="m-1 cursor-pointer border-b" (click)="sortBySummary(true)">Resumen Menor a Mayor</span>
+            <span class="m-1 cursor-pointer border-b" (click)="sortBySummary(false)">Resumen Mayor a Menor</span>
+            <span class="m-1 cursor-pointer border-b" (click)="sortDateLowestHighest(true)">Fecha Menor a Mayor</span>
+            <span class="m-1 cursor-pointer border-b" (click)="sortDateLowestHighest(false)">Fecha Mayor a Menor</span>
+        </div>
+    
         <table class="table-auto w-full">
             <thead>
                 <tr class="text-darkslategray font-normal bg-line text-center">
@@ -68,8 +82,17 @@
                     <td class="text-center text-s border-y px-2 py-2">{{'compra' | translate}}</td>
                     <td class="text-center text-s border-y px-2 py-2">{{performanceBuy.Summary}}</td>
                     <td class="text-center border-y px-3 py-2">{{ performanceBuy.Date | date:'dd-MM-yyyy' }}</td>
+                    
+                <tr class="font-light" *ngFor="let performance of allPerformances">
+                    <td class="text-center text-s border-y px-2 py-2" [title]="performance.Id">{{ performance.Id.slice(0, 8) + '...' }}</td>
+                    <td class="text-center text-s border-y px-2 py-2">{{performance.Type}}</td>
+                    <td class="text-center text-s border-y px-2 py-2">{{performance.Summary}}</td>
+                    <td class="text-center border-y px-3 py-2">{{ performance.Date | date:'dd-MM-yyyy' }}</td>
                 </tr>
             </tbody>
         </table>
+        <div class="text-center text-darkslategray px-2 py-2 " *ngIf="allPerformances.length === 0" >
+            <i class="fa-solid fa-arrow-rotate-right animate-spin"></i> Cargando, por favor espere
+        </div>
     </div>
 </div>
