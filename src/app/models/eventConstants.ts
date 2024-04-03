@@ -9,6 +9,7 @@ export class EventConstants {
   public static COMPONENT: string = "Component";
 
   public static USER_ID: string = "UserId";
+  public static ID: string = "Id";
   public static HASHTOKEN: string = "HashToken";
 
   public static USER_AUTHENTICATION_SUCCESS: string = "UserAuthenticationSuccess";

@@ -21,7 +21,6 @@ import { tr } from 'date-fns/locale';
 import { PerformanceFreeProfessional } from '../models/performanceFreeProfessional';
 import { PerformanceBuy } from '../project-manager/Models/performanceBuy';
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -32,7 +31,11 @@ export class OSDService {
   freeProfessionalsTR: any[] = [];
   claimsResponse: boolean = false;
   freeProfessionalsTRResponse: boolean = false;
-
+  freeProfessionals: any[] = [];
+  freeProfessionalsResponse: boolean = false;
+  message: string = "";
+  messageResponse: boolean = false;
+  
   constructor(
     private store: Store,
     private restApiService: RestAPIService,
@@ -48,6 +51,51 @@ export class OSDService {
   cleanClaimList() {
     this.claims = []
     this.claimsResponse = false;
+  }
+
+  cleanFreeProfessionalsList() {
+    this.freeProfessionals = []
+    this.freeProfessionalsResponse = false;
+  }
+
+  getFreeProfessionalsList(): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const checkResponse = () => {
+        if (this.freeProfessionalsResponse) {
+          resolve(this.freeProfessionals);
+        } else {
+          setTimeout(checkResponse, 1000);
+        }
+      };
+
+      checkResponse();
+    });
+  }
+
+  public CreateGettingFreeProfessionalsDataEvent() {
+    const gettingFreeProfessionalsEvent: WebBaseEvent = this.eventFactoryService.CreateGettingFreeProfessionalsDataEvent();
+    this.restApiService.SendOSDEvent(gettingFreeProfessionalsEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleGettingFreeProfessionalsListResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+
+  public changingUsdUserAutorizationStatusEvent(selectedUserId: any) {
+    const autorizationOsdUser: WebBaseEvent = this.eventFactoryService.CreateChangingUsdUserAutorizationStatusEvent(selectedUserId);
+    this.restApiService.SendOSDEvent(autorizationOsdUser).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleChangingOsdUserAutorizationResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
   }
 
   getClaimList(): Promise<any[]> {
@@ -202,6 +250,35 @@ export class OSDService {
         //TODO: Pending implementation
       }
     });
+  }
+  
+  public HandleGettingFreeProfessionalsListResponse(webBaseEvent: WebBaseEvent) {
+    try {
+      if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['ListFreeProfessionals']) {
+        this.freeProfessionals = webBaseEvent.Body['ListFreeProfessionals'];
+        this.freeProfessionalsResponse = true;
+      } else {
+        this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'No hay profesionales libres registrados' }));
+      }
+    }
+    catch (err) {
+      this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Error inesperado' }));
+    }
+  }
+
+  public HandleChangingOsdUserAutorizationResponse(webBaseEvent: WebBaseEvent) {
+    try {
+      if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['Message']) {
+        this.message = webBaseEvent.Body['Message'];
+        this.messageResponse = true;
+        this.store.dispatch(ModalActions.addAlertMessage({alertMessage: this.message}));
+      } else {
+        this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'No hay mensaje' }));
+      }
+    }
+    catch (err) {
+      this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Error inesperado' }));
+    }
   }
 
   public HandleGettingClaimListResponse(webBaseEvent: WebBaseEvent) {
