@@ -148,6 +148,7 @@ export class EventFactoryService {
     event.Date = new Date().toUTCString();
     event.ApplicationIdentifier = 'WebClient'; //TODO: change to use an application identifier
     event.setBodyProperty(EventConstants.DATE, performanceForm.date);
+    event.setBodyProperty(EventConstants.PROJECT_MANAGER_ID, "065d461a-cc09-4162-b4e9-f121c11d3348");
     event.setBodyProperty(EventConstants.PRODUCT_SERVICE_ID, performanceForm.productServiceId);
     event.setBodyProperty(EventConstants.MINIMUN_UNITS, performanceForm.minimumUnits);
     event.setBodyProperty(EventConstants.MAXIMUM_UNITS, performanceForm.maximumUnits);

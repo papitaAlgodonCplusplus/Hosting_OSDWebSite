@@ -84,6 +84,7 @@ export class EventConstants {
 
   public static PERFORMANCE_BUY = "PerformanceBuy"
   public static PRODUCT_SERVICE_ID = "ProductServiceId";
+  public static PROJECT_MANAGER_ID = "ProjectManagerId";
   public static MINIMUN_UNITS = "MinimumUnits";
   public static MAXIMUM_UNITS = "MaximumUnits";
   public static UNITARY_COST = "UnitaryCost";

@@ -168,7 +168,7 @@ export class OSDService {
     this.restApiService.SendOSDEvent(performanceBuyEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
-        this.HandleRegisterUserResponse(osdEvent);
+        this.HandleAddPerformanceBuyResponse(osdEvent);
       },
       error: (error) => {
         //TODO: Pending implementation
@@ -244,6 +244,21 @@ export class OSDService {
   public GetClaims() {
     const createPerformanceEvent: WebBaseEvent = this.eventFactoryService.CreateGetClaims();
     //this.websocketService.sendOSDEvent(createPerformanceEvent);
+  }
+
+  public HandleAddPerformanceBuyResponse(webBaseEvent: WebBaseEvent) {
+    try {
+      console.log("llegue bien");
+      var actionGetOsdUsersSusbscriberResultMessage = webBaseEvent.getBodyProperty(EventConstants.ACTION_OSD_RESULT_MESSAGE);
+      if (actionGetOsdUsersSusbscriberResultMessage != null) {
+          this.store.dispatch(ModalActions.addAlertMessage({alertMessage: actionGetOsdUsersSusbscriberResultMessage}))
+          this.store.dispatch(ModalActions.openAlert())
+      }
+
+    }
+    catch (err) {
+      //TODO: create exception event and send to local file or core
+    }
   }
 
   public HandleGetSubscriberResponse(webBaseEvent: WebBaseEvent) {
