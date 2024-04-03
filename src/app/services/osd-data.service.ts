@@ -57,5 +57,6 @@ export class OSDDataService {
   }
   emitPerformanceBuyList(data: PerformanceBuy[]) {
     this.performanceBuyList.next(data);
+    console.log('La data:',data)
   }
 }

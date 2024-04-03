@@ -393,8 +393,12 @@ export class OSDService {
         var performancesBuy = webBaseEvent.getBodyProperty(EventConstants.PERFORMANCE_BUY_LIST);
         const performancesFreeProfessionalsModels = performancesFreeProfessionals;
         const performancesBuyModels = performancesBuy;
-        this.osdDataService.emitGetOsdUsersSubscribersSuccess(performancesFreeProfessionalsModels);
-        this.osdDataService.emitGetSubscribersSuccess(performancesBuyModels);
+
+        console.log('Ventas',performancesBuyModels)
+        console.log('FP',performancesFreeProfessionalsModels)
+
+        this.osdDataService.emitPerformanceFreeProfessionalList(performancesFreeProfessionalsModels);
+        this.osdDataService.emitPerformanceBuyList(performancesBuyModels);
       }
 
     }

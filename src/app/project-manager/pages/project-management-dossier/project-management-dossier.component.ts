@@ -30,11 +30,15 @@ export class ProjectManagementDossierComponent implements OnDestroy {
 
     this.osdDataService.performanceFreeProfessionalList$.subscribe(performancesFP => {
       this.performancesFreeProfesional = performancesFP;
+      
     });
 
     this.osdDataService.performanceBuyList$.subscribe(performancesBuy => {
       this.performancesBuys = performancesBuy;
+      
     });
+    console.log('Lista de performancesFreeProfesional', this.performancesFreeProfesional)
+    console.log('Lista de performancesBuys', this.performancesBuys)
   }
 
   ngOnDestroy(): void {
