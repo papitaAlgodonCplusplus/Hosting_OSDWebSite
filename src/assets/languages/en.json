@@ -167,6 +167,7 @@
   "PreviousPage" : "Previous page",
   "FirstPage": "First page",
   "LastPage": "Last page",
+  "tipo_cliente": "Tipo de cliente",
   "UserAuthorized" : "User Authorized",
   "MessageModalAuthorizedCostumer" : "Subscriber/Customer Data",
   "Finished": "Done",
