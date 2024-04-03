@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { OSDDataService } from 'src/app/services/osd-data.service';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { ModalActions, UiActions } from 'src/app/store/actions';
-import { PerformanceSelectors } from 'src/app/store/selectors';
+import { AuthSelectors, PerformanceSelectors } from 'src/app/store/selectors';
 import { PerformanceBuy } from '../../Models/performanceBuy';
 import { DatePipe } from '@angular/common';
 
@@ -22,6 +22,8 @@ export class PerformanceBuyComponent implements OnDestroy {
   performance$: Observable<PerformanceBuy> = this.store.select(PerformanceSelectors.performance)
   performance!: any;
   isView: boolean = false;
+  isAuthenticated$: Observable<boolean> = this.store.select(AuthSelectors.authenticationToken)
+  showButtons: boolean = true;
 
   constructor(private store: Store,
     private osdEventService: OSDService,
@@ -43,7 +45,11 @@ export class PerformanceBuyComponent implements OnDestroy {
         this.performanceForm = this.fillForm()
       }
 
-      console.log(this.performance)
+      this.isAuthenticated$.subscribe((isAuthenticated: boolean) => {
+        if (isAuthenticated === false) {
+          this.showButtons = false
+        }
+      });
     }, 0);
   }
 
@@ -68,7 +74,6 @@ export class PerformanceBuyComponent implements OnDestroy {
     });
     return form;
   }
-
 
   private createForm(): FormGroup {
     const form = this.formBuilder.group({

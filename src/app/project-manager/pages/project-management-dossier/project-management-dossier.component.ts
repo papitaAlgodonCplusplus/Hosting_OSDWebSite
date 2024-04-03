@@ -25,7 +25,7 @@ export class ProjectManagementDossierComponent implements OnDestroy {
   showButton: boolean = true;
   emptyPerformance!: PerformanceBuy
   allPerformances: any[] = [];
-
+  minDate!: Date;
   constructor(private router: Router, private store: Store, private formBuilder: FormBuilder,
     private osdDataService: OSDDataService, private osdEventService: OSDService) {
     this.formProjectManager = this.createForm();
@@ -42,18 +42,15 @@ export class ProjectManagementDossierComponent implements OnDestroy {
         }
       });
 
+      this.osdDataService.performanceFreeProfessionalList$.subscribe(performancesFP => {
+        this.performancesFreeProfesional = performancesFP;
+      });
+
+      this.osdDataService.performanceBuyList$.subscribe(performancesBuy => {
+        this.performancesBuys = performancesBuy;
+      });
     }, 0);
 
-    this.osdDataService.performanceFreeProfessionalList$.subscribe(performancesFP => {
-      this.performancesFreeProfesional = performancesFP;
-
-    });
-
-    this.osdDataService.performanceBuyList$.subscribe(performancesBuy => {
-      this.performancesBuys = performancesBuy;
-
-    });
-    
     setTimeout(() => {
       let normalizedBuys = this.performancesBuys.map(buy => ({
         Id: buy.Id,
@@ -72,31 +69,29 @@ export class ProjectManagementDossierComponent implements OnDestroy {
     return this.allPerformances.sort((a, b) => {
       let dateA = new Date(a.Date);
       let dateB = new Date(b.Date);
-      
       return ascending ? dateA.getTime() - dateB.getTime() : dateB.getTime() - dateA.getTime();
     });
   }
 
   sortBySummary(ascending: boolean = true) {
     return this.allPerformances.sort((a, b) => {
-        let summaryA = a.Summary.toLowerCase();
-        let summaryB = b.Summary.toLowerCase();
-
-        if (summaryA < summaryB) return ascending ? -1 : 1;
-        if (summaryA > summaryB) return ascending ? 1 : -1;
-        return 0;
+      let summaryA = a.Summary.toLowerCase();
+      let summaryB = b.Summary.toLowerCase();
+      if (summaryA < summaryB) return ascending ? -1 : 1;
+      if (summaryA > summaryB) return ascending ? 1 : -1;
+      return 0;
     });
   }
+
   sortByType(ascending: boolean = true) {
     return this.allPerformances.sort((a, b) => {
-        let typeA = a.Type.toLowerCase();
-        let typeB = b.Type.toLowerCase();
-
-        if (typeA < typeB) return ascending ? -1 : 1;
-        if (typeA > typeB) return ascending ? 1 : -1;
-        return 0;
+      let typeA = a.Type.toLowerCase();
+      let typeB = b.Type.toLowerCase();
+      if (typeA < typeB) return ascending ? -1 : 1;
+      if (typeA > typeB) return ascending ? 1 : -1;
+      return 0;
     });
-}
+  }
 
   ngOnDestroy(): void {
     setTimeout(() => {
@@ -123,7 +118,7 @@ export class ProjectManagementDossierComponent implements OnDestroy {
     this.store.dispatch(PerformanceActions.setPerformance({ performance: this.emptyPerformance }))
   }
 
-  chargePerformanceFP(performance: any){
+  chargePerformanceFP(performance: any) {
     this.osdDataService.setPerformance(performance)
   }
 

@@ -118,6 +118,7 @@
     "Solicitud productos/servicios": "Solicitud productos/servicios",
     "Identificación Producto/Servicio": "Identificación Producto/Servicio",
     "Unidades min-max": "Unidades min-max",
+    "Unidades max-min": "Unidades max-min",
     "Coste Unitario": "Coste Unitario",
     "Vida útil": "Vida útil",
     "osdStudentIncomeResult": "CFH: Ingresos/ Resultado Económico Alumno",
@@ -208,5 +209,12 @@
     "Tecnico_OSD_(Mk Co,SAC)_100€": "Tecnico OSD(Mk Co,SAC) 100€",
     "Enlace_Pago": "Enlace pago",
     "Descargar": "Descargar",
-    "Ver_Video": "Ver video"
+    "Ver_Video": "Ver video",
+    "date_low_to_major" : "Fecha Menor a Mayor",
+    "date_major_to_minor" : "Fecha Mayor a Menor",
+    "start_date": "Fecha inicio",
+    "end_date" : "Fecha finalización",
+    "project_amount" : "Cuantía Proyecto", 
+    "expenses_employees_volunteers" : "Gastos: Empleados/ Voluntarios",
+    "supplier_purchasing_expenses" : "Gastos Proveedores Compras (Inmovilizado, Existencias)"
 }
