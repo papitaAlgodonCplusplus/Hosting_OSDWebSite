@@ -1,8 +1,10 @@
 export class EventConstants {
   public static TRACE_IDENTIFIER: string = "TraceIdentifier";
+  public static TYPE_Performance: string = "TypePerformance";
   public static TYPE: string = "Type";
-  public static ACTION: string = "Action";
   public static DATE: string = "Date";
+  public static ACTION: string = "Action";
+  public static DATE_PERFORMANCE: string = "DatePerformance";
   public static APPLICATION_IDENTIFIER: string = "ApplicationIdentifier";
   public static COMPONENT: string = "Component";
 
@@ -61,6 +63,8 @@ export class EventConstants {
   public static FIRST_NAME: string = "FirstName";
   public static LAST_NAME: string = "LastName";
   public static EMAIL: string = "Email";
+  public static NAME: string = "Name";
+  public static SUMMARY: string = "Summary";
   //#endregion
 
   // #region OSD
@@ -80,8 +84,30 @@ export class EventConstants {
   public static LIST_CLAIM: string = "ListClaim"
   public static LIST_SUBSCRIBERS: string = "ListSubscribers"
   public static LIST_OSD_USERS_SUBSCRIBERS: string = "ListOsdUsersSubscribers"
+  public static PERFORMANCE_FREE_PROFESSIONAL_LIST: string = "PerformanceFreeProfessionalList"
+  public static PERFORMANCE_BUY_LIST: string = "PerformanceBuyList"
   public static CLAIM_ID: string = "ClaimId";
   public static FREE_PROFESSIONAL_ID: string = "FreeProfessionalId";
+  public static PROJECT_MANAGER_ID: string = 'ProjectManagerId';
+  public static JUSTIFYING_DOCUMENT: string = 'JustifyingDocument';
+  public static FREE_PROFESSIONAL_WORK_HOURS: string = 'FP_WorkHours';
+  public static FREE_PROFESSIONAL_TRAVEL_HOURS: string = 'FP_TravelTime';
+  public static FREE_PROFESSIONAL_TRAVEL_EXPENSES: string = 'FP_TravelExpenses';
+  public static FREE_PROFESSIONAL_REMUNERATION: string = 'FP_Remuneration';
+  public static TECHNICAL_DIRECTOR_DATE: string = 'TD_Date';
+  public static TECHNICAL_DIRECTOR_WORK_HOURS: string = 'TD_WorkHours';
+  public static TECHNICAL_DIRECTOR_TRAVEL_HOURS: string = 'TD_TravelTime';
+  public static TECHNICAL_DIRECTOR_TRAVEL_EXPENSES: string = 'TD_TravelExpenses';
+  public static TECHNICAL_DIRECTOR_REMUNERATION: string = 'TD_Remuneration';
+  public static PERFORMANCE_FREE_PROFESSIONAL: string = 'PerformanceFreeProfessional';
+  public static PERFORMANCE_FREE_PROFESSIONAL_MESSAGE: string = 'PerformanceFreeProfessional';
+
+  public static PERFORMANCE_BUY = "PerformanceBuy"
+  public static PRODUCT_SERVICE_ID = "ProductServiceId";
+  public static MINIMUN_UNITS = "MinimumUnits";
+  public static MAXIMUM_UNITS = "MaximumUnits";
+  public static UNITARY_COST = "UnitaryCost";
+  public static SHELF_LIFE = "ShelfLife";
   //#endregion
   constructor() {
 

@@ -42,7 +42,7 @@
         <span class="ml-3">{{'TitlePerformance' | translate}}</span>
       </li>
 
-      <li class="cursor-pointer" routerLink="/home/sub-authorized" (click)="getSubscribers()">
+      <li class="cursor-pointer" routerLink="/functions/sub-authorized" (click)="getSubscribers()">
         <i class="fa-solid fa-check-circle"></i>
         <span class="ml-3">{{'authorizeCustomers' | translate}}</span>
       </li>
@@ -56,6 +56,11 @@
           (click)="onSubmitAssignClaimsToFreeProfessionalsTR()">
         <i class="fa-solid fa-user"></i>
         <span class="ml-3">{{'Assign_Processor_to_Claim' | translate}}</span>
+      </li>
+
+      <li class="cursor-pointer" routerLink="/project-manager" >
+        <i class="fa-solid fa-project-diagram"></i>
+        <span class="ml-3">Gestion Etica y Transparente de Proyecto</span>
       </li>
     </ul>
   </div>

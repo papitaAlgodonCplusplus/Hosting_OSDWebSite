@@ -62,7 +62,6 @@ export class SubAuthorizedComponent implements OnDestroy {
   selectUser(userId: string) {
     var foundUser = this.displayedItems.find(item => item.id === userId);
     this.userId = foundUser.id;
-    console.log(this.userId)
     const userDTO: UserInfo = {} as UserInfo;
     userDTO.identity = foundUser.identity;
     userDTO.name = foundUser.name;
@@ -80,6 +79,7 @@ export class SubAuthorizedComponent implements OnDestroy {
   onConfirmHandler() {
     this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: this.translate.instant('UserAuthorized')}))
     this.store.dispatch(ModalActions.openAlert());
+    
     const newItems = this.items.map(item => {
       if (item.id === this.userId) {
         return { ...item, isActive: "true" };

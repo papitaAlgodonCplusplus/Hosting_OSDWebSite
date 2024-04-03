@@ -8,11 +8,11 @@ export class CustomPaginator {
  public getSpanishPaginatorIntl(): MatPaginatorIntl {
     const paginatorIntl = new MatPaginatorIntl();
 
-    paginatorIntl.itemsPerPageLabel = this.translateService.instant('Elementos por página');
-    paginatorIntl.nextPageLabel = this.translateService.instant('Página siguiente');
-    paginatorIntl.previousPageLabel = this.translateService.instant('Página anterior');
-    paginatorIntl.firstPageLabel = this.translateService.instant('Primera página');
-    paginatorIntl.lastPageLabel = this.translateService.instant('Última página');
+    paginatorIntl.itemsPerPageLabel = this.translateService.instant('ItemsPerPage');
+    paginatorIntl.nextPageLabel = this.translateService.instant('NextPage');
+    paginatorIntl.previousPageLabel = this.translateService.instant('PreviousPage');
+    paginatorIntl.firstPageLabel = this.translateService.instant('FirstPage');
+    paginatorIntl.lastPageLabel = this.translateService.instant('LastPage');
     paginatorIntl.getRangeLabel = this.spanishRangeLabel.bind(this);
 
     return paginatorIntl;
