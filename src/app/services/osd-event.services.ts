@@ -190,6 +190,20 @@ export class OSDService {
     });
   }
 
+  public getPerformanceList() {
+    const performanceBuyEvent: WebBaseEvent = this.eventFactoryService.CreateGetPerformancesList();
+    console.log(performanceBuyEvent)
+    this.restApiService.SendOSDEvent(performanceBuyEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleGetPerformancesResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+
   public HandleGettingClaimListResponse(webBaseEvent: WebBaseEvent) {
     try {
       console.log('Entra respuesta', webBaseEvent)
@@ -270,6 +284,25 @@ export class OSDService {
         const subscribersModels = actionGetSusbscribersResultMessage;
         this.osdDataService.emitGetOsdUsersSubscribersSuccess(osdUsersSubscribersModels);
         this.osdDataService.emitGetSubscribersSuccess(subscribersModels);
+      }
+
+    }
+    catch (err) {
+      //TODO: create exception event and send to local file or core
+    }
+  }
+
+  public HandleGetPerformancesResponse(webBaseEvent: WebBaseEvent) {
+    try {
+      console.log('Lista de performances Recuperadas:', webBaseEvent)
+      var performancesFreeProfessionals = webBaseEvent.getBodyProperty(EventConstants.PERFORMANCE_FREE_PROFESSIONAL_LIST);
+
+      if (performancesFreeProfessionals != null) {
+        var performancesBuy = webBaseEvent.getBodyProperty(EventConstants.PERFORMANCE_BUY_LIST);
+        const performancesFreeProfessionalsModels = performancesFreeProfessionals;
+        const performancesBuyModels = performancesBuy;
+        this.osdDataService.emitGetOsdUsersSubscribersSuccess(performancesFreeProfessionalsModels);
+        this.osdDataService.emitGetSubscribersSuccess(performancesBuyModels);
       }
 
     }
