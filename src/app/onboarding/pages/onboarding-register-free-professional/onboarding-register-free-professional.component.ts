@@ -93,11 +93,9 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     const accountForm = this.formBuilder.group({
         workspace: ['', [Validators.required]],
         otherWorspace: [''],
-        collegiateCardArchive: [null, [Validators.required]],
-        lastReceiptCLI: [null, [Validators.required]],
-        servicerates: ['', [Validators.required]],
-        payTPV: ['', Validators.required],
-       // subscriber:['' , Validators.required]
+        collegiateCardArchive: [null],
+        lastReceiptCLI: [null],
+        servicerates: [''],
     });
     return accountForm;
   }
@@ -106,11 +104,13 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     const personalForm = this.formBuilder.group({
       identity: ['', [Validators.required]],
       name: ['', [Validators.required]],
+      companyName: ['', [Validators.required]],
       firstSurname: ['', [Validators.required]],
       middleSurname: ['', [Validators.required]],
       address: ['', [Validators.required]],
-      zipCode: ['', [Validators.required]],
-      country: ['', [Validators.required]],
+      zipCode: [''],
+      city: [''],
+      country: [''],
       landline: [''],
       mobilePhone: ['', [Validators.required]],
       email: ['', [Validators.required, this.validationsService.isValidEmail]],
@@ -157,6 +157,22 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
       console.log(fileNameDisplay.value);
       this.documentNames[0] = fileNameDisplay.value
       this.documentNames[1] = fileNameDispla2y.value
+  // displayFileName(event: any, index: number): void {
+  //   let file = event.target.files[0];
+  
+  //   if (file) {
+  //     let allowedExtensions = /(\.pdf)$/i; 
+  //     if (!allowedExtensions.exec(file.name)) {
+  //       this.store.dispatch(ModalActions.addAlertMessage({alertMessage:"Debe Insertar Solo archivos PDF"}))
+  //       this.store.dispatch(ModalActions.changeAlertType({alertType:"warning"}))
+  //       this.store.dispatch(ModalActions.openAlert())
+  //       return
+  //     }
+  //     if (index === 0) {
+  //       this.documentNames[0] = file.name;
+  //     } else if (index === 1) {
+  //       this.documentNames[1] = file.name;
+  //     }
     }
   }
 
