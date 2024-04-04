@@ -31,8 +31,7 @@
                     <label for="collegiateCardArchive" class="font-bold block text-l mb-1">{{'carnet_colegiado' |
                         translate}}</label>
                     <div class="flex items-center justify-center flex-col space-y-1">
-                        <input type="file" id="collegiateCardArchive" formControlName="collegiateCardArchive"
-                            class="hidden" (change)="displayFileName()">
+                        <input type="file" id="collegiateCardArchive" formControlName="collegiateCardArchive" class="hidden" (change)="displayFileName($event, 0)">
                         <label for="collegiateCardArchive"
                             class="cursor-pointer p-2 text-sm border bg-darkslategray text-white">
                             {{'seleccionar_archivo' | translate}}
@@ -45,8 +44,7 @@
                         translate}}
                     </label>
                     <div class="flex items-center justify-center flex-col space-y-1">
-                        <input type="file" id="lastReceiptCLI" formControlName="lastReceiptCLI" class="hidden"
-                            (change)="displayFileName()">
+                        <input type="file" id="lastReceiptCLI" formControlName="lastReceiptCLI" class="hidden"(change)="displayFileName($event, 1)">
                         <label for="lastReceiptCLI"
                             class="cursor-pointer p-2 text-sm border bg-darkslategray text-white">
                             {{'seleccionar_archivo' | translate}}

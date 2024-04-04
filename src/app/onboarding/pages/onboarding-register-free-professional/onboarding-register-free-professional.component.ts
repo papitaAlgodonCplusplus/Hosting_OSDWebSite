@@ -91,11 +91,9 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     const accountForm = this.formBuilder.group({
         workspace: ['', [Validators.required]],
         otherWorspace: [''],
-        collegiateCardArchive: [null, [Validators.required]],
-        lastReceiptCLI: [null, [Validators.required]],
+        collegiateCardArchive: [null],
+        lastReceiptCLI: [null],
         servicerates: [''],
-        //payTPV: ['', Validators.required],
-       // subscriber:['' , Validators.required]
     });
     return accountForm;
   }
@@ -130,14 +128,22 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     }
   }
 
-  displayFileName(): void {
-    const fileNameDisplay = document.getElementById('collegiateCardArchive') as HTMLInputElement;
-    const fileNameDispla2y = document.getElementById('lastReceiptCLI') as HTMLInputElement;
-
-    if (fileNameDisplay.value != null || fileNameDispla2y.value != null) {
-      console.log(fileNameDisplay.value);
-      this.documentNames[0] = fileNameDisplay.value
-      this.documentNames[1] = fileNameDispla2y.value
+  displayFileName(event: any, index: number): void {
+    let file = event.target.files[0];
+  
+    if (file) {
+      let allowedExtensions = /(\.pdf)$/i; 
+      if (!allowedExtensions.exec(file.name)) {
+        this.store.dispatch(ModalActions.addAlertMessage({alertMessage:"Debe Insertar Solo archivos PDF"}))
+        this.store.dispatch(ModalActions.changeAlertType({alertType:"warning"}))
+        this.store.dispatch(ModalActions.openAlert())
+        return
+      }
+      if (index === 0) {
+        this.documentNames[0] = file.name;
+      } else if (index === 1) {
+        this.documentNames[1] = file.name;
+      }
     }
   }
 
