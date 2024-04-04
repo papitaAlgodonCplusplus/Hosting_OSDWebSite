@@ -1,5 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { OSDDataService } from 'src/app/services/osd-data.service';
@@ -7,8 +8,6 @@ import { OSDService } from 'src/app/services/osd-event.services';
 import { PerformanceActions, UiActions } from 'src/app/store/actions';
 import { AuthSelectors } from 'src/app/store/selectors';
 import { PerformanceBuy } from '../../Models/performanceBuy';
-import { DatePipe } from '@angular/common';
-import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-project-management-dossier',
@@ -23,17 +22,12 @@ export class ProjectManagementDossierComponent implements OnDestroy {
   performancesFreeProfesional: any[] = [];
   performancesBuys: any[] = [];
   isAuthenticated$: Observable<boolean> = this.store.select(AuthSelectors.authenticationToken)
-  isUser: boolean = true;
+  showButton: boolean = true;
   emptyPerformance!: PerformanceBuy
   allPerformances: any[] = [];
-  startDate!: string | undefined;
-  amountProject!: number;
-
-  constructor(
-    private store: Store, private formBuilder: FormBuilder,
-    private osdDataService: OSDDataService, private osdEventService: OSDService,
-    private datePipe: DatePipe,
-    private translate: TranslateService) {
+  minDate!: Date;
+  constructor(private router: Router, private store: Store, private formBuilder: FormBuilder,
+    private osdDataService: OSDDataService, private osdEventService: OSDService) {
     this.formProjectManager = this.createForm();
   }
 
@@ -44,7 +38,7 @@ export class ProjectManagementDossierComponent implements OnDestroy {
       this.osdEventService.getPerformanceList();
       this.isAuthenticated$.subscribe((isAuthenticated: boolean) => {
         if (isAuthenticated === false) {
-          this.isUser = false
+          this.showButton = false
         }
       });
 
@@ -68,38 +62,37 @@ export class ProjectManagementDossierComponent implements OnDestroy {
         Type: "Compra"
       }));
 
-      let normalizedFreeProfesional = this.performancesFreeProfesional.map(freeProfessional => {
-        const hours = {
-          FreeProfessionalTravelHours: freeProfessional.FreeProfessionalTravelHours,
-          FreeProfessionalWorkHours: freeProfessional.FreeProfessionalWorkHours,
-          TechnicalDirectorTravelHours: freeProfessional.TechnicalDirectorTravelHours,
-          TechnicalDirectorWorkHours: freeProfessional.TechnicalDirectorWorkHours
-        };
-        const totalHours = this.sumHours(hours);
-
-        var amountProject = 0;
-        amountProject += freeProfessional.FreeProfessionalRemuneration;
-        amountProject += freeProfessional.FreeProfessionalTravelExpenses;
-        amountProject += freeProfessional.TechnicalDirectorRemuneration;
-        amountProject += freeProfessional.TechnicalDirectorTravelExpenses; 
-        this.amountProject += amountProject
-
-        return {
-          Id: freeProfessional.Id,
-          Date: freeProfessional.Date,
-          Type: freeProfessional.Type,
-          JustifyingDocument: freeProfessional.JustifyingDocument,
-          Summary: freeProfessional.Summary,
-          Hours: totalHours,
-          Amount: freeProfessional.FreeProfessionalRemuneration + freeProfessional.FreeProfessionalTravelExpenses + freeProfessional.TechnicalDirectorRemuneration + freeProfessional.TechnicalDirectorTravelExpenses
-        };
-      });
-
-      this.allPerformances = [...normalizedFreeProfesional, ...normalizedBuys];
-      this.sortDateLowestHighest(true);
+      this.allPerformances = [...this.performancesFreeProfesional, ...normalizedBuys];
+      this.sortDateLowestHighest(false);
     }, 1525);
+  }
 
-    console.log(this.amountProject)
+  sortDateLowestHighest(ascending: boolean = true) {
+    return this.allPerformances.sort((a, b) => {
+      let dateA = new Date(a.Date);
+      let dateB = new Date(b.Date);
+      return ascending ? dateA.getTime() - dateB.getTime() : dateB.getTime() - dateA.getTime();
+    });
+  }
+
+  sortBySummary(ascending: boolean = true) {
+    return this.allPerformances.sort((a, b) => {
+      let summaryA = a.Summary.toLowerCase();
+      let summaryB = b.Summary.toLowerCase();
+      if (summaryA < summaryB) return ascending ? -1 : 1;
+      if (summaryA > summaryB) return ascending ? 1 : -1;
+      return 0;
+    });
+  }
+
+  sortByType(ascending: boolean = true) {
+    return this.allPerformances.sort((a, b) => {
+      let typeA = a.Type.toLowerCase();
+      let typeB = b.Type.toLowerCase();
+      if (typeA < typeB) return ascending ? -1 : 1;
+      if (typeA > typeB) return ascending ? 1 : -1;
+      return 0;
+    });
   }
 
   ngOnDestroy(): void {
@@ -108,24 +101,9 @@ export class ProjectManagementDossierComponent implements OnDestroy {
     }, 0);
   }
 
-  sortDateLowestHighest(ascending: boolean) {
-    const sortedPerformances = this.allPerformances.sort((a, b) => {
-      let dateA = new Date(a.Date);
-      let dateB = new Date(b.Date);
-      return ascending ? dateA.getTime() - dateB.getTime() : dateB.getTime() - dateA.getTime();
-    });
-
-    if (sortedPerformances.length > 0 && ascending == true) {
-      const earliestDateFormatted = this.datePipe.transform(sortedPerformances[0].Date, 'yyyy-MM-dd');
-      this.startDate = earliestDateFormatted?.toString();
-    }
-    this.formProjectManager = this.createForm();
-    return sortedPerformances;
-  }
-
   private createForm(): FormGroup {
     const form = this.formBuilder.group({
-      startDate: this.startDate,
+      startDate: [''],
       endDate: [''],
       projectAmount: [''],
       expensesEmployeesVolunteers: [''],
@@ -153,31 +131,5 @@ export class ProjectManagementDossierComponent implements OnDestroy {
   selectPerformance(id: string) {
     var performance = this.performancesBuys.find(item => item.Id === id);
     this.store.dispatch(PerformanceActions.setPerformance({ performance: performance }))
-  }
-
-  sumHours(hoursObject: any): string {
-
-    let totalHours = 0;
-    let totalMinutes = 0;
-
-    for (const prop in hoursObject) {
-      if (hoursObject.hasOwnProperty(prop)) {
-
-        const [hoursStr, minutesStr] = hoursObject[prop].split(':');
-        const hours = parseInt(hoursStr, 10);
-        const minutes = parseInt(minutesStr, 10);
-
-        totalHours += hours;
-        totalMinutes += minutes;
-      }
-    }
-
-    // totalHours = Math.floor(totalMinutes / 60);
-    // totalMinutes %= 60;
-
-    totalHours += Math.floor(totalMinutes / 60);
-    totalMinutes %= 60;
-
-    return `${totalHours} ${this.translate.instant('hours')}`;
   }
 }
