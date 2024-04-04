@@ -74,7 +74,7 @@
                         *ngIf="performance.Type === 'Compra'">{{'viewData' | translate}}</td>
                     <td routerLink="/project-manager/performance-free-professional"
                         class="text-center text-darkslategray font-medium text-s border-y px-2 py-2 hover:underline cursor-pointer"
-                        (click)="chargePerformanceFP(performance)" [title]="performance.Id"
+                        (click)="chargePerformanceFP(performance.Id)" [title]="performance.Id"
                         *ngIf="performance.Type !== 'Compra'">{{'viewData' | translate}}</td>
                     <td class="text-center text-s border-y px-2 py-2">{{performance.Type}}</td>
                     <td class="text-center text-s border-y px-2 py-2">{{performance.Summary}}</td>
