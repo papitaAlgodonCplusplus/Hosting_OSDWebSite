@@ -1,14 +1,7 @@
 <div class="flex justify-center flex-col lg:flex-row">
     <div class="px-3 border-r ">
-        <div class="lg:sticky top-3 space-y-3">
-            <button 
-            [routerLink]="isUser ? '/home' : '/reports'"
-            class="bg-line px-2 py-1 rounded-md flex items-center text-darkslategray">
-                <i class="pr-3 fa-solid fa-chevron-left animate-pulse"></i> {{'regresar' | translate}}
-            </button>
-
-            <h1 class=" text-darkslategray text-lg font-medium border-b">{{'transparent_project' |
-                translate}}</h1>
+        <div class="lg:sticky top-3">
+            <h1 class=" text-center text-darkslategray text-lg font-medium border-b">{{'transparent_project' | translate}}</h1>
             <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="startDate"
                 label="{{'start_date' | translate}}:" inputType="date" [formGroup]="formProjectManager"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>
@@ -16,41 +9,41 @@
                 label="{{'end_date' | translate}}:" inputType="date" [formGroup]="formProjectManager"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>
             <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="projectAmount"
-                label="{{'project_amount' | translate}}:" inputType="text" [formGroup]="formProjectManager"
+                label="{{'project_amount' | translate}}:" inputType="number" [formGroup]="formProjectManager"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>
             <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="expensesEmployeesVolunteers"
-                label="{{'expenses_employees_volunteers' | translate}}:" inputType="number"
-                [formGroup]="formProjectManager" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                label="{{'expenses_employees_volunteers' | translate}}:" inputType="number" [formGroup]="formProjectManager"
+                [bgColor]="'bg-white-lightbone'"></shared-input-field>
             <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="supplierExpensesPurchases"
                 label="{{'supplier_purchasing_expenses' | translate}}:" inputType="number"
                 [formGroup]="formProjectManager" [bgColor]="'bg-white-lightbone'"></shared-input-field>
         </div>
     </div>
-
     <div class=" flex-1 px-3 space-y-3">
         <div class="text-darkslategray text-center text-xl mt-3 font-bold">
             <h1>
                 {{'performances' | translate}}
             </h1>
         </div>
-
-        <div class="text-center text-xs font-extralight flex flex-row justify-end items-center space-x-3">
-            <span class="m-1 cursor-pointer border-b" (click)="sortDateLowestHighest(true)">{{'date_low_to_major' |
-                translate}}</span>
-            <span class="m-1 cursor-pointer border-b" (click)="sortDateLowestHighest(false)">{{'date_major_to_minor' |
-                translate}}</span>
-            <div class="flex items-center justify-end space-x-3" *ngIf="isUser">
+        
+        <div class="text-center text-xs font-extralight flex flex-row justify-end items-center space-x-3" >
+            <!-- <span class="m-1 cursor-pointer border-b" (click)="sortByType(true)">Tipo Menor a Mayor</span>
+            <span class="m-1 cursor-pointer border-b" (click)="sortByType(false)">Tipo Mayor a Menor</span>
+            <span class="m-1 cursor-pointer border-b" (click)="sortBySummary(true)">Resumen Menor a Mayor</span>
+            <span class="m-1 cursor-pointer border-b" (click)="sortBySummary(false)">Resumen Mayor a Menor</span> -->
+            <span class="m-1 cursor-pointer border-b" (click)="sortDateLowestHighest(true)">{{'date_low_to_major' | translate}}</span>
+            <span class="m-1 cursor-pointer border-b" (click)="sortDateLowestHighest(false)">{{'date_major_to_minor' | translate}}</span>
+            <div class="flex items-center justify-end space-x-3" *ngIf="showButton">
                 <div *ngIf="showOptions" class="animate__animated animate__fadeInRight flex flex-row space-x-3">
                     <i (click)="cleanPerformance()" routerLink="/project-manager/performance-buy"
                         class="cursor-pointer px-2 py-1 fa-solid fa-cart-shopping text-xl bg-line text-darkslategray rounded-full"></i>
-                    <i routerLink="/project-manager/performance-free-professional" (click)="cleanPerformance()"
+                    <i routerLink="/project-manager/performance-free-professional" (click)="cleanPerformance()" 
                         class="cursor-pointer px-2 py-1 fa-solid fa-user-tie text-xl bg-line text-darkslategray rounded-full"></i>
                 </div>
                 <button class="flex items-center bg-darkslategray p-2 rounded-lg text-line text-sm"
                     (click)="showOptionsPerformance()">
                     <i class="fas animate-pulse pr-3 "
-                        [ngClass]="{'fa-chevron-right' : showOptions, 'fa-chevron-left':!showOptions}"></i>
-                    {{'CreatePerformance' | translate}}
+                        [ngClass]="{'fa-chevron-right' : showOptions, 'fa-chevron-left':!showOptions}"></i>   {{'CreatePerformance' | translate}}
                 </button>
             </div>
         </div>
@@ -58,34 +51,33 @@
         <table class="table-auto w-full">
             <thead>
                 <tr class="text-darkslategray font-normal bg-line text-center">
-                    <th class="px-2"></th>
+                    <th class="px-2">{{'Cod' | translate}}</th>
                     <th class="px-2">{{'TypePerformance' | translate}}</th>
                     <th class="px-2">{{'Summary' | translate}}</th>
                     <th class="px-2 py-1">{{'Date' | translate}}</th>
-                    <th class="px-2 py-1">Horas</th>
-                    <th class="px-2 py-1">Cuantia</th>
                 </tr>
             </thead>
             <tbody>
                 <tr class="font-light" *ngFor="let performance of allPerformances">
                     <td routerLink="/project-manager/performance-buy"
-                        class="text-center text-darkslategray font-medium text-s border-y px-2 py-2 hover:underline cursor-pointer"
-                        (click)="selectPerformance(performance.Id)" [title]="performance.Id"
-                        *ngIf="performance.Type === 'Compra'">{{'viewData' | translate}}</td>
+                        class="text-center text-s border-y px-2 py-2 hover:underline cursor-pointer"
+                        (click)="selectPerformance(performance.Id)"
+                        [title]="performance.Id" *ngIf="performance.Type === 'Compra'">{{
+                        performance.Id.slice(0, 8) + '...' }}</td>
                     <td routerLink="/project-manager/performance-free-professional"
-                        class="text-center text-darkslategray font-medium text-s border-y px-2 py-2 hover:underline cursor-pointer"
-                        (click)="chargePerformanceFP(performance)" [title]="performance.Id"
-                        *ngIf="performance.Type !== 'Compra'">{{'viewData' | translate}}</td>
-                    <td class="text-center text-s border-y px-2 py-2">{{performance.Type}}</td>
+                        class="text-center text-s border-y px-2 py-2 hover:underline cursor-pointer"
+                        (click)="chargePerformanceFP(performance)"
+                        [title]="performance.Id" *ngIf="performance.Type !== 'Compra'">{{
+                        performance.Id.slice(0, 8) + '...' }}</td>
+                    
+                    <td class="text-center text-s border-y px-2 py-2"  >{{performance.Type}}</td>
                     <td class="text-center text-s border-y px-2 py-2">{{performance.Summary}}</td>
                     <td class="text-center border-y px-3 py-2">{{ performance.Date | date:'dd-MM-yyyy' }}</td>
-                    <td class="text-center border-y px-3 py-2">{{performance.Hours}}</td>
-                    <td class="text-center border-y px-3 py-2">{{performance.Amount}}</td>
                 </tr>
             </tbody>
         </table>
         <div class="text-center text-darkslategray px-2 py-2 " *ngIf="allPerformances.length === 0">
-            <i class="fa-solid fa-arrow-rotate-right animate-spin"></i> {{'loading' | translate}}
+            <i class="fa-solid fa-arrow-rotate-right animate-spin"></i> Cargando, por favor espere
         </div>
     </div>
 </div>

@@ -200,7 +200,5 @@
   "end_date": "End Date",
   "project_amount": "Project Amount",
   "expenses_employees_volunteers": "Expenses: Employees/Volunteers",
-  "supplier_purchasing_expenses": "Supplier Purchasing Expenses (Fixed Assets, Inventories)",
-  "loading" : "Loading, please wait",
-  "hours": "Hours"
+  "supplier_purchasing_expenses": "Supplier Purchasing Expenses (Fixed Assets, Inventories)"
 }
