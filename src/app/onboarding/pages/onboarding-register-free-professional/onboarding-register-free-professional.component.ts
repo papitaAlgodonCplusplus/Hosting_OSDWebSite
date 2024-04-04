@@ -93,8 +93,8 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
         otherWorspace: [''],
         collegiateCardArchive: [null, [Validators.required]],
         lastReceiptCLI: [null, [Validators.required]],
-        servicerates: ['', [Validators.required]],
-        payTPV: ['', Validators.required],
+        servicerates: [''],
+        //payTPV: ['', Validators.required],
        // subscriber:['' , Validators.required]
     });
     return accountForm;
@@ -104,11 +104,13 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     const personalForm = this.formBuilder.group({
       identity: ['', [Validators.required]],
       name: ['', [Validators.required]],
+      companyName: ['', [Validators.required]],
       firstSurname: ['', [Validators.required]],
       middleSurname: ['', [Validators.required]],
       address: ['', [Validators.required]],
-      zipCode: ['', [Validators.required]],
-      country: ['', [Validators.required]],
+      zipCode: [''],
+      city: [''],
+      country: [''],
       landline: [''],
       mobilePhone: ['', [Validators.required]],
       email: ['', [Validators.required, this.validationsService.isValidEmail]],
