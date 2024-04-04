@@ -8,7 +8,7 @@ import { EventConstants } from 'src/app/models/eventConstants';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { SecurityEventService } from 'src/app/services/security-event.service';
 import { ValidationsService } from 'src/app/services/validations.service';
-import { UiActions } from 'src/app/store/actions';
+import { ModalActions, UiActions } from 'src/app/store/actions';
 
 @Component({
   selector: 'app-register-free-professional',
@@ -67,6 +67,26 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     }, 0);
   }
 
+  openVideoTrainerConsultant() {
+    window.open('https://youtu.be/fZ0duSXXrs8', '_blank');
+  }
+
+  makeAPurchaseTrainerConsultant() {
+    window.open('https://buy.stripe.com/00g9BD55y54t0mYcMR', '_blank');
+  }
+  
+  downloadContranctTrainerConsultant() {
+    window.open('https://oficinasolucionesdigital.com/wp-content/uploads/2024/03/25-3-24-Contrato-Profesional-Libre-1-1.pdf', '_blank');
+  }
+
+  openVideoTecnicOSD() {
+    window.open('https://youtu.be/M_WhgGimbL8', '_blank');
+  }
+
+  makeAPurchaseTecnicOSDLink() {
+    window.open('https://buy.stripe.com/28o9BDgOgcwV2v67sz', '_blank');
+  }
+
   private createAccountForm(): FormGroup {
     const accountForm = this.formBuilder.group({
         workspace: ['', [Validators.required]],
@@ -123,6 +143,9 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     if (this.accountForm.invalid || this.personalForm.invalid) {
       this.accountForm.markAllAsTouched();
       this.personalForm.markAllAsTouched();
+      this.store.dispatch(ModalActions.addAlertMessage({alertMessage:"Faltan campos por llenar"}))
+      this.store.dispatch(ModalActions.changeAlertType({alertType:"warning"}))
+      this.store.dispatch(ModalActions.openAlert())
       return;
     }
   

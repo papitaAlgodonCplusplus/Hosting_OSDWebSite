@@ -18,7 +18,8 @@ import { UserInfo } from '../models/userInfo';
 import { Claim } from '../models/claim';
 import { EventManager } from '@angular/platform-browser';
 import { tr } from 'date-fns/locale';
-
+import { PerformanceFreeProfessional } from '../models/performanceFreeProfessional';
+import { PerformanceBuy } from '../project-manager/Models/performanceBuy';
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +31,11 @@ export class OSDService {
   freeProfessionalsTR: any[] = [];
   claimsResponse: boolean = false;
   freeProfessionalsTRResponse: boolean = false;
-
+  freeProfessionals: any[] = [];
+  freeProfessionalsResponse: boolean = false;
+  message: string = "";
+  messageResponse: boolean = false;
+  
   constructor(
     private store: Store,
     private restApiService: RestAPIService,
@@ -46,6 +51,51 @@ export class OSDService {
   cleanClaimList() {
     this.claims = []
     this.claimsResponse = false;
+  }
+
+  cleanFreeProfessionalsList() {
+    this.freeProfessionals = []
+    this.freeProfessionalsResponse = false;
+  }
+
+  getFreeProfessionalsList(): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const checkResponse = () => {
+        if (this.freeProfessionalsResponse) {
+          resolve(this.freeProfessionals);
+        } else {
+          setTimeout(checkResponse, 1000);
+        }
+      };
+
+      checkResponse();
+    });
+  }
+
+  public CreateGettingFreeProfessionalsDataEvent() {
+    const gettingFreeProfessionalsEvent: WebBaseEvent = this.eventFactoryService.CreateGettingFreeProfessionalsDataEvent();
+    this.restApiService.SendOSDEvent(gettingFreeProfessionalsEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleGettingFreeProfessionalsListResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+
+  public changingUsdUserAutorizationStatusEvent(selectedUserId: any) {
+    const autorizationOsdUser: WebBaseEvent = this.eventFactoryService.CreateChangingUsdUserAutorizationStatusEvent(selectedUserId);
+    this.restApiService.SendOSDEvent(autorizationOsdUser).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleChangingOsdUserAutorizationResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
   }
 
   getClaimList(): Promise<any[]> {
@@ -107,6 +157,19 @@ export class OSDService {
       }
     });
   }
+  public addPerformanceFreeProfessional(performanceFP: PerformanceFreeProfessional) {
+    const event: WebBaseEvent = this.eventFactoryService.CreateAddPerformanceFreeProfessionalEvent(performanceFP);
+    console.log('Se envia el evento:', event)
+    this.restApiService.SendOSDEvent(event).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleAddPerformanceFreeProfessionalResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
 
   public gettingClaimsData() {
     const gettingClaimsEvent: WebBaseEvent = this.eventFactoryService.CreateGettingClaimsDataEvent();
@@ -120,6 +183,7 @@ export class OSDService {
       }
     });
   }
+
   public gettingFreeProfessionalsTRData() {
     const gettingFPTREvent: WebBaseEvent = this.eventFactoryService.gettingFreeProfessionalsTRDataEvent();
     this.restApiService.SendOSDEvent(gettingFPTREvent).subscribe({
@@ -160,6 +224,62 @@ export class OSDService {
     });
   }
 
+  public performanceBuy(performanceForm: PerformanceBuy) {
+    const performanceBuyEvent: WebBaseEvent = this.eventFactoryService.CreatePerformanceBuyEvent(performanceForm);
+    console.log(performanceBuyEvent)
+    this.restApiService.SendOSDEvent(performanceBuyEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleAddPerformanceBuyResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+
+  public getPerformanceList() {
+    const performanceBuyEvent: WebBaseEvent = this.eventFactoryService.CreateGetPerformancesList();
+    console.log(performanceBuyEvent)
+    this.restApiService.SendOSDEvent(performanceBuyEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleGetPerformancesResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+  
+  public HandleGettingFreeProfessionalsListResponse(webBaseEvent: WebBaseEvent) {
+    try {
+      if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['ListFreeProfessionals']) {
+        this.freeProfessionals = webBaseEvent.Body['ListFreeProfessionals'];
+        this.freeProfessionalsResponse = true;
+      } else {
+        this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'No hay profesionales libres registrados' }));
+      }
+    }
+    catch (err) {
+      this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Error inesperado' }));
+    }
+  }
+
+  public HandleChangingOsdUserAutorizationResponse(webBaseEvent: WebBaseEvent) {
+    try {
+      if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['Message']) {
+        this.message = webBaseEvent.Body['Message'];
+        this.messageResponse = true;
+        this.store.dispatch(ModalActions.addAlertMessage({alertMessage: this.message}));
+      } else {
+        this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'No hay mensaje' }));
+      }
+    }
+    catch (err) {
+      this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Error inesperado' }));
+    }
+  }
 
   public HandleGettingClaimListResponse(webBaseEvent: WebBaseEvent) {
     try {
@@ -192,6 +312,7 @@ export class OSDService {
       this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Error inesperado' }));
     }
   }
+
   public HandleAssignFreeProfessionalsTRToClaimsResponse(webBaseEvent: WebBaseEvent) {
     try {
       if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['AssignationClaimToFreeProfessionalId']) {
@@ -230,6 +351,21 @@ export class OSDService {
     //this.websocketService.sendOSDEvent(createPerformanceEvent);
   }
 
+  public HandleAddPerformanceBuyResponse(webBaseEvent: WebBaseEvent) {
+    try {
+      console.log("llegue bien");
+      var actionGetOsdUsersSusbscriberResultMessage = webBaseEvent.getBodyProperty(EventConstants.ACTION_OSD_RESULT_MESSAGE);
+      if (actionGetOsdUsersSusbscriberResultMessage != null) {
+          this.store.dispatch(ModalActions.addAlertMessage({alertMessage: actionGetOsdUsersSusbscriberResultMessage}))
+          this.store.dispatch(ModalActions.openAlert())
+      }
+
+    }
+    catch (err) {
+      //TODO: create exception event and send to local file or core
+    }
+  }
+
   public HandleGetSubscriberResponse(webBaseEvent: WebBaseEvent) {
     try {
       var actionGetOsdUsersSusbscriberResultMessage = webBaseEvent.getBodyProperty(EventConstants.LIST_OSD_USERS_SUBSCRIBERS);
@@ -240,6 +376,29 @@ export class OSDService {
         const subscribersModels = actionGetSusbscribersResultMessage;
         this.osdDataService.emitGetOsdUsersSubscribersSuccess(osdUsersSubscribersModels);
         this.osdDataService.emitGetSubscribersSuccess(subscribersModels);
+      }
+
+    }
+    catch (err) {
+      //TODO: create exception event and send to local file or core
+    }
+  }
+
+  public HandleGetPerformancesResponse(webBaseEvent: WebBaseEvent) {
+    try {
+      console.log('Lista de performances Recuperadas:', webBaseEvent)
+      var performancesFreeProfessionals = webBaseEvent.getBodyProperty(EventConstants.PERFORMANCE_FREE_PROFESSIONAL_LIST);
+
+      if (performancesFreeProfessionals != null) {
+        var performancesBuy = webBaseEvent.getBodyProperty(EventConstants.PERFORMANCE_BUY_LIST);
+        const performancesFreeProfessionalsModels = performancesFreeProfessionals;
+        const performancesBuyModels = performancesBuy;
+
+        console.log('Ventas',performancesBuyModels)
+        console.log('FP',performancesFreeProfessionalsModels)
+
+        this.osdDataService.emitPerformanceFreeProfessionalList(performancesFreeProfessionalsModels);
+        this.osdDataService.emitPerformanceBuyList(performancesBuyModels);
       }
 
     }
@@ -303,6 +462,18 @@ export class OSDService {
         }
         this.store.dispatch(ModalActions.toggleErrorModal());
       }
+    } catch(err) {
+        //TODO: create exception event and send to local file or core
+    }
+  }
+
+  public HandleAddPerformanceFreeProfessionalResponse(webBaseEvent: WebBaseEvent) {
+    let message: string;
+
+    try {
+      message = webBaseEvent.getBodyProperty(EventConstants.PERFORMANCE_FREE_PROFESSIONAL_MESSAGE);
+      this.store.dispatch(ModalActions.addAlertMessage({alertMessage: message}));
+      this.store.dispatch(ModalActions.openAlert())
     } catch {
 
     }

@@ -59,6 +59,6 @@ import { AuthorizedModalComponent } from './components/authorized-modal/authoriz
     LeftSidebarComponent,
     SwitchLanguagesComponent,
     AuthorizedModalComponent
-  ]
+  ],
 })
 export class SharedModule { }

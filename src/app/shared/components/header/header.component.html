@@ -1,11 +1,11 @@
 <div
   class="flex items-center px-3 py-2 text-black border-b bg-darkslategray cursor-pointer animate__animated animate__fadeInDown">
   <div class="flex-1 flex items-center space-x-1">
-    <img src="/./assets/img/OSD_2.png" alt="Logo OSD" class="w-36">
+    <img src="/./assets/img/OSD_2.png" alt="Logo OSD" class="w-36" routerLink="/home">
   </div>
   <div class="flex-1 flex items-center justify-end space-x-3 pr-3">
     <div class="relative inline-block text-left">
-      <button type="button"
+      <button *ngIf="showButton" type="button"
         class="flex-col flex items-center border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
         id="dropdown-menu" aria-haspopup="true" aria-expanded="true" (click)="toggleDropdown()">
         <img [src]="imgProfile" class="w-8 h-8 rounded-full" alt="">
@@ -26,7 +26,7 @@
           <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Configuracion</a>
         </div>
         <div class="border-t">
-          <a routerLink="auth/login" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+          <a (click)="onClick()" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
             role="menuitem">Logout</a>
         </div>
       </div>

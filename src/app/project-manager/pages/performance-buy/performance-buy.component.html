@@ -1,0 +1,67 @@
+<div class="flex justify-center p-3">
+    <form [formGroup]="performanceForm" (ngSubmit)="onSubmit()" autocomplete="off" class="flex flex-col ">
+
+        <div class="w-full rounded-xl  text-darkslategray border-b rounded-b-none">
+            <h1 class="text-xl font-medium ">{{'compra' | translate}}</h1>
+        </div>
+
+        <div class="flex flex-col space-y-2 py-2">
+            <shared-input-field class="w-full lg:w-1/3" fieldName="date" label="{{'Date' | translate}}" inputType="date"
+                [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+            <span class="bg-line ml-1 text-lg font-medium text-center text-darkslategray">
+                {{'Solicitud productos/servicios'|translate}}</span>
+
+            <div class="flex flex-wrap">
+                <shared-input-field class="w-full lg:w-1/3" fieldName="productServiceId"
+                    label="{{'Identificación Producto/Servicio' | translate}}" inputType="text"
+                    [formGroup]="performanceForm"></shared-input-field>
+
+                <shared-input-field class="w-full lg:w-1/3" fieldName="minimumUnits" label="{{'Unidades min-max' | translate}}"
+                    inputType="number" [formGroup]="performanceForm"></shared-input-field>
+
+                <shared-input-field class="w-full lg:w-1/3" fieldName="maximumUnits" label="{{'Unidades max-min' | translate}}"
+                    inputType="number" [formGroup]="performanceForm"></shared-input-field>
+
+                <shared-input-field class="w-full lg:w-1/3" fieldName="unitaryCost" label="{{'Coste Unitario' | translate}}"
+                    inputType="number" [formGroup]="performanceForm"></shared-input-field>
+
+                <shared-input-field class="w-full lg:w-1/3" fieldName="shelfLife" label="{{'Vida util' | translate}}" inputType="text"
+                    [formGroup]="performanceForm"></shared-input-field>
+
+            </div>
+
+            <shared-text-area class="w-full md:w-1/3" fieldName="summary" label="{{'Summary'|translate}}"
+                inputType="text" [formGroup]="performanceForm"></shared-text-area>
+
+            <div class="flex flex-wrap pt-3">
+                <div class="mb-4 flex flex-col ">
+                    <label for="justifyingDocument" class="block mb-1 pr-1">{{'justifyingDocument' |
+                        translate}}</label>
+                    <div class="flex flex-row items-center">
+                        <input type="file" id="justifyingDocument" formControlName="justifyingDocument" class="hidden"
+                            (change)="displayFileName()">
+                        <label for="justifyingDocument"
+                            class="cursor-pointer p-2 mr-1 text-sm border bg-darkslategray text-white">
+                            {{'seleccionar_archivo' | translate}}
+                        </label>
+                        <div>
+                            <span class=" text-sm text-darkslategray">{{this.documentName}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-row space-x-4 justify-end mt-12">
+            <div *ngIf="showButtons">
+                <button type="submit" class="p-2  bg-line text-darkslategray hover:bg-hover-darkblue" i18n="@@signin">
+                    {{'CreatePerformance' | translate}}
+                </button>
+            </div>
+            <button routerLink="/project-manager" class="p-2  bg-darkslategray text-line" i18n="@@signin">
+                {{'regresar' | translate}}
+            </button>
+        </div>
+    </form>
+</div>

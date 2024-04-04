@@ -19,6 +19,7 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core'
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClient } from '@angular/common/http';
 import { claimReducers } from './store/reducers/claim.reducer';
+import { performanceReducers } from './store/reducers/performance.reducer';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { claimReducers } from './store/reducers/claim.reducer';
       uiState: uiReducers,
       modalState: modalReducers,
       authenticationState: authenticationReducers,
-      claimState : claimReducers
+      claimState : claimReducers,
+      performanceState : performanceReducers
     }),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
     ServiceWorkerModule.register('ngsw-worker.js', {

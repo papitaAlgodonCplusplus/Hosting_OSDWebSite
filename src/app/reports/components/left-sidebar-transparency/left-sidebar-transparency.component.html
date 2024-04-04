@@ -21,25 +21,31 @@
       </div>
     </div>
     <div class=" text-darkslategray text-sm font-medium space-y-2">
-      <a class="mb-4 cursor-pointer" (click)="changeReport('sub')">1. {{'suscriptor_cliente' | translate}}</a>
+      <a class="mb-4 cursor-pointer" (click)="changeReport('sub')">1. {{'customer_subscribers_results' | translate}}</a>
 
       <div class="space-y-2">
-        <a class=" mb-2 cursor-pointer" (click)="changeReport('osd')">2. {{'equipo_OSD'  | translate}}</a>
+        <a class=" mb-2 cursor-pointer">2. {{'osd_results'  | translate}}</a>
         <ul class="list-disc pl-6">
           <li class="mb-2">
-            <a class="cursor-pointer" (click)="changeReport('pl')">2.1. {{'profesionales_libres' | translate}}</a>
+            <a class=" mb-2 cursor-pointer" (click)="changeReport('osd')">2.1. {{'income_expenses_benefits'  | translate}}</a>
           </li>
           <li class="mb-2">
-            <a class="cursor-pointer" (click)="changeReport('cfh')">2.2. {{'CFH' | translate}}</a>
+            <a class="cursor-pointer" (click)="changeReport('pl')">2.2. {{'profesionales_libres' | translate}}</a>
+          </li>
+          <li class="mb-2">
+            <a class="cursor-pointer" (click)="changeReport('cfh')">2.3. {{'CFH' | translate}}</a>
           </li>
         </ul>
       </div>
+
+      <a class="mb-4 cursor-pointer" routerLink="/project-manager">3. {{'transparent_project' | translate}}</a>
+
     </div>
 
     <div class="font-medium text-darkgray mb-6 mr-3 cursor-pointer mt-auto">
       <div class="flex flex-row items-center justify-end hover:text-yellow-500"
       routerLink="/auth">
-        <i class="fa-solid fa-arrow-right-from-bracket"></i> <span class="ml-3 text-darkslategray">{{'regresar_a_iniciar_sesión' | translate}}</span>
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> <span class="ml-3 text-darkslategray">{{'regresar' | translate}}</span>
       </div>
     </div>
   </div>

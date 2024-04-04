@@ -6,7 +6,7 @@ import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
 import { EventConstants } from 'src/app/models/eventConstants';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { ValidationsService } from 'src/app/services/validations.service';
-import { UiActions } from 'src/app/store/actions';
+import { ModalActions, UiActions } from 'src/app/store/actions';
 
 @Component({
   selector: 'app-register-sub-client',
@@ -45,6 +45,27 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
       this.store.dispatch(UiActions.showAll());
     }, 0);
   }
+
+  openVideo() {
+    window.open('https://www.youtube.com/embed/I80vR3wOUqc', '_blank');
+  }
+
+  makeAPurchase() {
+    window.open('https://buy.stripe.com/5kA0139lO0Od2v67ss', '_blank');
+  }
+
+  openVideoSolutionsOsd() {
+    window.open('https://www.youtube.com/watch?v=2HTLx9uvvqw', '_blank');
+  }
+
+  makeAPurchaseSolutionsOsd() {
+    window.open('https://buy.stripe.com/00g5ln69CeF35Hi28b', '_blank');
+  }
+  
+  downloadContranct() {
+    window.open('https://oficinasolucionesdigital.com/wp-content/uploads/2024/02/18-2-24-Contrato-Suscriptor-Cliente.pdf', '_blank');
+  }
+  
   private createPersonalForm(): FormGroup {
     const personalForm = this.formBuilder.group({
       identity: ['', [Validators.required]],
@@ -81,6 +102,9 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
     if (this.personalForm.invalid || this.accountForm.invalid) {
       this.accountForm.markAllAsTouched();
       this.personalForm.markAllAsTouched();
+      this.store.dispatch(ModalActions.addAlertMessage({alertMessage:"Faltan campos por llenar"}))
+      this.store.dispatch(ModalActions.changeAlertType({alertType:"warning"}))
+      this.store.dispatch(ModalActions.openAlert())
       return
     }
 
