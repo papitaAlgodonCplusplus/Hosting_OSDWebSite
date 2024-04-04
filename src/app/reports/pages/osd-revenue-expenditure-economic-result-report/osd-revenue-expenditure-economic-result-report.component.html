@@ -10,18 +10,22 @@
         </th>
         <th class="py-2 px-4 border text-yellow-500 font-normal"> {{'OSDIncome' | translate}}</th>
         <th class="py-2 px-4 border text-yellow-500 font-normal"> {{'OSDExpenses' | translate}}</th>
-        <th class="py-2 px-4 border text-yellow-500 font-normal"> {{'claimAmount' | translate}}</th>
-        <th class="py-2 px-4 border text-yellow-500 font-normal"> {{'savingsPublicAdministration' | translate}}</th>
+        <th class="py-2 px-4 border text-yellow-500 font-normal"> {{'Reclamaciones' | translate}}</th>
+        <th class="py-2 px-4 border text-yellow-500 font-normal"> {{'Cuantía' | translate}}</th>
+        <th class="py-2 px-4 border text-yellow-500 font-normal"> {{'Indemnización obtenida por el Reclamante' | translate}}</th>
+        <th class="py-2 px-4 border text-yellow-500 font-normal"> {{'Ahorro AA.PP Mejora' | translate}}</th>
       </tr>
     </thead>
     <tbody>
       <ng-container *ngFor="let informe of listaInformes">
         <tr>
           <td class="p-2 border font-normal text-darkslategray text-center">{{'total' | translate}}</td>
-          <td class="p-2 border text-center">{{ informe.total.osdIngresos }}</td>
-          <td class="p-2 border text-center">{{ informe.total.osdGastos }}</td>
-          <td class="p-2 border text-center">{{ informe.total.reclamacionesCuantia }}</td>
-          <td class="p-2 border text-center">{{ informe.total.indemnizacion }}</td>
+          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center"></td>
         </tr>
         <tr>
           <td class="p-2 border font-normal text-darkslategray text-center">{{'workspaceArea' | translate}}</td>
@@ -29,37 +33,47 @@
           <td class="p-2 border text-center"></td>
           <td class="p-2 border text-center"></td>
           <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center"></td>
         </tr>
         <tr>
           <td class="p-2 border font-normal text-darkslategray text-center">{{'PLProfessionals' | translate}}</td>
-          <td class="p-2 border text-center">{{ informe.profesionalesLibres.osdIngresos }}</td>
-          <td class="p-2 border text-center">{{ informe.profesionalesLibres.osdGastos }}</td>
-          <td class="p-2 border"></td>
-          <td class="p-2 border"></td>
+          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center"></td>
         </tr>
         <tr>
           <td class="p-2 border font-normal text-darkslategray text-center">{{'DTDirecccionTecnica' | translate}}
           </td>
-          <td class="p-2 border text-center">{{ informe.direccionTecnica.osdGastos }}</td>
-          <td class="p-2 border text-center">{{ informe.direccionTecnica.osdIngresos }}</td>
-          <td class="p-2 border"></td>
-          <td class="p-2 border"></td>
+          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center"></td>
         </tr>
         <tr>
           <td class="p-2 border font-normal text-darkslategray text-center">{{'COContabilidad' | translate}}
           </td>
-          <td class="p-2 border text-center">{{ informe.contabilidad.osdGastos }}</td>
-          <td class="p-2 border text-center">{{ informe.contabilidad.osdIngresos }}</td>
-          <td class="p-2 border"></td>
-          <td class="p-2 border"></td>
+          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center"></td>
         </tr>
         <tr>
           <td class="p-2 border font-normal text-darkslategray text-center">{{'MKMarketing' | translate}}
           </td>
-          <td class="p-2 text-center border">{{ informe.marketing.osdGastos }}</td>
-          <td class="p-2 text-center border">{{ informe.marketing.osdIngresos }}</td>
-          <td class="p-2 border"></td>
-          <td class="p-2 border"></td>
+          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center"></td>
         </tr>
         <tr>
           <td class="p-2 font-normal border text-darkslategray text-center">
@@ -68,10 +82,12 @@
               <p>{{'SACServiceCustomerCare' | translate}}</p>
             </div>
           </td>
-          <td class="p-2 text-center border">{{ informe.inf_sac.osdGastos }}</td>
-          <td class="p-2 text-center border">{{ informe.inf_sac.osdIngresos }}</td>
-          <td class="p-2 border"></td>
-          <td class="p-2 border"></td>
+          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center"></td>
         </tr>
       </ng-container>
     </tbody>
