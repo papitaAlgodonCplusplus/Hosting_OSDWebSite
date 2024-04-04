@@ -216,5 +216,7 @@
     "end_date" : "Fecha finalización",
     "project_amount" : "Cuantía Proyecto", 
     "expenses_employees_volunteers" : "Gastos: Empleados/ Voluntarios",
-    "supplier_purchasing_expenses" : "Gastos Proveedores Compras (Inmovilizado, Existencias)"
+    "supplier_purchasing_expenses" : "Gastos Proveedores Compras (Inmovilizado, Existencias)",
+    "loading" : "Cargando, por favor espere",
+    "hours": "Horas"
 }
