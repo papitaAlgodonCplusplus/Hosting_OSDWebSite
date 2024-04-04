@@ -5,7 +5,7 @@
     <table class="min-w-full border-gray-300">
         <thead>
             <tr>
-                <th class="p-2 border text-yellow-500 font-normal">
+                <th class="p-5 border text-yellow-500 font-normal">
                     {{'exercise' | translate}} 2024
                 </th>
                 <th class="py-2 px-4 border text-yellow-500 font-normal">{{'CFHIncomes' | translate}}</th>
@@ -17,35 +17,35 @@
         <tbody>
             <ng-container *ngFor="let informe of reports">
                 <tr>
-                    <td class="p-2 border font-medium text-darkslategray text-center">{{'online' | translate}}</td>
-                    <td class="p-2 border text-center">{{ informe.online.cfhIngresos }}</td>
-                    <td class="p-2 border text-center">{{ informe.online.alumnos }}</td>
-                    <td class="p-2 border text-center">{{ informe.online.alumnosAprobados }}</td>
-                    <td class="p-2 border border-b-0 text-center">{{ informe.online.beneficios }}</td>
+                    <td class="p-5 border font-medium text-darkslategray text-center"></td>
+                    <td class="p-5 border text-center"></td>
+                    <td class="p-5 border text-center"></td>
+                    <td class="p-5 border text-center"></td>
+                    <td class="p-5 border text-center"></td>
                 </tr>
                 <tr>
-                    <td class="p-2 border font-medium text-darkslategray text-center">F&C OSD
+                    <td class="p-5 border font-medium text-darkslategray text-center">
                     </td>
-                    <td class="p-2 border text-center">{{ informe.FC.cfhIngresos }}</td>
-                    <td class="p-2 border text-center">{{ informe.FC.alumnos }}</td>
-                    <td class="p-2 border text-center">{{ informe.FC.alumnosAprobados }}</td>
-                    <td class="p-2 border border-y-0 text-center">{{ informe.FC.beneficios }}</td>
+                    <td class="p-5 border text-center"></td>
+                    <td class="p-5 border text-center"></td>
+                    <td class="p-5 border text-center"></td>
+                    <td class="p-5 border text-center"></td>
                 </tr>
                 <tr>
-                    <td class="p-2 border font-medium text-darkslategray text-center">{{'acceptance' | translate}}
+                    <td class="p-5 border font-medium text-darkslategray text-center">
                     </td>
-                    <td class="p-2 border text-center">{{ informe.tramitador.cfhIngresos }}</td>
-                    <td class="p-2 border text-center">{{ informe.tramitador.alumnos }}</td>
-                    <td class="p-2 border text-center">{{ informe.tramitador.alumnosAprobados }}</td>
-                    <td class="p-2 border border-y-0 text-center">{{ informe.tramitador.beneficios }}</td>
+                    <td class="p-5 border text-center"></td>
+                    <td class="p-5 border text-center"></td>
+                    <td class="p-5 border text-center"></td>
+                    <td class="p-5 border text-center"></td>
                 </tr>
                 <tr>
-                    <td class="p-2 border font-medium text-darkslategray text-center"> {{'presential' | translate}}
+                    <td class="p-5 border font-medium text-darkslategray text-center"> 
                     </td>
-                    <td class="p-2 border text-center">{{ informe.presencial.cfhIngresos }}</td>
-                    <td class="p-2 border text-center">{{ informe.presencial.alumnos }}</td>
-                    <td class="p-2 border text-center">{{ informe.presencial.alumnosAprobados }}</td>
-                    <td class="p-2 border border-t-0 text-center">{{ informe.presencial.beneficios }}</td>
+                    <td class="p-5 border text-center"></td>
+                    <td class="p-5 border text-center"></td>
+                    <td class="p-5 border text-center"></td>
+                    <td class="p-5 border text-center"></td>
                 </tr>
             </ng-container>
         </tbody>
