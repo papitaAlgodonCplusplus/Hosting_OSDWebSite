@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { Claim } from '../models/claim';
 import { UserInfo } from '../models/userInfo';
 import { Subscriber } from '../models/subscriber';
-import { PerformanceFreeProfessional } from '../models/performanceFreeProfessional';
+import { PerformanceFreeProfessional } from '../project-manager/Models/performanceFreeProfessional';
 import { PerformanceBuy } from '../project-manager/Models/performanceBuy';
 
 
