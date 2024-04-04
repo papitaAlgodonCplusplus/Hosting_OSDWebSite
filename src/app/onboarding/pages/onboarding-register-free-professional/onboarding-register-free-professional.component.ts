@@ -20,6 +20,8 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   personalForm: FormGroup;
   selectedWorkspace: string | undefined;
   isDropdownOpen = true;
+  documentName: string = '';
+  
   workspace: DropDownItem[] = [
     { value: this.translate.instant('DT'), key: '2fc2a66a-69ca-4832-a90e-1ff590b80d24' },
     { value: this.translate.instant('FC'), key: '2fc2a66a-69ca-4832-a90e-1ff590b80d24' },
@@ -127,6 +129,25 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
       serviceratesControl.setValue(this.selectedservicerates);
     }
   }
+
+  displayFileNameContract(event: any): void {
+    const fileInput = event.target as HTMLInputElement;
+    
+    if (fileInput.files && fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        const fileName = file.name.toLowerCase();
+        const fileExtension = fileName.split('.').pop();
+
+        if (fileExtension === 'pdf') {
+            this.documentName = fileName;
+        } else {
+            console.log('Solo se aceptan archivos PDF.');
+            this.documentName = '';
+        }
+    } else {
+        this.documentName = '';
+    }
+}
 
   displayFileName(): void {
     const fileNameDisplay = document.getElementById('collegiateCardArchive') as HTMLInputElement;
