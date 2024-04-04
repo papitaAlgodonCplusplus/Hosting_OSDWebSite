@@ -163,7 +163,10 @@ export class ProjectManagementDossierComponent implements OnDestroy {
     this.store.dispatch(PerformanceActions.setPerformance({ performance: this.emptyPerformance }))
   }
 
-  chargePerformanceFP(performance: any) {
+  chargePerformanceFP(performanceId: any) {
+    console.log("Performances antes:", this.performancesFreeProfesional)
+    console.log("Id:",performanceId)
+    var performance = this.performancesFreeProfesional.find(item => item.Id === performanceId);
     this.osdDataService.setPerformance(performance)
   }
 
