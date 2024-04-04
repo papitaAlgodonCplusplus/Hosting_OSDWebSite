@@ -19,6 +19,7 @@ export class OnboardingRegisterCfhComponent {
   accountForm: FormGroup;
   personalForm: FormGroup;
   selectedEntity: string | undefined;
+  documentName: string = '';
   entity: DropDownItem[] = [
     { value: this.translate.instant("entidad_publica"), key: this.translate.instant("entidad_publica") },
     { value: this.translate.instant("entidad_privada"), key: this.translate.instant("entidad_privada") },
@@ -59,6 +60,8 @@ export class OnboardingRegisterCfhComponent {
       middleSurname: ['', [Validators.required]],    
       zipCode: ['',Validators.required],
       address: ['', [Validators.required]],
+      city: ['',],
+      country: [''],
       landline: [''],
       mobilePhone: ['', [Validators.required]],
       email: ['', [Validators.required, this.validationsService.isValidEmail]],
@@ -84,7 +87,36 @@ export class OnboardingRegisterCfhComponent {
   toggleMenu() {
     this.mostrarMenu = !this.mostrarMenu;
   }
+
+  downloadContranctCFH() {
+    window.open('https://oficinasolucionesdigital.com/wp-content/uploads/2024/03/5-3-24-Contrato-CFH-Centro-Formacion-Homologado.pdf', '_blank');
+  }
   
+  openVideoCFH() {
+    window.open('https://youtu.be/YdyriLrWjpc', '_blank');
+  }
+
+  displayFileContract(event: any): void {
+    const fileInput = event.target as HTMLInputElement;
+
+    if (fileInput.files && fileInput.files.length > 0) {
+      const file = fileInput.files[0];
+      const fileName = file.name.toLowerCase();
+      const fileExtension = fileName.split('.').pop();
+
+      if (fileExtension === 'pdf') {
+        this.documentName = fileName;
+      } else {
+        this.store.dispatch(ModalActions.addAlertMessage({alertMessage:"Debe Insertar Solo archivos PDF"}));
+        this.store.dispatch(ModalActions.changeAlertType({alertType:"warning"}));
+        this.store.dispatch(ModalActions.openAlert());
+        this.documentName = '';
+      }
+    } else {
+      this.documentName = '';
+    }
+  }
+
   onSubmit(): void {
     console.log(this.accountForm.value)
     console.log(this.personalForm.value)
