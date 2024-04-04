@@ -98,6 +98,8 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
       middleSurname: ['', [Validators.required]],
       zipCode: ['', Validators.required],
       address: ['', [Validators.required]],
+      city: [''],
+      country: [''],
       landline: [''],
       mobilePhone: ['', [Validators.required]],
       email: ['', [Validators.required, this.validationsService.isValidEmail]],
@@ -138,7 +140,6 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
 
     const userEmail = this.personalForm.value.email;
     localStorage.setItem('userEmail', userEmail);
-    console.log("Enviando mensaje al securityEventService.userRegister");
     this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.SUBSCRIBER_COSTUMER);
   }
 }

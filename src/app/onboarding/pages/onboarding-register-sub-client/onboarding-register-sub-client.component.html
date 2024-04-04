@@ -53,7 +53,7 @@
                     [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
                 <shared-input-field class="w-full md:w-1/2" fieldName="zipCode" label="{{'cod_postal' | translate}}"
-                    inputType="number" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                    inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
                 <shared-input-field class="w-full md:w-1/2" fieldName="landline" label="{{'tel_fijo' | translate}}"
                     inputType="tel" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
@@ -62,6 +62,12 @@
                     inputType="tel" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
                 <shared-input-field class="w-full md:w-1/2" fieldName="web" label="{{'pagina_web' | translate}}"
+                    inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+                <shared-input-field class="w-full md:w-1/2" fieldName="city" label="{{'Ciudad' | translate}}"
+                    inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+                <shared-input-field class="w-full md:w-1/2" fieldName="country" label="{{'pais' | translate}}"
                     inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
                 <shared-input-field class="w-full md:w-1/1" fieldName="address" label="{{'direccion' | translate}}"
