@@ -37,10 +37,10 @@
                     inputType="text" [formGroup]="accountForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
                     
                 <div class="flex flex-col items-center px-2 space-x-1 w-full md:w-1/2">
-                    <label for="collegiateCardArchive" class="font-bold block text-l mb-1">{{'carnet_colegiado' |
+                    <label for="collegiateCardArchive" class=" block text-l mb-1">{{'carnet_colegiado' |
                         translate}}</label>
                     <div class="flex items-center justify-center flex-col space-y-1">
-                        <input type="file" id="collegiateCardArchive" formControlName="collegiateCardArchive" class="hidden" (change)="displayFileName($event, 0)">
+                        <input type="file" id="collegiateCardArchive" formControlName="collegiateCardArchive" class="hidden" (change)="displayFileName($event,0)">
                         <label for="collegiateCardArchive"
                             class="cursor-pointer p-2 text-sm border bg-darkslategray text-white">
                             {{'seleccionar_archivo' | translate}}
@@ -49,11 +49,11 @@
                     </div>
                 </div>
                 <div class="flex flex-col items-center px-2 space-x-1 w-full md:w-1/2">
-                    <label for="lastReceiptCLI" class="font-bold block text-l mb-1">{{'seguro_responsabilidad_civil' |
+                    <label for="lastReceiptCLI" class=" block text-l mb-1">{{'seguro_responsabilidad_civil' |
                         translate}}
                     </label>
                     <div class="flex items-center justify-center flex-col space-y-1">
-                        <input type="file" id="lastReceiptCLI" formControlName="lastReceiptCLI" class="hidden"(change)="displayFileName($event, 1)">
+                        <input type="file" id="lastReceiptCLI" formControlName="lastReceiptCLI" class="hidden"(change)="displayFileName($event,1)">
                         <label for="lastReceiptCLI"
                             class="cursor-pointer p-2 text-sm border bg-darkslategray text-white">
                             {{'seleccionar_archivo' | translate}}
@@ -114,7 +114,7 @@
                     <div class="flex items-center justify-center flex-col space-y-1">
                         <label>{{ 'Contract' | translate }}</label>
                         <input type="file" id="fileInput" formControlName="fileInput" class="hidden"
-                            (change)="displayFileNameContract($event)">
+                            (change)="displayFileContract($event)">
                         <label for="fileInput"
                             class="cursor-pointer inline-flex items-center justify-center w-50 h-12 px-4 py-2 border-transparent text-base font-medium text-white bg-darkslategray shadow-lg">
                             {{'Select_File' | translate}}
@@ -206,4 +206,16 @@
             </div>
         </div>
     </div>
+</div>
+
+<div class="flex flex-wrap justify-end items-center space-x-4 p-2">
+    <button routerLink="/onboarding/onboarding-register"
+        class="p-4 bg-line text-darkslategray font-medium animate__animated animate__fadeInDown">
+        {{'cancelar' | translate}}
+    </button>
+
+    <button type="submit" (click)="onSubmit()"
+        class="p-4 bg-darkslategray text-white font-medium animate__animated animate__fadeInDown">
+        {{'registrarse' | translate}}
+    </button>
 </div>

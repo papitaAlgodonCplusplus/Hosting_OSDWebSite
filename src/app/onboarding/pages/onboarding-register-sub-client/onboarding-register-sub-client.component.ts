@@ -59,7 +59,9 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
         if (fileExtension === 'pdf') {
             this.documentName = fileName;
         } else {
-            console.log('Solo se aceptan archivos PDF.');
+          this.store.dispatch(ModalActions.addAlertMessage({alertMessage:"Debe Insertar Solo archivos PDF"}));
+          this.store.dispatch(ModalActions.changeAlertType({alertType:"warning"}));
+          this.store.dispatch(ModalActions.openAlert());
             this.documentName = '';
         }
     } else {
