@@ -55,9 +55,11 @@ export class ProjectManagementDossierComponent implements OnDestroy {
       let normalizedBuys = this.performancesBuys.map(buy => ({
         Id: buy.Id,
         Date: buy.Date,
-        Type: 'Compra',
         JustifyingDocument: buy.JustifyingDocument,
-        Summary: buy.Summary
+        Summary: buy.Summary,
+        Hours: "-",
+        Amount: "-",
+        Type: "Compra"
       }));
 
       this.allPerformances = [...this.performancesFreeProfesional, ...normalizedBuys];
@@ -120,6 +122,7 @@ export class ProjectManagementDossierComponent implements OnDestroy {
 
   chargePerformanceFP(performance: any) {
     this.osdDataService.setPerformance(performance)
+    console.log('El performance que se quiere mostrar', performance)
   }
 
   selectPerformance(id: string) {

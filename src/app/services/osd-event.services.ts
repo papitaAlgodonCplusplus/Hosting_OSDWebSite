@@ -18,7 +18,7 @@ import { UserInfo } from '../models/userInfo';
 import { Claim } from '../models/claim';
 import { EventManager } from '@angular/platform-browser';
 import { tr } from 'date-fns/locale';
-import { PerformanceFreeProfessional } from '../models/performanceFreeProfessional';
+import { PerformanceFreeProfessional } from '../project-manager/Models/performanceFreeProfessional';
 import { PerformanceBuy } from '../project-manager/Models/performanceBuy';
 
 @Injectable({

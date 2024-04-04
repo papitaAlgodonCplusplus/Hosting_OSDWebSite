@@ -12,7 +12,7 @@ import { RegisterUserEvent } from '../auth/interfaces/register.interface';
 import { VerifyEmailEvent } from '../auth/interfaces/verify-email.interface';
 import { EmailVerificationCodeResendEvent } from '../auth/interfaces/resend-email-verification-code.interface';
 import { Form, FormGroup } from '@angular/forms';
-import { PerformanceFreeProfessional } from '../models/performanceFreeProfessional';
+import { PerformanceFreeProfessional } from '../project-manager/Models/performanceFreeProfessional';
 import { PerformanceBuy } from '../project-manager/Models/performanceBuy';
 
 @Injectable({
