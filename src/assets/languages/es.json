@@ -193,6 +193,7 @@
     "justifyingDocument": "Documento Justificativo",
     "Summary": "Resumen",
     "Cod": "Código",
+    "clientType": "Tipo de cliente",
     "customer_subscribers_results" : "CLIENTES-SUSCRIPTORES: RESULTADOS",
     "osd_results" : "OSD: RESULTADOS",
     "income_expenses_benefits" : "INGRESOS / GASTOS/ BENEFICIOS",
