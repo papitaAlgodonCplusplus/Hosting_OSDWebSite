@@ -220,5 +220,6 @@
     "project_amount" : "Cuantía Proyecto", 
     "expenses_employees_volunteers" : "Gastos: Empleados/ Voluntarios",
     "supplier_purchasing_expenses" : "Gastos Proveedores Compras (Inmovilizado, Existencias)",
-    "Select_File" : " Seleccionar archivo"
+    "Select_File" : " Seleccionar archivo",
+    "Video_CFH":"Video CFH"
 }
