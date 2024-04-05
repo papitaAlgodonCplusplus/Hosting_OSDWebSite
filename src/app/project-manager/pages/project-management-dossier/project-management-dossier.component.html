@@ -7,19 +7,19 @@
             </button>
             <h1 class=" text-darkslategray text-lg font-medium border-b">{{'transparent_project' | translate}}</h1>
             <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="startDate"
-                label="{{'start_date' | translate}}:" inputType="date" [formGroup]="formProjectManager"
+                label="{{'start_date' | translate}}:" inputType="text" [formGroup]="formProjectManager"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>
             <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="endDate"
-                label="{{'end_date' | translate}}:" inputType="date" [formGroup]="formProjectManager"
+                label="{{'end_date' | translate}}:" inputType="text" [formGroup]="formProjectManager"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>
             <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="projectAmount"
                 label="{{'project_amount' | translate}}:" inputType="text" [formGroup]="formProjectManager"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>
             <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="expensesEmployeesVolunteers"
-                label="{{'expenses_employees_volunteers' | translate}}:" inputType="number"
+                label="{{'expenses_employees_volunteers' | translate}}:" inputType="text"
                 [formGroup]="formProjectManager" [bgColor]="'bg-white-lightbone'"></shared-input-field>
             <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="supplierExpensesPurchases"
-                label="{{'supplier_purchasing_expenses' | translate}}:" inputType="number"
+                label="{{'supplier_purchasing_expenses' | translate}}:" inputType="text"
                 [formGroup]="formProjectManager" [bgColor]="'bg-white-lightbone'"></shared-input-field>
         </div>
     </div>
@@ -54,12 +54,13 @@
         <table class="table-auto w-full">
             <thead>
                 <tr class="text-darkslategray font-normal bg-line text-center">
-                    <th class="px-2"></th>
+                    <th class="px-2" style="width: 5%;"></th>
+                    <th class="px-2">{{'Cod' | translate}}</th>
                     <th class="px-2">{{'TypePerformance' | translate}}</th>
                     <th class="px-2">{{'Summary' | translate}}</th>
                     <th class="px-2 py-1">{{'Date' | translate}}</th>
-                    <th class="px-2 py-1">Horas</th>
-                    <th class="px-2 py-1">Cuantia</th>
+                    <th class="px-2 py-1">{{'Hours' | translate}}</th>
+                    <th class="px-2 py-1">{{'Amount' | translate}}</th>
                 </tr>
             </thead>
             <tbody>
@@ -72,6 +73,7 @@
                         class="text-center text-darkslategray font-medium  text-s border-y px-2 py-2 hover:underline cursor-pointer"
                         (click)="chargePerformanceFP(performance.Id)" [title]="performance.Id"
                         *ngIf="performance.Type !== '-'">{{'viewData' | translate}}</td>
+                    <td class="text-center text-s border-y px-2 py-2">{{performance.Code}}</td>
                     <td class="text-center text-s border-y px-2 py-2">{{performance.Type}}</td>
                     <td class="text-center text-s border-y px-2 py-2">{{performance.Summary}}</td>
                     <td class="text-center border-y px-3 py-2">{{ performance.Date | date:'dd-MM-yyyy' }}</td>

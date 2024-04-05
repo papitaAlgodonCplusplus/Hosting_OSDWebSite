@@ -1,23 +1,9 @@
 <div class="justify-center items-center">
-    <div class="flex justify-center items-center">
+    <div class="flex justify-start items-center border">
         <div class="flex flex-row px-2 items-center text-darkslategray">
             <img src="/./assets/img/OSD.png" alt="Logo OSD" class="w-10">
             <h1 class="text-4xl p-3">{{'suscriptor_cliente' | translate}}</h1>
         </div>
-    </div>
-
-    <div class="py-2 border-t text-darkslategray text-sm flex flex-wrap justify-center">
-        <a routerLink="/onboarding/onboarding-register-claimant" routerLinkActive="text-yellow-500"
-            class="pointer-events-none pr-3"><i class="fa-solid fa-circle text-xs"></i> {{'reclamante' |
-            translate}}</a>
-        <a routerLink="/onboarding/onboarding-register-sub-client" routerLinkActive="text-yellow-500"
-            class="pointer-events-none pr-3"><i class="fa-solid fa-circle text-xs"></i> {{'suscriptor_cliente' |
-            translate}}</a>
-        <a routerLink="/onboarding/onboarding-register-free-professional text-xs" routerLinkActive="text-yellow-500"
-            class="pointer-events-none pr-3"><i class="fa-solid fa-circle text-xs"></i> {{'profesional_libre' |
-            translate}}</a>
-        <a routerLink="/onboarding/onboarding-register-cfh" routerLinkActive="text-yellow-500"
-            class="pointer-events-none pr-3"><i class="fa-solid fa-circle text-xs"></i> CFH</a>
     </div>
 </div>
 
@@ -27,7 +13,7 @@
 
         <form [formGroup]="accountForm" (ngSubmit)="onSubmit()" autocomplete="off" class="flex flex-wrap items-center ">
             <shared-simple-dropdown class="w-full md:w-1/2" fieldName="clientType"
-                label="{{'tipo_cliente' | translate}}" [formGroup]="accountForm" [dropdownItems]="clientType"
+                label="{{'type_client' | translate}}" [formGroup]="accountForm" [dropdownItems]="clientType"
                 [selectedItem]="selectedClientType">
             </shared-simple-dropdown>
             <shared-simple-dropdown class="w-full md:w-1/2" fieldName="plCode" label="{{'cod_PL' | translate}}"
@@ -73,7 +59,7 @@
                 <shared-input-field class="w-full md:w-1/1" fieldName="address" label="{{'direccion' | translate}}"
                     inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-                    <div class="w-full md:w-1/1">
+                    <!-- <div class="w-full md:w-1/1">
                         <div class="flex items-center justify-center flex-col space-y-1">
                             <label>{{ 'Contract' | translate }}</label>
                             <input type="file" id="fileInput" formControlName="fileInput" class="hidden" (change)="displayFileName($event)">
@@ -82,7 +68,7 @@
                             </label>                            
                             <span>{{ documentName }}</span>
                         </div>
-                    </div>
+                    </div> -->
 
                 <div class="flex flex-wrap text-black w-full my-2 py-3 ">
                     <div class="flex-1 flex flex-col  p-2 text-black space-y-4">
@@ -112,13 +98,25 @@
                         {{'Contract' | translate }}
                     </button>
                 </div>
-
-
             </div>
         </form>
+
+        <div class="flex flex-wrap justify-end items-center space-x-4 p-2">
+            <button routerLink="/onboarding/onboarding-register"
+                class="p-4 bg-line text-darkslategray font-medium animate__animated animate__fadeInDown">
+                {{'cancelar' | translate}}
+            </button>
+        
+            <button type="submit" (click)="onSubmit()"
+                class="p-4 bg-darkslategray text-white font-medium animate__animated animate__fadeInDown">
+                {{'registrarse' | translate}}
+            </button>
+        </div>
+
     </div>
 
-    <div class="flex flex-col justify-center mx-4 md:mx-6 my-2 lg:w-1/3">
+    <div class="flex flex-col justify-center mx-4 md:mx-6 my-2 lg:w-1/3 border">
+        <br>
 
         <div class="grid justify-center items-center h-full w-full">
 
@@ -127,6 +125,8 @@
                 <h2 class="text-darkslategray font-bold justify-center text-center text-xl md:text-2xl">
                     {{'Certificate_OSD_1500€'| translate }}</h2>
 
+                    <p class="text-darkslategray mb-2 justify-center text-center font-bold">{{'Management_of_complaints_and_suggestions_for_improvement'| translate }}</p>
+                    <p class="text-darkslategray mb-2 justify-center text-center font-bold">{{'1500€'| translate }}</p>
                 <div class="p-2 bg-white flex flex-col items-center">
                     <p class="text-darkslategray mb-2 font-bold">{{'Video_Certificate_OSD'| translate }}</p>
                     <button
@@ -152,7 +152,7 @@
                 <div class="p-2 bg-white flex flex-col items-center">
                     <div class="flex flex-col">
                         <p class="text-darkslategray mb-2">{{'-Query_Simple_95€'| translate }}</p>
-                        <p class="text-darkslategray mb-2">{{'-Report_Sustainable_450€'| translate }}</p>
+                        <p class="text-darkslategray mb-2">{{'-Sustainability_report_450€'| translate }}</p>
                         <p class="text-darkslategray mb-2">{{'-Mediation_Arbitration_750€'| translate }}</p>
                     </div>
                     <button
@@ -172,17 +172,6 @@
                 </div>
             </div>
         </div>
+        <br>
     </div>
-</div>
-
-<div class="flex flex-wrap justify-end items-center space-x-4 p-2">
-    <button routerLink="/onboarding/onboarding-register"
-        class="p-4 bg-line text-darkslategray font-medium animate__animated animate__fadeInDown">
-        {{'cancelar' | translate}}
-    </button>
-
-    <button type="submit" (click)="onSubmit()"
-        class="p-4 bg-darkslategray text-white font-medium animate__animated animate__fadeInDown">
-        {{'registrarse' | translate}}
-    </button>
 </div>

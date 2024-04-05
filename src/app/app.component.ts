@@ -50,6 +50,7 @@ export class AppComponent implements OnDestroy {
       this.restApiService.connectAPI().subscribe({
         next: (jsonEventResponse) => {
           sessionlessKey = jsonEventResponse.SessionKey;
+          console.log(sessionlessKey)
           this.authenticationService.initialize(sessionlessKey);
           this.initialized = true;
         },

@@ -131,6 +131,7 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_TRAVEL_EXPENSES, performanceFP.technicalDirectorTravelExpenses);
     event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_REMUNERATION, performanceFP.technicalDirectorRemuneration);
     event.setBodyProperty(EventConstants.SUMMARY, performanceFP.summary);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_ID, this.authenticationService.userInfo?.id);
 
     console.log('Se arma el evento Performance: ', event)
     return event;

@@ -447,9 +447,15 @@ export class OSDService {
       userAuthenticationSuccess = JSON.parse(webBaseEvent.getBodyProperty(EventConstants.USER_AUTHENTICATION_SUCCESS));
       userAuthenticationResultMessage = webBaseEvent.getBodyProperty(EventConstants.USER_AUTHENTICATION_RESULT_MESSAGE);
       console.log(this.authenticationService.sessionKey)
-      if (userAuthenticationSuccess) {
+      let freeProfessionalId = (webBaseEvent.getBodyProperty(EventConstants.FREE_PROFESSIONAL_ID));
+      //let freeProfessionalTypeId = webBaseEvent.getBodyProperty(EventConstants.FREE_PROFESSIONAL_TYPE_ID);
 
+      this.osdDataService.emitFreeProfessionalId(freeProfessionalId);
+        //this.osdDataService.emitFreeProfessionalTypeId(freeProfessionalTypeId);
+        console.log(freeProfessionalId)
+      if (userAuthenticationSuccess) {
         userInfo = webBaseEvent.getBodyProperty(EventConstants.USER_INFO);
+        console.log(userInfo)
         sessionKey = webBaseEvent.getBodyProperty(EventConstants.GENERATED_SESSION_KEY);
         // this.authenticationService.startSession(sessionKey);
         this.authenticationService.userInfo = userInfo;

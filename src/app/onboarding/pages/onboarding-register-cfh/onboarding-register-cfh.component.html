@@ -1,147 +1,104 @@
-<div class="justify-center items-center">
-    <div class="flex justify-center items-center">
-        <img src="/./assets/img/OSD.png" alt="Logo OSD" class="w-10">
-            <h1 class="text-4xl p-3 text-darkslategray">{{'CFH' | translate}}
-            </h1>
-    </div>
-
-    <div class="py-2 border-t text-darkslategray text-sm flex flex-wrap justify-center">
-        <a routerLink="/onboarding/onboarding-register-claimant" routerLinkActive="text-yellow-500"
-            class="pointer-events-none pr-3"><i class="fa-solid fa-circle text-xs"></i> {{'reclamante' | translate}}
-        </a>
-        <a routerLink="/onboardisng/onboarding-register-claimant" routerLinkActive="text-yellow-500"
-            class="pointer-events-none pr-3"><i class="fa-solid fa-circle text-xs"></i> {{'suscriptor_cliente' |
-            translate}}</a>
-        <a routerLink="/onboardisng/onboarding-register-claimant" routerLinkActive="text-yellow-500"
-            class="pointer-events-none pr-3"><i class="fa-solid fa-circle text-xs"></i> {{'profesional_libre' |
-            translate}}</a>
-        <a routerLink="/onboarding/onboarding-register-cfh" routerLinkActive="text-yellow-500"
-            class="pointer-events-none pr-3"><i class="fa-solid fa-circle text-xs"></i> CFH</a>
-    </div>
+<div class="flex bg-darkslategray">
+    <img src="/./assets/img/OSD.png" alt="Logo OSD" class="w-16">
 </div>
-
-<div class="flex px-10 py-2 flex-col items-start lg:flex-row w-full">
-
-    <div class="flex flex-col py-3 bg-white text-black w-full lg:w-full">
-
-        <form [formGroup]="accountForm" (ngSubmit)="onSubmit()" autocomplete="off" class="flex flex-wrap items-center">
-            <shared-simple-dropdown class="w-full md:w-1/3" fieldName="clientType" label="{{'clientType' | translate}}"
-                [formGroup]="accountForm" [dropdownItems]="entity" [selectedItem]="selectedEntity">
-            </shared-simple-dropdown>
-        </form>
-
-        <form [formGroup]="personalForm" (ngSubmit)="onSubmit()" autocomplete="off" class="flex flex-wrap items-center">
-
+<div class="flex px-10 py-2">
+    <div class="flex py-3 bg-white text-black flex-col lg:flex-row">
+        <form [formGroup]="personalForm" (ngSubmit)="onSubmit()" autocomplete="off"
+            class="p-2 lg:border-r flex-1 flex flex-wrap items-center">
+            <div class="w-full">
+                <h1 class="border-b text-darkslategray text-lg font-medium">Informacion Personal</h1>
+            </div>
             <shared-input-field class="w-full md:w-1/2" fieldName="identity" label="{{'DNI' | translate}}"
                 inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
             <shared-input-field class="w-full md:w-1/2" fieldName="name" label="{{'name' | translate}}" inputType="text"
                 [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
             <shared-input-field class="w-full md:w-1/2" fieldName="firstSurname"
                 label="{{'primer_apellido' | translate}}" inputType="text" [formGroup]="personalForm"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
             <shared-input-field class="w-full md:w-1/2" fieldName="middleSurname"
                 label="{{'segundo_apellido' | translate}}" inputType="text" [formGroup]="personalForm"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
             <shared-input-field class="w-full md:w-1/2" fieldName="zipCode" label="{{'cod_postal' | translate}}"
                 inputType="number" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
             <shared-input-field class="w-full md:w-1/2" fieldName="landline" label="{{'tel_fijo' | translate}}"
                 inputType="tel" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
             <shared-input-field class="w-full md:w-1/2" fieldName="mobilePhone" label="{{'tel_movil' | translate}}"
                 inputType="tel" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
             <shared-input-field class="w-full md:w-1/2" fieldName="web" label="{{'pagina_web' | translate}}"
                 inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
             <shared-input-field class="w-full md:w-1/2" fieldName="city" label="{{'Ciudad' | translate}}"
                 inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
             <shared-input-field class="w-full md:w-1/2" fieldName="country" label="{{'pais' | translate}}"
                 inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
             <shared-input-field class="w-full md:w-1/1" fieldName="address" label="{{'direccion' | translate}}"
                 inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-                <div class="w-full md:w-1/1">
-                    <div class="flex items-center justify-center flex-col space-y-1">
-                        <label>{{ 'Contract' | translate }}</label>
-                        <input type="file" id="fileInput" formControlName="fileInput" class="hidden"
-                            (change)="displayFileContract($event)">
-                        <label for="fileInput"
-                            class="cursor-pointer inline-flex items-center justify-center w-50 h-12 px-4 py-2 border-transparent text-base font-medium text-white bg-darkslategray shadow-lg">
-                            {{'Select_File' | translate}}
-                        </label>
-                        <span>{{ documentName }}</span>
+        </form>
+        <form [formGroup]="accountForm" (ngSubmit)="onSubmit()" autocomplete="off" class="p-2 flex-1 flex flex-col ">
+            <h1 class="border-b text-darkslategray text-lg font-medium">{{'CFH (Centro Formación Homologado) '|
+                translate }}</h1>
+            <shared-simple-dropdown class="w-full md:w-1/3" fieldName="clientType" label="{{'clientType' | translate}}"
+                [formGroup]="accountForm" [dropdownItems]="entity" [selectedItem]="selectedEntity">
+            </shared-simple-dropdown>
+            <div class="flex flex-col items-start space-y-3">
+                <div class="bg-white flex flex-row items-center space-x-1">
+                    <p class="text-darkslategray  font-bold">{{'Video_CFH'| translate }}:</p>
+                    <button class="text-red-500 font-normal animate__animated animate__fadeInDown hover:underline"
+                        (click)="openVideoCFH()">
+                        https://youtu.be/YdyriLrWjpc
+                    </button>
+                </div>
+                <div class=" bg-white flex flex-col">
+                    <h1 class="text-darkslategray font-bold">Contrato Centro de Formación Homologado</h1>
+                    <span>Se requiere completar el contrato con absoluta transparencia para poder registrarse como
+                        Centro de Formación Homologado</span>
+                    <div class="flex flex-row items-center space-x-3">
+                        <button
+                            class="p-2  bg-darkslategray text-line rounded-lg font-normal animate__animated animate__fadeInDown"
+                            (click)="downloadContranctCFH()"><i class="fa-solid fa-download animate-pulse"></i>
+                            {{'Contract'| translate }}
+                        </button>
+                        <div class="flex items-center justify-center flex-col space-y-1">
+                            <input type="file" id="fileInput" class="hidden" (change)="displayFileContract($event)">
+                            <label for="fileInput"
+                                class="cursor-pointer items-center justify-center p-2 rounded-lg  text-base font-medium text-white bg-darkslategray shadow-lg">
+                                <i class="fa-solid fa-upload animate-pulse"></i> Subir contrato
+                            </label>
+                            <span>{{ documentName }}</span>
+                        </div>
                     </div>
                 </div>
-
-
-            <div class="flex flex-wrap text-black w-full my-2 py-3 ">
-                <div class="flex-1 flex flex-col  p-2 text-black space-y-4">
-                    <h1 class="text-lg font-bold text-darkslategray">{{'iniciar_sesion' | translate}}:
-                    </h1>
-                    <span class="">{{'loginInRegister' | translate}}</span>
-                </div>
             </div>
-
-            <shared-input-field class="w-full md:w-1/2" fieldName="email" label="{{'email' | translate}}"
-                inputType="email" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-            <auth-input-password class="w-full md:w-1/2" [formGroup]="personalForm" fieldName="password"
-                label="{{'contraseña' | translate}}"></auth-input-password>
-
-                <input type="checkbox" id="acceptConditions" formControlName="acceptConditions">
-                <label for="acceptConditions"> {{'aceptar_condiciones' | translate}}</label>
-                <div *ngIf="!personalForm.value.acceptConditions" class="text-red-700 pl-1">
-                    {{'error_condiciones' | translate}}
-                </div>
-
-                <div class="p-2 bg-white flex flex-col items-center">
-                    <button
-                        class="p-3 bg-darkslategray text-white font-normal animate__animated animate__fadeInDown w-full"
-                        (click)="downloadContranctCFH()"><i class="fa-solid fa-download"></i>
-                        {{'Contract'| translate }}
-                    </button>
-                </div>
         </form>
     </div>
-
-
-    <div class="flex flex-col justify-center mx-4 md:mx-6 my-2 lg:w-1/3">
-        <div class="grid justify-center items-center h-full w-full">
-            <div class="grid grid-cols-1 gap-4 justify-center items-center">
-
-                <h2 class="text-darkslategray font-bold justify-center text-center text-xl md:text-2xl">
-                    {{'CFH (Centro Formación Homologado) '| translate }}</h2>
-
-                <div class="p-2 bg-white flex flex-col items-center">
-                    <p class="text-darkslategray mb-2 font-bold">{{'Video_CFH'| translate }}</p>
-                    <button
-                        class="p-3 bg-darkslategray text-white font-normal animate__animated animate__fadeInDown w-10/12"
-                        (click)="openVideoCFH()"><i class="fa-solid fa-camera"></i>
-                        {{'Watch_Video'| translate }}
-                    </button>
-                </div>
-
-            </div>
+</div>
+<form [formGroup]="personalForm" (ngSubmit)="onSubmit()" autocomplete="off"
+    class="p-2 flex-1 flex flex-wrap items-center">
+    <div class="flex flex-wrap text-black w-full my-2 py-3 ">
+        <div class="flex-1 flex flex-col  p-2 text-black space-y-4">
+            <h1 class="text-lg font-bold text-darkslategray">{{'iniciar_sesion' | translate}}:
+            </h1>
+            <span class="">{{'loginInRegister' | translate}}</span>
         </div>
     </div>
-
-</div>
-
+    <shared-input-field class="w-full md:w-1/3" fieldName="email" label="{{'email' | translate}}" inputType="email"
+        [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+    <auth-input-password class="w-full md:w-1/3" [formGroup]="personalForm" fieldName="password"
+        label="{{'contraseña' | translate}}"></auth-input-password>
+    <div class="flex flex-row space-x-1 items-center w-full">
+        <input type="checkbox" id="acceptConditions" formControlName="acceptConditions">
+        <label for="acceptConditions"> {{'aceptar_condiciones' | translate}}</label>
+        <div *ngIf="!personalForm.value.acceptConditions" class="text-red-700 pl-1">
+            {{'error_condiciones' | translate}}
+        </div>
+    </div>
+</form>
 <div class="flex flex-wrap justify-end items-center space-x-4 p-2">
     <button routerLink="/onboarding/onboarding-register"
-        class="p-4 bg-line text-darkslategray font-medium animate__animated animate__fadeInDown">
+        class="p-3 rounded-lg bg-line text-darkslategray font-medium animate__animated animate__fadeInDown">
         {{'cancelar' | translate}}
     </button>
-
     <button type="submit" (click)="onSubmit()"
-        class="p-4 bg-darkslategray text-white font-medium animate__animated animate__fadeInDown">
+        class="p-3 rounded-lg bg-darkslategray text-white font-medium animate__animated animate__fadeInDown">
         {{'registrarse' | translate}}
     </button>
 </div>
