@@ -57,7 +57,7 @@
   "hechos": "Facts",
   "documento1": "Exhibit 1 (Attachment)",
   "documento2": "Exhibit 2 (Attachment)",
-  "titulo": "Welcome to our website",
+  "titulo": "Choose Your Account Type",
   "subTitulo": "Thank you for trusting us!",
   "regresar": "Return",
   "ahora_selecciona_tu_tipo_de_registro": "Select your record type!",
@@ -202,5 +202,7 @@
   "end_date": "End Date",
   "project_amount": "Project Amount",
   "expenses_employees_volunteers": "Expenses: Employees/Volunteers",
-  "supplier_purchasing_expenses": "Supplier Purchasing Expenses (Fixed Assets, Inventories)"
+  "supplier_purchasing_expenses": "Supplier Purchasing Expenses (Fixed Assets, Inventories)",
+  "Video_CFH":"OSD Approved Training Center Video",
+  "Contract": "Download Contract"
 }

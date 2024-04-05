@@ -6,7 +6,7 @@
     "presentar_reclamación": "Presentar reclamación",
     "nuevo_en_OSD": "¿Nuevo en OSD?",
     "crea_una_cuenta": "Crea una cuenta",
-    "titulo": "¡Bienvenido a nuestra página web!",
+    "titulo": "Elige tu tipo de cuenta",
     "subTitulo": "¡Gracias por confiar en nosotros!",
     "regresar": "Regresar",
     "ahora_selecciona_tu_tipo_de_registro": "¡Selecciona tu tipo de registro!",
@@ -211,7 +211,7 @@
     "Payment_TPV":"Pago TPV",
     "Paid_link": "Enlace pago",
     "Download": "Descargar",
-    "Contract": "Contrato",
+    "Contract": "Descargar Contrato",
     "Watch_Video": "Ver video",
     "date_low_to_major" : "Fecha Menor a Mayor",
     "date_major_to_minor" : "Fecha Mayor a Menor",
@@ -221,5 +221,5 @@
     "expenses_employees_volunteers" : "Gastos: Empleados/ Voluntarios",
     "supplier_purchasing_expenses" : "Gastos Proveedores Compras (Inmovilizado, Existencias)",
     "Select_File" : " Seleccionar archivo",
-    "Video_CFH":"Video CFH"
+    "Video_CFH":"Video Centro de Formación Homologado OSD"
 }

@@ -25,6 +25,7 @@ export class SubAuthorizedComponent implements OnDestroy {
 
   constructor(private store: Store, private osdDataService: OSDDataService,
     private translate: TranslateService,
+    private osdEventService: OSDService
     ) { }
 
   ngOnInit(): void {
@@ -80,6 +81,7 @@ export class SubAuthorizedComponent implements OnDestroy {
     this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: this.translate.instant('UserAuthorized')}))
     this.store.dispatch(ModalActions.openAlert());
     
+    this.osdEventService.changingUsdUserAutorizationStatusEvent(this.userId);
     const newItems = this.items.map(item => {
       if (item.id === this.userId) {
         return { ...item, isActive: "true" };
