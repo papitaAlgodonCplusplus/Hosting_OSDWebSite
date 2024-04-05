@@ -185,5 +185,37 @@ export class PerformanceFreeProfessionalComponent {
       FP_Remuneration: remuneration
     });
   }
-  
+  chargeTravelExpenses() {
+    const formValues = this.performanceForm.value;
+    const [hours, minutes] = formValues.FP_TravelTime.split(':').map(Number);
+    const totalMinutes = hours * 60 + minutes;
+    const remunerationPerMinute = 1;
+    const remuneration = totalMinutes * remunerationPerMinute;
+
+    this.performanceForm.patchValue({
+      FP_TravelExpenses: remuneration
+    });
+  }
+  chargeRemunerationTD() {
+    const formValues = this.performanceForm.value;
+    const [hours, minutes] = formValues.TD_WorkHours.split(':').map(Number);
+    const totalMinutes = hours * 60 + minutes;
+    const remunerationPerMinute = 1;
+    const remuneration = totalMinutes * remunerationPerMinute;
+
+    this.performanceForm.patchValue({
+      TD_Remuneration: remuneration
+    });
+  }
+  chargeTravelExpensesTD() {
+    const formValues = this.performanceForm.value;
+    const [hours, minutes] = formValues.TD_TravelTime.split(':').map(Number);
+    const totalMinutes = hours * 60 + minutes;
+    const remunerationPerMinute = 1;
+    const remuneration = totalMinutes * remunerationPerMinute;
+
+    this.performanceForm.patchValue({
+      TD_TravelExpenses: remuneration
+    });
+  }
 }
