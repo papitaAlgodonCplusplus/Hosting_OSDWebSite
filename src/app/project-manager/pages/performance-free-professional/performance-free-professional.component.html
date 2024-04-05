@@ -46,18 +46,17 @@
         </div> 
         <div *ngIf="isDropdownOpenPL" class="flex flex-wrap">
             <shared-input-field class="w-full md:w-1/2" fieldName="FP_WorkHours" label="{{'WorkHours'|translate}}"
-                inputType="time" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'" (inputChange)="chargeRemuneration()"></shared-input-field>
+                inputType="time" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'" (change)="chargeRemuneration()"></shared-input-field>
 
             <shared-input-field class="w-full md:w-1/2" fieldName="FP_TravelTime" label="{{'TravelTime'|translate}}"
                 inputType="time" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'" ></shared-input-field>
 
             <shared-input-field class="w-full md:w-1/2" fieldName="FP_Remuneration" label="{{'Remuneration'|translate}}"
-                inputType="number" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'" readonly></shared-input-field>
+                inputType="number" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'" [readOnly]="true"></shared-input-field>
 
             <shared-input-field class="w-full md:w-1/2" fieldName="FP_TravelExpenses" inputType="number"
                 label="{{'TravelExpenses'|translate}}" [formGroup]="performanceForm"
-                [bgColor]="'bg-white-lightbone'" readonly></shared-input-field>
-
+                [bgColor]="'bg-white-lightbone'" [readOnly]="true"></shared-input-field>
 
         </div>
 

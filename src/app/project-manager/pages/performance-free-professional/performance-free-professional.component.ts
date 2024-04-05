@@ -174,16 +174,16 @@ export class PerformanceFreeProfessionalComponent {
     this.OSDEventService.addPerformanceFreeProfessional(performanceData);
   }
 
-  chargeRemuneration(){
-    console.log('Entra a remuneracion')
+  chargeRemuneration() {
     const formValues = this.performanceForm.value;
+    const [hours, minutes] = formValues.FP_WorkHours.split(':').map(Number);
+    const totalMinutes = hours * 60 + minutes;
+    const remunerationPerMinute = 1;
+    const remuneration = totalMinutes * remunerationPerMinute;
 
-    let workHoursParts = formValues.FP_WorkHours.split(':');
-    let workHoursMinutes = parseInt(workHoursParts[0]) * 60 + parseInt(workHoursParts[1]);
-
-    let remunerationHoursParts = formValues.FP_Remuneration.split(':');
-    let remunerationMinutes = parseInt(remunerationHoursParts[0]) * 60 + parseInt(remunerationHoursParts[1]);
-
-    console.log('Remuneracion', remunerationMinutes)
+    this.performanceForm.patchValue({
+      FP_Remuneration: remuneration
+    });
   }
+  
 }
