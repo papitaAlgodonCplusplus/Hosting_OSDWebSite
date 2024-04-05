@@ -17,10 +17,15 @@ export class InputFieldComponent {
   @Input() bgColor: string = 'bg-white';
   @Input() readOnly!: boolean;
   @Output() blurEvent: EventEmitter<void> = new EventEmitter<void>();
+  @Output() inputChange: EventEmitter<any> = new EventEmitter();
 
   constructor(
     private validationsService: ValidationsService
   ) {}
+
+  onInputChange() {
+    this.inputChange.emit()
+  }
 
   isValidField(field: string): boolean | null {
     return this.validationsService.isValidField(this.formGroup, field);

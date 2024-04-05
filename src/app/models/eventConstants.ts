@@ -88,6 +88,7 @@ export class EventConstants {
   public static PERFORMANCE_BUY_LIST: string = "PerformanceBuyList"
   public static CLAIM_ID: string = "ClaimId";
   public static FREE_PROFESSIONAL_ID: string = "FreeProfessionalId";
+  public static FREE_PROFESSIONAL_TYPE_ID: string = "FreeProfessionalTypeId";
   public static PROJECT_MANAGER_ID: string = 'ProjectManagerId';
   public static JUSTIFYING_DOCUMENT: string = 'JustifyingDocument';
   public static FREE_PROFESSIONAL_WORK_HOURS: string = 'FP_WorkHours';

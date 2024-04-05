@@ -19,6 +19,9 @@
                 [formGroup]="performanceForm" [dropdownItems]="type" [selectedItem]="selectedType" >
             </shared-simple-dropdown>
 
+            <shared-input-field class="w-full md:w-1/2" fieldName="Summary" label="{{'Summary'|translate}}"
+                inputType="text" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'" ></shared-input-field>
+
             <div class="flex flex-wrap items-center space-x-2 w-full md:w-1/2">
                 <input type="file" id="JustifyingDocument" formControlName="JustifyingDocument"
                     class="hidden" (change)="displayFileName()" [disabled]="!editOtherInformation">
@@ -33,8 +36,6 @@
                 </div>
                 <span class="ml-2 text-darkslategray">{{this.documentName}}</span>
             </div>
-            <shared-input-field class="w-full md:w-1/2" fieldName="Summary" label="{{'Summary'|translate}}"
-                inputType="text" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'" ></shared-input-field>
 
         </div>
 
@@ -44,18 +45,19 @@
             </h1>
         </div> 
         <div *ngIf="isDropdownOpenPL" class="flex flex-wrap">
-            <shared-input-field class="w-full md:w-1/4" fieldName="FP_WorkHours" label="{{'WorkHours'|translate}}"
+            <shared-input-field class="w-full md:w-1/2" fieldName="FP_WorkHours" label="{{'WorkHours'|translate}}"
+                inputType="time" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'" (inputChange)="chargeRemuneration()"></shared-input-field>
+
+            <shared-input-field class="w-full md:w-1/2" fieldName="FP_TravelTime" label="{{'TravelTime'|translate}}"
                 inputType="time" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'" ></shared-input-field>
 
-            <shared-input-field class="w-full md:w-1/4" fieldName="FP_TravelTime" label="{{'TravelTime'|translate}}"
-                inputType="time" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'" ></shared-input-field>
+            <shared-input-field class="w-full md:w-1/2" fieldName="FP_Remuneration" label="{{'Remuneration'|translate}}"
+                inputType="number" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'" readonly></shared-input-field>
 
-            <shared-input-field class="w-full md:w-1/4" fieldName="FP_TravelExpenses" inputType="number"
+            <shared-input-field class="w-full md:w-1/2" fieldName="FP_TravelExpenses" inputType="number"
                 label="{{'TravelExpenses'|translate}}" [formGroup]="performanceForm"
-                [bgColor]="'bg-white-lightbone'" ></shared-input-field>
+                [bgColor]="'bg-white-lightbone'" readonly></shared-input-field>
 
-            <shared-input-field class="w-full md:w-1/4" fieldName="FP_Remuneration" label="{{'Remuneration'|translate}}"
-                inputType="number" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'" ></shared-input-field>
 
         </div>
 

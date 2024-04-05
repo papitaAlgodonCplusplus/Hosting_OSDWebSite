@@ -20,6 +20,8 @@ export class OSDDataService {
   private verifyEmailSuccessSubject = new Subject<boolean>();
   private getOsdUsersSubscribersSuccessSubject = new Subject<UserInfo[]>();
   private getSubscribersSuccessSubject = new Subject<Subscriber[]>();
+  private freeProfessionalId = new Subject<string>();
+  private freeProfessionalTypeId = new Subject<string>();
 
   private performanceFreeProfessionalList = new Subject<PerformanceFreeProfessional[]>();
   private performanceBuyList = new Subject<PerformanceBuy[]>();
@@ -30,6 +32,9 @@ export class OSDDataService {
   userAuthenticationSuccess$ = this.userAuthenticationSuccessSubject.asObservable();
   getOsdUsersSubscribersSuccess$ = this.getOsdUsersSubscribersSuccessSubject.asObservable();
   getSubscribersSuccess$ = this.getSubscribersSuccessSubject.asObservable();
+
+  freeProfessionalId$ = this.freeProfessionalId.asObservable();
+  freeProfessionalTypeId$ = this.freeProfessionalTypeId.asObservable();
 
   performanceFreeProfessionalList$ = this.performanceFreeProfessionalList.asObservable();
   performanceBuyList$ = this.performanceBuyList.asObservable();
@@ -67,5 +72,12 @@ export class OSDDataService {
   emitPerformanceBuyList(data: PerformanceBuy[]) {
     this.performanceBuyList.next(data);
     console.log('La data:',data)
+  }
+  emitFreeProfessionalId(data: string) {
+    console.log('FP ID:', data)
+    this.freeProfessionalId.next(data);
+  }
+  emitFreeProfessionalTypeId(data: string) {
+    this.freeProfessionalTypeId.next(data);
   }
 }
