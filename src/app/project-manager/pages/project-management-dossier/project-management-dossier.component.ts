@@ -60,6 +60,7 @@ export class ProjectManagementDossierComponent implements OnDestroy {
     setTimeout(() => {
       let normalizedBuys = this.performancesBuys.map(buy => ({
         Id: buy.Id,
+        Code: 'GET/A/1/2024',
         Date: buy.Date,
         JustifyingDocument: buy.JustifyingDocument,
         Summary: buy.Summary,
@@ -85,6 +86,7 @@ export class ProjectManagementDossierComponent implements OnDestroy {
 
         return {
           Id: freeProfessional.Id,
+          Code: 'GET/A/1/2024',
           Date: freeProfessional.Date,
           Type: freeProfessional.Type,
           JustifyingDocument: freeProfessional.JustifyingDocument,
@@ -95,6 +97,7 @@ export class ProjectManagementDossierComponent implements OnDestroy {
 
       });
       this.allPerformances = [...normalizedFreeProfesional, ...normalizedBuys];
+      console.log(this.allPerformances)
       this.sortDateLowestHighest(true);
     }, 1525);
   }
@@ -123,19 +126,17 @@ export class ProjectManagementDossierComponent implements OnDestroy {
   private createForm(): FormGroup {
     const form = this.formBuilder.group({
       startDate: this.startDate,
-      endDate: [''],
+      endDate:'' ,
       projectAmount: '€ ' + this.amountProject,
-      expensesEmployeesVolunteers: [''],
-      supplierExpensesPurchases: ['']
+      expensesEmployeesVolunteers: '€ 0',
+      supplierExpensesPurchases: '€ 0' 
     });
     return form;
   }
 
   sumHours(hoursObject: any): string {
-
     let totalHours = 0;
     let totalMinutes = 0;
-
     for (const prop in hoursObject) {
       if (hoursObject.hasOwnProperty(prop)) {
 
@@ -147,10 +148,8 @@ export class ProjectManagementDossierComponent implements OnDestroy {
         totalMinutes += minutes;
       }
     }
-
     totalHours += Math.floor(totalMinutes / 60);
     totalMinutes %= 60;
-
     return `${totalHours} ${this.translate.instant('hours')}`;
   }
 
@@ -164,8 +163,6 @@ export class ProjectManagementDossierComponent implements OnDestroy {
   }
 
   chargePerformanceFP(performanceId: any) {
-    console.log("Performances antes:", this.performancesFreeProfesional)
-    console.log("Id:",performanceId)
     var performance = this.performancesFreeProfesional.find(item => item.Id === performanceId);
     this.osdDataService.setPerformance(performance)
   }

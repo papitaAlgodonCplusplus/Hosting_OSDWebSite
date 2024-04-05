@@ -14,4 +14,5 @@ export class PerformanceFreeProfessional {
   technicalDirectorTravelHours: string = "";
   technicalDirectorTravelExpenses: string = "";
   technicalDirectorRemuneration: string = "";
+  freeprofessionalId: string = "";
 }

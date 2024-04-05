@@ -19,11 +19,8 @@ import { DatePipe } from '@angular/common';
 export class PerformanceFreeProfessionalComponent {
   isAuthenticated$: Observable<boolean> = this.store.select(AuthSelectors.authenticationToken)
   performanceFP: any;
-  modalStateFreeProfessionals: boolean = false;
-  modalStateTechnicalDirector: boolean = false;
   editOtherInformation: boolean = true;
-  editFreeProfessional: boolean = false;
-  editTechnicalDirector: boolean = false;
+  disable: boolean = true;
   performanceForm: FormGroup;
   Response = "";
   validationsService: any;
@@ -40,6 +37,7 @@ export class PerformanceFreeProfessionalComponent {
   isDropdownOpenDT = true;
   isAcceptConditions!: boolean;
   documentName!: string;
+  freeProfessionalId!: string
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
@@ -98,6 +96,10 @@ export class PerformanceFreeProfessionalComponent {
       if (isAuthenticated === false) {
         this.editOtherInformation = false
       }
+    });
+
+    this.OSDDataService.freeProfessionalId$.subscribe(id => {
+      this.freeProfessionalId = id;
     });
   }
   ngOnDestroy() {
@@ -162,7 +164,9 @@ export class PerformanceFreeProfessionalComponent {
     performanceData.technicalDirectorTravelExpenses = formValues.TD_TravelExpenses;
     performanceData.technicalDirectorRemuneration = formValues.TD_Remuneration;
     performanceData.summary = formValues.Summary;
+    
 
+    performanceData.freeprofessionalId = this.freeProfessionalId
     performanceData.proyectManagerId = '065d461a-cc09-4162-b4e9-f121c11d3348'
 
     console.log('Lo que tiene summary', performanceData)
@@ -170,21 +174,48 @@ export class PerformanceFreeProfessionalComponent {
     this.OSDEventService.addPerformanceFreeProfessional(performanceData);
   }
 
-  openModalFP(): void{
-    this.modalStateFreeProfessionals = true
-    console.log('Se abre el modal')
-  }
-  closeModalFP(): void{
-    this.modalStateFreeProfessionals = false
-    console.log('Se cierra el modal')
-  }
+  chargeRemuneration() {
+    const formValues = this.performanceForm.value;
+    const [hours, minutes] = formValues.FP_WorkHours.split(':').map(Number);
+    const totalMinutes = hours * 60 + minutes;
+    const remunerationPerMinute = 1;
+    const remuneration = totalMinutes * remunerationPerMinute;
 
-  openModalDT(): void{
-    this.modalStateTechnicalDirector = true
-    console.log('Se abre el modal')
+    this.performanceForm.patchValue({
+      FP_Remuneration: remuneration
+    });
   }
-  closeModalDT(): void{
-    this.modalStateTechnicalDirector = false
-    console.log('Se cierra el modal')
+  chargeTravelExpenses() {
+    const formValues = this.performanceForm.value;
+    const [hours, minutes] = formValues.FP_TravelTime.split(':').map(Number);
+    const totalMinutes = hours * 60 + minutes;
+    const remunerationPerMinute = 1;
+    const remuneration = totalMinutes * remunerationPerMinute;
+
+    this.performanceForm.patchValue({
+      FP_TravelExpenses: remuneration
+    });
+  }
+  chargeRemunerationTD() {
+    const formValues = this.performanceForm.value;
+    const [hours, minutes] = formValues.TD_WorkHours.split(':').map(Number);
+    const totalMinutes = hours * 60 + minutes;
+    const remunerationPerMinute = 1;
+    const remuneration = totalMinutes * remunerationPerMinute;
+
+    this.performanceForm.patchValue({
+      TD_Remuneration: remuneration
+    });
+  }
+  chargeTravelExpensesTD() {
+    const formValues = this.performanceForm.value;
+    const [hours, minutes] = formValues.TD_TravelTime.split(':').map(Number);
+    const totalMinutes = hours * 60 + minutes;
+    const remunerationPerMinute = 1;
+    const remuneration = totalMinutes * remunerationPerMinute;
+
+    this.performanceForm.patchValue({
+      TD_TravelExpenses: remuneration
+    });
   }
 }
