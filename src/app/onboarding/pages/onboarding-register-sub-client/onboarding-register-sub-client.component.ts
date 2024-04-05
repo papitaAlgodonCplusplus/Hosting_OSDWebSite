@@ -18,6 +18,8 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
   accountForm: FormGroup;
   personalForm: FormGroup;
   selectedClientType: string | undefined;
+  documentName: string = '';
+
   clientType: DropDownItem[] = [
     { value: this.translate.instant('entidad_publica'), key: this.translate.instant('entidad_publica') }, //TODO: Implement language switching
     { value: this.translate.instant('entidad_privada'), key: this.translate.instant('entidad_privada') },
@@ -45,6 +47,28 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
       this.store.dispatch(UiActions.showAll());
     }, 0);
   }
+
+  displayFileName(event: any): void {
+    const fileInput = event.target as HTMLInputElement;
+    
+    if (fileInput.files && fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        const fileName = file.name.toLowerCase();
+        const fileExtension = fileName.split('.').pop();
+
+        if (fileExtension === 'pdf') {
+            this.documentName = fileName;
+        } else {
+          this.store.dispatch(ModalActions.addAlertMessage({alertMessage:"Debe Insertar Solo archivos PDF"}));
+          this.store.dispatch(ModalActions.changeAlertType({alertType:"warning"}));
+          this.store.dispatch(ModalActions.openAlert());
+            this.documentName = '';
+        }
+    } else {
+        this.documentName = '';
+    }
+}
+
 
   openVideo() {
     window.open('https://www.youtube.com/embed/I80vR3wOUqc', '_blank');
@@ -74,6 +98,8 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
       middleSurname: ['', [Validators.required]],
       zipCode: ['', Validators.required],
       address: ['', [Validators.required]],
+      city: [''],
+      country: [''],
       landline: [''],
       mobilePhone: ['', [Validators.required]],
       email: ['', [Validators.required, this.validationsService.isValidEmail]],
@@ -114,7 +140,6 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
 
     const userEmail = this.personalForm.value.email;
     localStorage.setItem('userEmail', userEmail);
-    console.log("Enviando mensaje al securityEventService.userRegister");
     this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.SUBSCRIBER_COSTUMER);
   }
 }

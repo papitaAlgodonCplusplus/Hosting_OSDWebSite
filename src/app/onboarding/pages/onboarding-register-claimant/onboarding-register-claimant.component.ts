@@ -81,7 +81,9 @@ export class OnboardingRegisterClaimantComponent {
       web: [''], 
       registrationOption : [, [Validators.required]],
       accountType: ['7b04ef6e-b6b6-4b4c-98e5-3008512f610e'],
-      acceptConditions: [false]
+      acceptConditions: [false],
+      city: [''],
+      companyName:['']
     });
     return form;
   }

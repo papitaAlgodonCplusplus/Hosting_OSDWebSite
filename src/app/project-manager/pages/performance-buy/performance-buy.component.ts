@@ -61,16 +61,16 @@ export class PerformanceBuyComponent implements OnDestroy {
 
   private fillForm(): FormGroup {
     const fechaOriginal = this.performance.Date;
-    const fechaFormateada = this.datePipe.transform(fechaOriginal, 'dd/MM/yyyy');
+    const fechaFormateada = this.datePipe.transform(fechaOriginal, 'yyyy-MM-dd');
     this.documentName = this.performance.JustifyingDocument;
     const form = this.formBuilder.group({
-      date: [fechaFormateada || '', [Validators.required]],
-      productServiceId: [this.performance.ProductServiceId || '', [Validators.required]],
-      minimumUnits: [this.performance.MinimumUnits || '', [Validators.required]],
-      maximumUnits: [this.performance.MaximumUnits || '', [Validators.required]],
-      unitaryCost: [this.performance.UnitaryCost || '', [Validators.required]],
-      shelfLife: [this.performance.ShelfLife || '', [Validators.required]],
-      summary: [this.performance.Summary || '', [Validators.required]]
+      date: fechaFormateada,
+      productServiceId: this.performance.ProductServiceId, 
+      minimumUnits: this.performance.MinimumUnits ,
+      maximumUnits: this.performance.MaximumUnits,
+      unitaryCost: this.performance.UnitaryCost,
+      shelfLife: this.performance.ShelfLife,
+      summary: this.performance.Summary 
     });
     return form;
   }

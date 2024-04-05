@@ -1,26 +1,29 @@
-<div class="flex px-10 py-2 flex-col items-center lg:flex-row w-full">
-
-    <div class="flex flex-col py-3 bg-white text-black w-full lg:w-full">
-        
+<div class="justify-center items-center">
+    <div class="flex justify-center items-center">
         <div class="flex flex-row px-2 items-center text-darkslategray">
             <img src="/./assets/img/OSD.png" alt="Logo OSD" class="w-10">
-            <h1 class="text-4xl p-3">{{'suscriptor_cliente' | translate}}
-            </h1>
+            <h1 class="text-4xl p-3">{{'suscriptor_cliente' | translate}}</h1>
         </div>
+    </div>
 
-        <div class="py-2 border-t text-darkslategray text-sm flex flex-wrap justify-center md:justify-start">
-            <a routerLink="/onboarding/onboarding-register-claimant" routerLinkActive="text-yellow-500"
-                class="pointer-events-none pr-3"><i class="fa-solid fa-circle text-xs"></i> {{'reclamante' |
-                translate}}</a>
-            <a routerLink="/onboarding/onboarding-register-sub-client" routerLinkActive="text-yellow-500"
-                class="pointer-events-none pr-3"><i class="fa-solid fa-circle text-xs"></i> {{'suscriptor_cliente' |
-                translate}}</a>
-            <a routerLink="/onboarding/onboarding-register-free-professional text-xs" routerLinkActive="text-yellow-500"
-                class="pointer-events-none pr-3"><i class="fa-solid fa-circle text-xs"></i> {{'profesional_libre' |
-                translate}}</a>
-            <a routerLink="/onboarding/onboarding-register-cfh" routerLinkActive="text-yellow-500"
-                class="pointer-events-none pr-3"><i class="fa-solid fa-circle text-xs"></i> CFH</a>
-        </div>
+    <div class="py-2 border-t text-darkslategray text-sm flex flex-wrap justify-center">
+        <a routerLink="/onboarding/onboarding-register-claimant" routerLinkActive="text-yellow-500"
+            class="pointer-events-none pr-3"><i class="fa-solid fa-circle text-xs"></i> {{'reclamante' |
+            translate}}</a>
+        <a routerLink="/onboarding/onboarding-register-sub-client" routerLinkActive="text-yellow-500"
+            class="pointer-events-none pr-3"><i class="fa-solid fa-circle text-xs"></i> {{'suscriptor_cliente' |
+            translate}}</a>
+        <a routerLink="/onboarding/onboarding-register-free-professional text-xs" routerLinkActive="text-yellow-500"
+            class="pointer-events-none pr-3"><i class="fa-solid fa-circle text-xs"></i> {{'profesional_libre' |
+            translate}}</a>
+        <a routerLink="/onboarding/onboarding-register-cfh" routerLinkActive="text-yellow-500"
+            class="pointer-events-none pr-3"><i class="fa-solid fa-circle text-xs"></i> CFH</a>
+    </div>
+</div>
+
+<div class="flex px-10 py-2 flex-col items-start lg:flex-row w-full">
+
+    <div class="flex flex-col py-3 bg-white text-black w-full lg:w-full">
 
         <form [formGroup]="accountForm" (ngSubmit)="onSubmit()" autocomplete="off" class="flex flex-wrap items-center ">
             <shared-simple-dropdown class="w-full md:w-1/2" fieldName="clientType"
@@ -50,7 +53,7 @@
                     [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
                 <shared-input-field class="w-full md:w-1/2" fieldName="zipCode" label="{{'cod_postal' | translate}}"
-                    inputType="number" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                    inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
                 <shared-input-field class="w-full md:w-1/2" fieldName="landline" label="{{'tel_fijo' | translate}}"
                     inputType="tel" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
@@ -61,8 +64,25 @@
                 <shared-input-field class="w-full md:w-1/2" fieldName="web" label="{{'pagina_web' | translate}}"
                     inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
+                <shared-input-field class="w-full md:w-1/2" fieldName="city" label="{{'Ciudad' | translate}}"
+                    inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+                <shared-input-field class="w-full md:w-1/2" fieldName="country" label="{{'pais' | translate}}"
+                    inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
                 <shared-input-field class="w-full md:w-1/1" fieldName="address" label="{{'direccion' | translate}}"
                     inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+                    <div class="w-full md:w-1/1">
+                        <div class="flex items-center justify-center flex-col space-y-1">
+                            <label>{{ 'Contract' | translate }}</label>
+                            <input type="file" id="fileInput" formControlName="fileInput" class="hidden" (change)="displayFileName($event)">
+                            <label for="fileInput" class="cursor-pointer inline-flex items-center justify-center w-50 h-12 px-4 py-2 border-transparent text-base font-medium text-white bg-darkslategray shadow-lg">
+                                {{'Select_File' | translate}}
+                            </label>                            
+                            <span>{{ documentName }}</span>
+                        </div>
+                    </div>
 
                 <div class="flex flex-wrap text-black w-full my-2 py-3 ">
                     <div class="flex-1 flex flex-col  p-2 text-black space-y-4">
@@ -84,6 +104,16 @@
                     {{'error_condiciones' | translate}}
                 </div>
 
+                <div class="p-2 bg-white flex flex-col items-center">
+                    <button
+                        class="p-3 bg-darkslategray text-white font-normal animate__animated animate__fadeInDown w-full"
+                        (click)="downloadContranct()">
+                        <i class="fa-solid fa-download"></i>
+                        {{'Contract' | translate }}
+                    </button>
+                </div>
+
+
             </div>
         </form>
     </div>
@@ -94,58 +124,52 @@
 
             <div class="grid grid-cols-1 gap-4 justify-center items-center">
 
-                <h2 class="text-darkslategray font-bold justify-center text-center text-xl md:text-2xl">{{'Certificado_OSD_1500€'| translate }}</h2>
-                <br>
+                <h2 class="text-darkslategray font-bold justify-center text-center text-xl md:text-2xl">
+                    {{'Certificate_OSD_1500€'| translate }}</h2>
 
                 <div class="p-2 bg-white flex flex-col items-center">
-                    <p class="text-darkslategray mb-2 font-bold">{{'Video_Certificado_OSD'| translate }}</p>
+                    <p class="text-darkslategray mb-2 font-bold">{{'Video_Certificate_OSD'| translate }}</p>
                     <button
-                        class="p-3 bg-darkslategray text-white font-normal animate__animated animate__fadeInDown w-10/12" (click)="openVideo()"><i class="fa-solid fa-camera"></i>
-                        {{'Ver_Video'| translate }}
+                        class="p-3 bg-darkslategray text-white font-normal animate__animated animate__fadeInDown w-10/12"
+                        (click)="openVideo()"><i class="fa-solid fa-camera"></i>
+                        {{'Watch_Video'| translate }}
                     </button>
                 </div>
 
                 <div class="p-2 bg-white flex flex-col items-center">
-                    <p class="text-darkslategray mb-2 font-bold">{{'Descargar_Contrato'| translate }}</p>
+                    <p class="text-darkslategray mb-2 font-bold">{{'Payment_TPV'| translate }}</p>
                     <button
-                        class="p-3 bg-darkslategray text-white font-normal animate__animated animate__fadeInDown w-10/12" (click)="downloadContranct()"><i class="fa-solid fa-download"></i>
-                        {{'Descargar'| translate }}
-                    </button>
-                </div>
-
-                <div class="p-2 bg-white flex flex-col items-center">
-                    <p class="text-darkslategray mb-2 font-bold">{{'Realizar_Pago'| translate }}</p>
-                    <button
-                        class="p-3 bg-darkslategray text-white font-normal animate__animated animate__fadeInDown w-10/12" (click)="makeAPurchase()"><i class="fa-solid fa-money-bill"></i>
-                        {{'Enlace_Pago'| translate }}
+                        class="p-3 bg-darkslategray text-white font-normal animate__animated animate__fadeInDown w-10/12"
+                        (click)="makeAPurchase()"><i class="fa-solid fa-money-bill"></i>
+                        {{'Paid_link'| translate }}
                     </button>
                 </div>
 
                 <br>
 
-                <h2 class="text-darkslategray font-bold justify-center text-center text-xl md:text-2xl">{{'Soluciones_OSD'| translate }}</h2>
+                <h2 class="text-darkslategray font-bold justify-center text-center text-xl md:text-2xl">
+                    {{'Solutions_OSD'| translate }}</h2>
                 <div class="p-2 bg-white flex flex-col items-center">
                     <div class="flex flex-col">
-                        <p class="text-darkslategray mb-2">{{'-Consulta_Simple_95€'| translate }}</p>
-                        <p class="text-darkslategray mb-2">{{'-Informe_Sostenible_450€'| translate }}</p>
-                        <p class="text-darkslategray mb-2">{{'-Mediacion_Arbitraje_750€'| translate }}</p>
+                        <p class="text-darkslategray mb-2">{{'-Query_Simple_95€'| translate }}</p>
+                        <p class="text-darkslategray mb-2">{{'-Report_Sustainable_450€'| translate }}</p>
+                        <p class="text-darkslategray mb-2">{{'-Mediation_Arbitration_750€'| translate }}</p>
                     </div>
                     <button
-                        class="p-3 bg-darkslategray text-white font-normal animate__animated animate__fadeInDown w-10/12" (click)="openVideoSolutionsOsd()"><i class="fa-solid fa-camera"></i>
-                        {{'Ver_Video'| translate }}
+                        class="p-3 bg-darkslategray text-white font-normal animate__animated animate__fadeInDown w-10/12"
+                        (click)="openVideoSolutionsOsd()"><i class="fa-solid fa-camera"></i>
+                        {{'Watch_Video'| translate }}
                     </button>
                 </div>
 
                 <div class="p-2 bg-white flex flex-col items-center">
-                    <p class="text-darkslategray mb-2 font-bold">{{'Realizar_Pago'| translate }}</p>
+                    <p class="text-darkslategray mb-2 font-bold">{{'Payment_TPV'| translate }}</p>
                     <button
-                        class="p-3 bg-darkslategray text-white font-normal animate__animated animate__fadeInDown w-10/12" (click)="makeAPurchaseSolutionsOsd()"><i class="fa-solid fa-money-bill"></i>
-                        {{'Enlace_Pago'| translate }}
+                        class="p-3 bg-darkslategray text-white font-normal animate__animated animate__fadeInDown w-10/12"
+                        (click)="makeAPurchaseSolutionsOsd()"><i class="fa-solid fa-money-bill"></i>
+                        {{'Paid_link'| translate }}
                     </button>
                 </div>
-
-                <br><br><br><br><br>
-
             </div>
         </div>
     </div>
