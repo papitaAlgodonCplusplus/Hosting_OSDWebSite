@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  restAPIUrl: 'http://18.188.135.15:5000/api'
+  restAPIUrl: 'http://digitalsolutionoffice.com:5000/api'
 };
 
 /*
