@@ -136,7 +136,8 @@ export class PerformanceFreeProfessionalComponent {
       Summary: ['', [Validators.required]],
       ForecastTravelExpenses: [this.performanceFP.ForecastTravelExpenses],
       ForecastTravelTime: ['', [Validators.required]],
-      ForecastWorkHours: ['', [Validators.required]]
+      ForecastWorkHours: ['', [Validators.required]],
+      City: ['', [Validators.required]]
     });
     return form;
   }
@@ -227,6 +228,18 @@ export class PerformanceFreeProfessionalComponent {
 
     this.performanceForm.patchValue({
       TD_TravelExpenses: remuneration
+    });
+  }
+
+  chargeEstimatedTravelExpenses() {
+    const formValues = this.performanceForm.value;
+    const [hours, minutes] = formValues.ForecastTravelTime.split(':').map(Number);
+    const totalMinutes = hours * 60 + minutes;
+    const remunerationPerMinute = 1;
+    const remuneration = totalMinutes * remunerationPerMinute;
+
+    this.performanceForm.patchValue({
+      ForecastTravelExpenses: remuneration
     });
   }
 }

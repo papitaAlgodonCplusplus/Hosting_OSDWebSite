@@ -45,13 +45,13 @@
         </div> 
         <div class="flex flex-wrap">
             <shared-input-field class="w-full md:w-1/3" fieldName="ForecastWorkHours" label="{{'ForecastWorkHours'|translate}}"
-                inputType="time" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'" (change)="chargeRemuneration()"></shared-input-field>
+                inputType="time" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
             <shared-input-field class="w-full md:w-1/3" fieldName="ForecastTravelTime" label="{{'ForecastTravelTime'|translate}}"
-                inputType="time" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'" (change)="chargeTravelExpenses()"></shared-input-field>
+                inputType="time" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'" (change) = "chargeEstimatedTravelExpenses()"></shared-input-field>
 
             <shared-input-field class="w-full md:w-1/3" fieldName="ForecastTravelExpenses" label="{{'ForecastTravelExpenses'|translate}}"
-                inputType="number" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'" [readOnly]="false"></shared-input-field>
+                inputType="number" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'" [readOnly]="true"></shared-input-field>
         </div>
         <div class="text-darkslategray  text-xl mt-3 bg-gray-100 text-center p-2">
             <h1>
