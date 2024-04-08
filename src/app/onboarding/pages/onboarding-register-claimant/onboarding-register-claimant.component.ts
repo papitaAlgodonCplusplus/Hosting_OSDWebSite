@@ -8,6 +8,7 @@ import { Action } from 'rxjs/internal/scheduler/Action';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { EventConstants } from 'src/app/models/eventConstants';
+import { OSDDataService } from 'src/app/services/osd-data.service';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { SecurityEventService } from 'src/app/services/security-event.service';
 import { ValidationsService } from 'src/app/services/validations.service';
@@ -20,6 +21,8 @@ import { AuthSelectors } from 'src/app/store/selectors';
   styleUrls: ['./onboarding-register-claimant.component.css']
 })
 export class OnboardingRegisterClaimantComponent {
+  items: any[] = [];
+  displayedItems: any[] = [];
   isValidToken$: Observable<boolean> = this.store.select(AuthSelectors.authenticationToken);
   accountForm: FormGroup;
   personalForm: FormGroup;
@@ -31,6 +34,8 @@ export class OnboardingRegisterClaimantComponent {
     { value: this.translate.instant('reclamacion_sostenibilidad'), key: 'key3' },
     { value: this.translate.instant('mediacion_arbitraje'), key: 'Key4' }
   ];
+  subscribers: any[] = [];
+  subscriber: any;
   documentNames: string[] = new Array(2);
   isAcceptConditions!: boolean;
 
@@ -38,7 +43,8 @@ export class OnboardingRegisterClaimantComponent {
     private formBuilder: FormBuilder,
     private validationsService: ValidationsService,
     private translate: TranslateService,
-    private osdEventService : OSDService
+    private osdEventService : OSDService,
+    private osdDataService: OSDDataService
   ) {
   
     this.personalForm = this.createPersonalForm();
@@ -46,6 +52,7 @@ export class OnboardingRegisterClaimantComponent {
   }
 
   ngOnInit(): void {
+    this.getSubscribers();
     setTimeout(() => {
       this.store.dispatch(UiActions.hideAll());
       this.isValidToken$.subscribe((validation) => {
@@ -57,6 +64,9 @@ export class OnboardingRegisterClaimantComponent {
         }      
       })
     }, 0);
+    this.osdDataService.getSubscribersSuccess$.subscribe(osdUsersSubscribers => {
+      this.subscribers = osdUsersSubscribers;
+    });
   }
 
   ngOnDestroy(): void {
@@ -87,7 +97,19 @@ export class OnboardingRegisterClaimantComponent {
     });
     return form;
   }
+  getSubscribers() {
+    this.osdEventService.GetSubscribers();
+  }
+  onPageChange(event: any) {
+    const startIndex = event.pageIndex * event.pageSize;
+    const endIndex = startIndex + event.pageSize;
+    this.updateDisplayedItems(startIndex, endIndex);
+  }
 
+  updateDisplayedItems(startIndex: number = 0, endIndex: number = 10) {
+    this.displayedItems = this.items.slice(startIndex, endIndex);
+  }
+  
   private createAccountForm(): FormGroup {
     const form = this.formBuilder.group({
       claimtype: ['', [Validators.required]],
