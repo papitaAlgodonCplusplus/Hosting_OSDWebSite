@@ -63,6 +63,9 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     setTimeout(() => {
       this.store.dispatch(UiActions.hideAll());
     }, 0);
+    this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Actualmente esta opcion de registro no esta disponible!" }))
+    this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }))
+    this.store.dispatch(ModalActions.openAlert())
   }
 
   ngOnDestroy(): void {
