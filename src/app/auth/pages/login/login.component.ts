@@ -7,11 +7,12 @@ import { Observable } from 'rxjs';
 import { AuthenticationActions, UiActions } from 'src/app/store/actions';
 import { EventFactoryService } from 'src/app/services/event-factory.service';
 import { ValidationsService } from '../../../services/validations.service';
-import { ModalSelectors } from 'src/app/store/selectors';
+import { MenuOptionsSelectors, ModalSelectors } from 'src/app/store/selectors';
 import { SecurityEventService } from 'src/app/services/security-event.service';
 import { authenticationReducers } from 'src/app/store/reducers/authentication.reducer';
 import { OSDDataService } from 'src/app/services/osd-data.service';
 import { OSDService } from 'src/app/services/osd-event.services';
+import { MenuOption } from 'src/app/models/menuOptions';
 
 @Component({
   selector: 'auth-login',
@@ -24,7 +25,7 @@ export class LoginComponent implements OnDestroy {
 
   errorModalOpen$: Observable<boolean> = this.store.select(ModalSelectors.errorModalOpen);
   errorMessage$: Observable<string> = this.store.select(ModalSelectors.errorMessage);
-
+  
   constructor(
     private formBuilder: FormBuilder,
     private store: Store,
@@ -33,14 +34,13 @@ export class LoginComponent implements OnDestroy {
     private osdEventService: OSDService,
     private securityEventService: SecurityEventService,
     private router: Router
-  )
-  {
+  ) {
     this.loginForm = this.createLoginForm();
   }
 
   ngOnInit() {
     setTimeout(() => {
-      this.store.dispatch(UiActions.hideAll()); 
+      this.store.dispatch(UiActions.hideAll());
     }, 0);
   }
 
@@ -52,16 +52,16 @@ export class LoginComponent implements OnDestroy {
 
   onSubmit(): void {
     if (this.loginForm.invalid) {
-     this.loginForm.markAllAsTouched();
-    return;
+      this.loginForm.markAllAsTouched();
+      return;
     }
     this.osdEventService.userLogin(this.loginForm.value);
   }
 
   private createLoginForm(): FormGroup {
     return this.formBuilder.group({
-      email: ['', [Validators.required, this.validationsService.isValidEmail], []],
-      password: ['', [Validators.required, this.validationsService.isValidPassword, Validators.minLength(6)], []],
+      email: ['', [Validators.required]],
+      password: ['', [Validators.required]]
     });
   }
 }

@@ -72,10 +72,7 @@ export class EventConstants {
   public static PERSONAL_FORM: string = "PersonalForm";
   public static ACCOUNT_TYPE: string = "AccountType";
 
-  public static FREE_PROFESSIONAL: string = "FreeProfessional";
   public static SUBSCRIBER_COSTUMER: string = "Subscriber Customer";
-  public static CLAIMANT: string = "Claimant";
-  public static APPROVED_TRAINING_CENTER: string = "ApprovedTrainingCenter";
 
   public static PERFORMANCE_FORM: string = "PerformanceForm";
   public static USER_INFO: string = "UserInfo";
@@ -109,6 +106,13 @@ export class EventConstants {
   public static MAXIMUM_UNITS = "MaximumUnits";
   public static UNITARY_COST = "UnitaryCost";
   public static SHELF_LIFE = "ShelfLife";
+
+  public static FREE_PROFESSIONAL: 'Free Professional';
+  public static SUBSCRIBER_CUSTOMER: 'SubscriberCustomer';
+  public static CLAIMANT: "Claimant";
+  public static APPROVED_TRAINING_CENTER: 'ApprovedTrainingCenter';
+  public static UNREGISTERED: 'Unregistered';
+
   //#endregion
   constructor() {
 

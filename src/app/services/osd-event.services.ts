@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import { RestAPIService } from 'src/app/services/rest-api.service';
 import { EventFactoryService } from './event-factory.service';
-import { Subscription } from 'rxjs';
 import { UserLoginEvent } from '../auth/interfaces/login.interface';
 import { WebBaseEvent } from '../models/webBaseEvent';
-import { EventAction } from '../models/eventAction';
 import { AuthenticationService } from './authentication.service';
 import { EventConstants } from '../models/eventConstants';
 import { ModalActions, AuthenticationActions, ClaimActions } from '../store/actions';
@@ -15,11 +13,9 @@ import { SecurityDataService } from './security-data.service';
 import { OSDDataService } from './osd-data.service';
 import { Form } from '@angular/forms';
 import { UserInfo } from '../models/userInfo';
-import { Claim } from '../models/claim';
-import { EventManager } from '@angular/platform-browser';
-import { tr } from 'date-fns/locale';
 import { PerformanceFreeProfessional } from '../project-manager/Models/performanceFreeProfessional';
 import { PerformanceBuy } from '../project-manager/Models/performanceBuy';
+
 
 @Injectable({
   providedIn: 'root'
@@ -446,16 +442,9 @@ export class OSDService {
     try {
       userAuthenticationSuccess = JSON.parse(webBaseEvent.getBodyProperty(EventConstants.USER_AUTHENTICATION_SUCCESS));
       userAuthenticationResultMessage = webBaseEvent.getBodyProperty(EventConstants.USER_AUTHENTICATION_RESULT_MESSAGE);
-      console.log(this.authenticationService.sessionKey)
-      let freeProfessionalId = (webBaseEvent.getBodyProperty(EventConstants.FREE_PROFESSIONAL_ID));
-      //let freeProfessionalTypeId = webBaseEvent.getBodyProperty(EventConstants.FREE_PROFESSIONAL_TYPE_ID);
-
-      this.osdDataService.emitFreeProfessionalId(freeProfessionalId);
-        //this.osdDataService.emitFreeProfessionalTypeId(freeProfessionalTypeId);
-        console.log(freeProfessionalId)
+       
       if (userAuthenticationSuccess) {
         userInfo = webBaseEvent.getBodyProperty(EventConstants.USER_INFO);
-        console.log(userInfo)
         sessionKey = webBaseEvent.getBodyProperty(EventConstants.GENERATED_SESSION_KEY);
         // this.authenticationService.startSession(sessionKey);
         this.authenticationService.userInfo = userInfo;
@@ -488,21 +477,18 @@ export class OSDService {
   public HandleRegisterUserResponse(webBaseEvent: WebBaseEvent) {
     let registerSuccess: boolean;
     let registerResultMessage: string;
-    let sessionKey: string;
-
+    let userInfo: UserInfo;
+ 
     try {
       registerSuccess = JSON.parse(webBaseEvent.getBodyProperty(EventConstants.REGISTER_USER_SUCCESS));
       registerResultMessage = webBaseEvent.getBodyProperty(EventConstants.REGISTER_USER_RESULT_MESSAGE);
 
       this.securityDataService.emitActionRegisterSuccess(registerSuccess);
 
-      console.log(registerSuccess);
       if (registerSuccess) {
-
+        userInfo = webBaseEvent.getBodyProperty(EventConstants.USER_INFO);
+        this.authenticationService.userInfo = userInfo;
         this.securityDataService.emitUserAuthenticationSuccess("/home");
-
-        sessionKey = webBaseEvent.getBodyProperty(EventConstants.GENERATED_SESSION_KEY);
-        this.authenticationService.startSession(sessionKey);
         this.store.dispatch(AuthenticationActions.signIn());
 
         if (registerResultMessage == 'Your account has been created.') {

@@ -55,7 +55,6 @@
             <thead>
                 <tr class="text-darkslategray font-normal bg-line text-center">
                     <th class="px-2" style="width: 5%;"></th>
-                    <th class="px-2">{{'Cod' | translate}}</th>
                     <th class="px-2">{{'TypePerformance' | translate}}</th>
                     <th class="px-2">{{'Summary' | translate}}</th>
                     <th class="px-2 py-1">{{'Date' | translate}}</th>
@@ -73,7 +72,6 @@
                         class="text-center text-darkslategray font-medium  text-s border-y px-2 py-2 hover:underline cursor-pointer"
                         (click)="chargePerformanceFP(performance.Id)" [title]="performance.Id"
                         *ngIf="performance.Type !== '-'">{{'viewData' | translate}}</td>
-                    <td class="text-center text-s border-y px-2 py-2">{{performance.Code}}</td>
                     <td class="text-center text-s border-y px-2 py-2">{{performance.Type}}</td>
                     <td class="text-center text-s border-y px-2 py-2">{{performance.Summary}}</td>
                     <td class="text-center border-y px-3 py-2">{{ performance.Date | date:'dd-MM-yyyy' }}</td>
