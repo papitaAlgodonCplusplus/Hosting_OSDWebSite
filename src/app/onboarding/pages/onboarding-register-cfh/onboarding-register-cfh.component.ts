@@ -133,6 +133,6 @@ export class OnboardingRegisterCfhComponent {
 
     const userEmail = this.personalForm.value.email;
     localStorage.setItem('userEmail', userEmail);
-    this.OSDEventService.userRegister(this.accountForm.value,this.personalForm.value,EventConstants.APPROVED_TRAINING_CENTER);
+    this.OSDEventService.userRegister(this.accountForm.value,this.personalForm.value,EventConstants.APPROVED_TRAINING_CENTER,"");
   }
 }

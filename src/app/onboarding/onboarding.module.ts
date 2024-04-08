@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { OnboardingRoutingModule } from './onboarding-routing.module';
@@ -13,6 +13,9 @@ import { OnboardingRegisterSubClientComponent } from './pages/onboarding-registe
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthModule } from '../auth/auth.module';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
+import { MatPaginator } from '@angular/material/paginator';
+
+
 
 @NgModule({
   
@@ -32,6 +35,7 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
     TranslateModule,
     AuthModule,
     NgxExtendedPdfViewerModule
-  ]
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class OnboardingModule { }

@@ -15,4 +15,7 @@ export class PerformanceFreeProfessional {
   technicalDirectorTravelExpenses: string = "";
   technicalDirectorRemuneration: string = "";
   freeprofessionalId: string = "";
+  estimatedWorkHours: string = "";
+  estimatedTransportHours: string = "";
+  estimatedTransportExpenses: string = "";
 }

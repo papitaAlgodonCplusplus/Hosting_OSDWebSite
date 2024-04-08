@@ -37,6 +37,9 @@
     "registrarse": "Registrarse",
     "area_trabajo": "Área de trabajo",
     "otra": "Otra",
+    "Select": "Seleccionar",
+    "Loading": "Cargando, por favor espere",
+    "regresar_a_home": "Regresar a Inicio",
     "seleccionar_archivo": "Seleccionar archivo",
     "documentacion_adjunta": "Subir documentación (ambos documentos necesarios)",
     "carnet_colegiado": "Carnet de Profesional Colegiado",
@@ -95,7 +98,10 @@
     "TypePerformance": "Tipo",
     "Date": "Fecha",
     "WorkHours": "Horas de trabajo",
+    "ForecastWorkHours": "Horas de trabajo previstas",
     "TravelTime": "Horas desplazamiento",
+    "ForecastTravelExpenses": "Gastos desplazamiento Previstos",
+    "ForecastTravelTime": "Horas desplazamiento previstas",
     "TravelExpenses": "Gastos desplazamiento",
     "Remuneration": "Retribución",
     "TechnicalDirector": "Director Técnico",
@@ -223,5 +229,6 @@
     "expenses_employees_volunteers" : "Gastos: Empleados/ Voluntarios",
     "supplier_purchasing_expenses" : "Gastos Proveedores Compras (Inmovilizado, Existencias)",
     "Select_File" : " Seleccionar archivo",
-    "Video_CFH":"Video Centro de Formación Homologado OSD"
+    "Video_CFH":"Video Centro de Formación Homologado OSD",
+    "ForecastData": "Datos Previstos"
 }
