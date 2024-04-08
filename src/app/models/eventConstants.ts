@@ -1,4 +1,5 @@
 export class EventConstants {
+  public static MESSAGE: string = "Message";
   public static TRACE_IDENTIFIER: string = "TraceIdentifier";
   public static TYPE_Performance: string = "TypePerformance";
   public static TYPE: string = "Type";
@@ -73,6 +74,14 @@ export class EventConstants {
   public static ACCOUNT_TYPE: string = "AccountType";
 
   public static SUBSCRIBER_COSTUMER: string = "Subscriber Customer";
+  public static SERVICE_PROVIDED: string = "serviceProvided";
+  public static SUBSCRIBER_CLAIMED: string = "subscriberClaimed";
+  public static AMOUNT_CLAIMED: string = "amountClaimed";
+  public static SUPPORTING_DOCUMENT1: string = "supportingDocument1";
+  public static SUPPORTING_DOCUMENT2: string = "supportingDocument2";
+  public static CLAIMANT_ID: string = "ClaimantId";
+  public static FACTS: string = "facts";
+  public static CLAIM_TYPE: string = "claimtype";
 
   public static PERFORMANCE_FORM: string = "PerformanceForm";
   public static USER_INFO: string = "UserInfo";
@@ -99,6 +108,10 @@ export class EventConstants {
   public static TECHNICAL_DIRECTOR_REMUNERATION: string = 'TD_Remuneration';
   public static PERFORMANCE_FREE_PROFESSIONAL: string = 'PerformanceFreeProfessional';
   public static PERFORMANCE_FREE_PROFESSIONAL_MESSAGE: string = 'PerformanceFreeProfessional';
+
+  public static ESTIMATED_WORK_HOURS: string = "EstimatedWorkHours";
+  public static ESTIMATED_TRANSPORT_HOURS: string = "EstimatedTransportHours";
+  public static ESTIMATED_TRANSPORT_EXPENSES: string = "EstimatedTransportExpenses";
 
   public static PERFORMANCE_BUY = "PerformanceBuy"
   public static PRODUCT_SERVICE_ID = "ProductServiceId";

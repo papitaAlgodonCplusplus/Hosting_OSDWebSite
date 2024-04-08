@@ -55,7 +55,7 @@
     </div>
     <div class="text-base font-medium text-gray-400 text-center">
         <a [routerLink]="'/home'" class="items-center text-gray-400 rounded-md focus:outline-none">
-            {{ 'regresar_a_iniciar_sesión' | translate }}
+            {{ 'regresar_a_home' | translate }}
           </a>
     </div>
 
@@ -133,11 +133,11 @@
                     <div class="flex justify-between mt-4" *ngIf="freeProfessionalsTr.length > 5">
                         <button [disabled]="actualSegment === 1" (click)="setPage(actualSegment - 1)"
                             class="modal-navigation-button bg-gray-200 hover:bg-gray-300 text-gray-600 font-bold py-2 px-4 rounded">
-                            Anterior
+                            {{'regresar' | translate}}
                         </button>
                         <button [disabled]="actualSegment === totalSegments" (click)="setPage(actualSegment + 1)"
                             class="modal-navigation-button bg-gray-200 hover:bg-gray-300 text-gray-600 font-bold py-2 px-4 rounded">
-                            Siguiente
+                            {{"Next" | translate}}
                         </button>
 
                     </div>

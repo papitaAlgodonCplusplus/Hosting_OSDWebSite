@@ -61,9 +61,11 @@ export class OSDDataService {
   }
 
   emitGetOsdUsersSubscribersSuccess(data: UserInfo[]) {
+    console.log("1.Lista:", data)
     this.getOsdUsersSubscribersSuccessSubject.next(data);
   }
   emitGetSubscribersSuccess(data: Subscriber[]) {
+    console.log("2.Lista:", data)
     this.getSubscribersSuccessSubject.next(data);
   }
   emitPerformanceFreeProfessionalList(data: PerformanceFreeProfessional[]) {

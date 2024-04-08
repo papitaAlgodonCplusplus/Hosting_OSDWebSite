@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { OnboardingRoutingModule } from './onboarding-routing.module';
@@ -12,6 +12,7 @@ import { OnboardingRegisterTypeComponent } from './pages/onboarding-register-typ
 import { OnboardingRegisterSubClientComponent } from './pages/onboarding-register-sub-client/onboarding-register-sub-client.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthModule } from '../auth/auth.module';
+import { MatPaginator } from '@angular/material/paginator';
 
 
 
@@ -31,7 +32,8 @@ import { AuthModule } from '../auth/auth.module';
     SharedModule,
     FormsModule,
     TranslateModule,
-    AuthModule
-  ]
+    AuthModule,
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class OnboardingModule { }
