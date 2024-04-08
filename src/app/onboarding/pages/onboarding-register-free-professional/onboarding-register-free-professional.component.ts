@@ -1,16 +1,12 @@
-import { Component, Input, OnDestroy } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnDestroy } from '@angular/core';
+import {  FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
-import { Claim } from 'src/app/models/claim';
-import { EventConstants } from 'src/app/models/eventConstants';
 import { OSDService } from 'src/app/services/osd-event.services';
-import { SecurityEventService } from 'src/app/services/security-event.service';
 import { ValidationsService } from 'src/app/services/validations.service';
 import { ModalActions, UiActions } from 'src/app/store/actions';
-import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
-import { Observable } from 'rxjs';
+
 
 @Component({
   selector: 'app-register-free-professional',
