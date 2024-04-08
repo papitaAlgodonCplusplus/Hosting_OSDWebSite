@@ -8,10 +8,11 @@
             <div class="w-full">
                 <h1 class="border-b text-darkslategray text-lg font-medium">Informacion Personal</h1>
             </div>
-            <shared-input-field class="w-full" fieldName="companyName" label="{{'RazonSocial' | translate}}"
+
+            <shared-input-field class="w-full" fieldName="identity" label="{{'DNI' | translate}}"
                 inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-            <shared-input-field class="w-full md:w-1/2" fieldName="identity" label="{{'DNI' | translate}}"
+            <shared-input-field class="w-full md:w-1/2" fieldName="companyName" label="{{'RazonSocial' | translate}}"
                 inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
             <shared-input-field class="w-full md:w-1/2" fieldName="name" label="{{'name' | translate}}" inputType="text"
@@ -71,14 +72,14 @@
                             href="" download><i class="fa-solid fa-download animate-pulse"></i>
                             {{'Contract'| translate }}
                         </a>
-                        <div class="flex items-center justify-center flex-col space-y-1">
+                        <!-- <div class="flex items-center justify-center flex-col space-y-1">
                             <input type="file" id="fileInput" class="hidden" (change)="displayFileContract($event)">
                             <label for="fileInput"
                                 class="cursor-pointer items-center justify-center p-2 rounded-lg  text-base font-medium text-white bg-darkslategray shadow-lg">
                                 <i class="fa-solid fa-upload animate-pulse"></i> Subir contrato
                             </label>
                             <span>{{ documentName }}</span>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>

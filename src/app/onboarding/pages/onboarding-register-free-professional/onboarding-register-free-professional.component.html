@@ -58,7 +58,11 @@
             </form>
 
             <form [formGroup]="personalForm" autocomplete="off" class="flex flex-wrap items-center">
-                <shared-input-field class="w-full md:w-1/2" fieldName="identity" label="{{'DNI' | translate}}"
+                
+                <shared-input-field class="w-full" fieldName="identity" label="{{'DNI' | translate}}"
+                    inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+                <shared-input-field class="w-full md:w-1/2" fieldName="companyName" label="{{'RazonSocial' | translate}}"
                     inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
                 <shared-input-field class="w-full md:w-1/2" fieldName="name" label="{{'name' | translate}}"
@@ -71,9 +75,6 @@
                 <shared-input-field class="w-full md:w-1/2" fieldName="middleSurname"
                     label="{{'segundo_apellido' | translate}}" inputType="text" [formGroup]="personalForm"
                     [bgColor]="'bg-white-lightbone'"></shared-input-field>
-                
-                <shared-input-field class="w-full" fieldName="companyName" label="{{'RazonSocial' | translate}}"
-                    inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
                 <shared-input-field class="w-full md:w-1/2" fieldName="landline" label="{{'tel_fijo' | translate}}"
                     inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
