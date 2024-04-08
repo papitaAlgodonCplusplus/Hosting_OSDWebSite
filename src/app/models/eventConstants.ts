@@ -103,6 +103,10 @@ export class EventConstants {
   public static PERFORMANCE_FREE_PROFESSIONAL: string = 'PerformanceFreeProfessional';
   public static PERFORMANCE_FREE_PROFESSIONAL_MESSAGE: string = 'PerformanceFreeProfessional';
 
+  public static ESTIMATED_WORK_HOURS: string = "EstimatedWorkHours";
+  public static ESTIMATED_TRANSPORT_HOURS: string = "EstimatedTransportHours";
+  public static ESTIMATED_TRANSPORT_EXPENSES: string = "EstimatedTransportExpenses";
+
   public static PERFORMANCE_BUY = "PerformanceBuy"
   public static PRODUCT_SERVICE_ID = "ProductServiceId";
   public static MINIMUN_UNITS = "MinimumUnits";

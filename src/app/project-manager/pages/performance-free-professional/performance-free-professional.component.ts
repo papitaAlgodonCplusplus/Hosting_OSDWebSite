@@ -75,7 +75,10 @@ export class PerformanceFreeProfessionalComponent {
         TD_TravelTime: [this.performanceFP.TechnicalDirectorTravelHours, [Validators.required]],
         TD_TravelExpenses: [this.performanceFP.TechnicalDirectorTravelExpenses, [Validators.required]],
         TD_Remuneration: [this.performanceFP.TechnicalDirectorRemuneration, [Validators.required]],
-        Summary: [this.performanceFP.Summary, [Validators.required]]
+        Summary: [this.performanceFP.Summary, [Validators.required]],
+        ForecastTravelExpenses: [this.performanceFP.ForecastTravelExpenses],
+        ForecastTravelTime: [this.performanceFP.ForecastTravelTime, [Validators.required]],
+        ForecastWorkHours: [this.performanceFP.ForecastWorkHours, [Validators.required]]
       });
       console.log("El formulario:",form)
       return form;
@@ -130,7 +133,10 @@ export class PerformanceFreeProfessionalComponent {
       TD_TravelTime: ['', [Validators.required]],
       TD_TravelExpenses: ['', [Validators.required]],
       TD_Remuneration: ['', [Validators.required]],
-      Summary: ['', [Validators.required]]
+      Summary: ['', [Validators.required]],
+      ForecastTravelExpenses: [this.performanceFP.ForecastTravelExpenses],
+      ForecastTravelTime: ['', [Validators.required]],
+      ForecastWorkHours: ['', [Validators.required]]
     });
     return form;
   }
@@ -164,7 +170,12 @@ export class PerformanceFreeProfessionalComponent {
     performanceData.technicalDirectorTravelExpenses = formValues.TD_TravelExpenses;
     performanceData.technicalDirectorRemuneration = formValues.TD_Remuneration;
     performanceData.summary = formValues.Summary;
-    
+    performanceData.technicalDirectorTravelExpenses = formValues.TD_TravelExpenses;
+    performanceData.technicalDirectorRemuneration = formValues.TD_Remuneration;
+    performanceData.summary = formValues.Summary;
+    performanceData.estimatedTransportExpenses = formValues.ForecastTravelExpenses;
+    performanceData.estimatedTransportHours = formValues.ForecastTravelTime;
+    performanceData.estimatedWorkHours = formValues.ForecastWorkHours;
 
     performanceData.freeprofessionalId = this.freeProfessionalId
     performanceData.proyectManagerId = '065d461a-cc09-4162-b4e9-f121c11d3348'

@@ -94,7 +94,10 @@
   "TypePerformance": "Type",
   "Date": "Date",
   "WorkHours": "Work Hours",
-  "TravelTime": "TravelTime",
+  "ForecastWorkHours": "Forecast Work Hours",
+  "TravelTime": "Travel Time",
+  "ForecastTravelExpenses": "Forecast Travel Expenses",
+  "ForecastTravelTime": "Forecast Travel Time",
   "TravelExpenses": "Travel Expenses",
   "Remuneration": "Remuneration",
   "TechnicalDirector": "Technical director",
@@ -222,5 +225,6 @@
     "Download": "Download",
     "Watch_Video": "Watch video",
     "Select_File" : "Select file",
-    "type_client": "Customer type"
+    "type_client": "Customer type",
+    "ForecastData": "Forecast Data"
 }
