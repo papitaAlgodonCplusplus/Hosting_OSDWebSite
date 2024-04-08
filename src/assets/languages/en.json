@@ -226,5 +226,9 @@
     "Watch_Video": "Watch video",
     "Select_File" : "Select file",
     "type_client": "Customer type",
-    "ForecastData": "Forecast Data"
+    "ForecastData": "Forecast Data",
+    "Loading": "Loading Please wait",
+    "Select": "Select",
+    "regresar_a_home": "Return to Home",
+    "next": "Next"
 }

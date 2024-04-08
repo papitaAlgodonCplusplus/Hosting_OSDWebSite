@@ -91,11 +91,11 @@
                 inputType="time" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'" ></shared-input-field>
 
             <shared-input-field class="w-full md:w-1/2" fieldName="TD_Remuneration" label="{{'Remuneration'|translate}}"
-                inputType="number" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'" ></shared-input-field>
+                inputType="number" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'" [readOnly]="true"></shared-input-field>
 
             <shared-input-field class="w-full md:w-1/2" fieldName="TD_TravelExpenses"
                 label="{{'TravelExpenses'|translate}}" inputType="number" [formGroup]="performanceForm"
-                [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                [bgColor]="'bg-white-lightbone'" [readOnly]="true"></shared-input-field>
         </div>
         
         <div class="flex flex-row justify-end space-x-2 pb-3" >

@@ -18,6 +18,8 @@ export class EventAction {
   public static ADD_PERFORMANCE_FREE_PROFESSIONAL: string = "AddPerformanceFreeProfessional";
   public static CREATE_PERFORMANCE_BUY: string = "CreatePerformanceBuy";
   public static GET_PERFORMANCES: string = "GetPerformances";
+  public static CREATE_CLAIM: string = "CreateClaim";
+  public static HANDLE_CREATE_CLAIM_RESPONSE: string = "HandleCreateClaimResponse";
 
   //Response
   public static HANDLE_AUTHENTICATION_RESPONSE: string = "HandleAuthenticationResponse";
