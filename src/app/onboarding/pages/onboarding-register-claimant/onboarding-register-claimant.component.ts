@@ -3,11 +3,13 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 import { is, tr } from 'date-fns/locale';
+import { Guid } from 'guid-typescript';
 import { Observable } from 'rxjs';
 import { Action } from 'rxjs/internal/scheduler/Action';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { EventConstants } from 'src/app/models/eventConstants';
+import { OSDDataService } from 'src/app/services/osd-data.service';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { SecurityEventService } from 'src/app/services/security-event.service';
 import { ValidationsService } from 'src/app/services/validations.service';
@@ -20,17 +22,21 @@ import { AuthSelectors } from 'src/app/store/selectors';
   styleUrls: ['./onboarding-register-claimant.component.css']
 })
 export class OnboardingRegisterClaimantComponent {
+  items: any[] = [];
+  displayedItems: any[] = [];
   isValidToken$: Observable<boolean> = this.store.select(AuthSelectors.authenticationToken);
   accountForm: FormGroup;
   personalForm: FormGroup;
   showPersonalInfo!: boolean;
   selectedClaimant: string | undefined;
   claimant: DropDownItem[] = [
-    { value: this.translate.instant('reclamacion_simple'), key: 'key1' },
-    { value: this.translate.instant('reclamacion_compleja'), key: 'Key2' },
-    { value: this.translate.instant('reclamacion_sostenibilidad'), key: 'key3' },
-    { value: this.translate.instant('mediacion_arbitraje'), key: 'Key4' }
+    { value: this.translate.instant('reclamacion_simple'), key: 'reclamacion_simple' },
+    { value: this.translate.instant('reclamacion_compleja'), key: 'reclamacion_simple' },
+    { value: this.translate.instant('reclamacion_sostenibilidad'), key: 'reclamacion_sostenibilidad' },
+    { value: this.translate.instant('mediacion_arbitraje'), key: 'mediacion_arbitraje' }
   ];
+  subscribers: any[] = [];
+  subscriber: any;
   documentNames: string[] = new Array(2);
   isAcceptConditions!: boolean;
 
@@ -38,7 +44,8 @@ export class OnboardingRegisterClaimantComponent {
     private formBuilder: FormBuilder,
     private validationsService: ValidationsService,
     private translate: TranslateService,
-    private osdEventService : OSDService
+    private osdEventService : OSDService,
+    private osdDataService: OSDDataService
   ) {
   
     this.personalForm = this.createPersonalForm();
@@ -46,6 +53,7 @@ export class OnboardingRegisterClaimantComponent {
   }
 
   ngOnInit(): void {
+    this.getSubscribers()
     setTimeout(() => {
       this.store.dispatch(UiActions.hideAll());
       this.isValidToken$.subscribe((validation) => {
@@ -56,6 +64,14 @@ export class OnboardingRegisterClaimantComponent {
           this.showPersonalInfo = true
         }      
       })
+      this.osdDataService.getOsdUsersSubscribersSuccess$.subscribe(osdUsersSubscribers => {
+        this.items = osdUsersSubscribers;
+        this.updateDisplayedItems();
+      });
+  
+      this.osdDataService.getSubscribersSuccess$.subscribe(osdUsersSubscribers => {
+        this.subscribers = osdUsersSubscribers;
+      });
     }, 0);
   }
 
@@ -87,7 +103,25 @@ export class OnboardingRegisterClaimantComponent {
     });
     return form;
   }
+  getSubscribers() {
+    this.osdEventService.GetSubscribers();
+  }
+  setSubscribers(sub: any){
+    this.subscriber = sub;
+    this.accountForm.patchValue({
+      subscriberClaimed: this.subscriber.name +" " + this.subscriber.firstsurname+" " + this.subscriber.middlesurname
+    });
+  }
+  onPageChange(event: any) {
+    const startIndex = event.pageIndex * event.pageSize;
+    const endIndex = startIndex + event.pageSize;
+    this.updateDisplayedItems(startIndex, endIndex);
+  }
 
+  updateDisplayedItems(startIndex: number = 0, endIndex: number = 10) {
+    this.displayedItems = this.items.slice(startIndex, endIndex);
+  }
+  
   private createAccountForm(): FormGroup {
     const form = this.formBuilder.group({
       claimtype: ['', [Validators.required]],
@@ -140,6 +174,16 @@ export class OnboardingRegisterClaimantComponent {
 
     const userEmail = this.personalForm.value.email;
     localStorage.setItem('userEmail', userEmail);
-    this.osdEventService.userRegister(this.accountForm.value,this.personalForm.value,EventConstants.CLAIMANT);
+    let claimantId = Guid.create().toString();
+    let subscriberclaimed = this.accountForm.value.subscriberClaimed
+    let serviceProvided = this.accountForm.value.serviceProvided
+    let amountClaimed = this.accountForm.value.amountClaimed
+    let facts = this.accountForm.value.facts
+    let supportingDocument1 = this.accountForm.value.supportingDocument1
+    let supportingDocument2 = this.accountForm.value.supportingDocument2
+    let claimtype = this.accountForm.value.claimtype
+
+    this.osdEventService.userRegister(this.accountForm.value,this.personalForm.value,EventConstants.CLAIMANT, claimantId);
+    this.osdEventService.addClaim(claimantId, claimtype, subscriberclaimed,serviceProvided,facts,amountClaimed,supportingDocument1,supportingDocument2);
   }
 }

@@ -186,6 +186,6 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
 
     const userEmail = this.personalForm.value.email;
     localStorage.setItem('userEmail', userEmail);
-    this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.FREE_PROFESSIONAL);
+    this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.FREE_PROFESSIONAL,"");
   }
 }
