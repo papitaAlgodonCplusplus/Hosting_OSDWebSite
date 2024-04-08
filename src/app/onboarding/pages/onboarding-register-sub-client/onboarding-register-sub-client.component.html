@@ -24,7 +24,10 @@
         <form [formGroup]="personalForm" (ngSubmit)="onSubmit()" autocomplete="off" class="flex flex-col space-y-3 p-2">
             <div class="flex flex-wrap items-center">
 
-                <shared-input-field class="w-full md:w-1/2" fieldName="identity" label="{{'DNI' | translate}}*"
+                <shared-input-field class="w-full" fieldName="identity" label="{{'DNI' | translate}}*"
+                    inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+                <shared-input-field class="w-full md:w-1/2" fieldName="companyName" label="{{'RazonSocial' | translate}}"
                     inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
                 <shared-input-field class="w-full md:w-1/2" fieldName="name" label="{{'name' | translate}}"
@@ -90,14 +93,25 @@
                     {{'error_condiciones' | translate}}
                 </div>
 
-                <div class="p-2 bg-white flex flex-col items-center">
-                    <button
-                        class="p-3 bg-darkslategray text-white font-normal animate__animated animate__fadeInDown w-full"
-                        (click)="downloadContranct()">
+                <div class="p-2 bg-white flex flex-wrap items-start">
+                    
+                    <div class="display-flex m-2">
+                        <a
+                        class="p-3 bg-darkslategray text-white font-normal animate__animated animate__fadeInDown w-50 m-2"
+                        href="assets/contracts/18-2-24-Contrato-Suscriptor-Cliente.pdf" download>
                         <i class="fa-solid fa-download"></i>
-                        {{'Contract' | translate }}
-                    </button>
+                        {{'Contract' | translate }} (Español)
+                    </a>
+                    <a
+                        class="p-3 bg-darkslategray text-white font-normal animate__animated animate__fadeInDown w-50"
+                        href="assets/contracts/18-2-24-DSO-Subscriber-Agreement-3.pdf" download>
+                        <i class="fa-solid fa-download"></i>
+                        {{'Contract' | translate }} (Ingles)
+                    </a>
+                    </div>
+
                 </div>
+
             </div>
         </form>
 

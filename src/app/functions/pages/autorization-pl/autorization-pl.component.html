@@ -20,7 +20,7 @@
             </td>
             
             <td class="text-center space-x-2 border-y px-4 py-2">
-              <button (click)="showModal(item)" class="underline text-darkslategray text-sm">
+              <button (click)="selectUser(item)" class="underline text-darkslategray text-sm">
                 <i class="fas fa-eye"></i>{{'viewData' | translate}}</button>
             </td>
             <td class="text-center border-y px-2 py-2">
@@ -43,26 +43,6 @@
   </button>
 </div>
 
-<div *ngIf="showModalConfirm" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-  <div class="bg-white p-4 rounded-lg w-96">
-    <span (click)="closeModal()" class="absolute top-0 right-0 p-2 text-gray-500 cursor-pointer">&times;</span>
-    <h1 class="bg-darkslategray text-white text-center py-2 font-bold">Información del profesional libre</h1>
-    <div class="flex flex-col items-center">
-      <p><strong>ID:</strong> {{ selectedUser?.Id }}</p>
-      <p><strong>DNI:</strong> {{ selectedUser?.Identity }}</p>
-      <p><strong>Nombre:</strong> {{ selectedUser?.Name + " " + selectedUser?.Firstname + " " + selectedUser?.Middlesurname }}</p>
-      <p><strong>Email:</strong> {{ selectedUser?.Email }}</p>
-      <p><strong>Estado:</strong>
-        <span *ngIf="selectedUser.Isauthorized; else notAuthorizedText" class="text-green-600 font-medium">
-          Autorizado</span>
-        <ng-template #notAuthorizedText>
-          <span class="text-red-600 font-medium"> No autorizado</span>
-        </ng-template>
-      </p>
-      <div class="flex justify-center mt-4">
-        <button (click)="AuthorizeUser(selectedUser)" class="bg-darkslategray text-white font-bold py-2 px-4 m-2">Autorizar</button>
-        <button (click)="closeModal()" class="bg-darkslategray text-white font-bold py-2 px-4 m-2">Cancelar</button>
-      </div>
-    </div>
-  </div>
-</div>
+<shared-authorized-modal [personalDataObject]="user" [message]="''" [accountDataObject]="subscriber"
+[showModal]="showAuthorizatedModal" (confirm)="onConfirmHandler(selectedUser)" (cancel)="onCancelHandler()">
+</shared-authorized-modal>

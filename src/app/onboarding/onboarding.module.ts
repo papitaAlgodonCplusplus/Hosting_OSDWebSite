@@ -12,6 +12,7 @@ import { OnboardingRegisterTypeComponent } from './pages/onboarding-register-typ
 import { OnboardingRegisterSubClientComponent } from './pages/onboarding-register-sub-client/onboarding-register-sub-client.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthModule } from '../auth/auth.module';
+import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { MatPaginator } from '@angular/material/paginator';
 
 
@@ -33,6 +34,7 @@ import { MatPaginator } from '@angular/material/paginator';
     FormsModule,
     TranslateModule,
     AuthModule,
+    NgxExtendedPdfViewerModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

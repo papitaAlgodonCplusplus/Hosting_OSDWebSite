@@ -9,6 +9,8 @@ import { OSDService } from 'src/app/services/osd-event.services';
 import { SecurityEventService } from 'src/app/services/security-event.service';
 import { ValidationsService } from 'src/app/services/validations.service';
 import { ModalActions, UiActions } from 'src/app/store/actions';
+import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-register-free-professional',
@@ -47,7 +49,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     private formBuilder: FormBuilder,
     private validationsService: ValidationsService,
     private osdEventService: OSDService,
-    private translate: TranslateService,
+    private translate: TranslateService
   ) {
     this.accountForm = this.createAccountForm();
     this.personalForm = this.createPersonalForm();
@@ -61,6 +63,9 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     setTimeout(() => {
       this.store.dispatch(UiActions.hideAll());
     }, 0);
+    this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Actualmente esta opcion de registro no esta disponible!" }))
+    this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }))
+    this.store.dispatch(ModalActions.openAlert())
   }
 
   ngOnDestroy(): void {
@@ -76,11 +81,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   makeAPurchaseTrainerConsultant() {
     window.open('https://buy.stripe.com/00g9BD55y54t0mYcMR', '_blank');
   }
-
-  downloadContranctTrainerConsultant() {
-    window.open('https://oficinasolucionesdigital.com/wp-content/uploads/2024/03/25-3-24-Contrato-Profesional-Libre-1-1.pdf', '_blank');
-  }
-
+  
   openVideoTecnicOSD() {
     window.open('https://youtu.be/M_WhgGimbL8', '_blank');
   }
@@ -104,7 +105,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     const personalForm = this.formBuilder.group({
       identity: ['', [Validators.required]],
       name: ['', [Validators.required]],
-      companyName: ['', [Validators.required]],
+      companyName: ['',],
       firstSurname: ['', [Validators.required]],
       middleSurname: ['', [Validators.required]],
       address: ['', [Validators.required]],
@@ -170,22 +171,26 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   }
 
   onSubmit(): void {
-    if (this.accountForm.invalid || this.personalForm.invalid) {
-      this.accountForm.markAllAsTouched();
-      this.personalForm.markAllAsTouched();
-      this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Faltan campos por llenar" }))
-      this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }))
-      this.store.dispatch(ModalActions.openAlert())
-      return;
-    }
+    // if (this.accountForm.invalid || this.personalForm.invalid) {
+    //   this.accountForm.markAllAsTouched();
+    //   this.personalForm.markAllAsTouched();
+    //   this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Faltan campos por llenar" }))
+    //   this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }))
+    //   this.store.dispatch(ModalActions.openAlert())
+    //   return;
+    // }
 
-    if (!this.personalForm.value.acceptConditions) {
-      this.isAcceptConditions = true;
-      return;
-    }
+    // if (!this.personalForm.value.acceptConditions) {
+    //   this.isAcceptConditions = true;
+    //   return;
+    // }
 
-    const userEmail = this.personalForm.value.email;
-    localStorage.setItem('userEmail', userEmail);
-    this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.FREE_PROFESSIONAL,"");
+    // const userEmail = this.personalForm.value.email;
+    // localStorage.setItem('userEmail', userEmail);
+    // this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.FREE_PROFESSIONAL);
+
+    this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Actualmente esta opcion de registro no esta disponible!" }))
+    this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }))
+    this.store.dispatch(ModalActions.openAlert())
   }
 }
