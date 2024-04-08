@@ -4,6 +4,8 @@ import { UiActions } from 'src/app/store/actions';
 import { ModalActions } from 'src/app/store/actions';
 import { MatPaginator } from '@angular/material/paginator';
 import { OSDService } from 'src/app/services/osd-event.services';
+import { UserInfo } from 'src/app/models/userInfo';
+import { Subscriber } from 'src/app/models/subscriber';
 
 @Component({
   selector: 'app-autorization-pl',
@@ -17,8 +19,11 @@ export class AutorizationPlComponent implements OnDestroy {
   displayedItems: any;
   showModalConfirm: boolean = false; 
   selectedUser: any = null; 
+  user!: any;
   message: string = "";
-  
+  showAuthorizatedModal: boolean = false;
+  subscriber: any;
+
   constructor(private store: Store,
               private osdEventService : OSDService) {
   }
@@ -37,14 +42,21 @@ export class AutorizationPlComponent implements OnDestroy {
     }, 0);
   }
 
-  showModal(user: any) { 
+  selectUser(user: any) {
     this.selectedUser = user; 
-    this.showModalConfirm = true;
-  }
+    this.showAuthorizatedModal = true;
+    const userDTO: UserInfo = {} as UserInfo;
 
-  closeModal() {
-    this.selectedUser = null;
-    this.showModalConfirm = false;
+    userDTO.identity = this.selectedUser?.Identity;
+    userDTO.name = this.selectedUser?.Name;
+    userDTO.email = this.selectedUser?.Email;
+    this.user = userDTO;
+
+    const subscriberDTO: Subscriber = {} as Subscriber;
+    subscriberDTO.clientType = "Free profesional";
+    this.subscriber = subscriberDTO;
+
+    this.showAuthorizatedModal = true;
   }
 
   onPageChange(event: any) {
@@ -57,22 +69,26 @@ export class AutorizationPlComponent implements OnDestroy {
     this.displayedItems = this.items.slice(startIndex, endIndex);
   }
 
-  AuthorizeUser(selectedUser: any) {
-    this.osdEventService.changingUsdUserAutorizationStatusEvent(selectedUser.Id)
-    this.closeModal();
-    this.store.dispatch(ModalActions.openAlert());
-
-    this.items.forEach(item => {
-      if (item.Id === selectedUser.Id) {
-        item.Isauthorized = true; 
-      }
-    });
-  }
-
   ngOnDestroy(): void {
     setTimeout(() => {
       this.store.dispatch(UiActions.showAll())
     }, 0);
     this.osdEventService.cleanFreeProfessionalsList()
+  }
+
+  onConfirmHandler(selectedUser: any) {
+    this.osdEventService.changingUsdUserAutorizationStatusEvent(selectedUser.Id)
+    this.store.dispatch(ModalActions.openAlert());
+    
+    this.items.forEach(item => {
+      if (item.Id === selectedUser.Id) {
+        item.Isauthorized = true; 
+      }
+    });
+    this.showAuthorizatedModal = false;
+  }
+
+  onCancelHandler() {
+    this.showAuthorizatedModal = false
   }
 }

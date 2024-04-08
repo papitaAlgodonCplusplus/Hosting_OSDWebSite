@@ -8,30 +8,45 @@
             <div class="w-full">
                 <h1 class="border-b text-darkslategray text-lg font-medium">Informacion Personal</h1>
             </div>
-            <shared-input-field class="w-full md:w-1/2" fieldName="identity" label="{{'DNI' | translate}}"
+
+            <shared-input-field class="w-full" fieldName="identity" label="{{'DNI' | translate}}"
                 inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+            <shared-input-field class="w-full md:w-1/2" fieldName="companyName" label="{{'RazonSocial' | translate}}"
+                inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
             <shared-input-field class="w-full md:w-1/2" fieldName="name" label="{{'name' | translate}}" inputType="text"
                 [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
             <shared-input-field class="w-full md:w-1/2" fieldName="firstSurname"
                 label="{{'primer_apellido' | translate}}" inputType="text" [formGroup]="personalForm"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
             <shared-input-field class="w-full md:w-1/2" fieldName="middleSurname"
                 label="{{'segundo_apellido' | translate}}" inputType="text" [formGroup]="personalForm"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
             <shared-input-field class="w-full md:w-1/2" fieldName="zipCode" label="{{'cod_postal' | translate}}"
                 inputType="number" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
             <shared-input-field class="w-full md:w-1/2" fieldName="landline" label="{{'tel_fijo' | translate}}"
                 inputType="tel" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
             <shared-input-field class="w-full md:w-1/2" fieldName="mobilePhone" label="{{'tel_movil' | translate}}"
                 inputType="tel" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
             <shared-input-field class="w-full md:w-1/2" fieldName="web" label="{{'pagina_web' | translate}}"
                 inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
             <shared-input-field class="w-full md:w-1/2" fieldName="city" label="{{'Ciudad' | translate}}"
                 inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
             <shared-input-field class="w-full md:w-1/2" fieldName="country" label="{{'pais' | translate}}"
                 inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
             <shared-input-field class="w-full md:w-1/1" fieldName="address" label="{{'direccion' | translate}}"
                 inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                
         </form>
         <form [formGroup]="accountForm" (ngSubmit)="onSubmit()" autocomplete="off" class="p-2 flex-1 flex flex-col ">
             <h1 class="border-b text-darkslategray text-lg font-medium">{{'CFH (Centro Formación Homologado) '|
@@ -52,19 +67,19 @@
                     <span>Se requiere completar el contrato con absoluta transparencia para poder registrarse como
                         Centro de Formación Homologado</span>
                     <div class="flex flex-row items-center space-x-3">
-                        <button
+                        <a
                             class="p-2  bg-darkslategray text-line rounded-lg font-normal animate__animated animate__fadeInDown"
-                            (click)="downloadContranctCFH()"><i class="fa-solid fa-download animate-pulse"></i>
+                            href="" download><i class="fa-solid fa-download animate-pulse"></i>
                             {{'Contract'| translate }}
-                        </button>
-                        <div class="flex items-center justify-center flex-col space-y-1">
+                        </a>
+                        <!-- <div class="flex items-center justify-center flex-col space-y-1">
                             <input type="file" id="fileInput" class="hidden" (change)="displayFileContract($event)">
                             <label for="fileInput"
                                 class="cursor-pointer items-center justify-center p-2 rounded-lg  text-base font-medium text-white bg-darkslategray shadow-lg">
                                 <i class="fa-solid fa-upload animate-pulse"></i> Subir contrato
                             </label>
                             <span>{{ documentName }}</span>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>

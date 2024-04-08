@@ -55,6 +55,7 @@ export class OnboardingRegisterCfhComponent {
   private createPersonalForm(): FormGroup {
     const form = this.formBuilder.group({
       identity: ['', [Validators.required]],
+      companyName: ['', [Validators.required]],
       name: ['', [Validators.required]],
       firstSurname: ['', [Validators.required]],
       middleSurname: ['', [Validators.required]],    
@@ -88,10 +89,6 @@ export class OnboardingRegisterCfhComponent {
     this.mostrarMenu = !this.mostrarMenu;
   }
 
-  downloadContranctCFH() {
-    window.open('https://oficinasolucionesdigital.com/wp-content/uploads/2024/03/5-3-24-Contrato-CFH-Centro-Formacion-Homologado.pdf', '_blank');
-  }
-  
   openVideoCFH() {
     window.open('https://youtu.be/YdyriLrWjpc', '_blank');
   }
