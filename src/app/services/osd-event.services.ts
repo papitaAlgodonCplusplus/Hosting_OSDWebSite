@@ -210,8 +210,21 @@ export class OSDService {
     });
   }
 
-  public userRegister(accountForm: RegisterUserEvent, personalForm: RegisterUserEvent, accountType: string) {
-    const registerUserEvent: WebBaseEvent = this.eventFactoryService.CreateRegisterUserEvent(accountForm, personalForm, accountType);
+  public userRegister(accountForm: RegisterUserEvent, personalForm: RegisterUserEvent, accountType: string, claimantId: string) {
+    const registerUserEvent: WebBaseEvent = this.eventFactoryService.CreateRegisterUserEvent(accountForm, personalForm, accountType, claimantId);
+    console.log("Enviando mensaje al restAPIService.sendOSDEvent");
+    this.restApiService.SendOSDEvent(registerUserEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleRegisterUserResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+  public addClaim(claimantId: String, claimType: String, Subscriberclaimed: String, Serviceprovided: String, fact: String, amountClaimed: String, document1: String, document2: String) {
+    const registerUserEvent: WebBaseEvent = this.eventFactoryService.CreateAddClaimEvent(claimantId, claimType, Subscriberclaimed, Serviceprovided, fact, amountClaimed, document1, document2);
     console.log("Enviando mensaje al restAPIService.sendOSDEvent");
     this.restApiService.SendOSDEvent(registerUserEvent).subscribe({
       next: (response) => {
@@ -478,6 +491,18 @@ export class OSDService {
 
     try {
       message = webBaseEvent.getBodyProperty(EventConstants.PERFORMANCE_FREE_PROFESSIONAL_MESSAGE);
+      this.store.dispatch(ModalActions.addAlertMessage({alertMessage: message}));
+      this.store.dispatch(ModalActions.openAlert())
+    } catch {
+
+    }
+  }
+
+  public HandleAddClaimResponse(webBaseEvent: WebBaseEvent) {
+    let message: string;
+
+    try {
+      message = webBaseEvent.getBodyProperty(EventConstants.MESSAGE);
       this.store.dispatch(ModalActions.addAlertMessage({alertMessage: message}));
       this.store.dispatch(ModalActions.openAlert())
     } catch {

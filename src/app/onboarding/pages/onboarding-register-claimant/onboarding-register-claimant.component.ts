@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 import { is, tr } from 'date-fns/locale';
+import { Guid } from 'guid-typescript';
 import { Observable } from 'rxjs';
 import { Action } from 'rxjs/internal/scheduler/Action';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
@@ -29,10 +30,10 @@ export class OnboardingRegisterClaimantComponent {
   showPersonalInfo!: boolean;
   selectedClaimant: string | undefined;
   claimant: DropDownItem[] = [
-    { value: this.translate.instant('reclamacion_simple'), key: 'key1' },
-    { value: this.translate.instant('reclamacion_compleja'), key: 'Key2' },
-    { value: this.translate.instant('reclamacion_sostenibilidad'), key: 'key3' },
-    { value: this.translate.instant('mediacion_arbitraje'), key: 'Key4' }
+    { value: this.translate.instant('reclamacion_simple'), key: 'reclamacion_simple' },
+    { value: this.translate.instant('reclamacion_compleja'), key: 'reclamacion_simple' },
+    { value: this.translate.instant('reclamacion_sostenibilidad'), key: 'reclamacion_sostenibilidad' },
+    { value: this.translate.instant('mediacion_arbitraje'), key: 'mediacion_arbitraje' }
   ];
   subscribers: any[] = [];
   subscriber: any;
@@ -52,7 +53,7 @@ export class OnboardingRegisterClaimantComponent {
   }
 
   ngOnInit(): void {
-    this.getSubscribers();
+    this.getSubscribers()
     setTimeout(() => {
       this.store.dispatch(UiActions.hideAll());
       this.isValidToken$.subscribe((validation) => {
@@ -63,10 +64,15 @@ export class OnboardingRegisterClaimantComponent {
           this.showPersonalInfo = true
         }      
       })
+      this.osdDataService.getOsdUsersSubscribersSuccess$.subscribe(osdUsersSubscribers => {
+        this.items = osdUsersSubscribers;
+        this.updateDisplayedItems();
+      });
+  
+      this.osdDataService.getSubscribersSuccess$.subscribe(osdUsersSubscribers => {
+        this.subscribers = osdUsersSubscribers;
+      });
     }, 0);
-    this.osdDataService.getSubscribersSuccess$.subscribe(osdUsersSubscribers => {
-      this.subscribers = osdUsersSubscribers;
-    });
   }
 
   ngOnDestroy(): void {
@@ -99,6 +105,12 @@ export class OnboardingRegisterClaimantComponent {
   }
   getSubscribers() {
     this.osdEventService.GetSubscribers();
+  }
+  setSubscribers(sub: any){
+    this.subscriber = sub;
+    this.accountForm.patchValue({
+      subscriberClaimed: this.subscriber.name +" " + this.subscriber.firstsurname+" " + this.subscriber.middlesurname
+    });
   }
   onPageChange(event: any) {
     const startIndex = event.pageIndex * event.pageSize;
@@ -162,6 +174,16 @@ export class OnboardingRegisterClaimantComponent {
 
     const userEmail = this.personalForm.value.email;
     localStorage.setItem('userEmail', userEmail);
-    this.osdEventService.userRegister(this.accountForm.value,this.personalForm.value,EventConstants.CLAIMANT);
+    let claimantId = Guid.create().toString();
+    let subscriberclaimed = this.accountForm.value.subscriberClaimed
+    let serviceProvided = this.accountForm.value.serviceProvided
+    let amountClaimed = this.accountForm.value.amountClaimed
+    let facts = this.accountForm.value.facts
+    let supportingDocument1 = this.accountForm.value.supportingDocument1
+    let supportingDocument2 = this.accountForm.value.supportingDocument2
+    let claimtype = this.accountForm.value.claimtype
+
+    this.osdEventService.userRegister(this.accountForm.value,this.personalForm.value,EventConstants.CLAIMANT, claimantId);
+    this.osdEventService.addClaim(claimantId, claimtype, subscriberclaimed,serviceProvided,facts,amountClaimed,supportingDocument1,supportingDocument2);
   }
 }
