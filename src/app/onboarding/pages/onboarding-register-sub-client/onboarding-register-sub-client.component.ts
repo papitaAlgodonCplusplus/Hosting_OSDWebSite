@@ -86,12 +86,9 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
     window.open('https://buy.stripe.com/00g5ln69CeF35Hi28b', '_blank');
   }
   
-  downloadContranct() {
-    window.open('https://oficinasolucionesdigital.com/wp-content/uploads/2024/02/18-2-24-Contrato-Suscriptor-Cliente.pdf', '_blank');
-  }
-  
   private createPersonalForm(): FormGroup {
     const personalForm = this.formBuilder.group({
+      companyName: ['', [Validators.required]],
       identity: ['', [Validators.required]],
       name: ['', [Validators.required]],
       firstSurname: ['', [Validators.required]],

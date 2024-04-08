@@ -5,7 +5,6 @@ import { OnboardingRegisterClaimantComponent } from './pages/onboarding-register
 import { OnboardingRegisterSubClientComponent } from './pages/onboarding-register-sub-client/onboarding-register-sub-client.component';
 import { OnboardingRegisterCfhComponent } from './pages/onboarding-register-cfh/onboarding-register-cfh.component';
 import { OnboardingRegisterFreeProfessionalComponent } from './pages/onboarding-register-free-professional/onboarding-register-free-professional.component';
-
 const routes: Routes = [
   {
     path: 'onboarding-register',
