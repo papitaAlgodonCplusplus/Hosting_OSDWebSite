@@ -65,12 +65,12 @@
                             label="{{'contraseña' | translate}}"></auth-input-password>
 
                         <div class="space-x-2 pr-2">
-                            <input type="radio" id="register" formControlName="registrationOption"
+                            <input (click)="setRegistrationTrue()" type="radio" id="register" formControlName="registrationOption"
                                 name="registrationOption" value="register">
                             <label for="register">{{'registrarse_plataforma' | translate}}</label>
                         </div>
                         <div class="space-x-2">
-                            <input type="radio" id="noRegister" formControlName="registrationOption"
+                            <input (click)="setRegistrationFalse()" type="radio" id="noRegister" formControlName="registrationOption"
                                 name="registrationOption" value="unregistered">
                             <label for="noRegister">{{'no_registrarse' | translate}}</label>
                         </div>
@@ -109,7 +109,7 @@
                             <tbody>
                                 <tr *ngFor="let item of displayedItems">
                                     <td class="text-center border-y px-2  py-2">{{ item.identity }}</td>
-                                    <td class="text-center border-y px-2 py-2">{{ item.name +" " + item.firstsurname+" " + item.middlesurname }}</td>
+                                    <td class="text-center border-y px-2 py-2">{{ item.Name +" " + item.Firstname+" " + item.Middlesurname }}</td>
                                     <td class="text-center space-x-2 border-y py-2">
                                         <button class="underline text-darkslategray text-sm" (click)="setSubscribers(item)">  {{'Select' | translate}}</button>
                                     </td>
@@ -203,7 +203,7 @@
         </button>
 
         <ng-template #isValidToken>
-            <button *ngIf="!showPersonalInfo" (click)="onSubmit()"
+            <button *ngIf="!showPersonalInfo" (click)="onSubmit()" routerLink="/onboarding/onboarding-register"
                 class="p-2 bg-darkslategray  text-white font-normal  animate__animated animate__fadeInDown">
                 {{'registrarse_reclamación' | translate}}
             </button>
