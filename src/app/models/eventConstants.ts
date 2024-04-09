@@ -73,18 +73,15 @@ export class EventConstants {
   public static PERSONAL_FORM: string = "PersonalForm";
   public static ACCOUNT_TYPE: string = "AccountType";
 
-  public static FREE_PROFESSIONAL: string = "FreeProfessional";
   public static SUBSCRIBER_COSTUMER: string = "Subscriber Customer";
   public static SERVICE_PROVIDED: string = "serviceProvided";
   public static SUBSCRIBER_CLAIMED: string = "subscriberClaimed";
   public static AMOUNT_CLAIMED: string = "amountClaimed";
   public static SUPPORTING_DOCUMENT1: string = "supportingDocument1";
   public static SUPPORTING_DOCUMENT2: string = "supportingDocument2";
-  public static CLAIMANT: string = "Claimant";
   public static CLAIMANT_ID: string = "ClaimantId";
   public static FACTS: string = "facts";
   public static CLAIM_TYPE: string = "claimtype";
-  public static APPROVED_TRAINING_CENTER: string = "ApprovedTrainingCenter";
 
   public static PERFORMANCE_FORM: string = "PerformanceForm";
   public static USER_INFO: string = "UserInfo";
@@ -122,6 +119,13 @@ export class EventConstants {
   public static MAXIMUM_UNITS = "MaximumUnits";
   public static UNITARY_COST = "UnitaryCost";
   public static SHELF_LIFE = "ShelfLife";
+
+  public static FREE_PROFESSIONAL: 'Free Professional';
+  public static SUBSCRIBER_CUSTOMER: 'SubscriberCustomer';
+  public static CLAIMANT: "Claimant";
+  public static APPROVED_TRAINING_CENTER: 'ApprovedTrainingCenter';
+  public static UNREGISTERED: 'Unregistered';
+
   //#endregion
   constructor() {
 

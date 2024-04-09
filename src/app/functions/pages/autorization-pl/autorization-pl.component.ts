@@ -47,9 +47,9 @@ export class AutorizationPlComponent implements OnDestroy {
     this.showAuthorizatedModal = true;
     const userDTO: UserInfo = {} as UserInfo;
 
-    userDTO.identity = this.selectedUser?.Identity;
-    userDTO.name = this.selectedUser?.Name;
-    userDTO.email = this.selectedUser?.Email;
+    userDTO.Identity = this.selectedUser?.Identity;
+    userDTO.Name = this.selectedUser?.Name;
+    userDTO.Email = this.selectedUser?.Email;
     this.user = userDTO;
 
     const subscriberDTO: Subscriber = {} as Subscriber;

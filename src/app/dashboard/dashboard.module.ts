@@ -12,8 +12,6 @@ import { FreeProfessionalFileComponent } from './pages/free-professional-file/fr
 import { MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginator';
 import { CustomPaginator } from '../functions/service/custom-paginator';
 
-
-
 @NgModule({
   declarations: [
     HomeComponent,
@@ -29,7 +27,7 @@ import { CustomPaginator } from '../functions/service/custom-paginator';
     SharedModule,
     FormsModule,
     TranslateModule,
-    MatPaginatorModule,
+    MatPaginatorModule
   ],
   providers: [
     {

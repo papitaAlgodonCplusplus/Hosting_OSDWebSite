@@ -1,7 +1,10 @@
-export class UserInfo {
-  public id : string = "";
-  public identity : string = "";
-  public name: string = "";
-  public email: string = "";
-  public isActive : string = ""
+export interface UserInfo {
+  Id: string;
+  Identity: string;
+  Email: string;
+  Name: string;
+  Firstname: string;
+  Middlesurname: string;
+  Isauthorized?: string;
+  AccountType: string;
 }

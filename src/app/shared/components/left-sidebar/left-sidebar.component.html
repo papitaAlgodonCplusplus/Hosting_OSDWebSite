@@ -21,47 +21,18 @@
       </div>
     </div>
     <ul class="space-y-2 font-normal text-black ml-2">
+      <div>
+        <ul>
+          <ul>
+            <li *ngFor="let item of menuOptions$ | async" class="cursor-pointer" [routerLink]="item.path">
+              <i [ngClass]="'fas fa-solid ' + item.icon"></i>
+              <span class="ml-3">{{ item.name || '' | translate }}</span>
+            </li>
+          </ul>
+          
+        </ul>
+      </div>
 
-      <li class="cursor-pointer" routerLink="/reports">
-        <i class="fa-solid fa-eye"></i>
-        <span class="ml-3">{{'transparencia' | translate}}</span>
-      </li>
-
-      <li class="cursor-pointer" routerLink="/onboarding/onboarding-register-claimant">
-        <i class="fas fa-balance-scale"></i>
-        <span class="ml-3">{{'presentar_reclamación' | translate}}</span>
-      </li>
-    
-      <li class="cursor-pointer" routerLink="/onboarding">
-        <i class="fa-solid fa-user-plus"></i>
-        <span class="ml-3">{{'registerNewUser' | translate}}</span>
-      </li>
-      
-      <li class="cursor-pointer" routerLink="/home/free-professional-file">
-        <i class="fa-solid fa-file"></i>
-        <span class="ml-3">{{'TitlePerformance' | translate}}</span>
-      </li>
-
-      <li class="cursor-pointer" routerLink="/functions/sub-authorized" (click)="getSubscribers()">
-        <i class="fa-solid fa-check-circle"></i>
-        <span class="ml-3">{{'authorizeCustomers' | translate}}</span>
-      </li>
-
-      <li class="cursor-pointer" routerLink="/functions/autorization-pl" (click)="autorizationFreeProfessionals()">
-        <i class="fa-solid fa-check-circle"></i>
-        <span class="ml-3">{{'authorizeFreeProfessionals' | translate}}</span>
-      </li>
-      
-      <li class="cursor-pointer" routerLink="/functions/assign-pltr-claims" 
-          (click)="onSubmitAssignClaimsToFreeProfessionalsTR()">
-        <i class="fa-solid fa-user"></i>
-        <span class="ml-3">{{'Assign_Processor_to_Claim' | translate}}</span>
-      </li>
-
-      <li class="cursor-pointer" routerLink="/project-manager" >
-        <i class="fa-solid fa-project-diagram"></i>
-        <span class="ml-3">Gestion Etica y Transparente de Proyecto</span>
-      </li>
     </ul>
   </div>
 </ng-template>

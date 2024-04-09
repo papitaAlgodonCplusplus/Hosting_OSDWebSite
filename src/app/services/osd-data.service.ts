@@ -6,8 +6,6 @@ import { Subscriber } from '../models/subscriber';
 import { PerformanceFreeProfessional } from '../project-manager/Models/performanceFreeProfessional';
 import { PerformanceBuy } from '../project-manager/Models/performanceBuy';
 
-
-
 @Injectable({
   providedIn: 'root'
 })
@@ -39,15 +37,17 @@ export class OSDDataService {
   performanceFreeProfessionalList$ = this.performanceFreeProfessionalList.asObservable();
   performanceBuyList$ = this.performanceBuyList.asObservable();
 
-  constructor() { }
+  constructor() { 
+    
+  }
+
   setPerformance(performance: any){
     this.performanceFP = performance
-    console.log('El performance FP', this.performanceFP)
   }
   getPerformance(){
-    console.log('El performance Que Retorna', this.performanceFP)
     return this.performanceFP
   }
+
   emitUserAuthenticationSuccess(data: string) {
     this.userAuthenticationSuccessSubject.next(data);
   }
@@ -73,10 +73,8 @@ export class OSDDataService {
   }
   emitPerformanceBuyList(data: PerformanceBuy[]) {
     this.performanceBuyList.next(data);
-    console.log('La data:',data)
   }
   emitFreeProfessionalId(data: string) {
-    console.log('FP ID:', data)
     this.freeProfessionalId.next(data);
   }
   emitFreeProfessionalTypeId(data: string) {

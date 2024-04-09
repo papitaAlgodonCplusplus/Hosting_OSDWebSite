@@ -3,6 +3,8 @@ import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { AuthSelectors } from 'src/app/store/selectors';
 import { Router } from '@angular/router';
+import { AuthenticationService } from 'src/app/services/authentication.service';
+import { UserInfo } from 'src/app/models/userInfo';
 
 @Component({
   selector: 'shared-header',
@@ -14,9 +16,10 @@ export class HeaderComponent implements OnInit {
   open = false;
   isAuthenticated$: Observable<boolean> = this.store.select(AuthSelectors.authenticationToken)
   showButton: boolean = false;
-
-  constructor(private router: Router, private store: Store) 
-  { 
+  userInfo: UserInfo | null = null;
+  constructor(private router: Router, private store: Store,
+    private authDataService: AuthenticationService
+  ) {
   }
 
   ngOnInit(): void {
@@ -26,6 +29,7 @@ export class HeaderComponent implements OnInit {
           this.showButton = true
         }
       });
+      this.userInfo = this.authDataService.userInfo;
     }, 0)
   }
 
