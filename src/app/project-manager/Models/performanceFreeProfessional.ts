@@ -18,4 +18,5 @@ export class PerformanceFreeProfessional {
   estimatedWorkHours: string = "";
   estimatedTransportHours: string = "";
   estimatedTransportExpenses: string = "";
+  justifyChangeEstimatedWorkHours: string = "";
 }

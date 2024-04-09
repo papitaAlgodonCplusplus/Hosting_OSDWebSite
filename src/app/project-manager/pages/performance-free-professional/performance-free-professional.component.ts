@@ -52,8 +52,6 @@ export class PerformanceFreeProfessionalComponent {
   validatePerformanceOnDataService(): FormGroup{
     this.performanceFP = this.OSDDataService.getPerformance()
 
-    console.log('Los performances:',this.performanceFP)
-
     let originalDate = this.performanceFP.Date;
     let formatedDate = this.datePipe.transform(originalDate, 'yyyy-MM-dd');
 
@@ -65,7 +63,7 @@ export class PerformanceFreeProfessionalComponent {
       const form = this.formBuilder.group({
         Date: [formatedDate, [Validators.required]],
         Type: [this.performanceFP.Type, [Validators.required]],
-        JustifyingDocument: [this.documentName, [Validators.required]],
+        JustifyingDocument: [this.performanceFP.documentName],
         FP_WorkHours: [this.performanceFP.FreeProfessionalWorkHours, [Validators.required]],
         FP_TravelTime: [this.performanceFP.FreeProfessionalTravelHours, [Validators.required]],
         FP_TravelExpenses: [this.performanceFP.FreeProfessionalTravelExpenses, [Validators.required]],
@@ -78,9 +76,9 @@ export class PerformanceFreeProfessionalComponent {
         Summary: [this.performanceFP.Summary, [Validators.required]],
         ForecastTravelExpenses: [this.performanceFP.ForecastTravelExpenses],
         ForecastTravelTime: [this.performanceFP.ForecastTravelTime, [Validators.required]],
-        ForecastWorkHours: [this.performanceFP.ForecastWorkHours, [Validators.required]]
+        ForecastWorkHours: [this.performanceFP.ForecastWorkHours, [Validators.required]],
+        JustifyChangeEstimatedWorkHours: [this.performanceFP.JustifyChangeEstimatedWorkHours, [Validators.required]]
       });
-      console.log("El formulario:",form)
       return form;
 
     }
@@ -123,7 +121,7 @@ export class PerformanceFreeProfessionalComponent {
     const form = this.formBuilder.group({
       Date: ['', [Validators.required]],
       Type: ['', [Validators.required]],
-      JustifyingDocument: ['', [Validators.required]],
+      JustifyingDocument: [''],
       FP_WorkHours: ['', [Validators.required]],
       FP_TravelTime: ['', [Validators.required]],
       FP_TravelExpenses: ['', [Validators.required]],
@@ -137,7 +135,7 @@ export class PerformanceFreeProfessionalComponent {
       ForecastTravelExpenses: [this.performanceFP.ForecastTravelExpenses],
       ForecastTravelTime: ['', [Validators.required]],
       ForecastWorkHours: ['', [Validators.required]],
-      City: ['', [Validators.required]]
+      JustifyChangeEstimatedWorkHours: ['', [Validators.required]]
     });
     return form;
   }
@@ -150,7 +148,6 @@ export class PerformanceFreeProfessionalComponent {
     }
   }
   onSubmit(): void {
-    console.log(this.performanceForm.value)
     if (this.performanceForm.invalid) {
       this.performanceForm.markAllAsTouched();
       return;
@@ -177,11 +174,10 @@ export class PerformanceFreeProfessionalComponent {
     performanceData.estimatedTransportExpenses = formValues.ForecastTravelExpenses;
     performanceData.estimatedTransportHours = formValues.ForecastTravelTime;
     performanceData.estimatedWorkHours = formValues.ForecastWorkHours;
+    performanceData.justifyChangeEstimatedWorkHours = formValues.JustifyChangeEstimatedWorkHours;
 
     performanceData.freeprofessionalId = this.freeProfessionalId
     performanceData.proyectManagerId = '065d461a-cc09-4162-b4e9-f121c11d3348'
-
-    console.log('Lo que tiene summary', performanceData)
 
     this.OSDEventService.addPerformanceFreeProfessional(performanceData);
   }
