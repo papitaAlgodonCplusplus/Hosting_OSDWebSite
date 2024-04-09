@@ -20,19 +20,13 @@
         <span class="ml-3">{{'OSDservices' | translate}}</span>
       </div>
     </div>
-    <ul class="space-y-2 font-normal text-black ml-2">
-      <div>
-        <ul>
-          <ul>
+      <div class="space-y-2 font-normal text-black ml-2">  
+          <ul *ngIf="isAuthorized">
             <li *ngFor="let item of menuOptions$ | async" class="cursor-pointer" [routerLink]="item.path">
               <i [ngClass]="'fas fa-solid ' + item.icon"></i>
               <span class="ml-3">{{ item.name || '' | translate }}</span>
-            </li>
+            </li>                                
           </ul>
-          
-        </ul>
       </div>
-
-    </ul>
   </div>
 </ng-template>

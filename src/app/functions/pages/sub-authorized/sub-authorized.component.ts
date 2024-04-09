@@ -26,9 +26,15 @@ export class SubAuthorizedComponent implements OnDestroy {
   constructor(private store: Store, private osdDataService: OSDDataService,
     private translate: TranslateService,
     private osdEventService: OSDService
-    ) { }
+  ) { }
 
   ngOnInit(): void {
+    setTimeout(() => {
+      this.osdEventService.GetSubscribers();
+      this.store.dispatch(UiActions.hideLeftSidebar());
+      this.store.dispatch(UiActions.hideFooter());
+    }, 0);
+
     this.osdDataService.getOsdUsersSubscribersSuccess$.subscribe(osdUsersSubscribers => {
       this.items = osdUsersSubscribers;
       this.updateDisplayedItems();
@@ -37,11 +43,6 @@ export class SubAuthorizedComponent implements OnDestroy {
     this.osdDataService.getSubscribersSuccess$.subscribe(osdUsersSubscribers => {
       this.subscribers = osdUsersSubscribers;
     });
-
-    setTimeout(() => {
-      this.store.dispatch(UiActions.hideLeftSidebar());
-      this.store.dispatch(UiActions.hideFooter());
-    }, 0);
   }
 
   ngOnDestroy(): void {
@@ -61,12 +62,12 @@ export class SubAuthorizedComponent implements OnDestroy {
   }
 
   selectUser(userId: string) {
-    var foundUser = this.displayedItems.find(item => item.id === userId);
-    this.userId = foundUser.id;
+    var foundUser = this.displayedItems.find(item => item.Id === userId);
+    this.userId = foundUser.Id;
     const userDTO: UserInfo = {} as UserInfo;
-    userDTO.Identity = foundUser.identity;
-    userDTO.Name = foundUser.name;
-    userDTO.Email = foundUser.email;
+    userDTO.Identity = foundUser.Identity;
+    userDTO.Name = foundUser.Name;
+    userDTO.Email = foundUser.Email;
     this.user = userDTO;
 
     var subscriber = this.subscribers.find(item => item.userId === userId);
@@ -78,13 +79,13 @@ export class SubAuthorizedComponent implements OnDestroy {
   }
 
   onConfirmHandler() {
-    this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: this.translate.instant('UserAuthorized')}))
+    this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: this.translate.instant('UserAuthorized') }))
     this.store.dispatch(ModalActions.openAlert());
-    
+
     this.osdEventService.changingUsdUserAutorizationStatusEvent(this.userId);
     const newItems = this.items.map(item => {
-      if (item.id === this.userId) {
-        return { ...item, isActive: "true" };
+      if (item.Id === this.userId) {
+        return { ...item, Isauthorized: "true" };
       }
       return item;
     });

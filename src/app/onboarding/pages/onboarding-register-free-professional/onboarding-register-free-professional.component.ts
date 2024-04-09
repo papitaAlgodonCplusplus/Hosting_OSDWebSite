@@ -22,7 +22,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   showDocument!: boolean;
 
   workspace: DropDownItem[] = [
-    { value: this.translate.instant('DT'), key: '2fc2a66a-69ca-4832-a90e-1ff590b80d24' },
+    // { value: this.translate.instant('DT'), key: '2fc2a66a-69ca-4832-a90e-1ff590b80d24' },
     { value: this.translate.instant('FC'), key: '2fc2a66a-69ca-4832-a90e-1ff590b80d24' },
     { value: this.translate.instant('TR'), key: '2fc2a66a-69ca-4832-a90e-1ff590b80d24' },
     { value: this.translate.instant('TC'), key: '2fc2a66a-69ca-4832-a90e-1ff590b80d24' },
