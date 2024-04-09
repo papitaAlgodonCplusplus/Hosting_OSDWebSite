@@ -6,6 +6,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { UserInfo } from 'src/app/models/userInfo';
 import { Subscriber } from 'src/app/models/subscriber';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-autorization-pl',
@@ -25,7 +26,8 @@ export class AutorizationPlComponent implements OnDestroy {
   subscriber: any;
 
   constructor(private store: Store,
-              private osdEventService : OSDService) {
+              private osdEventService : OSDService,
+            private translate : TranslateService) {
   }
 
   ngOnInit(): void {
@@ -53,7 +55,7 @@ export class AutorizationPlComponent implements OnDestroy {
     this.user = userDTO;
 
     const subscriberDTO: Subscriber = {} as Subscriber;
-    subscriberDTO.clientType = "Free profesional";
+    subscriberDTO.clientType = this.translate.instant("profesional_libre");
     this.subscriber = subscriberDTO;
 
     this.showAuthorizatedModal = true;

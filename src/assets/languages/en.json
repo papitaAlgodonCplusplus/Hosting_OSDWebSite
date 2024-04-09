@@ -230,5 +230,8 @@
     "Loading": "Loading Please wait",
     "Select": "Select",
     "regresar_a_home": "Return to Home",
-    "next": "Next"
+    "next": "Next",
+    "objectives" : "Objectives",
+    "economicBudget" : "Economic Budget",
+    "expectedTimes" : "Expected Hours"
 }

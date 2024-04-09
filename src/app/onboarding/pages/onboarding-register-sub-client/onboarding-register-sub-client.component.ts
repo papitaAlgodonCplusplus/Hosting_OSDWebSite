@@ -19,6 +19,7 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
   personalForm: FormGroup;
   selectedClientType: string | undefined;
   documentName: string = '';
+  showDocument!: boolean;
 
   clientType: DropDownItem[] = [
     { value: this.translate.instant('entidad_publica'), key: this.translate.instant('entidad_publica') }, //TODO: Implement language switching
@@ -39,6 +40,13 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
   }
   ngOnInit(): void {
     setTimeout(() => {
+      if(this.translate.currentLang == "en"){
+        this.showDocument = true
+      }
+      else{
+        this.showDocument = false
+      }
+
       this.store.dispatch(UiActions.hideAll());
     }, 0);
   }
@@ -50,24 +58,24 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
 
   displayFileName(event: any): void {
     const fileInput = event.target as HTMLInputElement;
-    
-    if (fileInput.files && fileInput.files.length > 0) {
-        const file = fileInput.files[0];
-        const fileName = file.name.toLowerCase();
-        const fileExtension = fileName.split('.').pop();
 
-        if (fileExtension === 'pdf') {
-            this.documentName = fileName;
-        } else {
-          this.store.dispatch(ModalActions.addAlertMessage({alertMessage:"Debe Insertar Solo archivos PDF"}));
-          this.store.dispatch(ModalActions.changeAlertType({alertType:"warning"}));
-          this.store.dispatch(ModalActions.openAlert());
-            this.documentName = '';
-        }
-    } else {
+    if (fileInput.files && fileInput.files.length > 0) {
+      const file = fileInput.files[0];
+      const fileName = file.name.toLowerCase();
+      const fileExtension = fileName.split('.').pop();
+
+      if (fileExtension === 'pdf') {
+        this.documentName = fileName;
+      } else {
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Debe Insertar Solo archivos PDF" }));
+        this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
+        this.store.dispatch(ModalActions.openAlert());
         this.documentName = '';
+      }
+    } else {
+      this.documentName = '';
     }
-}
+  }
 
 
   openVideo() {
@@ -85,7 +93,7 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
   makeAPurchaseSolutionsOsd() {
     window.open('https://buy.stripe.com/00g5ln69CeF35Hi28b', '_blank');
   }
-  
+
   private createPersonalForm(): FormGroup {
     const personalForm = this.formBuilder.group({
       companyName: ['', [Validators.required]],
@@ -125,8 +133,8 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
     if (this.personalForm.invalid || this.accountForm.invalid) {
       this.accountForm.markAllAsTouched();
       this.personalForm.markAllAsTouched();
-      this.store.dispatch(ModalActions.addAlertMessage({alertMessage:"Faltan campos por llenar"}))
-      this.store.dispatch(ModalActions.changeAlertType({alertType:"warning"}))
+      this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Faltan campos por llenar" }))
+      this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }))
       this.store.dispatch(ModalActions.openAlert())
       return
     }
