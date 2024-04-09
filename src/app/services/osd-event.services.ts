@@ -15,7 +15,7 @@ import { Form } from '@angular/forms';
 import { UserInfo } from '../models/userInfo';
 import { PerformanceFreeProfessional } from '../project-manager/Models/performanceFreeProfessional';
 import { PerformanceBuy } from '../project-manager/Models/performanceBuy';
-
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -39,7 +39,8 @@ export class OSDService {
     private securityDataService: SecurityDataService,
     private eventFactoryService: EventFactoryService,
     public authenticationService: AuthenticationService,
-    public notificationService: NotificationService
+    public notificationService: NotificationService,
+    private translate: TranslateService
   ) {
 
   }
@@ -68,7 +69,7 @@ export class OSDService {
     });
   }
 
-  public CreateGettingFreeProfessionalsDataEvent() {
+  public GetFreeProfessionalsDataEvent() {
     const gettingFreeProfessionalsEvent: WebBaseEvent = this.eventFactoryService.CreateGettingFreeProfessionalsDataEvent();
     this.restApiService.SendOSDEvent(gettingFreeProfessionalsEvent).subscribe({
       next: (response) => {
@@ -280,7 +281,22 @@ export class OSDService {
       if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['Message']) {
         this.message = webBaseEvent.Body['Message'];
         this.messageResponse = true;
-        this.store.dispatch(ModalActions.addAlertMessage({alertMessage: this.message}));
+        if(this.translate.currentLang == "en"){
+          this.store.dispatch(ModalActions.addAlertMessage({alertMessage: this.message}));
+        }
+        else{
+          if(this.message == "The user is already authorized"){
+            this.message = "El usuario ya está autorizado"
+            this.store.dispatch(ModalActions.addAlertMessage({alertMessage: this.message}));
+          }else if(this.message == "User Properly authorized"){
+            this.message = "Usuario debidamente autorizado"
+            this.store.dispatch(ModalActions.addAlertMessage({alertMessage: this.message}));
+          }else{
+            this.message = "No se pudo autorizar"
+            this.store.dispatch(ModalActions.addAlertMessage({alertMessage: this.message}));
+          }
+        }
+        
       } else {
         this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'No hay mensaje' }));
       }

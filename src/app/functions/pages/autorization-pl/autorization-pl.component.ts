@@ -38,7 +38,7 @@ export class AutorizationPlComponent implements OnDestroy {
     });
 
     setTimeout(() => {
-      this.osdEventService.GetSubscribers();
+      this.osdEventService.GetFreeProfessionalsDataEvent();
       this.store.dispatch(UiActions.hideLeftSidebar())
       this.store.dispatch(UiActions.hideFooter())
     }, 0);

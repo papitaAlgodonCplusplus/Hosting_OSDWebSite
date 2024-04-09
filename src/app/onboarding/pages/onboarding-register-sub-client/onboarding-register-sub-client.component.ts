@@ -67,9 +67,15 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
       if (fileExtension === 'pdf') {
         this.documentName = fileName;
       } else {
-        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Debe Insertar Solo archivos PDF" }));
-        this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
-        this.store.dispatch(ModalActions.openAlert());
+        if(this.translate.currentLang == "en"){
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "You must insert only PDF files" }));
+          this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
+          this.store.dispatch(ModalActions.openAlert());
+        }else{
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Debe Insertar Solo archivos PDF" }));
+          this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
+          this.store.dispatch(ModalActions.openAlert());
+        }
         this.documentName = '';
       }
     } else {
@@ -133,9 +139,15 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
     if (this.personalForm.invalid || this.accountForm.invalid) {
       this.accountForm.markAllAsTouched();
       this.personalForm.markAllAsTouched();
-      this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Faltan campos por llenar" }))
-      this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }))
-      this.store.dispatch(ModalActions.openAlert())
+      if(this.translate.currentLang == "en"){
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "There are missing fields to fill out" }));
+        this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
+        this.store.dispatch(ModalActions.openAlert());
+      }else{
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Faltan campos por llenar" }));
+        this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
+        this.store.dispatch(ModalActions.openAlert());
+      }
       return
     }
 

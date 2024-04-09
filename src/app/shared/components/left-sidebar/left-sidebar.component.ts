@@ -38,10 +38,6 @@ export class LeftSidebarComponent{
     this.arrowLeftSidebar = false;
   }
 
-  autorizationFreeProfessionals(): void {
-    this.osdEventService.CreateGettingFreeProfessionalsDataEvent();
-  }
-
   getSubscribers() {
     this.osdEventService.GetSubscribers();
   }

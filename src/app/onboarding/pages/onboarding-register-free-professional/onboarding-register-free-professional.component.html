@@ -133,17 +133,17 @@
                 <div class="p-2 bg-white flex flex-wrap items-start">
                     
                     <div class="display-flex m-2">
-                        <a
+                        <a *ngIf="!showDocument"
                         class="p-3 bg-darkslategray text-white font-normal animate__animated animate__fadeInDown w-50 m-2"
                         href="assets/contracts/25-3-24-Contrato-Profesional-Libre-.pdf" download>
                         <i class="fa-solid fa-download"></i>
-                        {{'Contract' | translate }} (Español)
+                        {{'Contract' | translate }}
                     </a>
-                    <a
+                    <a *ngIf="showDocument"
                         class="p-3 bg-darkslategray text-white font-normal animate__animated animate__fadeInDown w-50"
                         href="assets/contracts/25-3-24-DSO-Frelance-Agreement.pdf" download>
                         <i class="fa-solid fa-download"></i>
-                        {{'Contract' | translate }} (Ingles)
+                        {{'Contract' | translate }}
                     </a>
                     </div>
 
