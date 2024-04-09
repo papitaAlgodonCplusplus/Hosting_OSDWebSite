@@ -39,6 +39,7 @@ export class OnboardingRegisterClaimantComponent {
   subscriber: any;
   documentNames: string[] = new Array(2);
   isAcceptConditions!: boolean;
+  registration: boolean = false;
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
@@ -47,7 +48,7 @@ export class OnboardingRegisterClaimantComponent {
     private osdEventService : OSDService,
     private osdDataService: OSDDataService
   ) {
-  
+    this.getSubscribers()
     this.personalForm = this.createPersonalForm();
     this.accountForm = this.createAccountForm();
   }
@@ -109,7 +110,7 @@ export class OnboardingRegisterClaimantComponent {
   setSubscribers(sub: any){
     this.subscriber = sub;
     this.accountForm.patchValue({
-      subscriberClaimed: this.subscriber.name +" " + this.subscriber.firstsurname+" " + this.subscriber.middlesurname
+      subscriberClaimed: this.subscriber.Name +" " + this.subscriber.Firstname+" " + this.subscriber.Middlesurname
     });
   }
   onPageChange(event: any) {
@@ -153,9 +154,13 @@ export class OnboardingRegisterClaimantComponent {
     }
   }
 
+  setRegistrationTrue(){
+    this.registration = true;
+  }
+  setRegistrationFalse(){
+    this.registration = false;
+  }
   onSubmit(): void {
-    console.log(this.accountForm.value)
-    console.log(this.personalForm.value)
     if (this.accountForm.invalid || this.personalForm.invalid) {
       this.accountForm.markAllAsTouched();
       this.personalForm.markAllAsTouched();
@@ -182,16 +187,18 @@ export class OnboardingRegisterClaimantComponent {
 
     const userEmail = this.personalForm.value.email;
     localStorage.setItem('userEmail', userEmail);
-    let claimantId = Guid.create().toString();
+    let claimantId = "e77b5172-f726-4c1d-9f9e-d2dbd77e03c9";
     let subscriberclaimed = this.accountForm.value.subscriberClaimed
     let serviceProvided = this.accountForm.value.serviceProvided
     let amountClaimed = this.accountForm.value.amountClaimed
     let facts = this.accountForm.value.facts
-    let supportingDocument1 = this.accountForm.value.supportingDocument1
-    let supportingDocument2 = this.accountForm.value.supportingDocument2
+    let supportingDocument1 = this.documentNames[0]
+    let supportingDocument2 = this.documentNames[1]
     let claimtype = this.accountForm.value.claimtype
-
-    this.osdEventService.userRegister(this.accountForm.value,this.personalForm.value,EventConstants.CLAIMANT, claimantId);
+    if(this.registration){
+      claimantId = Guid.create().toString();
+      this.osdEventService.userRegister(this.accountForm.value,this.personalForm.value, "Claimant", claimantId);
+    }
     this.osdEventService.addClaim(claimantId, claimtype, subscriberclaimed,serviceProvided,facts,amountClaimed,supportingDocument1,supportingDocument2);
   }
 }

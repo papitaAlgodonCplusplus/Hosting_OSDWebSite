@@ -73,7 +73,7 @@ export class EventConstants {
   public static PERSONAL_FORM: string = "PersonalForm";
   public static ACCOUNT_TYPE: string = "AccountType";
 
-  public static SUBSCRIBER_COSTUMER: string = "Subscriber Customer";
+  public static SUBSCRIBER_COSTUMER: string = "SubscriberCustomer";
   public static SERVICE_PROVIDED: string = "serviceProvided";
   public static SUBSCRIBER_CLAIMED: string = "subscriberClaimed";
   public static AMOUNT_CLAIMED: string = "amountClaimed";
@@ -112,6 +112,7 @@ export class EventConstants {
   public static ESTIMATED_WORK_HOURS: string = "EstimatedWorkHours";
   public static ESTIMATED_TRANSPORT_HOURS: string = "EstimatedTransportHours";
   public static ESTIMATED_TRANSPORT_EXPENSES: string = "EstimatedTransportExpenses";
+  public static JUSTIFY_CHANGE_ESTIMATED_WORK_HOURS: string = "JustifyChangeEstimatedWorkHours";
 
   public static PERFORMANCE_BUY: string = "PerformanceBuy"
   public static PRODUCT_SERVICE_ID: string = "ProductServiceId";

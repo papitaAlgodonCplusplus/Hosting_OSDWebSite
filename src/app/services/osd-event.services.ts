@@ -220,13 +220,13 @@ export class OSDService {
       }
     });
   }
-  public addClaim(claimantId: String, claimType: String, Subscriberclaimed: String, Serviceprovided: String, fact: String, amountClaimed: String, document1: String, document2: String) {
+  public addClaim(claimantId: String | null, claimType: String, Subscriberclaimed: String, Serviceprovided: String, fact: String, amountClaimed: String, document1: String, document2: String) {
     const registerUserEvent: WebBaseEvent = this.eventFactoryService.CreateAddClaimEvent(claimantId, claimType, Subscriberclaimed, Serviceprovided, fact, amountClaimed, document1, document2);
     console.log("Enviando mensaje al restAPIService.sendOSDEvent");
     this.restApiService.SendOSDEvent(registerUserEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
-        this.HandleRegisterUserResponse(osdEvent);
+        this.HandleAddClaimResponse(osdEvent);
       },
       error: (error) => {
         //TODO: Pending implementation

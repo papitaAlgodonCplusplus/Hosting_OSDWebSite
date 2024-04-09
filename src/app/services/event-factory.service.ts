@@ -51,7 +51,6 @@ export class EventFactoryService {
     event.Type = EventType.OSD;
     event.Action = EventAction.CHANGING_OSD_USER_AUTORIZATION_STATUS;
     event.Date = new Date().toUTCString();
-    console.log("Probando aqui");
     event.setBodyProperty(EventConstants.ID, selectedUserId);
     event.ApplicationIdentifier = 'WebClient';
     event.SessionKey = this.authenticationService.sessionKey;
@@ -134,9 +133,9 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.ESTIMATED_TRANSPORT_EXPENSES, performanceFP.estimatedTransportExpenses);
     event.setBodyProperty(EventConstants.ESTIMATED_TRANSPORT_HOURS, performanceFP.estimatedTransportHours);
     event.setBodyProperty(EventConstants.ESTIMATED_WORK_HOURS, performanceFP.estimatedWorkHours);
+    event.setBodyProperty(EventConstants.JUSTIFY_CHANGE_ESTIMATED_WORK_HOURS, performanceFP.justifyChangeEstimatedWorkHours);
     event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_ID, this.authenticationService.userInfo?.Id);
 
-    console.log('Se arma el evento Performance: ', event)
     return event;
   }
 
@@ -298,7 +297,7 @@ export class EventFactoryService {
     return event;
   }
 
-  public CreateAddClaimEvent(claimantId: String, claimType: String, Subscriberclaimed: String, Serviceprovided: String, fact: String, amountClaimed: String, document1: String, document2: String): WebBaseEvent {
+  public CreateAddClaimEvent(claimantId: String | null, claimType: String, Subscriberclaimed: String, Serviceprovided: String, fact: String, amountClaimed: String, document1: String, document2: String): WebBaseEvent {
     let event: WebBaseEvent;
 
     event = new WebBaseEvent();
@@ -312,12 +311,12 @@ export class EventFactoryService {
     
     event.setBodyProperty(EventConstants.CLAIMANT_ID, claimantId);
     event.setBodyProperty(EventConstants.CLAIM_TYPE, claimType);
-    event.setBodyProperty(EventConstants.SUBSCRIBER_COSTUMER, Subscriberclaimed);
+    event.setBodyProperty(EventConstants.SUBSCRIBER_CLAIMED, Subscriberclaimed);
     event.setBodyProperty(EventConstants.SERVICE_PROVIDED, Serviceprovided);
     event.setBodyProperty(EventConstants.FACTS, fact);
     event.setBodyProperty(EventConstants.AMOUNT_CLAIMED, amountClaimed);
     event.setBodyProperty(EventConstants.SUPPORTING_DOCUMENT1, document1);
-    event.setBodyProperty(EventConstants.SUPPORTING_DOCUMENT2, document);
+    event.setBodyProperty(EventConstants.SUPPORTING_DOCUMENT2, document2);
 
     return event;
   }
