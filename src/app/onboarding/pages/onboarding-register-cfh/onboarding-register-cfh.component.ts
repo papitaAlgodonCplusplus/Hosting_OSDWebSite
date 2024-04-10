@@ -20,6 +20,8 @@ export class OnboardingRegisterCfhComponent {
   personalForm: FormGroup;
   selectedEntity: string | undefined;
   documentName: string = '';
+  showDocument!: boolean;
+
   entity: DropDownItem[] = [
     { value: this.translate.instant("entidad_publica"), key: this.translate.instant("entidad_publica") },
     { value: this.translate.instant("entidad_privada"), key: this.translate.instant("entidad_privada") },
@@ -42,6 +44,12 @@ export class OnboardingRegisterCfhComponent {
 
   ngOnInit(): void {
     setTimeout(() => {
+      if(this.translate.currentLang == "en"){
+        this.showDocument = true
+      }
+      else{
+        this.showDocument = false
+      }
       this.store.dispatch(UiActions.hideAll());
     }, 0);
   }
