@@ -120,9 +120,17 @@ export class OnboardingRegisterCfhComponent {
     if (this.accountForm.invalid || this.personalForm.invalid) {
       this.accountForm.markAllAsTouched();
       this.personalForm.markAllAsTouched();
-      this.store.dispatch(ModalActions.addAlertMessage({alertMessage:"Faltan campos por llenar"}))
-      this.store.dispatch(ModalActions.changeAlertType({alertType:"warning"}))
-      this.store.dispatch(ModalActions.openAlert())
+      
+      if(this.translate.currentLang == "en"){
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "There are missing fields to fill out" }));
+        this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
+        this.store.dispatch(ModalActions.openAlert());
+      }else{
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Faltan campos por llenar" }));
+        this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
+        this.store.dispatch(ModalActions.openAlert());
+      }
+
       return;
     }
   

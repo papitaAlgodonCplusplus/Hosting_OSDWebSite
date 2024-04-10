@@ -10,7 +10,7 @@
   </button>
 </div>
 
-<div *ngIf="(alertType$ | async) === 'warning' && (alertPosition$ | async) === 'left'" class="fixed bg-line text-darkslategray p-3 flex justify-center items-center gap-6 rounded-lg top-5 left-5 z-50"
+<div *ngIf="(alertType$ | async) === 'warning' && (alertPosition$ | async) === 'left'" class="fixed bg-red-500 text-white p-3 flex justify-center items-center gap-6 rounded-lg top-5 left-5 z-50"
   [ngClass]="{'animateanimated animatefadeInLeft': alertOpen$ | async, 'animateanimated animatefadeInRight': !(alertOpen$ | async)}"
 >
   <div class="flex justify-center items-center gap-1">

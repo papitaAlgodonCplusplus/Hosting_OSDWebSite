@@ -49,13 +49,13 @@ export class HomeComponent implements OnInit {
   }
   ngOnInit(): void {
     if (this.authenticationService.userInfo) {
-      if (this.authenticationService.userInfo.AccountType === "Approved Training Center") {
+      if (this.authenticationService.userInfo.AccountType === "ApprovedTrainingCenter") {
         this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuOptionCFH }))
       }
       else if (this.authenticationService.userInfo.AccountType === "Claimant") {
         this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuOptionClaimant }))
       }
-      else if (this.authenticationService.userInfo.AccountType === "Subscriber Customer") {
+      else if (this.authenticationService.userInfo.AccountType === "SubscriberCustomer") {
         this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuOptionSubscriber }))
       }
       else {

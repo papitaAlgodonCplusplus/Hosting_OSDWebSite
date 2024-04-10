@@ -125,11 +125,14 @@ export class ProjectManagementDossierComponent implements OnDestroy {
 
   private createForm(): FormGroup {
     const form = this.formBuilder.group({
+      objetives: 'Plataforma OSD V1',
       startDate: this.startDate,
       endDate:'' ,
       projectAmount: '€ ' + this.amountProject,
       expensesEmployeesVolunteers: '€ 0',
-      supplierExpensesPurchases: '€ 0' 
+      supplierExpensesPurchases: '€ 0' ,
+      economicBudget: '€ 0',
+      expectedTimes : ''
     });
     return form;
   }

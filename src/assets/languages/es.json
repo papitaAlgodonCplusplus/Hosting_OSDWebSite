@@ -231,5 +231,8 @@
     "supplier_purchasing_expenses" : "Gastos Proveedores Compras (Inmovilizado, Existencias)",
     "Select_File" : " Seleccionar archivo",
     "Video_CFH":"Video Centro de Formación Homologado OSD",
-    "ForecastData": "Datos Previstos"
+    "ForecastData": "Datos Previstos",
+    "objectives" : "Objetivos",
+    "economicBudget" : "Presupuesto Económico",
+    "expectedTimes" : "Horas previstas "
 }

@@ -5,6 +5,6 @@ export interface UserInfo {
   Name: string;
   Firstname: string;
   Middlesurname: string;
-  Isauthorized?: string;
+  Isauthorized: string;
   AccountType: string;
 }

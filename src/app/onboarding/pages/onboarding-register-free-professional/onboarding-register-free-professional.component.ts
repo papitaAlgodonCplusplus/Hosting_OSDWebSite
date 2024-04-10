@@ -6,7 +6,7 @@ import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { ValidationsService } from 'src/app/services/validations.service';
 import { ModalActions, UiActions } from 'src/app/store/actions';
-
+import { EventConstants } from 'src/app/models/eventConstants';
 
 @Component({
   selector: 'app-register-free-professional',
@@ -19,9 +19,10 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   selectedWorkspace: string | undefined;
   isDropdownOpen = true;
   documentName: string = '';
+  showDocument!: boolean;
 
   workspace: DropDownItem[] = [
-    { value: this.translate.instant('DT'), key: '2fc2a66a-69ca-4832-a90e-1ff590b80d24' },
+    // { value: this.translate.instant('DT'), key: '2fc2a66a-69ca-4832-a90e-1ff590b80d24' },
     { value: this.translate.instant('FC'), key: '2fc2a66a-69ca-4832-a90e-1ff590b80d24' },
     { value: this.translate.instant('TR'), key: '2fc2a66a-69ca-4832-a90e-1ff590b80d24' },
     { value: this.translate.instant('TC'), key: '2fc2a66a-69ca-4832-a90e-1ff590b80d24' },
@@ -57,11 +58,14 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
 
   ngOnInit(): void {
     setTimeout(() => {
+      if(this.translate.currentLang == "en"){
+        this.showDocument = true
+      }
+      else{
+        this.showDocument = false
+      }
       this.store.dispatch(UiActions.hideAll());
     }, 0);
-    this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Actualmente esta opcion de registro no esta disponible!" }))
-    this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }))
-    this.store.dispatch(ModalActions.openAlert())
   }
 
   ngOnDestroy(): void {
@@ -167,26 +171,28 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   }
 
   onSubmit(): void {
-    // if (this.accountForm.invalid || this.personalForm.invalid) {
-    //   this.accountForm.markAllAsTouched();
-    //   this.personalForm.markAllAsTouched();
-    //   this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Faltan campos por llenar" }))
-    //   this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }))
-    //   this.store.dispatch(ModalActions.openAlert())
-    //   return;
-    // }
+    if (this.accountForm.invalid || this.personalForm.invalid) {
+      this.accountForm.markAllAsTouched();
+      this.personalForm.markAllAsTouched();
+      if(this.translate.currentLang == "en"){
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "There are missing fields to fill out" }));
+        this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
+        this.store.dispatch(ModalActions.openAlert());
+      }else{
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Faltan campos por llenar" }));
+        this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
+        this.store.dispatch(ModalActions.openAlert());
+      }
+      return;
+    }
 
-    // if (!this.personalForm.value.acceptConditions) {
-    //   this.isAcceptConditions = true;
-    //   return;
-    // }
+    if (!this.personalForm.value.acceptConditions) {
+      this.isAcceptConditions = true;
+      return;
+    }
 
-    // const userEmail = this.personalForm.value.email;
-    // localStorage.setItem('userEmail', userEmail);
-    // this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.FREE_PROFESSIONAL);
-
-    this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Actualmente esta opcion de registro no esta disponible!" }))
-    this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }))
-    this.store.dispatch(ModalActions.openAlert())
+    const userEmail = this.personalForm.value.email;
+    localStorage.setItem('userEmail', userEmail);
+    this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.FREE_PROFESSIONAL, "");
   }
 }

@@ -73,7 +73,6 @@ export class EventConstants {
   public static PERSONAL_FORM: string = "PersonalForm";
   public static ACCOUNT_TYPE: string = "AccountType";
 
-  public static SUBSCRIBER_COSTUMER: string = "SubscriberCustomer";
   public static SERVICE_PROVIDED: string = "serviceProvided";
   public static SUBSCRIBER_CLAIMED: string = "subscriberClaimed";
   public static AMOUNT_CLAIMED: string = "amountClaimed";
@@ -114,18 +113,18 @@ export class EventConstants {
   public static ESTIMATED_TRANSPORT_EXPENSES: string = "EstimatedTransportExpenses";
   public static JUSTIFY_CHANGE_ESTIMATED_WORK_HOURS: string = "JustifyChangeEstimatedWorkHours";
 
-  public static PERFORMANCE_BUY = "PerformanceBuy"
-  public static PRODUCT_SERVICE_ID = "ProductServiceId";
-  public static MINIMUN_UNITS = "MinimumUnits";
-  public static MAXIMUM_UNITS = "MaximumUnits";
-  public static UNITARY_COST = "UnitaryCost";
-  public static SHELF_LIFE = "ShelfLife";
+  public static PERFORMANCE_BUY: string = "PerformanceBuy"
+  public static PRODUCT_SERVICE_ID: string = "ProductServiceId";
+  public static MINIMUN_UNITS: string = "MinimumUnits";
+  public static MAXIMUM_UNITS: string = "MaximumUnits";
+  public static UNITARY_COST: string = "UnitaryCost";
+  public static SHELF_LIFE: string = "ShelfLife";
 
-  public static FREE_PROFESSIONAL: 'Free Professional';
-  public static SUBSCRIBER_CUSTOMER: 'SubscriberCustomer';
-  public static CLAIMANT: "Claimant";
-  public static APPROVED_TRAINING_CENTER: 'ApprovedTrainingCenter';
-  public static UNREGISTERED: 'Unregistered';
+  public static FREE_PROFESSIONAL: string = 'FreeProfessional';
+  public static SUBSCRIBER_CUSTOMER: string = 'SubscriberCustomer';
+  public static CLAIMANT: string ="Claimant";
+  public static APPROVED_TRAINING_CENTER: string ='ApprovedTrainingCenter';
+  public static UNREGISTERED: string = 'Unregistered';
 
   //#endregion
   constructor() {

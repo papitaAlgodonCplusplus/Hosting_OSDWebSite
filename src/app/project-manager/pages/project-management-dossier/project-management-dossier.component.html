@@ -6,6 +6,16 @@
                 <i class="pr-3 fa-solid fa-chevron-left animate-pulse"></i> {{'regresar' | translate}}
             </button>
             <h1 class=" text-darkslategray text-lg font-medium border-b">{{'transparent_project' | translate}}</h1>
+
+            <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="objetives"
+                label="{{'objectives' | translate}}:" inputType="text" [formGroup]="formProjectManager"
+                [bgColor]="'bg-white-lightbone'"></shared-input-field>
+            <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="economicBudget"
+                label="{{'economicBudget' | translate}}:" inputType="text" [formGroup]="formProjectManager"
+                [bgColor]="'bg-white-lightbone'"></shared-input-field>
+            <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="expectedTimes"
+                label="{{'expectedTimes' | translate}}:" inputType="text" [formGroup]="formProjectManager"
+                [bgColor]="'bg-white-lightbone'"></shared-input-field>
             <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="startDate"
                 label="{{'start_date' | translate}}:" inputType="text" [formGroup]="formProjectManager"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>

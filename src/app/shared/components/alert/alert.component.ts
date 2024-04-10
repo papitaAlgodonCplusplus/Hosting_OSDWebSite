@@ -21,7 +21,7 @@ export class AlertComponent {
   ngOnInit() {
     setTimeout(() => {
       this.toggleSuccessAlert();
-    }, 3000);
+    }, 5000);
   }
 
   toggleSuccessAlert(): void {

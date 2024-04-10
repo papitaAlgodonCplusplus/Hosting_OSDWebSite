@@ -231,5 +231,8 @@
     "Select": "Select",
     "regresar_a_home": "Return to Home",
     "next": "Next",
+    "objectives" : "Objectives",
+    "economicBudget" : "Economic Budget",
+    "expectedTimes" : "Expected Hours",
     "JustifyIncreaseinHours": "Justificar Aumento de Horas"
 }
