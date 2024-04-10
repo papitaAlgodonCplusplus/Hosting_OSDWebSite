@@ -84,8 +84,12 @@
                 <div class=" bg-white flex flex-col lg:flex-row lg:items-center lg:space-x-3">
                     <h1 class="text-darkslategray font-bold">Contrato Centro de Formación Homologado:</h1>
                     <div class="flex flex-row items-center space-x-3">
-                        <a class="p-2  bg-darkslategray text-line rounded-lg font-normal animate__animated animate__fadeInDown"
-                            href=""><i class="fa-solid fa-download animate-pulse"></i>
+                        <a *ngIf="!showDocument" class="p-2  bg-darkslategray text-line rounded-lg font-normal animate__animated animate__fadeInDown"
+                            href="assets/contracts/8-4-24-Contrato-CFH-Centro-Formacion-Homologado.pdf" download><i class="fa-solid fa-download animate-pulse"></i>
+                            {{'Contract'| translate }}
+                        </a>
+                        <a *ngIf="showDocument" class="p-2  bg-darkslategray text-line rounded-lg font-normal animate__animated animate__fadeInDown"
+                            href="assets/contracts/8-4-24-DSO-Training-Center-Agreement-.pdf" download><i class="fa-solid fa-download animate-pulse"></i>
                             {{'Contract'| translate }}
                         </a>
                         <!-- <div class="flex items-center justify-center flex-col space-y-1">
