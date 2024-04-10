@@ -93,5 +93,6 @@
         <div class="text-center text-darkslategray px-2 py-2 " *ngIf="allPerformances.length === 0">
             <i class="fa-solid fa-arrow-rotate-right animate-spin"></i> {{'Loading' | translate}}
         </div>
+        <mat-paginator [length]="allPerformances.length" [pageSize]="10" (page)="onPageChange($event)"></mat-paginator>
     </div>
 </div>

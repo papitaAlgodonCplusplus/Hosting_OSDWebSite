@@ -16,7 +16,6 @@ import { TranslateService } from '@ngx-translate/core';
 export class AutorizationPlComponent implements OnDestroy {
   items: any[] = [];
   freeProfessionals: any[] = [];
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
   displayedItems: any;
   showModalConfirm: boolean = false; 
   selectedUser: any = null; 

@@ -35,8 +35,8 @@ export class OnboardingRegisterClaimantComponent {
     { value: this.translate.instant('reclamacion_sostenibilidad'), key: 'reclamacion_sostenibilidad' },
     { value: this.translate.instant('mediacion_arbitraje'), key: 'mediacion_arbitraje' }
   ];
-  subscribers: any[] = [];
-  subscriber: any;
+  selectedSubscribers: string | undefined;
+  subscribers: DropDownItem[] = [];
   documentNames: string[] = new Array(2);
   isAcceptConditions!: boolean;
   registration: boolean = false;
@@ -45,33 +45,33 @@ export class OnboardingRegisterClaimantComponent {
     private formBuilder: FormBuilder,
     private validationsService: ValidationsService,
     private translate: TranslateService,
-    private osdEventService : OSDService,
+    private osdEventService: OSDService,
     private osdDataService: OSDDataService
   ) {
-    this.getSubscribers()
+
     this.personalForm = this.createPersonalForm();
     this.accountForm = this.createAccountForm();
   }
 
   ngOnInit(): void {
-    this.getSubscribers()
+    this.osdEventService.GetSubscribers();
+
     setTimeout(() => {
       this.store.dispatch(UiActions.hideAll());
       this.isValidToken$.subscribe((validation) => {
         if (validation) {
           this.showPersonalInfo = false
-        } 
-        else{
+        }
+        else {
           this.showPersonalInfo = true
-        }      
+        }
       })
+
       this.osdDataService.getOsdUsersSubscribersSuccess$.subscribe(osdUsersSubscribers => {
-        this.items = osdUsersSubscribers;
-        this.updateDisplayedItems();
-      });
-  
-      this.osdDataService.getSubscribersSuccess$.subscribe(osdUsersSubscribers => {
-        this.subscribers = osdUsersSubscribers;
+        osdUsersSubscribers.map(item => { 
+          const subscriber: DropDownItem = { value: item.Name, key: item.Id };
+          this.subscribers.push(subscriber);
+        });
       });
     }, 0);
   }
@@ -94,25 +94,17 @@ export class OnboardingRegisterClaimantComponent {
       landline: [''],
       mobilePhone: ['', [Validators.required]],
       email: ['', [Validators.required, this.validationsService.isValidEmail]],
-      password:['',[Validators.required, this.validationsService.isValidPassword, Validators.minLength(6)], []],
-      web: [''], 
-      registrationOption : [, [Validators.required]],
+      password: ['', [Validators.required, this.validationsService.isValidPassword, Validators.minLength(6)], []],
+      web: [''],
+      registrationOption: [, [Validators.required]],
       accountType: ['7b04ef6e-b6b6-4b4c-98e5-3008512f610e'],
       acceptConditions: [false],
       city: [''],
-      companyName:['']
+      companyName: ['']
     });
     return form;
   }
-  getSubscribers() {
-    this.osdEventService.GetSubscribers();
-  }
-  setSubscribers(sub: any){
-    this.subscriber = sub;
-    this.accountForm.patchValue({
-      subscriberClaimed: this.subscriber.Name +" " + this.subscriber.Firstname+" " + this.subscriber.Middlesurname
-    });
-  }
+
   onPageChange(event: any) {
     const startIndex = event.pageIndex * event.pageSize;
     const endIndex = startIndex + event.pageSize;
@@ -122,7 +114,7 @@ export class OnboardingRegisterClaimantComponent {
   updateDisplayedItems(startIndex: number = 0, endIndex: number = 10) {
     this.displayedItems = this.items.slice(startIndex, endIndex);
   }
-  
+
   private createAccountForm(): FormGroup {
     const form = this.formBuilder.group({
       claimtype: ['', [Validators.required]],
@@ -143,7 +135,7 @@ export class OnboardingRegisterClaimantComponent {
       this.showPersonalInfo = false;
     }
   }
-  
+
   displayFileName(): void {
     const fileNameDocument1 = document.getElementById('supportingDocument1') as HTMLInputElement;
     const fileNameDocument2 = document.getElementById('supportingDocument2') as HTMLInputElement;
@@ -154,22 +146,22 @@ export class OnboardingRegisterClaimantComponent {
     }
   }
 
-  setRegistrationTrue(){
+  setRegistrationTrue() {
     this.registration = true;
   }
-  setRegistrationFalse(){
+  setRegistrationFalse() {
     this.registration = false;
   }
   onSubmit(): void {
     if (this.accountForm.invalid || this.personalForm.invalid) {
       this.accountForm.markAllAsTouched();
       this.personalForm.markAllAsTouched();
-      
-      if(this.translate.currentLang == "en"){
+
+      if (this.translate.currentLang == "en") {
         this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "There are missing fields to fill out" }));
         this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
         this.store.dispatch(ModalActions.openAlert());
-      }else{
+      } else {
         this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Faltan campos por llenar" }));
         this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
         this.store.dispatch(ModalActions.openAlert());
@@ -177,10 +169,10 @@ export class OnboardingRegisterClaimantComponent {
 
       return;
     }
-  
+
     if (!this.personalForm.value.acceptConditions) {
       this.isAcceptConditions = true;
-      console.log("Hubo error en las condiciones " + this.personalForm.value.acceptConditions )
+      console.log("Hubo error en las condiciones " + this.personalForm.value.acceptConditions)
 
       return;
     }
@@ -195,10 +187,10 @@ export class OnboardingRegisterClaimantComponent {
     let supportingDocument1 = this.documentNames[0]
     let supportingDocument2 = this.documentNames[1]
     let claimtype = this.accountForm.value.claimtype
-    if(this.registration){
+    if (this.registration) {
       claimantId = Guid.create().toString();
-      this.osdEventService.userRegister(this.accountForm.value,this.personalForm.value, "Claimant", claimantId);
+      this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, "Claimant", claimantId);
     }
-    this.osdEventService.addClaim(claimantId, claimtype, subscriberclaimed,serviceProvided,facts,amountClaimed,supportingDocument1,supportingDocument2);
+    this.osdEventService.addClaim(claimantId, claimtype, subscriberclaimed, serviceProvided, facts, amountClaimed, supportingDocument1, supportingDocument2);
   }
 }

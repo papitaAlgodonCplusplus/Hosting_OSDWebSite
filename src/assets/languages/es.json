@@ -234,5 +234,6 @@
     "ForecastData": "Datos Previstos",
     "objectives" : "Objetivos",
     "economicBudget" : "Presupuesto Económico",
-    "expectedTimes" : "Horas previstas "
+    "expectedTimes" : "Horas previstas ",
+    "Hours" : "Horas"
 }
