@@ -237,5 +237,6 @@
     "JustifyIncreaseinHours": "Justificar Aumento de Horas",
     "Assign_Processor_to_Claim": "Assign Processor to Claim",
     "Hours" : "Hours",
-    "Amount" : "Amount"
+    "Amount" : "Amount",
+    "FormatHoursIncorrect" : "Error in the time format. Use 00:00 and make sure both fields are between 0 and 24."
 }
