@@ -44,7 +44,6 @@ export class PerformanceFreeProfessionalComponent {
     private OSDEventService: OSDService,
     private OSDDataService: OSDDataService,
     private datePipe: DatePipe) {
-    //this.performanceForm = this.createRegisterForm();
     this.performanceForm = this.validatePerformanceOnDataService()
     this.OSDDataService.setPerformance("")
   }
@@ -58,26 +57,28 @@ export class PerformanceFreeProfessionalComponent {
     let originalDTDate = this.performanceFP.TechnicalDirectorDate;
     let formatedDTDate = this.datePipe.transform(originalDTDate, 'yyyy-MM-dd');
 
+    console.table(this.performanceFP)
+    
     this.documentName = this.performanceFP.JustifyingDocument;
     if(this.performanceFP !== "" && this.performanceFP !== undefined){
       const form = this.formBuilder.group({
-        Date: [formatedDate, [Validators.required]],
-        Type: [this.performanceFP.Type, [Validators.required]],
-        JustifyingDocument: [this.performanceFP.documentName],
-        FP_WorkHours: [this.performanceFP.FreeProfessionalWorkHours, [Validators.required]],
-        FP_TravelTime: [this.performanceFP.FreeProfessionalTravelHours, [Validators.required]],
-        FP_TravelExpenses: [this.performanceFP.FreeProfessionalTravelExpenses, [Validators.required]],
-        FP_Remuneration: [this.performanceFP.FreeProfessionalRemuneration, [Validators.required]],
-        TD_Date: [formatedDate, [Validators.required]],
-        TD_WorkHours: [this.performanceFP.TechnicalDirectorWorkHours, [Validators.required]],
-        TD_TravelTime: [this.performanceFP.TechnicalDirectorTravelHours, [Validators.required]],
-        TD_TravelExpenses: [this.performanceFP.TechnicalDirectorTravelExpenses, [Validators.required]],
-        TD_Remuneration: [this.performanceFP.TechnicalDirectorRemuneration, [Validators.required]],
-        Summary: [this.performanceFP.Summary, [Validators.required]],
-        ForecastTravelExpenses: [this.performanceFP.ForecastTravelExpenses],
-        ForecastTravelTime: [this.performanceFP.ForecastTravelTime, [Validators.required]],
-        ForecastWorkHours: [this.performanceFP.ForecastWorkHours, [Validators.required]],
-        JustifyChangeEstimatedWorkHours: [this.performanceFP.JustifyChangeEstimatedWorkHours, [Validators.required]]
+        Date: formatedDate,
+        Type: this.performanceFP.Type,
+        JustifyingDocument: this.performanceFP.documentName,
+        FP_WorkHours: this.performanceFP.FreeProfessionalWorkHours,
+        FP_TravelTime: this.performanceFP.FreeProfessionalTravelHours, 
+        FP_TravelExpenses: this.performanceFP.FreeProfessionalTravelExpenses, 
+        FP_Remuneration: this.performanceFP.FreeProfessionalRemuneration, 
+        TD_Date: formatedDate,
+        TD_WorkHours: this.performanceFP.TechnicalDirectorWorkHours, 
+        TD_TravelTime: this.performanceFP.TechnicalDirectorTravelHours, 
+        TD_TravelExpenses: this.performanceFP.TechnicalDirectorTravelExpenses, 
+        TD_Remuneration: this.performanceFP.TechnicalDirectorRemuneration,
+        Summary: this.performanceFP.Summary, 
+        ForecastTravelExpenses: this.performanceFP.EstimatedTransportExpenses,
+        ForecastTravelTime: this.performanceFP.EstimatedTransportHours, 
+        ForecastWorkHours: this.performanceFP.EstimatedWorkHours,
+        JustifyChangeEstimatedWorkHours: this.performanceFP.JustifyChangeEstimatedWorkHours
       });
       return form;
 

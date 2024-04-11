@@ -81,10 +81,8 @@ export class ProjectManagementDossierComponent implements OnDestroy {
 
         var amountProject = 0;
         amountProject = freeProfessional.FreeProfessionalRemuneration + freeProfessional.FreeProfessionalTravelExpenses + freeProfessional.TechnicalDirectorRemuneration + freeProfessional.TechnicalDirectorTravelExpenses
-        console.log(amountProject)
         this.amountProject = amountProject + this.amountProject
        
-
         return {
           Id: freeProfessional.Id,
           Code: 'GET/A/1/2024',
@@ -101,7 +99,7 @@ export class ProjectManagementDossierComponent implements OnDestroy {
       console.log(this.allPerformances)
       this.updateDisplayedItems();
       this.sortDateLowestHighest(true);
-    }, 5000);
+    }, 3000);
   }
 
   sortDateLowestHighest(ascending: boolean = true) {
