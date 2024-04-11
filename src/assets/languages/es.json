@@ -235,5 +235,6 @@
     "objectives" : "Objetivos",
     "economicBudget" : "Presupuesto Económico",
     "expectedTimes" : "Horas previstas ",
-    "Hours" : "Horas"
+    "Hours" : "Horas",
+    "Amount" : "Cuantía"
 }
