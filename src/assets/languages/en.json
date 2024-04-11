@@ -235,5 +235,6 @@
     "economicBudget" : "Economic Budget",
     "expectedTimes" : "Expected Hours",
     "JustifyIncreaseinHours": "Justificar Aumento de Horas",
-    "Assign_Processor_to_Claim": "Assign Processor to Claim"
+    "Assign_Processor_to_Claim": "Assign Processor to Claim",
+    "Hours" : "Hours"
 }

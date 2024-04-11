@@ -10,7 +10,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CreatePerformanceComponent } from './pages/create-performance/create-performance/create-performance.component';
 import { FreeProfessionalFileComponent } from './pages/free-professional-file/free-professional-file.component';
 import { MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginator';
-import { CustomPaginator } from '../functions/service/custom-paginator';
+import { CustomPaginator } from '../services/custom-paginator';
 
 @NgModule({
   declarations: [
@@ -26,18 +26,7 @@ import { CustomPaginator } from '../functions/service/custom-paginator';
     ReactiveFormsModule,
     SharedModule,
     FormsModule,
-    TranslateModule,
-    MatPaginatorModule
+    TranslateModule
   ],
-  providers: [
-    {
-      provide: MatPaginatorIntl,
-      useFactory: (translateService: TranslateService) => {
-        const customPaginator = new CustomPaginator(translateService);
-        return customPaginator.getSpanishPaginatorIntl();
-      },
-      deps: [TranslateService]
-    }
-  ]
 })
 export class DashboardModule { }

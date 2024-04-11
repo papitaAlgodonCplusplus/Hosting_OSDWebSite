@@ -27,6 +27,7 @@ export class ProjectManagementDossierComponent implements OnDestroy {
   isUser: boolean = true;
   emptyPerformance!: PerformanceBuy
   allPerformances: any[] = [];
+  displayedItems: any[] = [];
   startDate!: string | undefined;
   amountProject: number = 0;
 
@@ -98,8 +99,9 @@ export class ProjectManagementDossierComponent implements OnDestroy {
       });
       this.allPerformances = [...normalizedFreeProfesional, ...normalizedBuys];
       console.log(this.allPerformances)
+      this.updateDisplayedItems();
       this.sortDateLowestHighest(true);
-    }, 1525);
+    }, 5000);
   }
 
   sortDateLowestHighest(ascending: boolean = true) {
@@ -153,7 +155,7 @@ export class ProjectManagementDossierComponent implements OnDestroy {
     }
     totalHours += Math.floor(totalMinutes / 60);
     totalMinutes %= 60;
-    return `${totalHours} ${this.translate.instant('hours')}`;
+    return `${totalHours} ${this.translate.instant('Hours')}`;
   }
 
 
@@ -173,5 +175,15 @@ export class ProjectManagementDossierComponent implements OnDestroy {
   selectPerformance(id: string) {
     var performance = this.performancesBuys.find(item => item.Id === id);
     this.store.dispatch(PerformanceActions.setPerformance({ performance: performance }))
+  }
+
+  onPageChange(event: any) {
+    const startIndex = event.pageIndex * event.pageSize;
+    const endIndex = startIndex + event.pageSize;
+    this.updateDisplayedItems(startIndex, endIndex);
+  }
+
+  updateDisplayedItems(startIndex: number = 0, endIndex: number = 10) {
+    this.displayedItems = this.allPerformances.slice(startIndex, endIndex);
   }
 }
