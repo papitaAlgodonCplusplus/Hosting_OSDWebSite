@@ -71,16 +71,19 @@ export class ProjectManagementDossierComponent implements OnDestroy {
       }));
 
       let normalizedFreeProfesional = this.performancesFreeProfesional.map(freeProfessional => {
+        console.log(freeProfessional)
         const hours = {
           FreeProfessionalTravelHours: freeProfessional.FreeProfessionalTravelHours,
           FreeProfessionalWorkHours: freeProfessional.FreeProfessionalWorkHours,
           TechnicalDirectorTravelHours: freeProfessional.TechnicalDirectorTravelHours,
-          TechnicalDirectorWorkHours: freeProfessional.TechnicalDirectorWorkHours
+          TechnicalDirectorWorkHours: freeProfessional.TechnicalDirectorWorkHours,
+          EstimatedWorkHours: freeProfessional.EstimatedWorkHours,
+          EstimatedTransportHours: freeProfessional.EstimatedTransportHours
         };
         const totalHours = this.sumHours(hours);
 
-        var amountProject = 0;
-        amountProject = freeProfessional.FreeProfessionalRemuneration + freeProfessional.FreeProfessionalTravelExpenses + freeProfessional.TechnicalDirectorRemuneration + freeProfessional.TechnicalDirectorTravelExpenses
+        var amountProject = 0; 
+        amountProject = freeProfessional.EstimatedTransportExpenses + freeProfessional.FreeProfessionalRemuneration + freeProfessional.FreeProfessionalTravelExpenses + freeProfessional.TechnicalDirectorRemuneration + freeProfessional.TechnicalDirectorTravelExpenses
         this.amountProject = amountProject + this.amountProject
        
         return {
