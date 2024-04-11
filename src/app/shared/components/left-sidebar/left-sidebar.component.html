@@ -22,10 +22,10 @@
     </div>
       <div class="space-y-2 font-normal text-black ml-2">  
           <ul *ngIf="isAuthorized">
-            <li *ngFor="let item of menuOptions$ | async" class="cursor-pointer" [routerLink]="item.path">
+            <li *ngFor="let item of menuOptions$ | async" class="cursor-pointer m-2" [routerLink]="item.path">
               <i [ngClass]="'fas fa-solid ' + item.icon"></i>
               <span class="ml-3">{{ item.name || '' | translate }}</span>
-            </li>                                
+            </li>                               
           </ul>
       </div>
   </div>

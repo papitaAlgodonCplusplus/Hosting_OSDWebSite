@@ -20,7 +20,7 @@
   "tel_movil": "Mobile Phone",
   "email": "Email",
   "pagina_web": "Website",
-  "aceptar_condiciones": "_Accept Terms and Conditions",
+  "aceptar_condiciones": "Accept Terms and Conditions",
   "error_condiciones": "You must accept the conditions",
   "DT": "DT Technical Director",
   "FC": "FC Trainer/Consultant",
@@ -51,7 +51,7 @@
   "nombre_usuario": "Username",
   "registrarse_reclamación": "Register & File Claim",
   "volver_info_personal": "Back to Personal Information",
-  "ir_informacion_reclmacion": "Go to claim information",
+  "ir_informacion_reclamacion": "Go to claim information",
   "suscriptor_reclamado": "Subscriber Claimed",
   "servicio_prestado": "Service Provided",
   "hechos": "Facts",
@@ -234,5 +234,6 @@
     "objectives" : "Objectives",
     "economicBudget" : "Economic Budget",
     "expectedTimes" : "Expected Hours",
-    "JustifyIncreaseinHours": "Justificar Aumento de Horas"
+    "JustifyIncreaseinHours": "Justificar Aumento de Horas",
+    "Assign_Processor_to_Claim": "Assign Processor to Claim"
 }
