@@ -235,5 +235,6 @@
     "economicBudget" : "Economic Budget",
     "expectedTimes" : "Expected Hours",
     "JustifyIncreaseinHours": "Justificar Aumento de Horas",
-    "Hours" : "Hours"
+    "Hours" : "Hours",
+    "Amount" : "Amount"
 }
