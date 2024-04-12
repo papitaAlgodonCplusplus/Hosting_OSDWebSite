@@ -1,11 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { EventFactoryService } from 'src/app/services/event-factory.service';
-import { SecurityDataService } from 'src/app/services/security-data.service';
-import { SecurityEventService } from 'src/app/services/security-event.service';
 import { RestAPIService } from 'src/app/services/rest-api.service';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { Store } from '@ngrx/store';
-import { MenuOptionsSelectors } from 'src/app/store/selectors';
 import { MenuOptionsActions } from 'src/app/store/actions';
 import { MenuOption } from 'src/app/models/menuOptions';
 
@@ -41,8 +38,6 @@ export class HomeComponent implements OnInit {
   constructor(
     public eventFactoryService: EventFactoryService,
     private restApiService: RestAPIService,
-    public securityEventService: SecurityEventService,
-    public securityDataService: SecurityDataService,
     private authenticationService: AuthenticationService,
     private store: Store
   ) {

@@ -8,7 +8,6 @@ import { AuthenticationActions, UiActions } from 'src/app/store/actions';
 import { EventFactoryService } from 'src/app/services/event-factory.service';
 import { ValidationsService } from '../../../services/validations.service';
 import { MenuOptionsSelectors, ModalSelectors } from 'src/app/store/selectors';
-import { SecurityEventService } from 'src/app/services/security-event.service';
 import { authenticationReducers } from 'src/app/store/reducers/authentication.reducer';
 import { OSDDataService } from 'src/app/services/osd-data.service';
 import { OSDService } from 'src/app/services/osd-event.services';
@@ -32,7 +31,6 @@ export class LoginComponent implements OnDestroy {
     private validationsService: ValidationsService,
     public eventFactoryService: EventFactoryService,
     private osdEventService: OSDService,
-    private securityEventService: SecurityEventService,
     private router: Router
   ) {
     this.loginForm = this.createLoginForm();

@@ -1,0 +1,25 @@
+/* Para hacer la tabla responsive */
+.overflow-x-auto {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* Para navegadores iOS */
+}
+
+/* Para hacer que la tabla sea responsive */
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Añade estilos adicionales según sea necesario */
+@media screen and (max-width: 600px) {
+    th, td {
+        padding: 4px;
+        font-size: 12px;
+    }
+}

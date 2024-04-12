@@ -10,7 +10,6 @@ import { WebBaseEvent } from 'src/app/models/webBaseEvent';
 import { Observable, Subscription } from 'rxjs';
 import { AuthSelectors, ModalSelectors } from 'src/app/store/selectors';
 import { SecurityDataService } from 'src/app/services/security-data.service';
-import { SecurityEventService } from 'src/app/services/security-event.service';
 import { RestAPIService } from 'src/app/services/rest-api.service';
 
 @Component({
@@ -35,7 +34,6 @@ export class NewpasswordComponent implements OnInit, OnDestroy {
     private validationsService: ValidationsService,
     private securityDataService: SecurityDataService,
     public eventFactoryService: EventFactoryService, 
-    private securityEventService: SecurityEventService,
     private restApiService: RestAPIService) {
     this.passwordForm = this.createLoginForm();
     this.securityEventSubscriber = new Subscription();

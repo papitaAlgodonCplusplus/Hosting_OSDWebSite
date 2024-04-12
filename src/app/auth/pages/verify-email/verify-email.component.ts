@@ -4,8 +4,6 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { AuthenticationService } from 'src/app/services/authentication.service';
-import { SecurityDataService } from 'src/app/services/security-data.service';
-import { SecurityEventService } from 'src/app/services/security-event.service';
 import { ValidationsService } from 'src/app/services/validations.service';
 import { UiActions } from 'src/app/store/actions';
 import { ModalSelectors } from 'src/app/store/selectors';
@@ -25,8 +23,6 @@ export class VerifyEmailComponent {
     private formBuilder: FormBuilder,
     private validationsService: ValidationsService,
     private router: Router,
-    private securityEventService: SecurityEventService,
-    private securityDataService: SecurityDataService,
     private authenticationService: AuthenticationService
   ) {
     this.verifyEmailForm = this.createVerifyEmailForm();
@@ -37,11 +33,11 @@ export class VerifyEmailComponent {
       this.store.dispatch(UiActions.hideAll());
     }, 0);
 
-    this.securityDataService.verifyEmailSuccess$.subscribe((data: boolean) => {
-      if(data){
-        this.router.navigate(['/home']);
-      }
-    });
+    // this.securityDataService.verifyEmailSuccess$.subscribe((data: boolean) => {
+    //   if(data){
+    //     this.router.navigate(['/home']);
+    //   }
+    // });
   }
 
   ngOnDestroy() {
@@ -57,18 +53,18 @@ export class VerifyEmailComponent {
     });
   }
 
-  onVerify(): void {
-    if (this.verifyEmailForm.invalid) {
-      this.verifyEmailForm.markAllAsTouched();
-      return;
-    }
+  // onVerify(): void {
+  //   if (this.verifyEmailForm.invalid) {
+  //     this.verifyEmailForm.markAllAsTouched();
+  //     return;
+  //   }
 
-    this.securityEventService.verifyEmail({sessionKey: this.authenticationService.sessionKey, code: this.verifyEmailForm.value.code});
-  }
+  //   this.securityEventService.verifyEmail({sessionKey: this.authenticationService.sessionKey, code: this.verifyEmailForm.value.code});
+  // }
 
-  onResendCode(): void {
-    this.securityEventService.resendEmailVerificationCode({sessionKey: this.authenticationService.sessionKey});
-  }
+  // onResendCode(): void {
+  //   this.securityEventService.resendEmailVerificationCode({sessionKey: this.authenticationService.sessionKey});
+  // }
 
 
 }

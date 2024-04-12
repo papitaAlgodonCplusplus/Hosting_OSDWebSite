@@ -1,52 +1,43 @@
-<!-- The next div checks whether the left sidebar is open or not -->
-<div *ngIf="!(leftSidebarOpen$ | async); else leftSidebarIsOpen"
-  class="bg-white w-6 h-screen absolute lg:relative left-0 border-r-2 drop-shadow-lg animate__animated animate__fadeInRight"
-  style="border-color: #eeeff2; border-collapse: collapse;">
-  <button (click)="toggleLeftSidebar()" class="absolute top-10 left-4 rounded-full px-2">
-    <i class="fa-solid fa-chevron-right text-darkslategray"></i>
-  </button>
-</div>
-
-<ng-template #leftSidebarIsOpen>
-  <div (mouseenter)="showArrow()" (mouseleave)="hideArrow()"
-    class=" bg-white content-center flex flex-col h-screen py-10 px-2  shadow-lg w-64 absolute lg:relative left-0.5 left-sidebar open border-r-2"
-    style="border-color: #eeeff2;">
-    <button *ngIf="arrowLeftSidebar" (click)="toggleLeftSidebar()"
-      class="arrow-left absolute top-10 bg-yellow rounded-full px-2 hover:bg-white-bone animate__animated animate__fadeInLeft">
-      <i class="fa-solid fa-chevron-left text-base text-darkslategray"></i>
-    </button>
-    <div class="font-medium text-darkgray mb-6 mr-3 cursor-pointer">
-      <div class="flex flex-col justify-center items-start border-b">
-        <span class="ml-3 text-yellow-500">{{'transparencia' | translate}}</span>
-      </div>
-    </div>
-    <div class=" text-darkslategray text-sm font-medium space-y-2">
-      <a class="mb-4 cursor-pointer" (click)="changeReport('sub')">1. {{'customer_subscribers_results' | translate}}</a>
-
-      <div class="space-y-2">
-        <a class=" mb-2 cursor-pointer">2. {{'osd_results'  | translate}}</a>
-        <ul class="list-disc pl-6">
-          <li class="mb-2">
-            <a class=" mb-2 cursor-pointer" (click)="changeReport('osd')">2.1. {{'income_expenses_benefits'  | translate}}</a>
-          </li>
-          <li class="mb-2">
-            <a class="cursor-pointer" (click)="changeReport('pl')">2.2. {{'profesionales_libres' | translate}}</a>
-          </li>
-          <li class="mb-2">
-            <a class="cursor-pointer" (click)="changeReport('cfh')">2.3. {{'CFH' | translate}}</a>
-          </li>
-        </ul>
-      </div>
-
-      <a class="mb-4 cursor-pointer" routerLink="/project-manager">3. {{'transparent_project' | translate}}</a>
-
-    </div>
-
-    <div class="font-medium text-darkgray mb-6 mr-3 cursor-pointer mt-auto">
-      <div class="flex flex-row items-center justify-end hover:text-yellow-500"
-      routerLink="/auth">
-        <i class="fa-solid fa-arrow-right-from-bracket"></i> <span class="ml-3 text-darkslategray">{{'regresar' | translate}}</span>
-      </div>
-    </div>
+<div class="space-y-3 text-darkslategray text-sm font-medium flex flex-col justify-center">
+  <a class=" cursor-pointer"
+    (click)="changeReport('sub')">
+    <span
+      class="px-3 py-1 transition duration-300 ease-in-out hover:bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden">1.
+      {{'customer_subscribers_results' | translate}}</span>
+  </a>
+  <div class="space-y-2">
+    <a class="cursor-pointer">
+      <span
+        class="px-3 py-1 transition duration-300 ease-in-out hover:bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden">2.
+        {{'osd_results' | translate}}</span>
+    </a>
+    <ul class="list-disc">
+      <li class="mb-2">
+        <a class="mb-2 cursor-pointer" (click)="changeReport('osd')">
+          <span
+            class="px-5 py-1 transition duration-300 ease-in-out hover:bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden">2.1.
+            {{'income_expenses_benefits' | translate}}</span>
+        </a>
+      </li>
+      <li class="mb-2">
+        <a class="cursor-pointer" (click)="changeReport('pl')">
+          <span
+            class="px-5 py-1 transition duration-300 ease-in-out hover:bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden">2.2.
+            {{'profesionales_libres' | translate}}</span>
+        </a>
+      </li>
+      <li class="mb-2">
+        <a class="cursor-pointer" (click)="changeReport('cfh')">
+          <span
+            class="px-5 py-1 transition duration-300 ease-in-out hover:bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden">2.3.
+            {{'CFH' | translate}}</span>
+        </a>
+      </li>
+    </ul>
   </div>
-</ng-template>
+  <a class="mb-4 cursor-pointer" routerLink="/project-manager">
+    <span
+      class="px-3 py-1 transition duration-300 ease-in-out hover:bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden">3.
+      {{'transparent_project' | translate}}</span>
+  </a>
+</div>

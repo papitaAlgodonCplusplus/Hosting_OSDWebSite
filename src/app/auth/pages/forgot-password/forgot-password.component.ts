@@ -11,7 +11,6 @@ import { EventFactoryService } from 'src/app/services/event-factory.service';
 import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { AuthSelectors, ModalSelectors } from 'src/app/store/selectors';
-import { SecurityEventService } from 'src/app/services/security-event.service';
 
 @Component({
   selector: 'app-forgot-password',
@@ -34,8 +33,7 @@ export class ForgotPasswordComponent implements OnDestroy {
     public eventFactoryService: EventFactoryService,
     private restApiService: RestAPIService,
     private securityDataService: SecurityDataService,
-    private router: Router,
-    private securityEventService: SecurityEventService,)
+    private router: Router)
     {
     this.forgotForm = this.createLoginForm();
     this.securityEventSubscriber = new Subscription();
