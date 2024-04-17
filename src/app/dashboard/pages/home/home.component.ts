@@ -58,14 +58,21 @@ export class HomeComponent implements OnInit {
         this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuOptionFreeProfessional }));
       }
 
-      if (this.user.AccountType === EventConstants.SUBSCRIBER_CUSTOMER || this.user.AccountType === EventConstants.FREE_PROFESSIONAL) {
-        if (!this.user.Isauthorized) {
-          const alertMessage = this.translate.currentLang === "en" ? "Your account is not authorized" : "No tienes autorizada tu cuenta";
-          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage }));
-          this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
-          this.store.dispatch(ModalActions.openAlert());
-        }
-      }
+    //   if (this.user.AccountType === EventConstants.SUBSCRIBER_CUSTOMER || this.user.AccountType === EventConstants.FREE_PROFESSIONAL) {
+    //     console.log("El error esta aqui 1")
+    //     if (this.user.Isauthorized === false) {
+    //       console.log("El error esta aqui 2")
+    //       if(this.translate.currentLang == "en"){
+    //         const alertMessage = "Your account is not authorized";
+    //         this.store.dispatch(ModalActions.addAlertMessage({ alertMessage }));
+    //       }else{
+    //         const alertMessage = "No tienes autorizada tu cuenta";
+    //         this.store.dispatch(ModalActions.addAlertMessage({ alertMessage }));
+    //       }
+    //       this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
+    //       this.store.dispatch(ModalActions.openAlert());
+    //     }
+    //   }
     }
   }
 }
