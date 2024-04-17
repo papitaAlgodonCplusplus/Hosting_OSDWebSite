@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { EventFactoryService } from 'src/app/services/event-factory.service';
-import { RestAPIService } from 'src/app/services/rest-api.service';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { Store } from '@ngrx/store';
 import { MenuOptionsActions, ModalActions } from 'src/app/store/actions';
@@ -40,7 +39,6 @@ export class HomeComponent implements OnInit {
 
   constructor(
     public eventFactoryService: EventFactoryService,
-    private restApiService: RestAPIService,
     private authenticationService: AuthenticationService,
     private store: Store,
     private translate: TranslateService
@@ -48,33 +46,27 @@ export class HomeComponent implements OnInit {
   }
   ngOnInit(): void {
     if (this.authenticationService.userInfo) {
-      if (this.authenticationService.userInfo.AccountType === "ApprovedTrainingCenter") {
-        this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuOptionCFH }))
+      this.user = this.authenticationService.userInfo;
+
+      if (this.user.AccountType === "ApprovedTrainingCenter") {
+        this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuOptionCFH }));
+      } else if (this.user.AccountType === "Claimant") {
+        this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuOptionClaimant }));
+      } else if (this.user.AccountType === "SubscriberCustomer") {
+        this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuOptionSubscriber }));
+      } else {
+        this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuOptionFreeProfessional }));
       }
-      else if (this.authenticationService.userInfo.AccountType === "Claimant") {
-        this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuOptionClaimant }))
-      }
-      else if (this.authenticationService.userInfo.AccountType === "SubscriberCustomer") {
-        this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuOptionSubscriber }))
-      }
-      else {
-        this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuOptionFreeProfessional }))
-      }
-      this.user = this.authenticationService.userInfo
-      if (this.user.AccountType == EventConstants.SUBSCRIBER_CUSTOMER || this.user.AccountType == EventConstants.FREE_PROFESSIONAL) {
-        if (this.user.Isauthorized == false) {
-          if (this.translate.currentLang == "en") {
-            this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Your account is not authorized" }));
-          } else {
-            this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "No tienes autorizada tu cuenta" }));
-          }
+
+      if (this.user.AccountType === EventConstants.SUBSCRIBER_CUSTOMER || this.user.AccountType === EventConstants.FREE_PROFESSIONAL) {
+        if (!this.user.Isauthorized) {
+          const alertMessage = this.translate.currentLang === "en" ? "Your account is not authorized" : "No tienes autorizada tu cuenta";
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage }));
           this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
           this.store.dispatch(ModalActions.openAlert());
         }
       }
     }
-
   }
-
 }
 

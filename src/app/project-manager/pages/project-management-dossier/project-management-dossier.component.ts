@@ -99,7 +99,6 @@ export class ProjectManagementDossierComponent implements OnDestroy {
 
       });
       this.allPerformances = [...normalizedFreeProfesional, ...normalizedBuys];
-      console.log(this.allPerformances)
       this.updateDisplayedItems();
       this.sortDateLowestHighest(true);
     }, 3000);
@@ -134,7 +133,7 @@ export class ProjectManagementDossierComponent implements OnDestroy {
       projectAmount: '€ ' + this.amountProject,
       expensesEmployeesVolunteers: '€ 0',
       supplierExpensesPurchases: '€ 0' ,
-      economicBudget: '€ 0',
+      economicBudget: '€ 145000',
       expectedTimes : ''
     });
     return form;

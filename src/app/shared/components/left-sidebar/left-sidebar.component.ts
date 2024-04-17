@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { MenuOptionsSelectors, UiSelectors } from 'src/app/store/selectors';
-import { ModalActions, UiActions } from 'src/app/store/actions';
+import { UiActions } from 'src/app/store/actions';
 import { Router } from '@angular/router';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { MenuOption } from 'src/app/models/menuOptions';
@@ -18,7 +18,7 @@ export class LeftSidebarComponent implements OnInit {
   leftSidebarOpen$: Observable<boolean> = this.store.select(UiSelectors.leftSidebarOpen);
   arrowLeftSidebar: boolean = false;
   menuOptions$: Observable<MenuOption[]> = this.store.select(MenuOptionsSelectors.menuOptions);
-  isAuthorized: boolean = true;
+  isAuthorized!: boolean;
   user!: any;
 
   constructor(private store: Store, private router: Router, private osdEventService: OSDService,

@@ -1,6 +1,6 @@
 <div class="flex justify-center flex-col lg:flex-row">
-    <div class="px-3 border-r ">
-        <div class="lg:sticky top-3 space-y-3">
+    <div class="px-3">
+        <div class="sticky top-3 px-3 overflow-y-auto max-h-screen">
             <button [routerLink]="isUser ? '/home' : '/reports'"
                 class="bg-line px-2 py-1 rounded-md flex items-center text-darkslategray">
                 <i class="pr-3 fa-solid fa-chevron-left animate-pulse"></i> {{'regresar' | translate}}
@@ -33,14 +33,14 @@
                 [formGroup]="formProjectManager" [bgColor]="'bg-white-lightbone'"></shared-input-field>
         </div>
     </div>
-    <div class=" flex-1 px-3 space-y-3">
+    <div class="flex-1 px-3 space-y-3">
         <div class="text-darkslategray text-center text-xl mt-3 font-bold">
             <h1>
                 {{'performances' | translate}}
             </h1>
         </div>
 
-        <div class="text-center text-xs font-extralight flex flex-row justify-end items-center space-x-3">
+        <div class="text-center text-xs font-extralight flex flex-row justify-end items-center space-x-3 px-1">
             <span class="m-1 cursor-pointer border-b" (click)="sortDateLowestHighest(true)">{{'date_low_to_major' |
                 translate}}</span>
             <span class="m-1 cursor-pointer border-b" (click)="sortDateLowestHighest(false)">{{'date_major_to_minor' |
@@ -63,7 +63,7 @@
 
         <table class="table-auto w-full">
             <thead>
-                <tr class="text-darkslategray font-normal bg-line text-center">
+                <tr class="text-darkslategray font-normal border-b text-center">
                     <th class="px-2" style="width: 5%;"></th>
                     <th class="px-2">{{'TypePerformance' | translate}}</th>
                     <th class="px-2">{{'Summary' | translate}}</th>
@@ -73,7 +73,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr class="font-light" *ngFor="let performance of allPerformances">
+                <tr class="font-light" *ngFor="let performance of displayedItems">
                     <td routerLink="/project-manager/performance-buy"
                         class="text-center text-darkslategray font-medium text-s border-y px-2 py-2 hover:underline cursor-pointer"
                         (click)="selectPerformance(performance.Id)" [title]="performance.Id"
@@ -90,7 +90,7 @@
                 </tr>
             </tbody>
         </table>
-        <div class="text-center text-darkslategray px-2 py-2 " *ngIf="allPerformances.length === 0">
+        <div class="text-center text-darkslategray px-2 py-2 " *ngIf="displayedItems.length === 0">
             <i class="fa-solid fa-arrow-rotate-right animate-spin"></i> {{'Loading' | translate}}
         </div>
         <mat-paginator [length]="allPerformances.length" [pageSize]="10" (page)="onPageChange($event)"></mat-paginator>
