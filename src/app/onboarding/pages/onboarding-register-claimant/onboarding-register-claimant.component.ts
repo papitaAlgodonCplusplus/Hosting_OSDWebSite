@@ -11,7 +11,6 @@ import { AuthService } from 'src/app/auth/services/auth.service';
 import { EventConstants } from 'src/app/models/eventConstants';
 import { OSDDataService } from 'src/app/services/osd-data.service';
 import { OSDService } from 'src/app/services/osd-event.services';
-import { SecurityEventService } from 'src/app/services/security-event.service';
 import { ValidationsService } from 'src/app/services/validations.service';
 import { AuthenticationActions, ModalActions, UiActions } from 'src/app/store/actions';
 import { AuthSelectors } from 'src/app/store/selectors';

@@ -3,8 +3,10 @@ import { EventFactoryService } from 'src/app/services/event-factory.service';
 import { RestAPIService } from 'src/app/services/rest-api.service';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { Store } from '@ngrx/store';
-import { MenuOptionsActions } from 'src/app/store/actions';
+import { MenuOptionsActions, ModalActions } from 'src/app/store/actions';
 import { MenuOption } from 'src/app/models/menuOptions';
+import { EventConstants } from 'src/app/models/eventConstants';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'dashboard-home',
@@ -12,6 +14,7 @@ import { MenuOption } from 'src/app/models/menuOptions';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
+  user!: any;
 
   menuOptionFreeProfessional: MenuOption[] = [
     { name: 'Gestion Etica y Transparente de Proyecto', path: '/project-manager', icon: 'fa-project-diagram' },
@@ -39,7 +42,8 @@ export class HomeComponent implements OnInit {
     public eventFactoryService: EventFactoryService,
     private restApiService: RestAPIService,
     private authenticationService: AuthenticationService,
-    private store: Store
+    private store: Store,
+    private translate: TranslateService
   ) {
   }
   ngOnInit(): void {
@@ -56,9 +60,21 @@ export class HomeComponent implements OnInit {
       else {
         this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuOptionFreeProfessional }))
       }
+      this.user = this.authenticationService.userInfo
+      if (this.user.AccountType == EventConstants.SUBSCRIBER_CUSTOMER || this.user.AccountType == EventConstants.FREE_PROFESSIONAL) {
+        if (this.user.Isauthorized == false) {
+          if (this.translate.currentLang == "en") {
+            this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Your account is not authorized" }));
+          } else {
+            this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "No tienes autorizada tu cuenta" }));
+          }
+          this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
+          this.store.dispatch(ModalActions.openAlert());
+        }
+      }
     }
-  }
 
+  }
 
 }
 

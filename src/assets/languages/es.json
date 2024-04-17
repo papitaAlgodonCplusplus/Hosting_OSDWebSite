@@ -237,5 +237,7 @@
     "expectedTimes": "Horas previstas ",
     "Hours": "Horas",
     "Amount": "Cuantía",
-    "FormatHoursIncorrect": "Error en el formato de la hora. Use 00:00 y asegúrese de que ambos campos estén entre 0 y 24."
+    "FormatHoursIncorrect": "Error en el formato de la hora. Use 00:00 y asegúrese de que ambos campos estén entre 0 y 24.",
+    "Approved_Training_Center_Contract: ": "Contrato centro de formacion homologado",
+    "Approved_Training_Center: ": "CFH (Centro de formacion homologado)"
 }

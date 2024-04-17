@@ -9,8 +9,7 @@
         <form [formGroup]="personalForm" (ngSubmit)="onSubmit()" autocomplete="off"
             class="flex-1 flex flex-wrap items-center">
             <div class="w-full">
-                <h1 class="border-b text-darkslategray text-lg font-medium">{{'CFH (Centro Formación Homologado) '|
-                    translate }}</h1>
+                <h1 class="border-b text-darkslategray text-lg font-medium">{{'Approved_Training_Center' | translate }}</h1>
             </div>
 
             <shared-input-field class="w-full md:w-1/2" fieldName="identity" label="{{'DNI' | translate}}"
@@ -59,9 +58,9 @@
             <div class="flex flex-col items-start space-y-3">
                 <div class="bg-white flex flex-row items-center space-x-1">
                     <p class="text-darkslategray  font-bold">{{'Video_CFH'| translate }}:</p>
-                    <button class="text-red-500 font-normal animate__animated animate__fadeInDown hover:underline"
+                    <button class="p-2  bg-darkslategray text-line rounded-lg font-normal animate__animated animate__fadeInDown"
                         (click)="openVideoCFH()">
-                        https://youtu.be/YdyriLrWjpc
+                        {{'Watch_Video' | translate}}
                     </button>
                 </div>
             </div>
@@ -84,7 +83,7 @@
 
             <div class="p-2 flex flex-col space-y-3">
                 <div class=" bg-white flex flex-col lg:flex-row lg:items-center lg:space-x-3">
-                    <h1 class="text-darkslategray font-bold">Contrato Centro de Formación Homologado:</h1>
+                    <h1 class="text-darkslategray font-bold">{{'Approved_Training_Center_Contract:' | translate}}</h1>
                     <div class="flex flex-row items-center space-x-3">
                         <a *ngIf="!showDocument"
                             class="p-2  bg-darkslategray text-line rounded-lg font-normal animate__animated animate__fadeInDown"
