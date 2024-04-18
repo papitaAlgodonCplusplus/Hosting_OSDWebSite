@@ -27,7 +27,7 @@ export const modalReducers = createReducer(initialState,
   })),
   on(ModalActions.openAlert, (currentState) => ({
     ...currentState,
-    alertOpen: true
+    alertOpen: !currentState.alertOpen
   })),
   on(ModalActions.closeAlert, (currentState) => ({
     ...currentState,

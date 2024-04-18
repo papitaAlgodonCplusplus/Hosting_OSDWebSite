@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { EventFactoryService } from 'src/app/services/event-factory.service';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { Store } from '@ngrx/store';
-import { MenuOptionsActions, ModalActions } from 'src/app/store/actions';
+import { MenuOptionsActions, ModalActions, UiActions } from 'src/app/store/actions';
 import { MenuOption } from 'src/app/models/menuOptions';
 import { EventConstants } from 'src/app/models/eventConstants';
 import { TranslateService } from '@ngx-translate/core';
@@ -17,7 +17,7 @@ export class HomeComponent implements OnInit {
 
   menuOptionFreeProfessional: MenuOption[] = [
     { name: 'Gestion Etica y Transparente de Proyecto', path: '/project-manager', icon: 'fa-project-diagram' },
-    { name: 'TitlePerformance', path: '/home/free-professional-file', icon: 'fa-file' },
+   // { name: 'TitlePerformance', path: '/home/free-professional-file', icon: 'fa-file' },
     { name: 'registerNewUser', path: '/onboarding', icon: 'fa-user-plus' },
     { name: 'Assign_Processor_to_Claim', path: '/functions/assign-pltr-claims', icon: 'fa-user' },
     { name: 'authorizeCustomers', path: '/functions/sub-authorized', icon: 'fa-check-circle' },
@@ -45,6 +45,7 @@ export class HomeComponent implements OnInit {
   ) {
   }
   ngOnInit(): void {
+
     if (this.authenticationService.userInfo) {
       this.user = this.authenticationService.userInfo;
 
