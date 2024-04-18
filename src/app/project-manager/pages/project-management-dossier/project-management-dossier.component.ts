@@ -133,8 +133,8 @@ export class ProjectManagementDossierComponent implements OnDestroy {
       projectAmount: '€ ' + this.amountProject,
       expensesEmployeesVolunteers: '€ 0',
       supplierExpensesPurchases: '€ 0' ,
-      economicBudget: '€ 175000',
-      expectedTimes : '2917 ' + this.translate.instant('Hours')
+      economicBudget: '€ 36.000',
+      expectedTimes : '600 ' + this.translate.instant('Hours')
     });
     return form;
   }
