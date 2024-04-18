@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { MenuOptionsSelectors, UiSelectors } from 'src/app/store/selectors';
-import { ModalActions, UiActions } from 'src/app/store/actions';
+import { UiActions } from 'src/app/store/actions';
 import { Router } from '@angular/router';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { MenuOption } from 'src/app/models/menuOptions';
@@ -18,7 +18,7 @@ export class LeftSidebarComponent implements OnInit {
   leftSidebarOpen$: Observable<boolean> = this.store.select(UiSelectors.leftSidebarOpen);
   arrowLeftSidebar: boolean = false;
   menuOptions$: Observable<MenuOption[]> = this.store.select(MenuOptionsSelectors.menuOptions);
-  isAuthorized: boolean = true;
+  isAuthorized!: boolean;
   user!: any;
 
   constructor(private store: Store, private router: Router, private osdEventService: OSDService,
@@ -29,16 +29,12 @@ export class LeftSidebarComponent implements OnInit {
     setTimeout(() => {
       if (this.authenticationService.userInfo) {
         this.user = this.authenticationService.userInfo
-        console.log(this.user)
         if (this.user.AccountType == EventConstants.SUBSCRIBER_CUSTOMER || this.user.AccountType == EventConstants.FREE_PROFESSIONAL) {
           if (this.user.Isauthorized == true) {
             this.isAuthorized = true
           }
           else {
             this.isAuthorized = false
-            this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "No tienes autorizada tu cuenta" }))
-            this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
-            this.store.dispatch(ModalActions.openAlert());
           }
         }
       }

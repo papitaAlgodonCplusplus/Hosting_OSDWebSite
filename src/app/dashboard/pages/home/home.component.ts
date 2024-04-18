@@ -1,13 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { EventFactoryService } from 'src/app/services/event-factory.service';
-import { SecurityDataService } from 'src/app/services/security-data.service';
-import { SecurityEventService } from 'src/app/services/security-event.service';
-import { RestAPIService } from 'src/app/services/rest-api.service';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { Store } from '@ngrx/store';
-import { MenuOptionsSelectors } from 'src/app/store/selectors';
-import { MenuOptionsActions } from 'src/app/store/actions';
+import { MenuOptionsActions, ModalActions } from 'src/app/store/actions';
 import { MenuOption } from 'src/app/models/menuOptions';
+import { EventConstants } from 'src/app/models/eventConstants';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'dashboard-home',
@@ -15,6 +13,7 @@ import { MenuOption } from 'src/app/models/menuOptions';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
+  user!: any;
 
   menuOptionFreeProfessional: MenuOption[] = [
     { name: 'Gestion Etica y Transparente de Proyecto', path: '/project-manager', icon: 'fa-project-diagram' },
@@ -40,30 +39,41 @@ export class HomeComponent implements OnInit {
 
   constructor(
     public eventFactoryService: EventFactoryService,
-    private restApiService: RestAPIService,
-    public securityEventService: SecurityEventService,
-    public securityDataService: SecurityDataService,
     private authenticationService: AuthenticationService,
-    private store: Store
+    private store: Store,
+    private translate: TranslateService
   ) {
   }
   ngOnInit(): void {
     if (this.authenticationService.userInfo) {
-      if (this.authenticationService.userInfo.AccountType === "ApprovedTrainingCenter") {
-        this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuOptionCFH }))
+      this.user = this.authenticationService.userInfo;
+
+      if (this.user.AccountType === "ApprovedTrainingCenter") {
+        this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuOptionCFH }));
+      } else if (this.user.AccountType === "Claimant") {
+        this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuOptionClaimant }));
+      } else if (this.user.AccountType === "SubscriberCustomer") {
+        this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuOptionSubscriber }));
+      } else {
+        this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuOptionFreeProfessional }));
       }
-      else if (this.authenticationService.userInfo.AccountType === "Claimant") {
-        this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuOptionClaimant }))
-      }
-      else if (this.authenticationService.userInfo.AccountType === "SubscriberCustomer") {
-        this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuOptionSubscriber }))
-      }
-      else {
-        this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuOptionFreeProfessional }))
-      }
+
+    //   if (this.user.AccountType === EventConstants.SUBSCRIBER_CUSTOMER || this.user.AccountType === EventConstants.FREE_PROFESSIONAL) {
+    //     console.log("El error esta aqui 1")
+    //     if (this.user.Isauthorized === false) {
+    //       console.log("El error esta aqui 2")
+    //       if(this.translate.currentLang == "en"){
+    //         const alertMessage = "Your account is not authorized";
+    //         this.store.dispatch(ModalActions.addAlertMessage({ alertMessage }));
+    //       }else{
+    //         const alertMessage = "No tienes autorizada tu cuenta";
+    //         this.store.dispatch(ModalActions.addAlertMessage({ alertMessage }));
+    //       }
+    //       this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
+    //       this.store.dispatch(ModalActions.openAlert());
+    //     }
+    //   }
     }
   }
-
-
 }
 

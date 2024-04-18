@@ -26,8 +26,8 @@ export class TransparencyComponent implements OnDestroy{
   }
 
   ngOnInit(): void{
-    setTimeout(() => {
-      this.store.dispatch(UiActions.hideAll());
+    setTimeout(() => { 
+      this.store.dispatch(switchReport({ reportName: 'sub' }));
     }, 0);
   }
   ngOnDestroy(): void {

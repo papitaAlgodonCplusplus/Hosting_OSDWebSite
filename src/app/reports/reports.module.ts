@@ -9,6 +9,7 @@ import { LeftSidebarTransparencyComponent } from './components/left-sidebar-tran
 import { OSDRevenueExpenditureEconomicResultReportComponent } from './pages/osd-revenue-expenditure-economic-result-report/osd-revenue-expenditure-economic-result-report.component';
 import { PLRemunerationResultsReportComponent } from './pages/pl-remuneration-results-report/pl-remuneration-results-report.component';
 import { CFHResultReportComponent } from './pages/cfhresult-report/cfhresult-report.component';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { CFHResultReportComponent } from './pages/cfhresult-report/cfhresult-rep
   imports: [
     CommonModule,
     ReportsRoutingModule,
-    TranslateModule
+    TranslateModule,
+    SharedModule
   ]
 })
 export class ReportsModule { }

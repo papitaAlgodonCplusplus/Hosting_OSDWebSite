@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 @Component({
@@ -6,12 +6,29 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './switch-languages.component.html',
   styleUrls: ['./switch-languages.component.css']
 })
-export class SwitchLanguagesComponent {
+export class SwitchLanguagesComponent implements OnInit {
 
-  constructor(private Translate: TranslateService,
-    private router: Router) { }
+  languageCode!: string;
+  constructor(private translate: TranslateService) { }
 
-  onChange(lang: string) {
-    this.Translate.use(lang);
+  ngOnInit(): void {
+    setTimeout(() => {
+      if (this.translate.currentLang == "en") {
+        this.languageCode = "en"
+      }
+      else {
+        this.languageCode = "es"
+      }
+    }, 0);
   }
+
+  onChange() {
+    if (this.languageCode === "es") {
+      this.languageCode = "en";
+    } else {
+      this.languageCode = "es";
+    }
+    console.log(this.languageCode);
+    this.translate.use(this.languageCode);
+  }    
 }

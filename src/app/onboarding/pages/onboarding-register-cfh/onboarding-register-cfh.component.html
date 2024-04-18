@@ -1,12 +1,15 @@
-<div class="flex bg-darkslategray">
-    <img src="/./assets/img/OSD.png" alt="Logo OSD" class="w-16">
+<div
+    class="flex items-center px-3 py-2 text-black border-b bg-darkslategray cursor-pointer animate__animated animate__fadeInDown">
+    <div class="flex-1 flex items-center space-x-1">
+        <img src="/./assets/img/OSD_2.png" alt="Logo OSD" class="w-36" routerLink="/home">
+    </div>
 </div>
-<div class="flex px-10 py-2">
-    <div class="flex py-3 bg-white text-black flex-col">
+<div class="flex px-10 py-2 space-y-3">
+    <div class="flex bg-white text-black flex-col">
         <form [formGroup]="personalForm" (ngSubmit)="onSubmit()" autocomplete="off"
-            class="p-2 flex-1 flex flex-wrap items-center">
+            class="flex-1 flex flex-wrap items-center">
             <div class="w-full">
-                <h1 class="border-b text-darkslategray text-lg font-medium">Informacion Personal</h1>
+                <h1 class="border-b text-darkslategray text-lg font-medium">{{'Approved_Training_Center' | translate }}</h1>
             </div>
 
             <shared-input-field class="w-full md:w-1/2" fieldName="identity" label="{{'DNI' | translate}}"
@@ -48,18 +51,16 @@
                 inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
         </form>
-        <form [formGroup]="accountForm" (ngSubmit)="onSubmit()" autocomplete="off" class="p-2 flex-1 flex flex-col ">
-            <h1 class="border-b text-darkslategray text-lg font-medium">{{'CFH (Centro Formación Homologado) '|
-                translate }}</h1>
+        <form [formGroup]="accountForm" (ngSubmit)="onSubmit()" autocomplete="off" class=" flex-1 flex flex-col ">
             <shared-simple-dropdown class="w-full md:w-1/2" fieldName="clientType" label="{{'clientType' | translate}}"
                 [formGroup]="accountForm" [dropdownItems]="entity" [selectedItem]="selectedEntity">
             </shared-simple-dropdown>
             <div class="flex flex-col items-start space-y-3">
                 <div class="bg-white flex flex-row items-center space-x-1">
                     <p class="text-darkslategray  font-bold">{{'Video_CFH'| translate }}:</p>
-                    <button class="text-red-500 font-normal animate__animated animate__fadeInDown hover:underline"
+                    <button class="p-2  bg-darkslategray text-line rounded-lg font-normal animate__animated animate__fadeInDown"
                         (click)="openVideoCFH()">
-                        https://youtu.be/YdyriLrWjpc
+                        {{'Watch_Video' | translate}}
                     </button>
                 </div>
             </div>
@@ -82,14 +83,18 @@
 
             <div class="p-2 flex flex-col space-y-3">
                 <div class=" bg-white flex flex-col lg:flex-row lg:items-center lg:space-x-3">
-                    <h1 class="text-darkslategray font-bold">Contrato Centro de Formación Homologado:</h1>
+                    <h1 class="text-darkslategray font-bold">{{'Approved_Training_Center_Contract:' | translate}}</h1>
                     <div class="flex flex-row items-center space-x-3">
-                        <a *ngIf="!showDocument" class="p-2  bg-darkslategray text-line rounded-lg font-normal animate__animated animate__fadeInDown"
-                            href="assets/contracts/8-4-24-Contrato-CFH-Centro-Formacion-Homologado.pdf" download><i class="fa-solid fa-download animate-pulse"></i>
+                        <a *ngIf="!showDocument"
+                            class="p-2  bg-darkslategray text-line rounded-lg font-normal animate__animated animate__fadeInDown"
+                            href="assets/contracts/8-4-24-Contrato-CFH-Centro-Formacion-Homologado.pdf" download><i
+                                class="fa-solid fa-download animate-pulse"></i>
                             {{'Contract'| translate }}
                         </a>
-                        <a *ngIf="showDocument" class="p-2  bg-darkslategray text-line rounded-lg font-normal animate__animated animate__fadeInDown"
-                            href="assets/contracts/8-4-24-DSO-Training-Center-Agreement-.pdf" download><i class="fa-solid fa-download animate-pulse"></i>
+                        <a *ngIf="showDocument"
+                            class="p-2  bg-darkslategray text-line rounded-lg font-normal animate__animated animate__fadeInDown"
+                            href="assets/contracts/8-4-24-DSO-Training-Center-Agreement-.pdf" download><i
+                                class="fa-solid fa-download animate-pulse"></i>
                             {{'Contract'| translate }}
                         </a>
                         <!-- <div class="flex items-center justify-center flex-col space-y-1">
