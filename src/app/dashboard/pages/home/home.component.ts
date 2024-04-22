@@ -16,7 +16,7 @@ export class HomeComponent implements OnInit {
   user!: any;
 
   menuOptionFreeProfessional: MenuOption[] = [
-    { name: 'Gestion Etica y Transparente de Proyecto', path: '/project-manager', icon: 'fa-project-diagram' },
+    { name: 'transparent_project', path: '/project-manager', icon: 'fa-project-diagram' },
    // { name: 'TitlePerformance', path: '/home/free-professional-file', icon: 'fa-file' },
     { name: 'registerNewUser', path: '/onboarding', icon: 'fa-user-plus' },
     { name: 'Assign_Processor_to_Claim', path: '/functions/assign-pltr-claims', icon: 'fa-user' },
@@ -26,15 +26,15 @@ export class HomeComponent implements OnInit {
 
   menuOptionClaimant: MenuOption[] = [
     { name: 'presentar_reclamación', path: '/onboarding/onboarding-register-claimant', icon: 'fa-balance-scale' },
-    { name: 'Gestion Etica y Transparente de Proyecto', path: '/project-manager', icon: 'fa-project-diagram' }
+    { name: 'transparent_project', path: '/project-manager', icon: 'fa-project-diagram' }
   ]
 
   menuOptionCFH: MenuOption[] = [
-    { name: 'Gestion Etica y Transparente de Proyecto', path: '/project-manager', icon: 'fa-project-diagram' }
+    { name: 'transparent_project', path: '/project-manager', icon: 'fa-project-diagram' }
   ]
 
   menuOptionSubscriber: MenuOption[] = [
-    { name: 'Gestion Etica y Transparente de Proyecto', path: '/project-manager', icon: 'fa-project-diagram' }
+    { name: 'file_claim', path: '/*', icon: 'fa-file' }
   ]
 
   constructor(

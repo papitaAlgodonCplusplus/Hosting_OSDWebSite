@@ -22,8 +22,8 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
   showDocument!: boolean;
 
   clientType: DropDownItem[] = [
-    { value: this.translate.instant('entidad_publica'), key: this.translate.instant('entidad_publica') }, //TODO: Implement language switching
-    { value: this.translate.instant('entidad_privada'), key: this.translate.instant('entidad_privada') },
+    { value: this.translate.instant('Public Entity'), key: "Public Entity" }, //TODO: Implement language switching
+    { value: this.translate.instant('Private Entity'), key: "Private Entity" },
   ];
   selectedPLcode: string | undefined;
   plCode: DropDownItem[] = [
@@ -40,10 +40,10 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
   }
   ngOnInit(): void {
     setTimeout(() => {
-      if(this.translate.currentLang == "en"){
+      if (this.translate.currentLang == "en") {
         this.showDocument = true
       }
-      else{
+      else {
         this.showDocument = false
       }
 
@@ -67,11 +67,11 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
       if (fileExtension === 'pdf') {
         this.documentName = fileName;
       } else {
-        if(this.translate.currentLang == "en"){
+        if (this.translate.currentLang == "en") {
           this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "You must insert only PDF files" }));
           this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
           this.store.dispatch(ModalActions.openAlert());
-        }else{
+        } else {
           this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Debe Insertar Solo archivos PDF" }));
           this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
           this.store.dispatch(ModalActions.openAlert());
@@ -139,11 +139,11 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
     if (this.personalForm.invalid || this.accountForm.invalid) {
       this.accountForm.markAllAsTouched();
       this.personalForm.markAllAsTouched();
-      if(this.translate.currentLang == "en"){
+      if (this.translate.currentLang == "en") {
         this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "There are missing fields to fill out" }));
         this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
         this.store.dispatch(ModalActions.openAlert());
-      }else{
+      } else {
         this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Faltan campos por llenar" }));
         this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
         this.store.dispatch(ModalActions.openAlert());

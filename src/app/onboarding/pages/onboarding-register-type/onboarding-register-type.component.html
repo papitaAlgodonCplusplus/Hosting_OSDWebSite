@@ -1,75 +1,52 @@
-<div class="flex lg:flex-row md:flex-row flex-col" >
-    <div class="flex-1 flex flex-col min-h-screen bg-white">
-        <div class="absolute p-2">
-            <a routerLink="/auth" class="text-darkslategray p-2 text-start b"> <i
-                    class="fa-solid fa-chevron-left pr-1 cursor-pointer animate-pulse"></i>
-                {{'regresar' | translate}}</a>
-        </div>
-        <div class="flex-1 flex flex-col bg-line justify-center items-center text-darkslategray">
-            <h1 class="text-3xl font-bold mb-2">{{'titulo' | translate}}</h1>
-            <p class="text-sm mb-2">{{'subTitulo' | translate}}</p>
-        </div>
-
-        <div class="bg-white border-black">
-            <div class=" flex flex-col py-2 space-y-2">
-                <div class="flex flex-col space-y-2">
-
-                    <div class="w-full flex justify-end ">
-                        <h1 class="text-darkslategray bg-yellow-500 rounded-l-full pl-3 py-1 pr-52"> <i
-                                class="fa-solid fa-user text-darkslategray pr-3"></i>{{'usuarios'
-                            | translate}}:
-                        </h1>
+<div class="flex flex-col bg-white justify-center space-y-3 h-full p-3">
+    <div class="absolute right-3 bottom-3">
+        <a routerLink="/auth" class="text-darkslategray bg-line rounded-xl p-2 text-start b">
+            <i class="fa-solid fa-chevron-left pr-1 cursor-pointer animate-pulse"></i>
+            {{'regresar' | translate}}
+        </a>
+    </div>
+    <div class="flex flex-col justify-center items-center text-darkslategray border-r">
+        <h1 class="text-3xl font-bold mb-2">{{'titulo' | translate}}</h1>
+        <p class="text-sm mb-2">{{'subTitulo' | translate}}</p>
+    </div>
+    <div class="flex items-center justify-center">
+        <div class="flex flex-col lg:flex-row items-center justify-center lg:space-x-3 space-y-3 lg:space-y-0">
+            <div class="flex-1 text-center flex flex-col justify-center items-center space-x-3 p-2 text-darkslategray">
+                <h1 class="rounded-l-full pl-3 py-1 ">
+                    <i class="fa-solid fa-user pr-3"></i>
+                    {{'usuarios' | translate}}:
+                </h1>
+                <div class="flex flex-row space-x-3 justify-center">
+                    <div routerLink="/onboarding/onboarding-register-claimant"
+                        class="flex flex-row justify-center items-center space-x-3 border p-2 rounded-xl bordery bg-line">
+                        <i class="fa-solid fa-user-alt cursor-pointer text-4xl"></i>
+                        <button class="">{{'reclamante' | translate}}</button>
                     </div>
-                    <div class="w-full flex flex-col items-end space-y-2">
-                        <button
-                            class="pl-20 flex justify-end items-center text-darkslategray hover:bg-line rounded-l-full p-1  transition duration-300 ease-in-out"
-                            routerLink="/onboarding/onboarding-register-claimant">
-                            <i class="fa-solid fa-chevron-left pr-1 cursor-pointer animate-pulse"></i> {{'reclamante' |
-                            translate}}
-                        </button>
-
-                        <button
-                            class="pl-20 flex justify-end items-center text-darkslategray hover:bg-line rounded-l-full p-1  transition duration-300 ease-in-out"
-                            routerLink="/onboarding/onboarding-register-sub-client">
-                            <i class="fa-solid fa-chevron-left pr-1 cursor-pointer animate-pulse"></i>
-                            {{'suscriptor_cliente' | translate}}
-                        </button>
+                    <div routerLink="/onboarding/onboarding-register-sub-client"
+                        class="flex flex-row justify-center items-center space-x-3 border p-2 rounded-xl bordery bg-line">
+                        <i class="fa-solid fa-user-check cursor-pointer text-4xl"></i>
+                        <button class="">{{'suscriptor_cliente' | translate}}</button>
                     </div>
                 </div>
-                <div class="space-y-2">
-
-                    <div class="w-full flex justify-start mr-2">
-                        <h1 class=" text-darkslategray text-center pr-2 bg-yellow-500 rounded-r-full py-1 pl-52"> <i
-                                class="fa-solid fa-user text-darkslategray pr-3"></i>{{'equipo_OSD'
-                            | translate}}:
-                        </h1>
+            </div>
+            <div class="flex-1 text-center flex flex-col justify-center items-center space-x-3 p-2 text-line">
+                <h1 class="rounded-l-full pl-3 py-1 text-darkslategray">
+                    <i class="fa-solid fa-users pr-3"></i>
+                    {{'equipo_OSD' | translate}}:
+                </h1>
+                <div class="flex flex-row space-x-3 justify-center">
+                    <div routerLink="/onboarding/onboarding-register-cfh"
+                        class="flex flex-row justify-center items-center border p-2 rounded-xl bordery bg-darkslategray">
+                        <i class="fa-solid fa-graduation-cap cursor-pointer text-4xl"></i>
+                        <button class="lg:whitespace-nowrap">{{'CFH' | translate}}</button>
                     </div>
-
-                    <div class=" flex flex-col items-start space-y-2">
-
-                        <button
-                            class="pr-20 flex items-center text-darkslategray hover:bg-line rounded-r-full p-1  transition duration-300 ease-in-out"
-                            routerLink="/onboarding/onboarding-register-cfh">
-                            {{'CFH' | translate}} <i
-                                class="fa-solid fa-chevron-right pl-1 cursor-pointer animate-pulse"></i>
-                        </button>
-
-                        <button
-                            class="pr-20 flex items-center text-darkslategray hover:bg-line rounded-r-full p-1  transition duration-300 ease-in-out"
-                            routerLink="/onboarding/onboarding-register-free-professional">
-                            {{'profesional_libre' | translate}} <i
-                                class="fa-solid fa-chevron-right pl-1 cursor-pointer animate-pulse"></i>
-                        </button>
+                    <div routerLink="/onboarding/onboarding-register-free-professional"
+                        class="flex flex-row justify-center items-center border p-2 rounded-xl bordery bg-darkslategray">
+                        <i class="fa-solid fa-user-tie pl-1 cursor-pointer text-4xl"></i>
+                        <button class="lg:whitespace-nowrap">{{'profesional_libre' | translate}}</button>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
-
-    <div class="flex-1 bg-darkslategray flex justify-center items-center ">
-        <shared-error-modal *ngIf="errorModalOpen$ | async"></shared-error-modal>
-        <img src="/./assets/img/OSD.png" alt="Logo OSD" class="  ">
-    </div>
-
 </div>

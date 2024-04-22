@@ -22,8 +22,8 @@ export class OnboardingRegisterCfhComponent {
   showDocument!: boolean;
 
   entity: DropDownItem[] = [
-    { value: this.translate.instant("entidad_publica"), key: this.translate.instant("entidad_publica") },
-    { value: this.translate.instant("entidad_privada"), key: this.translate.instant("entidad_privada") },
+      { value: this.translate.instant('Public Entity'), key: "Public Entity" }, //TODO: Implement language switching
+    { value: this.translate.instant('Private Entity'), key: "Private Entity" },
   ];
   selectedPLcode: string | undefined;
   plCode: DropDownItem[] = [

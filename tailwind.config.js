@@ -33,7 +33,8 @@ module.exports = {
         'line' : '#e5e7eb'
       },
       borderColor:{
-        'line' : '#e5e7eb'
+        'line' : '#e5e7eb',
+        'darkslategray' : '#1b3e57'
       },
     },
   },
