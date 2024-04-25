@@ -72,6 +72,7 @@ export class EventConstants {
   public static ACCOUNT_FORM: string = "AccountForm";
   public static PERSONAL_FORM: string = "PersonalForm";
   public static ACCOUNT_TYPE: string = "AccountType";
+  public static CLAIM_FORM: string = "ClaimForm";
 
   public static SERVICE_PROVIDED: string = "serviceProvided";
   public static SUBSCRIBER_CLAIMED: string = "subscriberClaimed";

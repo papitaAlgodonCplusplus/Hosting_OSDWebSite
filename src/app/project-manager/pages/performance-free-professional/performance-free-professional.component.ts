@@ -11,7 +11,6 @@ import { OSDDataService } from 'src/app/services/osd-data.service';
 import { AuthSelectors } from 'src/app/store/selectors';
 import { DatePipe } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
-import { error } from 'console';
 
 @Component({
   selector: 'app-performance-free-professional',

@@ -1,6 +1,6 @@
 <div class="flex flex-col h-full md:flex-row-reverse">
   <div class="flex-1 flex justify-center items-center">
-    
+
     <div
       class="relative w-full xl:w-full md:w-11/12 h-full rounded-l-3xl rounded-r-8xl bg-white-lightbone md:bg-darkblue-cyan max-w-screen-lg max-h-[800px]">
       <shared-error-modal *ngIf="errorModalOpen$ | async"></shared-error-modal>
@@ -13,8 +13,8 @@
 
           <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" autocomplete="off"
             class="flex flex-col items-center justify-center h-4/5 w-full md:w-4/5 px-2 pb-20 2xl:px-10 gap-6">
-            <shared-input-field class="w-full" fieldName="email" label="{{ 'email' | translate }}"
-              inputType="email" [formGroup]="loginForm"></shared-input-field>
+            <shared-input-field class="w-full" fieldName="email" label="{{ 'email' | translate }}" inputType="email"
+              [formGroup]="loginForm"></shared-input-field>
             <auth-input-password class="w-full" [formGroup]="loginForm" fieldName="password"
               label="{{'contraseña' | translate}}"></auth-input-password>
             <div class="w-full flex justify-end">

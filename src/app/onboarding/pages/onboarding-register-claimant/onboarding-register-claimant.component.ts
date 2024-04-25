@@ -1,18 +1,15 @@
-import { Component, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
-import { is, tr } from 'date-fns/locale';
-import { Guid } from 'guid-typescript';
 import { Observable } from 'rxjs';
-import { Action } from 'rxjs/internal/scheduler/Action';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
-import { AuthService } from 'src/app/auth/services/auth.service';
 import { EventConstants } from 'src/app/models/eventConstants';
+import { AuthenticationService } from 'src/app/services/authentication.service';
 import { OSDDataService } from 'src/app/services/osd-data.service';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { ValidationsService } from 'src/app/services/validations.service';
-import { AuthenticationActions, ModalActions, UiActions } from 'src/app/store/actions';
+import { ModalActions, UiActions } from 'src/app/store/actions';
 import { AuthSelectors } from 'src/app/store/selectors';
 
 @Component({
@@ -29,10 +26,10 @@ export class OnboardingRegisterClaimantComponent {
   showPersonalInfo!: boolean;
   selectedClaimant: string | undefined;
   claimant: DropDownItem[] = [
-    { value: this.translate.instant('reclamacion_simple'), key: 'reclamacion_simple' },
-    { value: this.translate.instant('reclamacion_compleja'), key: 'reclamacion_simple' },
-    { value: this.translate.instant('reclamacion_sostenibilidad'), key: 'reclamacion_sostenibilidad' },
-    { value: this.translate.instant('mediacion_arbitraje'), key: 'mediacion_arbitraje' }
+    { value: this.translate.instant('SimpleClaim'), key: 'SimpleClaim' },
+    { value: this.translate.instant('ComplexClaim'), key: 'ComplexClaim' },
+    { value: this.translate.instant('ExtrajudicialClaimSustainability'), key: 'ExtrajudicialClaimSustainability' },
+    { value: this.translate.instant('MediationArbitration'), key: 'MediationArbitration' }
   ];
   selectedSubscribers: string | undefined;
   subscribers: DropDownItem[] = [];
@@ -45,7 +42,8 @@ export class OnboardingRegisterClaimantComponent {
     private validationsService: ValidationsService,
     private translate: TranslateService,
     private osdEventService: OSDService,
-    private osdDataService: OSDDataService
+    private osdDataService: OSDDataService,
+    private authenticationService: AuthenticationService
   ) {
 
     this.personalForm = this.createPersonalForm();
@@ -56,10 +54,18 @@ export class OnboardingRegisterClaimantComponent {
     this.osdEventService.GetSubscribers();
 
     setTimeout(() => {
-      this.store.dispatch(UiActions.hideAll());
+      this.store.dispatch(UiActions.hideFooter());
+      this.store.dispatch(UiActions.hideLeftSidebar());
+
       this.isValidToken$.subscribe((validation) => {
         if (validation) {
           this.showPersonalInfo = false
+          this.personalForm.patchValue({
+            registrationOption: 'unregistered'
+          });
+          this.personalForm.patchValue({
+            acceptConditions: true
+          });
         }
         else {
           this.showPersonalInfo = true
@@ -67,7 +73,7 @@ export class OnboardingRegisterClaimantComponent {
       })
 
       this.osdDataService.getOsdUsersSubscribersSuccess$.subscribe(osdUsersSubscribers => {
-        osdUsersSubscribers.map(item => { 
+        osdUsersSubscribers.map(item => {
           const subscriber: DropDownItem = { value: item.Name, key: item.Id };
           this.subscribers.push(subscriber);
         });
@@ -145,51 +151,39 @@ export class OnboardingRegisterClaimantComponent {
     }
   }
 
-  setRegistrationTrue() {
-    this.registration = true;
-  }
-  setRegistrationFalse() {
-    this.registration = false;
-  }
   onSubmit(): void {
-    if (this.accountForm.invalid || this.personalForm.invalid) {
+    this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
+    if (this.accountForm.invalid && this.personalForm.invalid && this.personalForm.value.registrationOption == "register" || this.personalForm.value.registrationOption == null) {
       this.accountForm.markAllAsTouched();
       this.personalForm.markAllAsTouched();
-
-      if (this.translate.currentLang == "en") {
-        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "There are missing fields to fill out" }));
-        this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
-        this.store.dispatch(ModalActions.openAlert());
-      } else {
-        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Faltan campos por llenar" }));
-        this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
-        this.store.dispatch(ModalActions.openAlert());
-      }
-
+      this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: this.translate.instant('incompleteData') }))
+      this.store.dispatch(ModalActions.openAlert());
+      return;
+    }
+    else if (this.accountForm.invalid && this.personalForm.value.registrationOption == "unregistered") {
+      this.accountForm.markAllAsTouched();
+      this.toggleForm("claimInfo")
+      this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: this.translate.instant('incompleteClaim') }))
+      this.store.dispatch(ModalActions.openAlert());
       return;
     }
 
     if (!this.personalForm.value.acceptConditions) {
       this.isAcceptConditions = true;
-      console.log("Hubo error en las condiciones " + this.personalForm.value.acceptConditions)
-
+      console.log("Hola")
       return;
     }
 
-    const userEmail = this.personalForm.value.email;
-    localStorage.setItem('userEmail', userEmail);
-    let claimantId = "e77b5172-f726-4c1d-9f9e-d2dbd77e03c9";
-    let subscriberclaimed = this.accountForm.value.subscriberClaimed
-    let serviceProvided = this.accountForm.value.serviceProvided
-    let amountClaimed = this.accountForm.value.amountClaimed
-    let facts = this.accountForm.value.facts
-    let supportingDocument1 = this.documentNames[0]
-    let supportingDocument2 = this.documentNames[1]
-    let claimtype = this.accountForm.value.claimtype
-    if (this.registration) {
-      claimantId = Guid.create().toString();
-      this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, "Claimant", claimantId);
+    console.log(this.personalForm.value.registrationOption)
+    if (this.personalForm.value.registrationOption === "register") {
+      this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, "Claimant");
+    } else {
+      if (this.authenticationService.userInfo?.Id) {
+        const claimantIdControl = new FormControl(this.authenticationService.userInfo.Id);
+        this.accountForm.addControl(EventConstants.CLAIMANT_ID, claimantIdControl);
+      }
+      this.osdEventService.addClaim(this.accountForm.value);
     }
-    this.osdEventService.addClaim(claimantId, claimtype, subscriberclaimed, serviceProvided, facts, amountClaimed, supportingDocument1, supportingDocument2);
+
   }
 }

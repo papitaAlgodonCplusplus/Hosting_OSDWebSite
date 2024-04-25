@@ -157,6 +157,6 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
 
     const userEmail = this.personalForm.value.email;
     localStorage.setItem('userEmail', userEmail);
-    this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.SUBSCRIBER_CUSTOMER, "");
+    this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.SUBSCRIBER_CUSTOMER);
   }
 }

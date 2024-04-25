@@ -1,4 +1,4 @@
-export class Claim {
-    id : string = "";
-    claimType : string = "";
+export interface Claim {
+    id: string;
+    claimType: string;
 }

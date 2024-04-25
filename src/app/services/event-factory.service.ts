@@ -139,7 +139,7 @@ export class EventFactoryService {
     return event;
   }
 
-  public CreateGettingClaimsDataEvent(): WebBaseEvent {
+  public CreateGettingClaimsDataEvent(userId : string, accountType : string): WebBaseEvent {
     let event: WebBaseEvent;
 
     event = new WebBaseEvent();
@@ -150,7 +150,9 @@ export class EventFactoryService {
     event.Date = new Date().toUTCString();
     event.ApplicationIdentifier = 'WebClient';
     event.SessionKey = this.authenticationService.sessionKey;
-    
+    event.setBodyProperty(EventConstants.USER_ID, userId);
+    event.setBodyProperty(EventConstants.ACCOUNT_TYPE, accountType);
+
     return event;
   }
   public gettingFreeProfessionalsTRDataEvent(): WebBaseEvent {
@@ -277,7 +279,7 @@ export class EventFactoryService {
     return event;
   }
 
-  public CreateRegisterUserEvent(accountForm: RegisterUserEvent, personalForm: RegisterUserEvent, accounType : String, claimantId: String): WebBaseEvent {
+  public CreateRegisterUserEvent(accountForm: Form, personalForm: Form, accounType : String): WebBaseEvent {
     let event: WebBaseEvent;
 
     event = new WebBaseEvent();
@@ -291,13 +293,11 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.ACCOUNT_FORM, accountForm);
     event.setBodyProperty(EventConstants.PERSONAL_FORM, personalForm);
     event.setBodyProperty(EventConstants.ACCOUNT_TYPE, accounType);
-    if(claimantId !== ""){
-      event.setBodyProperty(EventConstants.CLAIMANT_ID, claimantId);
-    }
+  
     return event;
   }
 
-  public CreateAddClaimEvent(claimantId: String | null, claimType: String, Subscriberclaimed: String, Serviceprovided: String, fact: String, amountClaimed: String, document1: String, document2: String): WebBaseEvent {
+  public CreateAddClaimEvent(claimForm: Form): WebBaseEvent {
     let event: WebBaseEvent;
 
     event = new WebBaseEvent();
@@ -309,15 +309,8 @@ export class EventFactoryService {
     event.Date = (new Date()).toUTCString();
     event.ApplicationIdentifier = "WebClient"; //TODO: change to use an application identifier
     
-    event.setBodyProperty(EventConstants.CLAIMANT_ID, claimantId);
-    event.setBodyProperty(EventConstants.CLAIM_TYPE, claimType);
-    event.setBodyProperty(EventConstants.SUBSCRIBER_CLAIMED, Subscriberclaimed);
-    event.setBodyProperty(EventConstants.SERVICE_PROVIDED, Serviceprovided);
-    event.setBodyProperty(EventConstants.FACTS, fact);
-    event.setBodyProperty(EventConstants.AMOUNT_CLAIMED, amountClaimed);
-    event.setBodyProperty(EventConstants.SUPPORTING_DOCUMENT1, document1);
-    event.setBodyProperty(EventConstants.SUPPORTING_DOCUMENT2, document2);
-
+    event.setBodyProperty(EventConstants.CLAIM_FORM, claimForm);
+  
     return event;
   }
 

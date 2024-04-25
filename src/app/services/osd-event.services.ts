@@ -21,7 +21,6 @@ import { TranslateService } from '@ngx-translate/core';
   providedIn: 'root'
 })
 export class OSDService {
-  //osdEventSubscriber: Subscription;
   claims: any[] = [];
   usersFreeProfessionalsTR: any[] = [];
   freeProfessionalsTR: any[] = [];
@@ -109,33 +108,6 @@ export class OSDService {
     });
   }
 
-  getFreeProfessionalsTRList(): Promise<any[]> {
-    return new Promise((resolve, reject) => {
-      const checkResponse = () => {
-        if (this.freeProfessionalsTRResponse) {
-          resolve(this.freeProfessionalsTR);
-        } else {
-          setTimeout(checkResponse, 1000);
-        }
-      };
-
-      checkResponse();
-    });
-  }
-  getUsersFreeProfessionalsTRList(): Promise<any[]> {
-    return new Promise((resolve, reject) => {
-      const checkResponse = () => {
-        if (this.freeProfessionalsTRResponse) {
-          resolve(this.usersFreeProfessionalsTR);
-        } else {
-          setTimeout(checkResponse, 1000);
-        }
-      };
-
-      checkResponse();
-    });
-  }
-
   /*private subscribeToOSDEvents(): void {
       console.log("subscribeToOSDEvents");
       this.osdEventSubscriber = this.websocketService.osdEventHandler.subscribe((webBaseEvent: WebBaseEvent) =>
@@ -154,6 +126,7 @@ export class OSDService {
       }
     });
   }
+
   public addPerformanceFreeProfessional(performanceFP: PerformanceFreeProfessional) {
     const event: WebBaseEvent = this.eventFactoryService.CreateAddPerformanceFreeProfessionalEvent(performanceFP);
     console.log('Se envia el evento:', event)
@@ -168,8 +141,8 @@ export class OSDService {
     });
   }
 
-  public gettingClaimsData() {
-    const gettingClaimsEvent: WebBaseEvent = this.eventFactoryService.CreateGettingClaimsDataEvent();
+  public gettingClaimsData(userId : string, accountType : string) {
+    const gettingClaimsEvent: WebBaseEvent = this.eventFactoryService.CreateGettingClaimsDataEvent(userId,accountType);
     this.restApiService.SendOSDEvent(gettingClaimsEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
@@ -207,9 +180,8 @@ export class OSDService {
     });
   }
 
-  public userRegister(accountForm: RegisterUserEvent, personalForm: RegisterUserEvent, accountType: string, claimantId: string) {
-    const registerUserEvent: WebBaseEvent = this.eventFactoryService.CreateRegisterUserEvent(accountForm, personalForm, accountType, claimantId);
-    console.log("Enviando mensaje al restAPIService.sendOSDEvent");
+  public userRegister(accountForm: Form, personalForm: Form, accountType: string) {
+    const registerUserEvent: WebBaseEvent = this.eventFactoryService.CreateRegisterUserEvent(accountForm, personalForm, accountType);
     this.restApiService.SendOSDEvent(registerUserEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
@@ -220,10 +192,10 @@ export class OSDService {
       }
     });
   }
-  public addClaim(claimantId: String | null, claimType: String, Subscriberclaimed: String, Serviceprovided: String, fact: String, amountClaimed: String, document1: String, document2: String) {
-    const registerUserEvent: WebBaseEvent = this.eventFactoryService.CreateAddClaimEvent(claimantId, claimType, Subscriberclaimed, Serviceprovided, fact, amountClaimed, document1, document2);
-    console.log("Enviando mensaje al restAPIService.sendOSDEvent");
-    this.restApiService.SendOSDEvent(registerUserEvent).subscribe({
+
+  public addClaim(claimForm: Form) {
+    const addClaimEvent: WebBaseEvent = this.eventFactoryService.CreateAddClaimEvent(claimForm);
+    this.restApiService.SendOSDEvent(addClaimEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
         this.HandleAddClaimResponse(osdEvent);
@@ -324,11 +296,14 @@ export class OSDService {
   public HandleGettingFreeProfessionalsTRResponse(webBaseEvent: WebBaseEvent) {
     try {
       if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['FreeProfessionalList']) {
-        this.usersFreeProfessionalsTR = webBaseEvent.Body['OsdUserList'];
-        this.freeProfessionalsTR = webBaseEvent.Body['FreeProfessionalList'];
+        console.log(webBaseEvent)
+        var usersFreeProfessionalsTR = webBaseEvent.Body['OsdUserList'];
+        console.log(usersFreeProfessionalsTR)
+        var freeProfessionalsTR = webBaseEvent.Body['FreeProfessionalList'];
+        console.log(freeProfessionalsTR)
         this.freeProfessionalsTRResponse = true;
-        console.log('FR')
-        console.log(this.freeProfessionalsTR)
+        this.osdDataService.emitFreeProfessionalTR(freeProfessionalsTR)
+        this.osdDataService.emitUsersFreeProfessionalTR(usersFreeProfessionalsTR)
       } else {
         this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'No hay reclamaciones existentes' }));
       }

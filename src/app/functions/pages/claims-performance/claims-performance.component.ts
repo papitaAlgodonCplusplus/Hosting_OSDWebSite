@@ -8,11 +8,11 @@ import { UiActions } from 'src/app/store/actions';
 import { ClaimSelectors } from 'src/app/store/selectors';
 
 @Component({
-  selector: 'app-create-performance',
-  templateUrl: './create-performance.component.html',
-  styleUrls: ['./create-performance.component.css']
+  selector: 'app-claims-performance',
+  templateUrl: './claims-performance.component.html',
+  styleUrls: ['./claims-performance.component.css']
 })
-export class CreatePerformanceComponent implements OnDestroy {
+export class ClaimsPerformanceComponent implements OnDestroy {
   claim$ : Observable<string> = this.store.select(ClaimSelectors.claimId);
   performanceForm: FormGroup;
   Response = "";

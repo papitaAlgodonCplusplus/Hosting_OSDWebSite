@@ -37,6 +37,9 @@ export class LeftSidebarComponent implements OnInit {
             this.isAuthorized = false
           }
         }
+        else{
+          this.isAuthorized = true
+        }
       }
     }, 0);
   }

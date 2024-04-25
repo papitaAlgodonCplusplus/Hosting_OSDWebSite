@@ -34,7 +34,7 @@ export class HomeComponent implements OnInit {
   ]
 
   menuOptionSubscriber: MenuOption[] = [
-    { name: 'file_claim', path: '/*', icon: 'fa-file' }
+    { name: 'file_claim', path: '/functions/claims-file', icon: 'fa-file' }
   ]
 
   constructor(
@@ -45,7 +45,6 @@ export class HomeComponent implements OnInit {
   ) {
   }
   ngOnInit(): void {
-
     if (this.authenticationService.userInfo) {
       this.user = this.authenticationService.userInfo;
 
