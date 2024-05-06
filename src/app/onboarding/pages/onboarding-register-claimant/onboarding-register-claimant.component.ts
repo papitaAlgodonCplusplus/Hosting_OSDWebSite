@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
@@ -18,6 +19,7 @@ import { AuthSelectors } from 'src/app/store/selectors';
   styleUrls: ['./onboarding-register-claimant.component.css']
 })
 export class OnboardingRegisterClaimantComponent {
+  selectorRegistry!: boolean;
   items: any[] = [];
   displayedItems: any[] = [];
   isValidToken$: Observable<boolean> = this.store.select(AuthSelectors.authenticationToken);
@@ -48,7 +50,8 @@ export class OnboardingRegisterClaimantComponent {
     private translate: TranslateService,
     private osdEventService: OSDService,
     private osdDataService: OSDDataService,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private route: ActivatedRoute
   ) {
     this.personalForm = this.createPersonalForm();
     this.accountForm = this.createAccountForm();
@@ -56,32 +59,23 @@ export class OnboardingRegisterClaimantComponent {
 
   ngOnInit(): void {
     this.osdEventService.GetSubscribers();
+    this.selectorRegistry = this.route.snapshot.params['selectorRegistry'] === 'true';
 
     setTimeout(() => {
       this.store.dispatch(UiActions.hideFooter());
       this.store.dispatch(UiActions.hideLeftSidebar());
 
-      this.isValidToken$.subscribe((validation) => {
-        if (validation) {
-          this.showPersonalInfo = false
-          this.personalForm.patchValue({
-            registrationOption: 'unregistered'
-          });
-          this.personalForm.patchValue({
-            acceptConditions: true
-          });
-        }
-        else {
-          this.showPersonalInfo = true
-        }
-      })
+      if (this.selectorRegistry === true) {
+        this.showPersonalInfo = true;
+      }
+      else {
+        this.showPersonalInfo = false;
+      }
 
       this.osdDataService.getOsdUsersSubscribersSuccess$.subscribe(osdUsersSubscribers => {
         this.subscribers = osdUsersSubscribers;
-        console.log(osdUsersSubscribers)
         this.applyFilters()
       });
-
     }, 0);
   }
 
@@ -137,12 +131,8 @@ export class OnboardingRegisterClaimantComponent {
     return form;
   }
 
-  toggleForm(formType: string): void {
-    if (formType === 'personalInfo') {
-      this.showPersonalInfo = true;
-    } else if (formType === 'claimInfo') {
-      this.showPersonalInfo = false;
-    }
+  toggleForm(): void {
+    this.showPersonalInfo = !this.showPersonalInfo;
   }
 
   displayFileName(): void {
@@ -157,17 +147,16 @@ export class OnboardingRegisterClaimantComponent {
 
   onSubmit(): void {
     this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
-    if (this.accountForm.invalid && this.personalForm.invalid && this.personalForm.value.registrationOption == "register" || this.personalForm.value.registrationOption == null) {
+    this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: this.translate.instant('incompleteData') }))
+
+    if (this.accountForm.invalid && this.personalForm.invalid && this.selectorRegistry === true) {
       this.accountForm.markAllAsTouched();
       this.personalForm.markAllAsTouched();
-      this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: this.translate.instant('incompleteData') }))
       this.store.dispatch(ModalActions.openAlert());
       return;
     }
-    else if (this.accountForm.invalid && this.personalForm.value.registrationOption == "unregistered") {
+    else if (this.accountForm.invalid && this.selectorRegistry === false) {
       this.accountForm.markAllAsTouched();
-      this.toggleForm("claimInfo")
-      this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: this.translate.instant('incompleteClaim') }))
       this.store.dispatch(ModalActions.openAlert());
       return;
     }
@@ -178,10 +167,10 @@ export class OnboardingRegisterClaimantComponent {
     }
 
     this.accountForm.patchValue({
-      subscriberClaimed:  this.selectedSubscribers 
+      subscriberClaimed: this.selectedSubscribers
     });
 
-    if (this.personalForm.value.registrationOption === "register") {
+    if (this.selectorRegistry === true) {
       this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, "Claimant");
     } else {
       if (this.authenticationService.userInfo?.Id) {

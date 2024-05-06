@@ -1,15 +1,15 @@
-<div class="flex flex-col bg-white justify-center space-y-3 p-3 h-full">
+<div class="flex flex-col bg-white justify-center space-y-16 p-3 ">
     <div class="absolute right-3 bottom-3">
         <a routerLink="/auth" class="text-darkslategray bg-line rounded-xl p-2 text-start font-medium">
             <i class="fa-solid fa-chevron-left pr-1 cursor-pointer animate-pulse"></i>
             {{'regresar' | translate}}
         </a>
     </div>
-    <div class="flex flex-col justify-center items-center text-darkslategray">
+    <div class="flex flex-col justify-center items-center text-darkslategray animate__animated animate__fadeInDown">
         <h1 class="text-xl sm:text-2xl md:text-3xl font-bold mb-2">{{'titulo' | translate}}</h1>
         <p class="text-xs sm:text-sm mb-2">{{'subTitulo' | translate}}</p>
     </div>
-    <div class="flex flex-col sm:flex-row items-center justify-center lg:py-16 py-6">
+    <div class="flex flex-col sm:flex-row items-center justify-center animate__animated animate__fadeInDown">
         <div class="flex flex-col lg:flex-row items-center justify-center space-y-3 lg:space-x-3 lg:space-y-0 p-2">
             <div class="flex-1 flex flex-col justify-center items-center text-darkslategray w-full">
                 <h1>
@@ -17,7 +17,7 @@
                     {{'usuarios' | translate}}:
                 </h1>
                 <div class="flex flex-row space-x-3 justify-center">
-                    <div routerLink="/onboarding/onboarding-register-claimant"
+                    <div routerLink="/onboarding/selector-registry-claimant"
                         class="flex flex-col justify-center items-center p-2">
                         <i class="fa-solid fa-user-alt cursor-pointer text-4xl sm:text-5xl transition duration-300 ease-in-out hover:text-line"></i>
                         <button>{{'reclamante' | translate}}</button>

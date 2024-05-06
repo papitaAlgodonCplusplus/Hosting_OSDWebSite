@@ -57,27 +57,7 @@
                             <auth-input-password class="w-full md:w-1/2" [formGroup]="personalForm" fieldName="password"
                                 label="{{'contraseña' | translate}}"></auth-input-password>
                         </div>
-
-
-                        <div class="space-x-2 pr-2">
-                            <input type="radio" id="register" formControlName="registrationOption"
-                                name="registrationOption" value="register">
-                            <label for="register">{{'registrarse_plataforma' | translate}}</label>
-                        </div>
-                        <div class="space-x-2">
-                            <input type="radio" id="noRegister" formControlName="registrationOption"
-                                name="registrationOption" value="unregistered">
-                            <label for="noRegister">{{'no_registrarse' | translate}}</label>
-                        </div>
                     </div>
-
-                </div>
-
-                <div class="w-full flex justify-start">
-                    <a class="flex items-center cursor-pointer mt-2 p-2 text-line bg-darkslategray rounded-xl font-medium"
-                        type="button" (click)="toggleForm('claimInfo')">
-                        {{'ir_informacion_reclamacion' | translate}} <i
-                            class="fa-solid fa-chevron-right animate-pulse pl-2"></i></a>
                 </div>
             </form>
         </div>
@@ -91,9 +71,8 @@
                     [selectedItem]="selectedClaimant">
                 </shared-simple-dropdown>
 
-                <shared-input-field [readOnly]="true" (click)="showModal()" class="w-full md:w-1/2"
-                    fieldName="subscriberClaimed" inputType="text" label="{{'suscriptor_reclamado' | translate}}"
-                    [formGroup]="accountForm">
+                <shared-input-field [readOnly]="false" class="w-full md:w-1/2" fieldName="subscriberClaimed"
+                    inputType="text" label="{{'suscriptor_reclamado' | translate}}" [formGroup]="accountForm">
                 </shared-input-field>
 
                 <shared-input-field class="w-full md:w-1/3" fieldName="serviceProvided"
@@ -137,16 +116,22 @@
                         <span class="ml-2 text-yellow-500">{{this.documentNames[1]}}</span>
                     </div>
                 </div>
-
-                <div *ngIf="!(isValidToken$ | async)" class="w-full flex justify-start">
-                    <a class="flex items-center cursor-pointer p-2 text-line bg-darkslategray rounded-xl font-medium"
-                        type="button" (click)="toggleForm('personalInfo')"><i
-                            class="fa-solid fa-chevron-left animate-pulse pr-2"></i>
-                        {{'volver_info_personal'
-                        | translate}}</a>
-                </div>
             </form>
         </div>
+
+        <div id="InfoDiv" *ngIf="selectorRegistry" class="w-full flex flex-row justify-center font-medium text-darkslategray">
+            <a [ngClass]="{'text-line' : showPersonalInfo}"
+                class="transition duration-300 ease-in-out flex items-center cursor-pointer mt-2 p-2 "
+                type="button" (click)="toggleForm()"><i
+                    class="fa-solid fa-chevron-left animate-pulse pr-2"></i>
+                {{'regresar' | translate}} </a>
+
+            <a [ngClass]="{'text-line' : !showPersonalInfo}"
+                class="transition duration-300 ease-in-out flex items-center cursor-pointer mt-2 p-2"
+                type="button" (click)="toggleForm()">
+                {{'continue' | translate}} <i class="fa-solid fa-chevron-right animate-pulse pl-2"></i></a>
+        </div>
+
         <form [formGroup]="personalForm" autocomplete="off" class="flex flex-col lg:flex-row lg:items-center w-full">
             <div *ngIf="!(isValidToken$ | async)" class="flex-1 pt-2 flex flex-row space-x-2 justify-start">
                 <div>
@@ -159,22 +144,22 @@
                 </div>
             </div>
 
-            <div class="flex-1 flex flex-row justify-end w-full space-x-2 py-3">
+            <div class="flex-1 flex flex-row justify-end w-full space-x-2 py-3 font-medium">
 
                 <button *ngIf="!(isValidToken$ | async) else isValidToken" routerLink="/onboarding/onboarding-register"
-                    class="p-2 bg-line rounded-xl text-darkslategray font-normal animate__animated animate__fadeInDown">
+                    class="p-2 bg-line rounded-xl text-darkslategray animate__animated animate__fadeInDown">
                     {{'cancelar' | translate}}
                 </button>
 
                 <button (click)="onSubmit()"
-                    class="p-2 bg-darkslategray rounded-xl text-white font-normal  animate__animated animate__fadeInDown">
+                    class="p-2 bg-darkslategray rounded-xl text-white  animate__animated animate__fadeInDown">
                     {{'confirm' | translate}}
                 </button>
 
                 <ng-template #isValidToken>
 
                     <button routerLink="/home"
-                        class="p-2 bg-line rounded-xl text-darkslategray font-normal  animate__animated animate__fadeInDown"
+                        class="p-2 bg-line rounded-xl text-darkslategray animate__animated animate__fadeInDown"
                         i18n="@@signin">
                         {{'cancelar' | translate}}
                     </button>
@@ -197,8 +182,9 @@
                 <div class="my-3 justify-end items-center space-x-3">
                     <input type="text" placeholder="{{'FilterbyCountry' | translate}}" [(ngModel)]="filterCountry"
                         class="input border rounded p-2 text-grey-darker" (input)="applyFilters()">
-                    <input type="text" placeholder="{{'FilterbyCompanyName' | translate}}" [(ngModel)]="filterCompanyName"
-                        class="input border rounded p-2 text-grey-darker " (input)="applyFilters()">
+                    <input type="text" placeholder="{{'FilterbyCompanyName' | translate}}"
+                        [(ngModel)]="filterCompanyName" class="input border rounded p-2 text-grey-darker "
+                        (input)="applyFilters()">
                 </div>
 
                 <table class="table-auto w-full">
@@ -212,7 +198,10 @@
                     </thead>
                     <tbody>
                         <tr *ngFor="let subscriber of filteredSubscribers">
-                            <td class="px-4 border-b py-2 text-center" (click)="selectSubscriber(subscriber.Id, subscriber.CompanyName)"> <a class="bg-line p-2 rounded-xl text-darkslategray font-medium cursor-pointer transition duration-300 ease-in-out hover:bg-darkslategray hover:text-line">Select</a></td>
+                            <td class="px-4 border-b py-2 text-center"
+                                (click)="selectSubscriber(subscriber.Id, subscriber.CompanyName)"> <a
+                                    class="bg-line p-2 rounded-xl text-darkslategray font-medium cursor-pointer transition duration-300 ease-in-out hover:bg-darkslategray hover:text-line">Select</a>
+                            </td>
                             <td class="px-4 border-b py-2 text-center">{{ subscriber.Name }}</td>
                             <td class="px-4 border-b py-2 text-center">{{ subscriber.CompanyName }}</td>
                             <td class="px-4 border-b py-2 text-center">{{ subscriber.Country }}</td>

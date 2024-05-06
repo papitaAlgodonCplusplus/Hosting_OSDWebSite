@@ -16,8 +16,8 @@ import { DatePipe } from '@angular/common';
   templateUrl: './project-management-dossier.component.html',
   styleUrls: ['./project-management-dossier.component.css']
 })
-export class ProjectManagementDossierComponent implements OnDestroy {
 
+export class ProjectManagementDossierComponent implements OnDestroy {
   readOnly: boolean = true;
   formProjectManager: FormGroup
   showOptions: boolean = false;

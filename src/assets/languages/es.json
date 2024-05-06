@@ -247,5 +247,6 @@
     "pageInWork": "Se esta trabajando en esta página",
     "FilterbyCountry" : "Filtrar por país...",
     "FilterbyCompanyName" : "Filtrar por Nombre...",
-    "viewPerformance" : "Ver actuaciones"
+    "viewPerformance" : "Ver actuaciones",
+    "continue" : "Continuar"
 }

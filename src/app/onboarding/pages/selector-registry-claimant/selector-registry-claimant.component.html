@@ -1,0 +1,14 @@
+<div class="flex flex-col space-y-10 justify-center items-center h-full p-3 text-darkslategray font-medium">
+    <div class=" flex space-x-20 text-xl animate__animated animate__fadeInDown">
+        <div class="flex flex-col items-center cursor-pointer" (click)="sendValue(true)">
+            <i class="fas fa-user-plus transition duration-300 ease-in-out hover:text-line text-5xl"></i>
+            <span>{{'registrarse_plataforma' | translate}}</span>
+        </div>
+        <div class="flex flex-col items-center cursor-pointer" (click)="sendValue(false)">
+            <i class="fas fa-user-times transition duration-300 ease-in-out hover:text-line text-5xl"></i>
+            <span>{{'no_registrarse' | translate}}</span>
+        </div>
+     
+    </div>
+    <button routerLink="/auth" class="bg-line text-darkslategray p-2 rounded-xl absolute bottom-3 right-3 font-medium">{{'cancelar' | translate}}</button>
+</div>

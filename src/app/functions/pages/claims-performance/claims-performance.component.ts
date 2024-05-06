@@ -82,7 +82,8 @@ export class ClaimsPerformanceComponent {
 
   ngOnInit() {
     setTimeout(() => {
-      this.store.dispatch(UiActions.hideAll());
+      this.store.dispatch(UiActions.hideFooter());
+      this.store.dispatch(UiActions.hideLeftSidebar());
     }, 0);
 
     this.OSDDataService.freeProfessionalId$.subscribe(id => {

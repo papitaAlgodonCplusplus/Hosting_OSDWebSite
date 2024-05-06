@@ -37,6 +37,7 @@ export class TransparencyComponent implements OnDestroy{
       });
     }, 0);
   }
+  
   ngOnDestroy(): void {
     setTimeout(() => {
       this.store.dispatch(UiActions.showAll());

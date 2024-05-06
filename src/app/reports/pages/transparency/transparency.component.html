@@ -1,18 +1,6 @@
-<div class="flex items-center px-3 py-2 text-black border-b bg-darkslategray cursor-pointer animate__animated animate__fadeInDown">
-    <div class="flex-1 flex items-center space-x-1">
-        <img src="/./assets/img/OSD_2.png" alt="Logo OSD" class="w-36">
-    </div>
-
-    <button
-        class="bg-darkslategray border px-2 py-1 rounded-md flex items-center transition duration-300 ease-in-out text-line hover:border-yellow-500"
-        [routerLink]="isUser ? '/home' : '/auth'">
-        {{'Regresar' | translate}} <i class="pl-3 fa-solid fa-arrow-right-from-bracket"></i>
-    </button>
-</div>
-<div class="py-3 text-2xl">
-    <span
-        class="pl-5 pr-3 py-1 bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden text-darkslategray font-medium">{{'transparencia'
-        | translate}} <i class="fa-solid fa-eye"></i></span> 
+<div class="text-darkslategray text-start py-3 text-xl font-medium">
+    <span class="pl-5 pr-3 py-1 bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden">
+        {{'transparencia' | translate}} <i class="fa-solid fa-eye"></i></span>
 </div>
 <div class="flex flex-col-reverse lg:flex-row-reverse space-y-3">
     <div class="w-full  px-3 lg:py-0 py-3">
@@ -74,4 +62,10 @@
             </a>
         </div>
     </div>
+</div>
+<div class="flex justify-end p-3">
+    <button class="font-medium  text-darkslategray bg-line border p-2 rounded-xl flex items-center"
+        [routerLink]="isUser ? '/home' : '/auth'">
+        {{'Regresar' | translate}} <i class="pl-3 fa-solid fa-arrow-right-from-bracket"></i>
+    </button>
 </div>

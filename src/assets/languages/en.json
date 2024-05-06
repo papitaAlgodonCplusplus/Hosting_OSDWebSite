@@ -247,5 +247,6 @@
   "pageInWork": "This page is in the works",
   "FilterbyCountry" : "Filter by Country...",
   "FilterbyCompanyName" : "Filter by Company Name...",
-  "viewPerformance" : "View Performance"
+  "viewPerformance" : "View Performance",
+  "continue" : "Continue"
 }
