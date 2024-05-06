@@ -1,4 +1,10 @@
 export interface Claim {
-    id: string;
-    claimType: string;
+    Id: string;
+    //Claimant: string;
+    Claimtype: string;
+    Status: string;
+    FreeprofessionalId: string;
+    Serviceprovided: string;
+    Amountclaimed: string;
+    Date: string;
 }

@@ -77,17 +77,15 @@
   "engineer": "Kuarctec engineer. OSD digital platform - 750€",
   "file_claim": "File (Complaint)",
   "state": "State",
-
   "Unassigned": "Unassigned",
   "Running": "Running",
   "Completed": "Completed",
-
   "subscriber": "Subscriber",
   "amountPaidByOtherParty": "Amount paid by the other party",
   "institutionalImprovementSavings": "Improvement/Savings Inst/Entity",
   "creditingDate": "Crediting Date",
   "institutionOsdValuation": "Institution OSD Valuation: 0 to 5",
-  "institutionClaimantRating": "Institution Valuation Complainant/Complainant: 0 to 5",
+  "institutionClaimantRating": "Claimant/Complainant Assessment Institution: 0 to 5",
   "institutionValuationFreeOsdProfessionals": "Institution Valuation Free OSD Professionals: 0 to 5",
   "freeProfessionalsIntervention": "Free Professionals intervening",
   "performances": "Performances",
@@ -241,11 +239,13 @@
   "Hours": "Hours",
   "Amount": "Amount",
   "FormatHoursIncorrect": "Error in the time format. Use 00:00 and make sure both fields are between 0 and 24",
-  "incompleteData" : "All fields must be completed",
-  "incompleteClaim" : "Incomplete Claim Details",
-  "OSDSystemsEngineer" : "OSD Systems Engineer",
-  "claims" : "Claims",
-  "subscriberClaimed" :"Subscriber Claimed",
-
-  "pageInWork" : "This page is in the works"
+  "incompleteData": "All fields must be completed",
+  "incompleteClaim": "Incomplete Claim Details",
+  "OSDSystemsEngineer": "OSD Systems Engineer",
+  "claims": "Claims",
+  "subscriberClaimed": "Subscriber Claimed",
+  "pageInWork": "This page is in the works",
+  "FilterbyCountry" : "Filter by Country...",
+  "FilterbyCompanyName" : "Filter by Company Name...",
+  "viewPerformance" : "View Performance"
 }

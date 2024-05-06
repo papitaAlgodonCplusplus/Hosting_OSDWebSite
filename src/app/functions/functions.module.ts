@@ -1,5 +1,5 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { FunctionsRoutingModule } from './functions-routing.module';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { AutorizationPlComponent } from './pages/autorization-pl/autorization-pl.component';
@@ -33,6 +33,7 @@ import { ClaimsPerformanceComponent } from './pages/claims-performance/claims-pe
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
+    DatePipe,
     {
       provide: MatPaginatorIntl,
       useFactory: (translateService: TranslateService) => {

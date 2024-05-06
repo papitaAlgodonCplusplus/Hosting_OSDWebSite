@@ -8,7 +8,7 @@ export const claims = createSelector(
   (claimState) => claimState.claims
 );
 
-export const claimId = createSelector(
+export const claim = createSelector(
   claimState,
-  (claimState) => claimState.claimId
+  (claimState) => claimState.claim
 );

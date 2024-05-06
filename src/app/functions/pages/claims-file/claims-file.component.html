@@ -21,27 +21,24 @@
                     <tbody>
                         <tr *ngFor="let claim of displayedItems" class="my-5">
                             <td class="p-2 border-y text-center">
-                                <span routerLink="/functions/file-manager"
+                                <span routerLink="/functions/file-manager" (click)="selectClaim(claim)"
                                     class="font-medium bg-line text-darkslategray transition duration-300 ease-in-out hover:bg-darkslategray hover:text-line cursor-pointer px-4 py-2 inline-block rounded-xl">{{'View'
                                     | translate}}</span>
                             </td>
                             <td class="p-2 border-y text-center">{{claim.Facts}}</td>
                             <td class="p-2 border-y text-center"> <i class="fa-solid fa-circle pr-3"
-                                                                   [ngClass]="{'text-yellow-500' : claim.Status == 'Unassigned',
+                                    [ngClass]="{'text-yellow-500' : claim.Status == 'Unassigned',
                                                                                'text-green-500' : claim.Status == 'Running',
                                                                                'text-red-500' : claim.Status == 'Complete'}"></i>{{ claim.Status | translate }}</td>
                             <td class="p-2 border-y text-center">{{ showDate(claim.Date) }}</td>
                         </tr>
                     </tbody>
-                </ng-container> 
+                </ng-container>
             </table>
         </div>
-        <div class="bottom-4 absolute flex flex-col justify-center items-center">
-            <mat-paginator [length]="claims.length" [pageSize]="10" (page)="onPageChange($event)"></mat-paginator>
-
-            <button class="flex items-center text-line bg-darkslategray p-2 rounded-xl " routerLink="/home">
-                <i class="fa-solid fa-chevron-left animate-pulse pr-2"></i>{{'regresar' | translate }}
-            </button>
-        </div>
+        <mat-paginator [length]="claims.length" [pageSize]="10" (page)="onPageChange($event)"></mat-paginator>
+        <button class="flex items-center text-line bg-darkslategray p-2 rounded-xl " routerLink="/home">
+            <i class="fa-solid fa-chevron-left animate-pulse pr-2"></i>{{'regresar' | translate }}
+        </button>
     </div>
 </div>

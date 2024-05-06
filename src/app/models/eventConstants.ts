@@ -1,7 +1,7 @@
 export class EventConstants {
   public static MESSAGE: string = "Message";
   public static TRACE_IDENTIFIER: string = "TraceIdentifier";
-  public static TYPE_Performance: string = "TypePerformance";
+  public static TYPE_PERFORMANCE: string = "TypePerformance";
   public static TYPE: string = "Type";
   public static DATE: string = "Date";
   public static ACTION: string = "Action";

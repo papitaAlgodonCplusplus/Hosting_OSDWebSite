@@ -8,9 +8,9 @@
     <div class="flex bg-white text-black flex-col">
         <form [formGroup]="personalForm" (ngSubmit)="onSubmit()" autocomplete="off"
             class="flex-1 flex flex-wrap items-center">
-            <div class="w-full">
+            <!-- <div class="w-full">
                 <h1 class="border-b text-darkslategray text-lg font-medium">{{'CFH' | translate }}</h1>
-            </div>
+            </div> -->
 
             <shared-input-field class="w-full md:w-1/2" fieldName="identity" label="{{'DNI' | translate}}"
                 inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
@@ -55,16 +55,11 @@
             <shared-simple-dropdown class="w-full md:w-1/2" fieldName="clientType" label="{{'clientType' | translate}}"
                 [formGroup]="accountForm" [dropdownItems]="entity" [selectedItem]="selectedEntity">
             </shared-simple-dropdown>
-            <div class="flex flex-col items-start space-y-3 pl-2">
+            <!-- <div class="flex flex-col items-start space-y-3 ">
                 <div class="bg-white flex flex-row items-center space-x-1">
-                    <p class="text-darkslategray  font-bold">{{'Video_CFH'| translate }}:</p>
-                    <button
-                        class="p-2  bg-darkslategray text-line rounded-lg font-normal animate__animated animate__fadeInDown"
-                        (click)="openVideoCFH()">
-                        {{'Watch_Video' | translate}}
-                    </button>
+
                 </div>
-            </div>
+            </div> -->
         </form>
 
         <form [formGroup]="personalForm" (ngSubmit)="onSubmit()" autocomplete="off">
@@ -85,6 +80,11 @@
             <div class="p-2 flex flex-col space-y-3">
                 <div class=" bg-white flex flex-col lg:flex-row lg:items-center lg:space-x-3">
                     <div class="flex flex-row items-center space-x-3">
+                        <button
+                            class="p-2 bg-darkslategray text-line rounded-lg font-medium animate__animated animate__fadeInDown"
+                            (click)="openVideoCFH()">
+                            {{'Video_CFH' | translate}}
+                        </button>
                         <a *ngIf="!showDocument"
                             class="p-2  bg-darkslategray text-line rounded-lg font-normal animate__animated animate__fadeInDown"
                             href="assets/contracts/8-4-24-Contrato-CFH-Centro-Formacion-Homologado.pdf" download><i
@@ -97,14 +97,6 @@
                                 class="fa-solid fa-download animate-pulse"></i>
                             {{'Contract'| translate }}
                         </a>
-                        <!-- <div class="flex items-center justify-center flex-col space-y-1">
-                        <input type="file" id="fileInput" class="hidden" (change)="displayFileContract($event)">
-                        <label for="fileInput"
-                            class="cursor-pointer items-center justify-center p-2 rounded-lg  text-base font-medium text-white bg-darkslategray shadow-lg">
-                            <i class="fa-solid fa-upload animate-pulse"></i> Subir contrato
-                        </label>
-                        <span>{{ documentName }}</span>
-                    </div> -->
                     </div>
                 </div>
                 <div class="flex flex-col space-x-1 w-full">
@@ -120,13 +112,13 @@
             </div>
         </form>
 
-        <div class="flex flex-wrap justify-end items-center space-x-4 p-2">
+        <div class="flex flex-wrap justify-end items-center space-x-3 p-2">
             <button routerLink="/onboarding/onboarding-register"
-                class="p-3 rounded-lg bg-line text-darkslategray font-medium animate__animated animate__fadeInDown">
+                class="p-2 rounded-lg bg-line text-darkslategray font-medium animate__animated animate__fadeInDown">
                 {{'cancelar' | translate}}
             </button>
             <button type="submit" (click)="onSubmit()"
-                class="p-3 rounded-lg bg-darkslategray text-white font-medium animate__animated animate__fadeInDown">
+                class="p-2 rounded-lg bg-darkslategray text-white font-medium animate__animated animate__fadeInDown">
                 {{'registrarse' | translate}}
             </button>
         </div>

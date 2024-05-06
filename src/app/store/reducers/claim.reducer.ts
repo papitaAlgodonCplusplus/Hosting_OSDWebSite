@@ -4,12 +4,20 @@ import { Claim } from "src/app/models/claim";
 
 export interface ClaimState {
     claims: Claim[],
-    claimId: string
+    claim: Claim
 }
 
 const initialState: ClaimState = {
     claims: [],
-    claimId: ""
+    claim: {
+        Id: '',
+        Claimtype: '',
+        Status: '',
+        FreeprofessionalId: '',
+        Serviceprovided: '',
+        Amountclaimed: '',
+        Date:''
+    },
 }
 
 export const claimReducers = createReducer(initialState,
@@ -17,8 +25,8 @@ export const claimReducers = createReducer(initialState,
         ...currentState,
         claims: claims
     })),
-    on(ClaimActions.setClaimId, (currentState, { claimId }) => ({
+    on(ClaimActions.setClaim, (currentState, { claim }) => ({
         ...currentState,
-        claimId: claimId
+        claim: claim
     })),
     )

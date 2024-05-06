@@ -1,48 +1,48 @@
-<div class="flex flex-col bg-white justify-center space-y-3 h-full p-3">
+<div class="flex flex-col bg-white justify-center space-y-3 p-3 h-full">
     <div class="absolute right-3 bottom-3">
-        <a routerLink="/auth" class="text-darkslategray bg-line rounded-xl p-2 text-start b">
+        <a routerLink="/auth" class="text-darkslategray bg-line rounded-xl p-2 text-start font-medium">
             <i class="fa-solid fa-chevron-left pr-1 cursor-pointer animate-pulse"></i>
             {{'regresar' | translate}}
         </a>
     </div>
-    <div class="flex flex-col justify-center items-center text-darkslategray border-r">
-        <h1 class="text-3xl font-bold mb-2">{{'titulo' | translate}}</h1>
-        <p class="text-sm mb-2">{{'subTitulo' | translate}}</p>
+    <div class="flex flex-col justify-center items-center text-darkslategray">
+        <h1 class="text-xl sm:text-2xl md:text-3xl font-bold mb-2">{{'titulo' | translate}}</h1>
+        <p class="text-xs sm:text-sm mb-2">{{'subTitulo' | translate}}</p>
     </div>
-    <div class="flex items-center justify-center">
-        <div class="flex flex-col lg:flex-row items-center justify-center lg:space-x-3 space-y-3 lg:space-y-0">
-            <div class="flex-1 text-center flex flex-col justify-center items-center space-x-3 p-2 text-darkslategray">
-                <h1 class="rounded-l-full pl-3 py-1 ">
+    <div class="flex flex-col sm:flex-row items-center justify-center lg:py-16 py-6">
+        <div class="flex flex-col lg:flex-row items-center justify-center space-y-3 lg:space-x-3 lg:space-y-0 p-2">
+            <div class="flex-1 flex flex-col justify-center items-center text-darkslategray w-full">
+                <h1>
                     <i class="fa-solid fa-user pr-3"></i>
                     {{'usuarios' | translate}}:
                 </h1>
                 <div class="flex flex-row space-x-3 justify-center">
                     <div routerLink="/onboarding/onboarding-register-claimant"
-                        class="flex flex-row justify-center items-center space-x-3 border p-2 rounded-xl bordery bg-line">
-                        <i class="fa-solid fa-user-alt cursor-pointer text-4xl"></i>
-                        <button class="">{{'reclamante' | translate}}</button>
+                        class="flex flex-col justify-center items-center p-2">
+                        <i class="fa-solid fa-user-alt cursor-pointer text-4xl sm:text-5xl transition duration-300 ease-in-out hover:text-line"></i>
+                        <button>{{'reclamante' | translate}}</button>
                     </div>
                     <div routerLink="/onboarding/onboarding-register-sub-client"
-                        class="flex flex-row justify-center items-center space-x-3 border p-2 rounded-xl bordery bg-line">
-                        <i class="fa-solid fa-user-check cursor-pointer text-4xl"></i>
-                        <button class="">{{'suscriptor_cliente' | translate}}</button>
+                        class="flex flex-col justify-center items-center p-2">
+                        <i class="fa-solid fa-user-check cursor-pointer text-4xl sm:text-5xl transition duration-300 ease-in-out hover:text-line"></i>
+                        <button>{{'suscriptor_cliente' | translate}}</button>
                     </div>
                 </div>
             </div>
-            <div class="flex-1 text-center flex flex-col justify-center items-center space-x-3 p-2 text-line">
-                <h1 class="rounded-l-full pl-3 py-1 text-darkslategray">
+            <div class="flex-1 text-center flex flex-col justify-center items-center text-darkslategray w-full">
+                <h1>
                     <i class="fa-solid fa-users pr-3"></i>
                     {{'equipo_OSD' | translate}}:
                 </h1>
-                <div class="flex flex-row space-x-3 justify-center">
+                <div class="flex flex-row justify-center">
                     <div routerLink="/onboarding/onboarding-register-cfh"
-                        class="flex flex-row justify-center items-center border p-2 rounded-xl bordery bg-darkslategray">
-                        <i class="fa-solid fa-graduation-cap cursor-pointer text-4xl"></i>
+                        class="flex flex-col justify-center items-center p-2">
+                        <i class="fa-solid fa-graduation-cap cursor-pointer text-4xl sm:text-5xl transition duration-300 ease-in-out hover:text-line"></i>
                         <button class="lg:whitespace-nowrap">{{'CFH' | translate}}</button>
                     </div>
                     <div routerLink="/onboarding/onboarding-register-free-professional"
-                        class="flex flex-row justify-center items-center border p-2 rounded-xl bordery bg-darkslategray">
-                        <i class="fa-solid fa-user-tie pl-1 cursor-pointer text-4xl"></i>
+                        class="flex flex-col justify-center items-center p-2">
+                        <i class="fa-solid fa-user-tie pl-1 cursor-pointer text-4xl sm:text-5xl transition duration-300 ease-in-out hover:text-line"></i>
                         <button class="lg:whitespace-nowrap">{{'profesional_libre' | translate}}</button>
                     </div>
                 </div>

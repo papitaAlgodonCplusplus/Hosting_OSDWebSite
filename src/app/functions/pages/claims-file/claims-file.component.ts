@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { Claim } from 'src/app/models/claim';
 import { UserInfo } from 'src/app/models/userInfo';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { OSDService } from 'src/app/services/osd-event.services';
@@ -12,7 +13,6 @@ import { ClaimActions, UiActions } from 'src/app/store/actions';
 })
 
 export class ClaimsFileComponent {
-  claimId!: string;
   claims: any[] = [];
   displayedItems: any[] = [];
   user!: UserInfo;
@@ -48,20 +48,19 @@ export class ClaimsFileComponent {
   }
 
   showDate(dateAndHour: string): string {
-    const [datePart, timePart] = dateAndHour.split(' '); 
-    const [day, month, year] = datePart.split('/'); 
+    const [datePart, timePart] = dateAndHour.split(' ');
+    const [day, month, year] = datePart.split('/');
     const [hour, minute, second] = timePart.split(':');
 
     const fechaConHora = new Date(+year, +month - 1, +day, +hour, +minute, +second);
-    const soloFecha = fechaConHora.toLocaleDateString(); 
+    const soloFecha = fechaConHora.toLocaleDateString();
 
     return soloFecha;
   }
 
 
-  selectClaim(claimId: string) {
-    this.claimId = claimId;
-    this.store.dispatch(ClaimActions.setClaimId({ claimId: claimId }))
+  selectClaim(claim: Claim) {
+    this.store.dispatch(ClaimActions.setClaim({ claim: claim }))
   }
 
   onPageChange(event: any) {

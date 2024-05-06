@@ -44,4 +44,23 @@ export class TransparencyComponent implements OnDestroy{
     }, 0);
   }
   
+  toggleLeftSidebar(): void {
+    this.store.dispatch(UiActions.toggleLeftSidebar());
+    if (this.arrowLeftSidebar === true) {
+      this.arrowLeftSidebar = false;
+    }
+  }
+
+  showArrow(): void {
+    this.arrowLeftSidebar = true;
+
+  }
+
+  hideArrow(): void {
+    this.arrowLeftSidebar = false;
+  }
+
+  changeReport(report: string) {
+    this.store.dispatch(switchReport({ reportName: report }));
+  }
 }

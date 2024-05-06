@@ -32,10 +32,15 @@ export class OnboardingRegisterClaimantComponent {
     { value: this.translate.instant('MediationArbitration'), key: 'MediationArbitration' }
   ];
   selectedSubscribers: string | undefined;
-  subscribers: DropDownItem[] = [];
+  subscribers: any[] = [];
   documentNames: string[] = new Array(2);
   isAcceptConditions!: boolean;
   registration: boolean = false;
+  openModal: boolean = false;
+
+  filteredSubscribers: any[] = [];
+  filterCountry = '';
+  filterCompanyName = '';
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
@@ -45,7 +50,6 @@ export class OnboardingRegisterClaimantComponent {
     private osdDataService: OSDDataService,
     private authenticationService: AuthenticationService
   ) {
-
     this.personalForm = this.createPersonalForm();
     this.accountForm = this.createAccountForm();
   }
@@ -73,11 +77,11 @@ export class OnboardingRegisterClaimantComponent {
       })
 
       this.osdDataService.getOsdUsersSubscribersSuccess$.subscribe(osdUsersSubscribers => {
-        osdUsersSubscribers.map(item => {
-          const subscriber: DropDownItem = { value: item.Name, key: item.Id };
-          this.subscribers.push(subscriber);
-        });
+        this.subscribers = osdUsersSubscribers;
+        console.log(osdUsersSubscribers)
+        this.applyFilters()
       });
+
     }, 0);
   }
 
@@ -170,11 +174,13 @@ export class OnboardingRegisterClaimantComponent {
 
     if (!this.personalForm.value.acceptConditions) {
       this.isAcceptConditions = true;
-      console.log("Hola")
       return;
     }
 
-    console.log(this.personalForm.value.registrationOption)
+    this.accountForm.patchValue({
+      subscriberClaimed:  this.selectedSubscribers 
+    });
+
     if (this.personalForm.value.registrationOption === "register") {
       this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, "Claimant");
     } else {
@@ -184,6 +190,28 @@ export class OnboardingRegisterClaimantComponent {
       }
       this.osdEventService.addClaim(this.accountForm.value);
     }
+  }
 
+  showModal() {
+    this.openModal = true;
+  }
+
+  closeModal() {
+    this.openModal = false;
+  }
+
+  applyFilters() {
+    this.filteredSubscribers = this.subscribers.filter(subscriber =>
+      (this.filterCountry ? subscriber.Country.toLowerCase().includes(this.filterCountry.toLowerCase()) : true) &&
+      (this.filterCompanyName ? subscriber.CompanyName.toLowerCase().includes(this.filterCompanyName.toLowerCase()) : true)
+    );
+  }
+
+  selectSubscriber(id: string, name: string) {
+    this.accountForm.patchValue({
+      subscriberClaimed: name
+    });
+    this.selectedSubscribers = id;
+    this.openModal = false;
   }
 }

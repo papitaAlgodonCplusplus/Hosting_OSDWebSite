@@ -82,11 +82,9 @@
     "registerNewUser": "Registrar nuevo usuario",
     "file_claim": "Expediente (Reclamación)",
     "state": "Estado",
-    
     "Unassigned": "Sin asignar",
     "Completed": "Completada",
     "running": "En ejecución",
-
     "subscriber": "Suscriptor",
     "amountPaidByOtherParty": "Cuantía abonada por la otra parte",
     "institutionalImprovementSavings": "Mejora/Ahorro Inst/Entidad",
@@ -246,6 +244,8 @@
     "OSDSystemsEngineer": "Ingeniero en Sistemas OSD",
     "claims": "Reclamaciones",
     "subscriberClaimed": "Subscriptor reclamado",
-
-    "pageInWork" : "Se esta trabajando en esta página"
+    "pageInWork": "Se esta trabajando en esta página",
+    "FilterbyCountry" : "Filtrar por país...",
+    "FilterbyCompanyName" : "Filtrar por Nombre...",
+    "viewPerformance" : "Ver actuaciones"
 }

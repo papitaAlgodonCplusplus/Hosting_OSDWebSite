@@ -7,4 +7,5 @@ export interface UserInfo {
   Middlesurname: string;
   Isauthorized: string;
   AccountType: string;
+  CompanyName: string;
 }

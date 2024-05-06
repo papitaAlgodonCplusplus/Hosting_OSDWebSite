@@ -1,13 +1,12 @@
 <div class="flex flex-col h-full md:flex-row-reverse">
   <div class="flex-1 flex justify-center items-center">
-
     <div
       class="relative w-full xl:w-full md:w-11/12 h-full rounded-l-3xl rounded-r-8xl bg-white-lightbone md:bg-darkblue-cyan max-w-screen-lg max-h-[800px]">
       <shared-error-modal *ngIf="errorModalOpen$ | async"></shared-error-modal>
 
       <div class="">
         <div class="flex flex-col justify-center items-center w-full h-full gap-12 mt-10 md:mt-o">
-          <h2 class="text-center text-4xl text-darkslategray font-bold mb-10">
+          <h2 class="text-center text-4xl text-darkslategray font-medium mb-10">
             {{'iniciar_sesion' | translate}}
           </h2>
 
@@ -19,10 +18,10 @@
               label="{{'contraseña' | translate}}"></auth-input-password>
             <div class="w-full flex justify-end">
               <a class="cursor-pointer underline decoration-1 text-blue text-sm"
-                routerLink="/auth/forgot-password">{{'olvidaste_tu_contraseña' | translate}}</a>
+                routerLink="">{{'olvidaste_tu_contraseña' | translate}}</a>
             </div>
             <button type="submit"
-              class="w-96 bg-darkslategray text-white text-lg p-2 font-bold hover:bg-hover-darkblue">
+              class="w-96 bg-line text-darkslategray rounded-xl text-lg p-2 font-medium">
               {{'iniciar_sesion' | translate}}
             </button>
             <a class="w-full text-center text-sm underline cursor-pointer" routerLink="/onboarding">
@@ -33,17 +32,19 @@
     </div>
   </div>
 
-  <div class="flex-1 bg-darkslategray flex justify-center items-center">
+  <div class="flex-1 bg-darkslategray flex justify-center items-center pb-3">
     <shared-switch-languages></shared-switch-languages>
-    <div class="flex items-center flex-col pb-10 md:w-96 space-y-2 font-medium text-white">
+    <div class="flex  flex-col space-y-3 font-medium text-line">
       <img src="/./assets/img/OSD.png" alt="Logo OSD" class="">
-      <button class="px-10 py-2 items-center hover:bg-gray-600 hover:text-white transition duration-300 ease-in-out"
+      <div class="flex flex-col space-y-3 px-20">
+        <button class="flex flex-row items-center justify-center p-2 space-x-3 rounded-xl hover:bg-line hover:text-darkslategray transition duration-300 ease-in-out"
         routerLink="/onboarding/onboarding-register-claimant">
         {{'presentar_reclamación' | translate}} <i class="fa-solid fa-chevron-right text-sm pl-2 animate-pulse"></i>
       </button>
       <button routerLink="/reports"
-        class="items-center flex flex-row px-10 py-2 hover:bg-gray-600 hover:text-white transition duration-300 ease-in-out">
-        {{'transparencia' | translate}} <img src="/./assets/img/transparency.png" alt="" class="px-2"> </button>
+        class="flex flex-row items-center justify-center p-2 space-x-3 rounded-xl hover:bg-line hover:text-darkslategray transition duration-300 ease-in-out">
+        {{'transparencia' | translate}} <img src="/./assets/img/transparency.png" alt="" class="pl-3"> </button>
+      </div>    
     </div>
   </div>
 </div>
