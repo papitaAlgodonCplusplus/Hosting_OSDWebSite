@@ -5,13 +5,14 @@ import { OnboardingRegisterClaimantComponent } from './pages/onboarding-register
 import { OnboardingRegisterSubClientComponent } from './pages/onboarding-register-sub-client/onboarding-register-sub-client.component';
 import { OnboardingRegisterCfhComponent } from './pages/onboarding-register-cfh/onboarding-register-cfh.component';
 import { OnboardingRegisterFreeProfessionalComponent } from './pages/onboarding-register-free-professional/onboarding-register-free-professional.component';
+import { SelectorRegistryClaimantComponent } from './pages/selector-registry-claimant/selector-registry-claimant.component';
 const routes: Routes = [
   {
     path: 'onboarding-register',
     component: OnboardingRegisterTypeComponent
   },
   {
-    path: 'onboarding-register-claimant',
+    path: 'onboarding-register-claimant/:selectorRegistry',
     component: OnboardingRegisterClaimantComponent
   },
   {
@@ -25,6 +26,10 @@ const routes: Routes = [
   {
     path: 'onboarding-register-free-professional',
     component:OnboardingRegisterFreeProfessionalComponent
+  },
+  {
+    path: 'selector-registry-claimant',
+    component:SelectorRegistryClaimantComponent
   },
   {
     path: '',

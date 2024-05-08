@@ -1,13 +1,4 @@
-<div class="justify-center items-center">
-    <div class="flex justify-start items-center border">
-        <img src="/./assets/img/OSD.png" alt="Logo OSD" class="w-10 m-2">
-        <h1 class="text-4xl p-3 text-darkslategray">{{'reclamante' | translate}}
-        </h1>
-    </div>
-</div>
-
-<div class="flex flex-col justify-center items-end px-10 py-2">
-
+<div class="flex flex-col justify-center px-10 py-2 space-y-3">
     <div class="flex flex-col bg-white ">
         <div [ngClass]="{'show': showPersonalInfo, 'hide': !showPersonalInfo}">
             <form [formGroup]="personalForm" autocomplete="off" class="flex flex-wrap items-center">
@@ -26,10 +17,11 @@
                     label="{{'segundo_apellido' | translate}}" inputType="text" [formGroup]="personalForm"
                     [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-                <shared-input-field class="w-full" fieldName="companyName" label="{{'RazonSocial' | translate}}"
-                    inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                <shared-input-field class="w-full md:w-1/2" fieldName="companyName"
+                    label="{{'RazonSocial' | translate}}" inputType="text" [formGroup]="personalForm"
+                    [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-                <shared-text-area class="w-full " fieldName="address" label="{{'direccion' | translate}}"
+                <shared-text-area class="w-full md:w-1/2 " fieldName="address" label="{{'direccion' | translate}}"
                     inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-text-area>
 
                 <shared-input-field class="w-full md:w-1/3" fieldName="city" label="{{'City' | translate}}"
@@ -50,7 +42,7 @@
                 <shared-input-field class="w-full md:w-1/3" fieldName="web" label="{{'pagina_web' | translate}}"
                     inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-                <div class="flex flex-wrap text-black w-full my-2 py-3 ">
+                <div class="flex flex-col lg:flex-row text-black w-full my-2 py-3 ">
 
                     <div class="flex-1 flex flex-col  p-2 text-black space-y-4">
                         <h1 class="text-lg font-bold text-darkslategray border-b">{{'iniciar_sesion' | translate}}:</h1>
@@ -58,31 +50,14 @@
                     </div>
 
                     <div class="flex-1 flex flex-col text-black p-2">
-                        <shared-input-field class="w-full" fieldName="email" label="{{'email' | translate}}"
-                            inputType="email" [formGroup]="personalForm"
-                            [bgColor]="'bg-white-lightbone'"></shared-input-field>
-                        <auth-input-password class="w-full " [formGroup]="personalForm" fieldName="password"
-                            label="{{'contraseña' | translate}}"></auth-input-password>
-
-                        <div class="space-x-2 pr-2">
-                            <input (click)="setRegistrationTrue()" type="radio" id="register"
-                                formControlName="registrationOption" name="registrationOption" value="register">
-                            <label for="register">{{'registrarse_plataforma' | translate}}</label>
-                        </div>
-                        <div class="space-x-2">
-                            <input (click)="setRegistrationFalse()" type="radio" id="noRegister"
-                                formControlName="registrationOption" name="registrationOption" value="unregistered">
-                            <label for="noRegister">{{'no_registrarse' | translate}}</label>
+                        <div class="flex flex-wrap items-center">
+                            <shared-input-field class="w-full md:w-1/2" fieldName="email"
+                                label="{{'email' | translate}}" inputType="email" [formGroup]="personalForm"
+                                [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                            <auth-input-password class="w-full md:w-1/2" [formGroup]="personalForm" fieldName="password"
+                                label="{{'contraseña' | translate}}"></auth-input-password>
                         </div>
                     </div>
-
-                </div>
-
-                <div class="w-full flex justify-end">
-                    <a class="flex items-center cursor-pointer mt-2 p-2 text-darkslategray font-medium hover:text-gray-500"
-                        type="button" (click)="toggleForm('claimInfo')">
-                        {{'ir_informacion_reclamacion' | translate}} <i
-                            class="fa-solid fa-chevron-right animate-pulse pl-2"></i></a>
                 </div>
             </form>
         </div>
@@ -96,10 +71,9 @@
                     [selectedItem]="selectedClaimant">
                 </shared-simple-dropdown>
 
-                <shared-simple-dropdown class="w-full md:w-1/2" fieldName="subscriberClaimed"
-                    label="{{'suscriptor_reclamado' | translate}}" [formGroup]="accountForm"
-                    [dropdownItems]="subscribers" [selectedItem]="selectedSubscribers">
-                </shared-simple-dropdown>
+                <shared-input-field [readOnly]="false" class="w-full md:w-1/2" fieldName="subscriberClaimed"
+                    inputType="text" label="{{'suscriptor_reclamado' | translate}}" [formGroup]="accountForm">
+                </shared-input-field>
 
                 <shared-input-field class="w-full md:w-1/3" fieldName="serviceProvided"
                     label="{{'servicio_prestado' | translate}}" inputType="text" [formGroup]="accountForm"
@@ -142,83 +116,99 @@
                         <span class="ml-2 text-yellow-500">{{this.documentNames[1]}}</span>
                     </div>
                 </div>
-
-                <div *ngIf="!(isValidToken$ | async)" class="w-full flex justify-end">
-                    <a class="flex items-center cursor-pointer p-2 text-darkslategray font-medium hover:text-gray-500 "
-                        type="button" (click)="toggleForm('personalInfo')"><i
-                            class="fa-solid fa-chevron-left animate-pulse pr-2"></i>
-                        {{'volver_info_personal'
-                        | translate}}</a>
-                </div>
             </form>
         </div>
-        <form [formGroup]="personalForm" autocomplete="off" class="flex flex-col lg:flex-row items-center">
+
+        <div id="InfoDiv" *ngIf="selectorRegistry" class="w-full flex flex-row justify-center font-medium text-darkslategray">
+            <a [ngClass]="{'text-line' : showPersonalInfo}"
+                class="transition duration-300 ease-in-out flex items-center cursor-pointer mt-2 p-2 "
+                type="button" (click)="toggleForm()"><i
+                    class="fa-solid fa-chevron-left animate-pulse pr-2"></i>
+                {{'regresar' | translate}} </a>
+
+            <a [ngClass]="{'text-line' : !showPersonalInfo}"
+                class="transition duration-300 ease-in-out flex items-center cursor-pointer mt-2 p-2"
+                type="button" (click)="toggleForm()">
+                {{'continue' | translate}} <i class="fa-solid fa-chevron-right animate-pulse pl-2"></i></a>
+        </div>
+
+        <form [formGroup]="personalForm" autocomplete="off" class="flex flex-col lg:flex-row lg:items-center w-full">
             <div *ngIf="!(isValidToken$ | async)" class="flex-1 pt-2 flex flex-row space-x-2 justify-start">
                 <div>
                     <input type="checkbox" id="acceptConditions" formControlName="acceptConditions">
-                <label for="acceptConditions"> {{'aceptar_condiciones'| translate}}</label>
+                    <label for="acceptConditions"> {{'aceptar_condiciones'| translate}}</label>
                 </div>
-                
+
                 <div *ngIf="!personalForm.value.acceptConditions" class="text-red-700 pl-1">
                     {{'error_condiciones' | translate}}
                 </div>
             </div>
 
-            <div class="flex-1 flex flex-row justify-end w-full space-x-2 py-3">
-                <button *ngIf="(isValidToken$ | async) else isValidToken" (click)="onSubmit()"
-                    class=" p-2 bg-darkslategray  text-white font-normal  animate__animated animate__fadeInDown">
-                    {{'presentar_reclamación' | translate}}
-                </button>
-        
-                <button *ngIf="!(isValidToken$ | async)" routerLink="/onboarding/onboarding-register"
-                    class="p-2 bg-line  text-darkslategray font-normal animate__animated animate__fadeInDown">
+            <div class="flex-1 flex flex-row justify-end w-full space-x-2 py-3 font-medium">
+
+                <button *ngIf="!(isValidToken$ | async) else isValidToken" routerLink="/onboarding/onboarding-register"
+                    class="p-2 bg-line rounded-xl text-darkslategray animate__animated animate__fadeInDown">
                     {{'cancelar' | translate}}
                 </button>
-        
+
+                <button (click)="onSubmit()"
+                    class="p-2 bg-darkslategray rounded-xl text-white  animate__animated animate__fadeInDown">
+                    {{'confirm' | translate}}
+                </button>
+
                 <ng-template #isValidToken>
-                    <button *ngIf="!showPersonalInfo" (click)="onSubmit()" routerLink="/onboarding/onboarding-register"
-                        class="p-2 bg-darkslategray  text-white font-normal  animate__animated animate__fadeInDown">
-                        {{'registrarse_reclamación' | translate}}
+
+                    <button routerLink="/home"
+                        class="p-2 bg-line rounded-xl text-darkslategray animate__animated animate__fadeInDown"
+                        i18n="@@signin">
+                        {{'cancelar' | translate}}
                     </button>
-                </ng-template>
-        
-                <ng-template #isValidToken>
-                    <div class="flex flex-wrap justify-end items-center space-x-2 p-1">
-                        <button routerLink="/home"
-                            class="p-2 bg-line  text-darkslategray font-normal animate__animated animate__fadeInDown"
-                            i18n="@@signin">
-                            {{'cancelar' | translate}}
-                        </button>
-                    </div>
+
                 </ng-template>
             </div>
         </form>
 
     </div>
-   
+
 
 </div>
 
-<!-- 
-<div class="w-full bg-yellow-500 p-4 font-medium rounded-sm shadow-lg space-x-3">
-    <span>Forma de pago:</span>
-    <a class="text-white cursor-pointer space-x-2" (click)="changeColor('transferencia')">
-        <i [ngClass]="{'text-darkslategray font-semibold': activeLink === 'transferencia'}"
-            class="fa-solid fa-circle font-normal"></i>
-        <span [ngClass]="{'text-darkslategray ': activeLink === 'transferencia'}">Transferencia
-            bancaria </span>
-    </a>
+<div *ngIf="openModal" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-3">
+    <div class="bg-opacity-75 bg-black absolute inset-0 "></div>
+    <div class="relative z-50 bg-white rounded-xl shadow-md space-y-1 ">
+        <i (click)="closeModal()" class="fa-solid fa-xmark text-lg text-end w-full px-3 cursor-pointer absolute"></i>
+        <div class="justify-center">
+            <div class="p-4">
+                <div class="my-3 justify-end items-center space-x-3">
+                    <input type="text" placeholder="{{'FilterbyCountry' | translate}}" [(ngModel)]="filterCountry"
+                        class="input border rounded p-2 text-grey-darker" (input)="applyFilters()">
+                    <input type="text" placeholder="{{'FilterbyCompanyName' | translate}}"
+                        [(ngModel)]="filterCompanyName" class="input border rounded p-2 text-grey-darker "
+                        (input)="applyFilters()">
+                </div>
 
-    <a class="text-white cursor-pointer space-x-2" (click)="changeColor('paypal')">
-        <i [ngClass]="{'text-darkslategray font-semibold': activeLink === 'paypal'}"
-            class="fa-solid fa-circle font-normal"></i>
-        <span [ngClass]="{'text-darkslategray ': activeLink === 'paypal'}">PayPal</span>
-    </a>
-
-    <a class="text-white cursor-pointer space-x-2" (click)="changeColor('tarjeta')">
-        <i [ngClass]="{'text-darkslategray font-semibold': activeLink === 'tarjeta'}"
-            class="fa-solid fa-circle font-normal"></i>
-        <span [ngClass]="{'text-darkslategray ': activeLink === 'tarjeta'}">Tarjeta de
-            credito</span>
-    </a>
-</div>  -->
+                <table class="table-auto w-full">
+                    <thead>
+                        <tr class="bg-line text-darkslategray">
+                            <th class="px-4 py-2"></th>
+                            <th class="px-4 py-2">{{'name' | translate}}</th>
+                            <th class="px-4 py-2">{{'RazonSocial' | translate}}</th>
+                            <th class="px-4 py-2">{{'pais' | translate}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let subscriber of filteredSubscribers">
+                            <td class="px-4 border-b py-2 text-center"
+                                (click)="selectSubscriber(subscriber.Id, subscriber.CompanyName)"> <a
+                                    class="bg-line p-2 rounded-xl text-darkslategray font-medium cursor-pointer transition duration-300 ease-in-out hover:bg-darkslategray hover:text-line">Select</a>
+                            </td>
+                            <td class="px-4 border-b py-2 text-center">{{ subscriber.Name }}</td>
+                            <td class="px-4 border-b py-2 text-center">{{ subscriber.CompanyName }}</td>
+                            <td class="px-4 border-b py-2 text-center">{{ subscriber.Country }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

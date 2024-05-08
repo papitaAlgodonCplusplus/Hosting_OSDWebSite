@@ -3,41 +3,41 @@
 </div>
 <div class="container mt-8 mx-auto">
     <div class="overflow-x-auto">
-        <table class="bg-white shadow-xl min-w-full">
+        <table class="bg-white shadow-xl" >
             <thead>
                 <tr class="">
-                    <th class="py-2 px-4 border text-center font-normal text-yellow-500">
+                    <th class="py-2 px-4 text-center font-normal text-darkslategray">
                         {{'institutionEntity' | translate}}
                     </th>
-                    <th class="py-2 px-4 border text-center font-normal text-yellow-500">
+                    <th class="py-2 px-4 text-center font-normal text-darkslategray">
                         {{'claimAmount' | translate}}
                     </th>
-                    <th class="py-2 px-4 border text-center font-normal text-yellow-500">
+                    <th class="py-2 px-4 text-center font-normal text-darkslategray">
                         {{'claimantCompensation' | translate}}
                     </th>
-                    <th class="py-2 px-4 border text-center font-normal text-yellow-500">
+                    <th class="py-2 px-4 text-center font-normal text-darkslategray">
                         {{'institutionEntitySavings' | translate}}
                     </th>
-                    <th class="py-2 px-4 border text-center font-normal text-yellow-500">
+                    <th class="py-2 px-4 text-center font-normal text-darkslategray">
                         {{'entityRating' | translate}}
                     </th>
-                    <th class="py-2 px-4 border text-center font-normal text-yellow-500">
+                    <th class="py-2 px-4  text-center font-normal text-darkslategray">
                         {{'defendantRating' | translate}}
                     </th>
-                    <th class="py-2 px-4 border text-center font-normal text-yellow-500">
+                    <th class="py-2 px-4  text-center font-normal text-darkslategray">
                         {{'OSDRating' | translate}}
                     </th>
                 </tr>
             </thead>
             <tbody class="text-center">
                 <tr *ngFor="let item of reports">
-                    <td class="py-2 px-4 border">{{ item.institutionEntity }}</td>
-                    <td class="py-2 px-4 border">{{ item.claimsAmount }}</td>
-                    <td class="py-2 px-4 border">{{ item.claimantCompensation }}</td>
-                    <td class="py-2 px-4 border">{{ item.savingsImprovement }}</td>
-                    <td class="py-2 px-4 border">{{ item.claimantRating }}</td>
-                    <td class="py-2 px-4 border">{{ item.claimedRating }}</td>
-                    <td class="py-2 px-4 border">{{ item.osdRating }}</td>
+                    <td class="py-2 px-4 border-y">{{ item.institutionEntity }}</td>
+                    <td class="py-2 px-4 border-y">{{ item.claimsAmount }}</td>
+                    <td class="py-2 px-4 border-y">{{ item.claimantCompensation }}</td>
+                    <td class="py-2 px-4 border-y">{{ item.savingsImprovement }}</td>
+                    <td class="py-2 px-4 border-y">{{ item.claimantRating }}</td>
+                    <td class="py-2 px-4 border-y">{{ item.claimedRating }}</td>
+                    <td class="py-2 px-4 border-y">{{ item.osdRating }}</td>
                 </tr>
             </tbody>
         </table>

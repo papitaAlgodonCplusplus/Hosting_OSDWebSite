@@ -29,6 +29,7 @@ export class LeftSidebarComponent implements OnInit {
     setTimeout(() => {
       if (this.authenticationService.userInfo) {
         this.user = this.authenticationService.userInfo
+        console.log(this.user)
         if (this.user.AccountType == EventConstants.SUBSCRIBER_CUSTOMER || this.user.AccountType == EventConstants.FREE_PROFESSIONAL) {
           if (this.user.Isauthorized == true) {
             this.isAuthorized = true
@@ -36,6 +37,9 @@ export class LeftSidebarComponent implements OnInit {
           else {
             this.isAuthorized = false
           }
+        }
+        else{
+          this.isAuthorized = true
         }
       }
     }, 0);

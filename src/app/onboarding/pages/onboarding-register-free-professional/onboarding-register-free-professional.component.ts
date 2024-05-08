@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import {  FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
@@ -22,12 +22,13 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   showDocument!: boolean;
 
   workspace: DropDownItem[] = [
-    // { value: this.translate.instant('DT'), key: '2fc2a66a-69ca-4832-a90e-1ff590b80d24' },
-    { value: this.translate.instant('FC'), key: '2fc2a66a-69ca-4832-a90e-1ff590b80d24' },
+    { value: this.translate.instant('DT'), key: '87db7d48-ee2a-4494-8627-9cb9e377de21' },
+    { value: this.translate.instant('FC'), key: 'eea2312e-6a85-4ab6-85ff-0864547e3870' },
     { value: this.translate.instant('TR'), key: '2fc2a66a-69ca-4832-a90e-1ff590b80d24' },
-    { value: this.translate.instant('TC'), key: '2fc2a66a-69ca-4832-a90e-1ff590b80d24' },
-    { value: this.translate.instant('TM'), key: '2fc2a66a-69ca-4832-a90e-1ff590b80d24' },
-    { value: this.translate.instant('TS'), key: '2fc2a66a-69ca-4832-a90e-1ff590b80d24' }
+    { value: this.translate.instant('TC'), key: '1bfc42c6-0d32-4270-99ed-99567bc7a562' },
+    { value: this.translate.instant('TM'), key: '4fbeb4e3-a284-44ef-ac65-a70a0620b1c9' },
+    { value: this.translate.instant('TS'), key: 'afdc95b1-271e-4788-a00a-d40081d7314f' },
+    { value: this.translate.instant('OSDSystemsEngineer'), key: '4e1477bf-e13c-084b-3bff-1149f3ab3f3b' },
   ];
   selectedpayTPV: string | undefined;
   payTPV: DropDownItem[] = [
@@ -58,10 +59,10 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
 
   ngOnInit(): void {
     setTimeout(() => {
-      if(this.translate.currentLang == "en"){
+      if (this.translate.currentLang == "en") {
         this.showDocument = true
       }
-      else{
+      else {
         this.showDocument = false
       }
       this.store.dispatch(UiActions.hideAll());
@@ -81,7 +82,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   makeAPurchaseTrainerConsultant() {
     window.open('https://buy.stripe.com/00g9BD55y54t0mYcMR', '_blank');
   }
-  
+
   openVideoTecnicOSD() {
     window.open('https://youtu.be/M_WhgGimbL8', '_blank');
   }
@@ -94,8 +95,8 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     const accountForm = this.formBuilder.group({
       workspace: ['', [Validators.required]],
       otherWorspace: [''],
-      collegiateCardArchive: [null],
-      lastReceiptCLI: [null],
+      collegiateCardArchive: [null,[Validators.required]],
+      lastReceiptCLI: [null,[Validators.required]],
       servicerates: [''],
     });
     return accountForm;
@@ -142,8 +143,8 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
       if (fileExtension === 'pdf') {
         this.documentName = fileName;
       } else {
-        this.store.dispatch(ModalActions.addAlertMessage({alertMessage:"Debe Insertar Solo archivos PDF"}));
-        this.store.dispatch(ModalActions.changeAlertType({alertType:"warning"}));
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Debe Insertar Solo archivos PDF" }));
+        this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
         this.store.dispatch(ModalActions.openAlert());
         this.documentName = '';
       }
@@ -157,8 +158,8 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     if (file) {
       let allowedExtensions = /(\.pdf)$/i;
       if (!allowedExtensions.exec(file.name)) {
-        this.store.dispatch(ModalActions.addAlertMessage({alertMessage:"Debe Insertar Solo archivos PDF"}))
-        this.store.dispatch(ModalActions.changeAlertType({alertType:"warning"}))
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Debe Insertar Solo archivos PDF" }))
+        this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }))
         this.store.dispatch(ModalActions.openAlert())
         return
       }
@@ -174,11 +175,11 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     if (this.accountForm.invalid || this.personalForm.invalid) {
       this.accountForm.markAllAsTouched();
       this.personalForm.markAllAsTouched();
-      if(this.translate.currentLang == "en"){
+      if (this.translate.currentLang == "en") {
         this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "There are missing fields to fill out" }));
         this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
         this.store.dispatch(ModalActions.openAlert());
-      }else{
+      } else {
         this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Faltan campos por llenar" }));
         this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
         this.store.dispatch(ModalActions.openAlert());
@@ -193,6 +194,6 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
 
     const userEmail = this.personalForm.value.email;
     localStorage.setItem('userEmail', userEmail);
-    this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.FREE_PROFESSIONAL, "");
+    this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.FREE_PROFESSIONAL);
   }
 }

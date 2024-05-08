@@ -8,7 +8,6 @@ import { EventConstants } from '../models/eventConstants';
 import { ModalActions, AuthenticationActions, ClaimActions } from '../store/actions';
 import { Store } from '@ngrx/store';
 import { NotificationService } from './notification.service';
-import { RegisterUserEvent } from '../auth/interfaces/register.interface';
 import { SecurityDataService } from './security-data.service';
 import { OSDDataService } from './osd-data.service';
 import { Form } from '@angular/forms';
@@ -16,12 +15,12 @@ import { UserInfo } from '../models/userInfo';
 import { PerformanceFreeProfessional } from '../project-manager/Models/performanceFreeProfessional';
 import { PerformanceBuy } from '../project-manager/Models/performanceBuy';
 import { TranslateService } from '@ngx-translate/core';
+import { PerformanceClaim } from '../functions/models/performanceClaim';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OSDService {
-  //osdEventSubscriber: Subscription;
   claims: any[] = [];
   usersFreeProfessionalsTR: any[] = [];
   freeProfessionalsTR: any[] = [];
@@ -31,7 +30,7 @@ export class OSDService {
   freeProfessionalsResponse: boolean = false;
   message: string = "";
   messageResponse: boolean = false;
-  
+
   constructor(
     private store: Store,
     private restApiService: RestAPIService,
@@ -109,39 +108,6 @@ export class OSDService {
     });
   }
 
-  getFreeProfessionalsTRList(): Promise<any[]> {
-    return new Promise((resolve, reject) => {
-      const checkResponse = () => {
-        if (this.freeProfessionalsTRResponse) {
-          resolve(this.freeProfessionalsTR);
-        } else {
-          setTimeout(checkResponse, 1000);
-        }
-      };
-
-      checkResponse();
-    });
-  }
-  getUsersFreeProfessionalsTRList(): Promise<any[]> {
-    return new Promise((resolve, reject) => {
-      const checkResponse = () => {
-        if (this.freeProfessionalsTRResponse) {
-          resolve(this.usersFreeProfessionalsTR);
-        } else {
-          setTimeout(checkResponse, 1000);
-        }
-      };
-
-      checkResponse();
-    });
-  }
-
-  /*private subscribeToOSDEvents(): void {
-      console.log("subscribeToOSDEvents");
-      this.osdEventSubscriber = this.websocketService.osdEventHandler.subscribe((webBaseEvent: WebBaseEvent) =>
-          this.processOSDEvent(webBaseEvent));
-  }*/
-
   public userLogin(loginForm: UserLoginEvent) {
     const userLoginEvent: WebBaseEvent = this.eventFactoryService.CreateUserLoginEvent(loginForm);
     this.restApiService.SendOSDEvent(userLoginEvent).subscribe({
@@ -154,9 +120,9 @@ export class OSDService {
       }
     });
   }
+
   public addPerformanceFreeProfessional(performanceFP: PerformanceFreeProfessional) {
     const event: WebBaseEvent = this.eventFactoryService.CreateAddPerformanceFreeProfessionalEvent(performanceFP);
-    console.log('Se envia el evento:', event)
     this.restApiService.SendOSDEvent(event).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
@@ -168,8 +134,8 @@ export class OSDService {
     });
   }
 
-  public gettingClaimsData() {
-    const gettingClaimsEvent: WebBaseEvent = this.eventFactoryService.CreateGettingClaimsDataEvent();
+  public gettingClaimsData(userId: string, accountType: string) {
+    const gettingClaimsEvent: WebBaseEvent = this.eventFactoryService.CreateGettingClaimsDataEvent(userId, accountType);
     this.restApiService.SendOSDEvent(gettingClaimsEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
@@ -207,9 +173,8 @@ export class OSDService {
     });
   }
 
-  public userRegister(accountForm: RegisterUserEvent, personalForm: RegisterUserEvent, accountType: string, claimantId: string) {
-    const registerUserEvent: WebBaseEvent = this.eventFactoryService.CreateRegisterUserEvent(accountForm, personalForm, accountType, claimantId);
-    console.log("Enviando mensaje al restAPIService.sendOSDEvent");
+  public userRegister(accountForm: Form, personalForm: Form, accountType: string) {
+    const registerUserEvent: WebBaseEvent = this.eventFactoryService.CreateRegisterUserEvent(accountForm, personalForm, accountType);
     this.restApiService.SendOSDEvent(registerUserEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
@@ -220,10 +185,10 @@ export class OSDService {
       }
     });
   }
-  public addClaim(claimantId: String | null, claimType: String, Subscriberclaimed: String, Serviceprovided: String, fact: String, amountClaimed: String, document1: String, document2: String) {
-    const registerUserEvent: WebBaseEvent = this.eventFactoryService.CreateAddClaimEvent(claimantId, claimType, Subscriberclaimed, Serviceprovided, fact, amountClaimed, document1, document2);
-    console.log("Enviando mensaje al restAPIService.sendOSDEvent");
-    this.restApiService.SendOSDEvent(registerUserEvent).subscribe({
+
+  public addClaim(claimForm: Form) {
+    const addClaimEvent: WebBaseEvent = this.eventFactoryService.CreateAddClaimEvent(claimForm);
+    this.restApiService.SendOSDEvent(addClaimEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
         this.HandleAddClaimResponse(osdEvent);
@@ -261,7 +226,7 @@ export class OSDService {
       }
     });
   }
-  
+
   public HandleGettingFreeProfessionalsListResponse(webBaseEvent: WebBaseEvent) {
     try {
       if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['ListFreeProfessionals']) {
@@ -281,22 +246,22 @@ export class OSDService {
       if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['Message']) {
         this.message = webBaseEvent.Body['Message'];
         this.messageResponse = true;
-        if(this.translate.currentLang == "en"){
-          this.store.dispatch(ModalActions.addAlertMessage({alertMessage: this.message}));
+        if (this.translate.currentLang == "en") {
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: this.message }));
         }
-        else{
-          if(this.message == "The user is already authorized"){
+        else {
+          if (this.message == "The user is already authorized") {
             this.message = "El usuario ya está autorizado"
-            this.store.dispatch(ModalActions.addAlertMessage({alertMessage: this.message}));
-          }else if(this.message == "User Properly authorized"){
+            this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: this.message }));
+          } else if (this.message == "User Properly authorized") {
             this.message = "Usuario debidamente autorizado"
-            this.store.dispatch(ModalActions.addAlertMessage({alertMessage: this.message}));
-          }else{
+            this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: this.message }));
+          } else {
             this.message = "No se pudo autorizar"
-            this.store.dispatch(ModalActions.addAlertMessage({alertMessage: this.message}));
+            this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: this.message }));
           }
         }
-        
+
       } else {
         this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'No hay mensaje' }));
       }
@@ -324,11 +289,14 @@ export class OSDService {
   public HandleGettingFreeProfessionalsTRResponse(webBaseEvent: WebBaseEvent) {
     try {
       if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['FreeProfessionalList']) {
-        this.usersFreeProfessionalsTR = webBaseEvent.Body['OsdUserList'];
-        this.freeProfessionalsTR = webBaseEvent.Body['FreeProfessionalList'];
+        console.log(webBaseEvent)
+        var usersFreeProfessionalsTR = webBaseEvent.Body['OsdUserList'];
+        console.log(usersFreeProfessionalsTR)
+        var freeProfessionalsTR = webBaseEvent.Body['FreeProfessionalList'];
+        console.log(freeProfessionalsTR)
         this.freeProfessionalsTRResponse = true;
-        console.log('FR')
-        console.log(this.freeProfessionalsTR)
+        this.osdDataService.emitFreeProfessionalTR(freeProfessionalsTR)
+        this.osdDataService.emitUsersFreeProfessionalTR(usersFreeProfessionalsTR)
       } else {
         this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'No hay reclamaciones existentes' }));
       }
@@ -366,23 +334,25 @@ export class OSDService {
     // this.websocketService.sendOSDEvent(createPerformanceEvent);
   }
 
-  public createPerformance(performance: Form, claimId: string) {
-    const createPerformanceEvent: WebBaseEvent = this.eventFactoryService.CreatePerformanceEvent(performance, claimId);
-    //this.websocketService.sendOSDEvent(createPerformanceEvent);
-  }
-
-  public GetClaims() {
-    const createPerformanceEvent: WebBaseEvent = this.eventFactoryService.CreateGetClaims();
-    //this.websocketService.sendOSDEvent(createPerformanceEvent);
+  public createPerformanceClaim(performance: PerformanceClaim, claimId: string) {
+    const createPerformanceClaimEvent: WebBaseEvent = this.eventFactoryService.CreatePerformanceClaimEvent(performance, claimId);
+    this.restApiService.SendOSDEvent(createPerformanceClaimEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleCreatePerformanceResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
   }
 
   public HandleAddPerformanceBuyResponse(webBaseEvent: WebBaseEvent) {
     try {
-      console.log("llegue bien");
       var actionGetOsdUsersSusbscriberResultMessage = webBaseEvent.getBodyProperty(EventConstants.ACTION_OSD_RESULT_MESSAGE);
       if (actionGetOsdUsersSusbscriberResultMessage != null) {
-          this.store.dispatch(ModalActions.addAlertMessage({alertMessage: actionGetOsdUsersSusbscriberResultMessage}))
-          this.store.dispatch(ModalActions.openAlert())
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: actionGetOsdUsersSusbscriberResultMessage }))
+        this.store.dispatch(ModalActions.openAlert())
       }
 
     }
@@ -399,6 +369,8 @@ export class OSDService {
         var actionGetSusbscribersResultMessage = webBaseEvent.getBodyProperty(EventConstants.LIST_SUBSCRIBERS);
         const osdUsersSubscribersModels = actionGetOsdUsersSusbscriberResultMessage;
         const subscribersModels = actionGetSusbscribersResultMessage;
+        console.log(subscribersModels)
+        console.log(osdUsersSubscribersModels)
         this.osdDataService.emitGetOsdUsersSubscribersSuccess(osdUsersSubscribersModels);
         this.osdDataService.emitGetSubscribersSuccess(subscribersModels);
       }
@@ -419,8 +391,8 @@ export class OSDService {
         const performancesFreeProfessionalsModels = performancesFreeProfessionals;
         const performancesBuyModels = performancesBuy;
 
-        console.log('Ventas',performancesBuyModels)
-        console.log('FP',performancesFreeProfessionalsModels)
+        console.log('Ventas', performancesBuyModels)
+        console.log('FP', performancesFreeProfessionalsModels)
 
         this.osdDataService.emitPerformanceFreeProfessionalList(performancesFreeProfessionalsModels);
         this.osdDataService.emitPerformanceBuyList(performancesBuyModels);
@@ -454,8 +426,11 @@ export class OSDService {
 
     try {
       createPerformanceResultMessage = webBaseEvent.getBodyProperty(EventConstants.ACTION_OSD_RESULT_MESSAGE);
-      this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: createPerformanceResultMessage }));
-      this.store.dispatch(ModalActions.openAlert());
+      if (createPerformanceResultMessage) {
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: createPerformanceResultMessage }));
+        this.store.dispatch(ModalActions.openAlert());
+        this.securityDataService.emitUserAuthenticationSuccess("/functions/file-manager")
+      }
     }
     catch (err) {
       //TODO: create exception event and send to local file or core
@@ -471,7 +446,7 @@ export class OSDService {
     try {
       userAuthenticationSuccess = JSON.parse(webBaseEvent.getBodyProperty(EventConstants.USER_AUTHENTICATION_SUCCESS));
       userAuthenticationResultMessage = webBaseEvent.getBodyProperty(EventConstants.USER_AUTHENTICATION_RESULT_MESSAGE);
-       
+
       if (userAuthenticationSuccess) {
         userInfo = webBaseEvent.getBodyProperty(EventConstants.USER_INFO);
         sessionKey = webBaseEvent.getBodyProperty(EventConstants.GENERATED_SESSION_KEY);
@@ -486,8 +461,8 @@ export class OSDService {
         }
         this.store.dispatch(ModalActions.toggleErrorModal());
       }
-    } catch(err) {
-        //TODO: create exception event and send to local file or core
+    } catch (err) {
+      //TODO: create exception event and send to local file or core
     }
   }
 
@@ -496,7 +471,7 @@ export class OSDService {
 
     try {
       message = webBaseEvent.getBodyProperty(EventConstants.PERFORMANCE_FREE_PROFESSIONAL_MESSAGE);
-      this.store.dispatch(ModalActions.addAlertMessage({alertMessage: message}));
+      this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
       this.store.dispatch(ModalActions.openAlert())
     } catch {
 
@@ -508,8 +483,15 @@ export class OSDService {
 
     try {
       message = webBaseEvent.getBodyProperty(EventConstants.MESSAGE);
-      this.store.dispatch(ModalActions.addAlertMessage({alertMessage: message}));
+      this.store.dispatch(ModalActions.changeAlertType({ alertType: 'success' }));
+      this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
       this.store.dispatch(ModalActions.openAlert())
+      if (this.authenticationService.userInfo != null) {
+        this.securityDataService.emitUserAuthenticationSuccess("/home");
+      }
+      else {
+        this.securityDataService.emitUserAuthenticationSuccess("/auth");
+      }
     } catch {
 
     }
@@ -519,7 +501,7 @@ export class OSDService {
     let registerSuccess: boolean;
     let registerResultMessage: string;
     let userInfo: UserInfo;
- 
+
     try {
       registerSuccess = JSON.parse(webBaseEvent.getBodyProperty(EventConstants.REGISTER_USER_SUCCESS));
       registerResultMessage = webBaseEvent.getBodyProperty(EventConstants.REGISTER_USER_RESULT_MESSAGE);
@@ -533,6 +515,7 @@ export class OSDService {
         this.store.dispatch(AuthenticationActions.signIn());
 
         if (registerResultMessage == 'Your account has been created.') {
+          this.store.dispatch(ModalActions.changeAlertType({ alertType: 'success' }));
           this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: 'Tu cuenta ha sido creada.' }));
         } else {
           this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: registerResultMessage }));

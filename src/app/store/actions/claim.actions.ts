@@ -6,7 +6,7 @@ export const setClaims = createAction(
     props<{ claims: Claim[] }>()
   );
 
-  export const setClaimId = createAction(
-    '[Claim Id] Add Claim Id',
-    props<{ claimId: string }>()
+  export const setClaim = createAction(
+    '[Claim] Add Claim',
+    props<{ claim: Claim }>()
   );

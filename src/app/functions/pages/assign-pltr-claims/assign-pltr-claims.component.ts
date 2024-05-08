@@ -3,6 +3,7 @@ import { Store } from '@ngrx/store';
 import { ModalActions, UiActions } from 'src/app/store/actions';
 import { MatPaginator } from '@angular/material/paginator';
 import { OSDService } from 'src/app/services/osd-event.services';
+import { OSDDataService } from 'src/app/services/osd-data.service';
 
 @Component({
   selector: 'app-assign-pltr-claims',
@@ -19,20 +20,19 @@ export class AssignPLTRClaimsComponent implements OnDestroy {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   displayedItems: any;
-  showModalConfirm! :boolean;
-  messageModal! : string;
-  modalState : boolean = false;
+  showModalConfirm!: boolean;
+  messageModal!: string;
+  modalState: boolean = false;
   showDialogState: boolean = false;
   claim: any = null;
 
 
   constructor(private store: Store,
-              private osdEventService : OSDService) {
-    
+    private osdEventService: OSDService,
+    private osdDataService: OSDDataService) {
   }
- 
 
-  showModal(){
+  showModal() {
     this.showModalConfirm = true;
     this.messageModal = "Confirmar Autorizacion!"
   }
@@ -40,7 +40,7 @@ export class AssignPLTRClaimsComponent implements OnDestroy {
   onConfirmHandler() {
     this.showModalConfirm = false;
   }
-  onCancelHandler(){
+  onCancelHandler() {
     this.showModalConfirm = false;
   }
 
@@ -61,40 +61,45 @@ export class AssignPLTRClaimsComponent implements OnDestroy {
     setTimeout(() => {
       this.store.dispatch(UiActions.hideLeftSidebar())
       this.store.dispatch(UiActions.hideFooter())
+      this.osdEventService.gettingClaimsData("", "");
+      this.osdEventService.gettingFreeProfessionalsTRData();
     }, 0);
+
     this.osdEventService.getClaimList().then(claims => {
       this.claims = claims
-    }, )
-    this.osdEventService.getFreeProfessionalsTRList().then(fp => {
-      this.freeProfessionalsTr = fp
+    },)
+
+    this.osdDataService.freeProfessionalTR$.subscribe(item => {
+      console.log(item)
+      this.freeProfessionalsTr = item;
     })
-    this.osdEventService.getUsersFreeProfessionalsTRList().then(users => {
-      this.users = users
+
+    this.osdDataService.usersFreeProfessionalTR$.subscribe(item => {
+      console.log(item)
+      this.users = item;
     })
-    
   }
 
-  assignFreeProfessionalToClaim(){
+  assignFreeProfessionalToClaim() {
     this.showDialog()
     this.osdEventService.cleanClaimList();
     this.osdEventService.assignFreeProfessionalsTRToClaim(this.idClaim, this.idTRSelected);
     this.claims = this.claims.filter(claim => claim.Id !== this.idClaim);
-    this.osdEventService.gettingClaimsData();
 
     this.osdEventService.getClaimList().then(claims => {
       this.claims = claims
-    }, )
+    },)
 
     this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: 'Se asigno el Tramitador' }));
   }
 
-  openModal(claim: any): void{
+  openModal(claim: any): void {
     this.claim = claim
-    this.modalState=true
+    this.modalState = true
   }
-  closeModal(): void{
+  closeModal(): void {
     this.cleanDataToAssignFreeProfessionalTRToClaim();
-    this.modalState=false
+    this.modalState = false
   }
 
 
@@ -103,7 +108,7 @@ export class AssignPLTRClaimsComponent implements OnDestroy {
   totalSegments = 0;
 
   setPage(page: number) {
-    if(this.totalSegments){
+    if (this.totalSegments) {
       if (page < 1 || page > this.totalSegments) {
         return;
       }
@@ -111,12 +116,12 @@ export class AssignPLTRClaimsComponent implements OnDestroy {
     }
   }
 
-  setDataToAssignFreeProfessionalTRToClaim(idClaim: string, idTR: string, userName: string){
+  setDataToAssignFreeProfessionalTRToClaim(idClaim: string, idTR: string, userName: string) {
     this.idClaim = idClaim;
     this.idTRSelected = idTR;
     this.userName = userName;
   }
-  cleanDataToAssignFreeProfessionalTRToClaim(){
+  cleanDataToAssignFreeProfessionalTRToClaim() {
     this.idClaim = '';
     this.idTRSelected = '';
     this.userName = '';

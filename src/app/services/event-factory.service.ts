@@ -8,12 +8,13 @@ import { AuthenticationService } from './authentication.service';
 import { NotificationEvent } from '../models/notificationEvent';
 import { EventComponent } from '../models/eventComponent';
 import { UserLoginEvent } from '../auth/interfaces/login.interface';
-import { RegisterUserEvent } from '../auth/interfaces/register.interface';
 import { VerifyEmailEvent } from '../auth/interfaces/verify-email.interface';
 import { EmailVerificationCodeResendEvent } from '../auth/interfaces/resend-email-verification-code.interface';
-import { Form, FormGroup } from '@angular/forms';
+import { Form } from '@angular/forms';
 import { PerformanceFreeProfessional } from '../project-manager/Models/performanceFreeProfessional';
 import { PerformanceBuy } from '../project-manager/Models/performanceBuy';
+
+import { PerformanceClaim } from '../functions/models/performanceClaim';
 
 @Injectable({
   providedIn: 'root',
@@ -59,7 +60,7 @@ export class EventFactoryService {
 
   public CreateGettingFreeProfessionalsDataEvent(): WebBaseEvent {
     let event: WebBaseEvent;
-    
+
     event = new WebBaseEvent();
     event.SecurityToken = "3746736473";
     event.TraceIdentifier = Guid.create().toString();
@@ -70,7 +71,7 @@ export class EventFactoryService {
     event.SessionKey = this.authenticationService.sessionKey;
     return event;
   }
-  
+
   public ConvertJsonObjectToWebBaseEvent(jsonObject: any): WebBaseEvent {
     const event = new WebBaseEvent();
     let bodyObj = { ...jsonObject.Body }
@@ -118,7 +119,7 @@ export class EventFactoryService {
     event.ApplicationIdentifier = 'WebClient';
     event.setBodyProperty(EventConstants.PROJECT_MANAGER_ID, performanceFP.proyectManagerId);
     event.setBodyProperty(EventConstants.DATE_PERFORMANCE, performanceFP.date);
-    event.setBodyProperty(EventConstants.TYPE_Performance, performanceFP.type);
+    event.setBodyProperty(EventConstants.TYPE_PERFORMANCE, performanceFP.type);
     event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, performanceFP.justifyingDocument);
     event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_WORK_HOURS, performanceFP.freeProfessionalWorkHours);
     event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_TRAVEL_HOURS, performanceFP.freeProfessionalTravelHours);
@@ -139,7 +140,7 @@ export class EventFactoryService {
     return event;
   }
 
-  public CreateGettingClaimsDataEvent(): WebBaseEvent {
+  public CreateGettingClaimsDataEvent(userId: string, accountType: string): WebBaseEvent {
     let event: WebBaseEvent;
 
     event = new WebBaseEvent();
@@ -150,12 +151,14 @@ export class EventFactoryService {
     event.Date = new Date().toUTCString();
     event.ApplicationIdentifier = 'WebClient';
     event.SessionKey = this.authenticationService.sessionKey;
-    
+    event.setBodyProperty(EventConstants.USER_ID, userId);
+    event.setBodyProperty(EventConstants.ACCOUNT_TYPE, accountType);
+
     return event;
   }
   public gettingFreeProfessionalsTRDataEvent(): WebBaseEvent {
     let event: WebBaseEvent;
-    
+
     event = new WebBaseEvent();
     event.SecurityToken = "3746736473";
     event.TraceIdentifier = Guid.create().toString();
@@ -169,7 +172,7 @@ export class EventFactoryService {
   }
   public assingFreeProfessionalsTRToClaimEvent(idClaim: string, idFreeProfesionalTR: string): WebBaseEvent {
     let event: WebBaseEvent;
-    
+
     event = new WebBaseEvent();
     event.SecurityToken = "3746736473";
     event.TraceIdentifier = Guid.create().toString();
@@ -195,11 +198,11 @@ export class EventFactoryService {
     event.Action = EventAction.GET_PERFORMANCES;
     event.Date = new Date().toUTCString();
     event.ApplicationIdentifier = 'WebClient'; //TODO: change to use an application identifier
-    
+
     return event;
   }
 
-  public CreatePerformanceEvent(performanceForm: Form, claimId: string): WebBaseEvent {
+  public CreatePerformanceClaimEvent(performance: PerformanceClaim, claimId: string): WebBaseEvent {
     let event: WebBaseEvent;
     event = new WebBaseEvent();
     event.SessionKey = this.authenticationService.sessionKey;
@@ -209,8 +212,21 @@ export class EventFactoryService {
     event.Action = EventAction.CREATE_PERFORMANCE;
     event.Date = new Date().toUTCString();
     event.ApplicationIdentifier = 'WebClient'; //TODO: change to use an application identifier
-    event.setBodyProperty(EventConstants.PERFORMANCE_FORM, performanceForm);
-    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_ID, this.authenticationService.userInfo?.Identity);
+
+    event.setBodyProperty(EventConstants.DATE_PERFORMANCE, performance.date);
+    event.setBodyProperty(EventConstants.TYPE_PERFORMANCE, performance.type);
+    event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, performance.justifyingDocument);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_WORK_HOURS, performance.freeProfessionalWorkHours);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_TRAVEL_HOURS, performance.freeProfessionalTravelHours);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_TRAVEL_EXPENSES, performance.freeProfessionalTravelExpenses);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_REMUNERATION, performance.freeProfessionalRemuneration);
+    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_DATE, performance.technicalDirectorDate);
+    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_WORK_HOURS, performance.technicalDirectorWorkHours);
+    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_TRAVEL_HOURS, performance.freeProfessionalTravelHours);
+    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_TRAVEL_EXPENSES, performance.technicalDirectorTravelExpenses);
+    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_REMUNERATION, performance.technicalDirectorRemuneration);
+    event.setBodyProperty(EventConstants.SUMMARY, performance.summary);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_ID, this.authenticationService.userInfo?.Id);
     event.setBodyProperty(EventConstants.CLAIM_ID, claimId);
     return event;
   }
@@ -247,7 +263,7 @@ export class EventFactoryService {
     event.Action = EventAction.GET_CLAIMS;
     event.Date = new Date().toUTCString();
     event.ApplicationIdentifier = 'WebClient'; //TODO: change to use an application identifier
- 
+
     return event;
   }
 
@@ -273,11 +289,11 @@ export class EventFactoryService {
     event.Action = EventAction.GET_SUBSCRIBERS;
     event.Date = new Date().toUTCString();
     event.ApplicationIdentifier = 'WebClient'; //TODO: change to use an application identifier
- 
+
     return event;
   }
 
-  public CreateRegisterUserEvent(accountForm: RegisterUserEvent, personalForm: RegisterUserEvent, accounType : String, claimantId: String): WebBaseEvent {
+  public CreateRegisterUserEvent(accountForm: Form, personalForm: Form, accounType: String): WebBaseEvent {
     let event: WebBaseEvent;
 
     event = new WebBaseEvent();
@@ -285,19 +301,17 @@ export class EventFactoryService {
     event.SecurityToken = "3746736473";
     event.TraceIdentifier = Guid.create().toString();
     event.Type = EventType.OSD;
-    event.Action = EventAction.REGISTER_CUSTOMER; 
+    event.Action = EventAction.REGISTER_CUSTOMER;
     event.Date = (new Date()).toUTCString();
     event.ApplicationIdentifier = "WebClient"; //TODO: change to use an application identifier
     event.setBodyProperty(EventConstants.ACCOUNT_FORM, accountForm);
     event.setBodyProperty(EventConstants.PERSONAL_FORM, personalForm);
     event.setBodyProperty(EventConstants.ACCOUNT_TYPE, accounType);
-    if(claimantId !== ""){
-      event.setBodyProperty(EventConstants.CLAIMANT_ID, claimantId);
-    }
+
     return event;
   }
 
-  public CreateAddClaimEvent(claimantId: String | null, claimType: String, Subscriberclaimed: String, Serviceprovided: String, fact: String, amountClaimed: String, document1: String, document2: String): WebBaseEvent {
+  public CreateAddClaimEvent(claimForm: Form): WebBaseEvent {
     let event: WebBaseEvent;
 
     event = new WebBaseEvent();
@@ -305,18 +319,11 @@ export class EventFactoryService {
     event.SecurityToken = "3746736473";
     event.TraceIdentifier = Guid.create().toString();
     event.Type = EventType.OSD;
-    event.Action = EventAction.CREATE_CLAIM; 
+    event.Action = EventAction.CREATE_CLAIM;
     event.Date = (new Date()).toUTCString();
     event.ApplicationIdentifier = "WebClient"; //TODO: change to use an application identifier
-    
-    event.setBodyProperty(EventConstants.CLAIMANT_ID, claimantId);
-    event.setBodyProperty(EventConstants.CLAIM_TYPE, claimType);
-    event.setBodyProperty(EventConstants.SUBSCRIBER_CLAIMED, Subscriberclaimed);
-    event.setBodyProperty(EventConstants.SERVICE_PROVIDED, Serviceprovided);
-    event.setBodyProperty(EventConstants.FACTS, fact);
-    event.setBodyProperty(EventConstants.AMOUNT_CLAIMED, amountClaimed);
-    event.setBodyProperty(EventConstants.SUPPORTING_DOCUMENT1, document1);
-    event.setBodyProperty(EventConstants.SUPPORTING_DOCUMENT2, document2);
+
+    event.setBodyProperty(EventConstants.CLAIM_FORM, claimForm);
 
     return event;
   }

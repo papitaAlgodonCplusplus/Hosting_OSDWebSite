@@ -12,6 +12,7 @@ import { OnboardingRegisterTypeComponent } from './pages/onboarding-register-typ
 import { OnboardingRegisterSubClientComponent } from './pages/onboarding-register-sub-client/onboarding-register-sub-client.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthModule } from '../auth/auth.module';
+import { SelectorRegistryClaimantComponent } from './pages/selector-registry-claimant/selector-registry-claimant.component';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { AuthModule } from '../auth/auth.module';
     OnboardingRegisterCfhComponent,
     OnboardingRegisterClaimantComponent,
     OnboardingRegisterFreeProfessionalComponent,
-    OnboardingRegisterSubClientComponent
+    OnboardingRegisterSubClientComponent,
+    SelectorRegistryClaimantComponent
   ],
   imports: [
     CommonModule,

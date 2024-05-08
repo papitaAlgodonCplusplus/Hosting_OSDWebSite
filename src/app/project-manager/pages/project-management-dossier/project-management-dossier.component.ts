@@ -16,8 +16,8 @@ import { DatePipe } from '@angular/common';
   templateUrl: './project-management-dossier.component.html',
   styleUrls: ['./project-management-dossier.component.css']
 })
-export class ProjectManagementDossierComponent implements OnDestroy {
 
+export class ProjectManagementDossierComponent implements OnDestroy {
   readOnly: boolean = true;
   formProjectManager: FormGroup
   showOptions: boolean = false;
@@ -133,8 +133,8 @@ export class ProjectManagementDossierComponent implements OnDestroy {
       projectAmount: '€ ' + this.amountProject,
       expensesEmployeesVolunteers: '€ 0',
       supplierExpensesPurchases: '€ 0' ,
-      economicBudget: '€ 145000',
-      expectedTimes : ''
+      economicBudget: '€ 36.000',
+      expectedTimes : '600 ' + this.translate.instant('Hours')
     });
     return form;
   }

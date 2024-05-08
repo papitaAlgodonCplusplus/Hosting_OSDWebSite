@@ -11,7 +11,7 @@ import { PerformanceBuy } from '../project-manager/Models/performanceBuy';
 })
 export class OSDDataService {
   performanceFP: any = "";
-  
+
   private actionRegisterSuccessSubject = new Subject<boolean>();
   private userAuthenticationSuccessSubject = new Subject<string>();
   private userRegisterSuccessSubject = new Subject<boolean>();
@@ -20,6 +20,8 @@ export class OSDDataService {
   private getSubscribersSuccessSubject = new Subject<Subscriber[]>();
   private freeProfessionalId = new Subject<string>();
   private freeProfessionalTypeId = new Subject<string>();
+  private freeProfessionalTR = new Subject<any[]>();
+  private usersFreeProfessionalTR = new Subject<any[]>();
 
   private performanceFreeProfessionalList = new Subject<PerformanceFreeProfessional[]>();
   private performanceBuyList = new Subject<PerformanceBuy[]>();
@@ -36,15 +38,16 @@ export class OSDDataService {
 
   performanceFreeProfessionalList$ = this.performanceFreeProfessionalList.asObservable();
   performanceBuyList$ = this.performanceBuyList.asObservable();
+  freeProfessionalTR$ = this.freeProfessionalTR.asObservable();
+  usersFreeProfessionalTR$ = this.usersFreeProfessionalTR.asObservable();
 
-  constructor() { 
-    
+  constructor() {
   }
 
-  setPerformance(performance: any){
+  setPerformance(performance: any) {
     this.performanceFP = performance
   }
-  getPerformance(){
+  getPerformance() {
     return this.performanceFP
   }
 
@@ -61,11 +64,9 @@ export class OSDDataService {
   }
 
   emitGetOsdUsersSubscribersSuccess(data: UserInfo[]) {
-    console.log("1.Lista:", data)
     this.getOsdUsersSubscribersSuccessSubject.next(data);
   }
   emitGetSubscribersSuccess(data: Subscriber[]) {
-    console.log("2.Lista:", data)
     this.getSubscribersSuccessSubject.next(data);
   }
   emitPerformanceFreeProfessionalList(data: PerformanceFreeProfessional[]) {
@@ -79,5 +80,13 @@ export class OSDDataService {
   }
   emitFreeProfessionalTypeId(data: string) {
     this.freeProfessionalTypeId.next(data);
+  }
+
+  emitFreeProfessionalTR(data: any[]) {
+    this.freeProfessionalTR.next(data);
+  }
+
+  emitUsersFreeProfessionalTR(data: any[]) {
+    this.usersFreeProfessionalTR.next(data);
   }
 }

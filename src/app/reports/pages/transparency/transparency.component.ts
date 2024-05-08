@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { UiActions } from 'src/app/store/actions';
 import { switchReport } from 'src/app/store/actions/ui.actions';
-import { UiSelectors } from 'src/app/store/selectors';
+import { AuthSelectors, UiSelectors } from 'src/app/store/selectors';
 
 @Component({
   selector: 'app-transparency',
@@ -17,6 +17,8 @@ export class TransparencyComponent implements OnDestroy{
   reportOpen$: Observable<string> = this.store.select(UiSelectors.selectSwitchReport);
   TEST! : string;
   arrowLeftSidebar : boolean = false;
+  isAuthenticated$: Observable<boolean> = this.store.select(AuthSelectors.authenticationToken)
+  isUser: boolean = true;
 
   constructor(
     private store : Store,
@@ -28,8 +30,14 @@ export class TransparencyComponent implements OnDestroy{
   ngOnInit(): void{
     setTimeout(() => { 
       this.store.dispatch(switchReport({ reportName: 'sub' }));
+      this.isAuthenticated$.subscribe((isAuthenticated: boolean) => {
+        if (isAuthenticated === false) {
+          this.isUser = false
+        }
+      });
     }, 0);
   }
+  
   ngOnDestroy(): void {
     setTimeout(() => {
       this.store.dispatch(UiActions.showAll());
@@ -37,4 +45,23 @@ export class TransparencyComponent implements OnDestroy{
     }, 0);
   }
   
+  toggleLeftSidebar(): void {
+    this.store.dispatch(UiActions.toggleLeftSidebar());
+    if (this.arrowLeftSidebar === true) {
+      this.arrowLeftSidebar = false;
+    }
+  }
+
+  showArrow(): void {
+    this.arrowLeftSidebar = true;
+
+  }
+
+  hideArrow(): void {
+    this.arrowLeftSidebar = false;
+  }
+
+  changeReport(report: string) {
+    this.store.dispatch(switchReport({ reportName: report }));
+  }
 }

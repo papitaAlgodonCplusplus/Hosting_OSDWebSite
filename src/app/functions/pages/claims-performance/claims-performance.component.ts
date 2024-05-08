@@ -6,37 +6,32 @@ import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
 import { PerformanceFreeProfessional } from 'src/app/project-manager/Models/performanceFreeProfessional';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { ModalActions, UiActions } from 'src/app/store/actions';
-import { ClaimSelectors } from 'src/app/store/selectors';
 import { OSDDataService } from 'src/app/services/osd-data.service';
-import { AuthSelectors } from 'src/app/store/selectors';
+import { AuthSelectors, ClaimSelectors } from 'src/app/store/selectors';
 import { DatePipe } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
+import { Claim } from 'src/app/models/claim';
 
 @Component({
-  selector: 'app-performance-free-professional',
-  templateUrl: './performance-free-professional.component.html',
-  styleUrls: ['./performance-free-professional.component.css']
+  selector: 'app-claims-performance',
+  templateUrl: './claims-performance.component.html',
+  styleUrls: ['./claims-performance.component.css']
 })
-export class PerformanceFreeProfessionalComponent {
+export class ClaimsPerformanceComponent {
   isAuthenticated$: Observable<boolean> = this.store.select(AuthSelectors.authenticationToken)
+  claim$: Observable<Claim> = this.store.select(ClaimSelectors.claim);
   performanceFP: any;
   editOtherInformation: boolean = true;
-  disable: boolean = true;
   performanceForm: FormGroup;
-  Response = "";
-  validationsService: any;
   selectedType: string | undefined;
   type: DropDownItem[] = [
-    { value: 'Escritos', key: 'Escritos' },
+    { value: 'Escritos', key: 'Posted' },
     { value: 'E-mails', key: 'E-mails' },
-    { value: 'Video Conferencias', key: 'Video Conferencias' },
-    { value: 'Reuniones/Juzgado', key: 'Reuniones/Juzgado' }
+    { value: 'Video Conferencias', key: 'Video Conferencing' },
+    { value: 'Reuniones/Juzgado', key: 'Meetings/Court' }
   ];
   PL_FreeProfessional: string | undefined;
   FreeProfessional: DropDownItem[] = [];
-  isDropdownOpenPL = true;
-  isDropdownOpenDT = true;
-  isAcceptConditions!: boolean;
   documentName!: string;
   freeProfessionalId!: string
   incorrectFormat: boolean = false
@@ -76,11 +71,7 @@ export class PerformanceFreeProfessionalComponent {
         TD_TravelTime: this.performanceFP.TechnicalDirectorTravelHours,
         TD_TravelExpenses: this.performanceFP.TechnicalDirectorTravelExpenses,
         TD_Remuneration: this.performanceFP.TechnicalDirectorRemuneration,
-        Summary: this.performanceFP.Summary,
-        ForecastTravelExpenses: this.performanceFP.EstimatedTransportExpenses,
-        ForecastTravelTime: this.performanceFP.EstimatedTransportHours,
-        ForecastWorkHours: this.performanceFP.EstimatedWorkHours,
-        JustifyChangeEstimatedWorkHours: this.performanceFP.JustifyChangeEstimatedWorkHours
+        Summary: this.performanceFP.Summary
       });
       return form;
     }
@@ -91,13 +82,9 @@ export class PerformanceFreeProfessionalComponent {
 
   ngOnInit() {
     setTimeout(() => {
-      this.store.dispatch(UiActions.hideAll());
+      this.store.dispatch(UiActions.hideFooter());
+      this.store.dispatch(UiActions.hideLeftSidebar());
     }, 0);
-    this.isAuthenticated$.subscribe((isAuthenticated: boolean) => {
-      if (isAuthenticated === false) {
-        this.editOtherInformation = false
-      }
-    });
 
     this.OSDDataService.freeProfessionalId$.subscribe(id => {
       this.freeProfessionalId = id;
@@ -132,21 +119,8 @@ export class PerformanceFreeProfessionalComponent {
       TD_TravelExpenses: ['', [Validators.required]],
       TD_Remuneration: ['', [Validators.required]],
       Summary: ['', [Validators.required]],
-      ForecastTravelExpenses: [this.performanceFP.ForecastTravelExpenses],
-      ForecastTravelTime: ['', [Validators.required]],
-      ForecastWorkHours: ['', [Validators.required]],
-      JustifyChangeEstimatedWorkHours: ['', [Validators.required]]
     });
     return form;
-  }
-
-  toggleDropdown(Response: string) {
-    if (Response == "isDropdownOpen") {
-      this.isDropdownOpenPL = !this.isDropdownOpenPL;
-    }
-    else {
-      this.isDropdownOpenDT = !this.isDropdownOpenDT;
-    }
   }
 
   onSubmit(): void {
@@ -173,15 +147,14 @@ export class PerformanceFreeProfessionalComponent {
     performanceData.technicalDirectorTravelExpenses = formValues.TD_TravelExpenses;
     performanceData.technicalDirectorRemuneration = formValues.TD_Remuneration;
     performanceData.summary = formValues.Summary;
-    performanceData.estimatedTransportExpenses = formValues.ForecastTravelExpenses;
-    performanceData.estimatedTransportHours = formValues.ForecastTravelTime;
-    performanceData.estimatedWorkHours = formValues.ForecastWorkHours;
-    performanceData.justifyChangeEstimatedWorkHours = formValues.JustifyChangeEstimatedWorkHours;
 
     performanceData.freeprofessionalId = this.freeProfessionalId
     performanceData.proyectManagerId = '065d461a-cc09-4162-b4e9-f121c11d3348'
 
-    this.OSDEventService.addPerformanceFreeProfessional(performanceData);
+    this.claim$.subscribe(claim => {
+      var claimId = claim.Id;
+      this.OSDEventService.createPerformanceClaim(performanceData, claimId);
+    })
   }
 
   verifiedFormat(data: string) {
@@ -189,11 +162,6 @@ export class PerformanceFreeProfessionalComponent {
     let travelTime, workHours, errorMessage;
 
     switch (data) {
-      case "forecast":
-        travelTime = formValues.ForecastTravelTime;
-        workHours = formValues.ForecastWorkHours;
-        errorMessage = this.translate.instant('ForecastData');
-        break;
       case "freeProfessional":
         travelTime = formValues.FP_TravelTime;
         workHours = formValues.FP_WorkHours;
@@ -212,9 +180,7 @@ export class PerformanceFreeProfessionalComponent {
     const isWorkHoursValid = this.validarHora(workHours);
 
     if (isTravelTimeValid && isWorkHoursValid) {
-      if (data === "forecast") {
-        this.chargeEstimatedTravelExpenses(formValues);
-      } else if (data === "freeProfessional") {
+      if (data === "freeProfessional") {
         this.chargeRemuneration(formValues);
         this.chargeTravelExpenses(formValues);
       } else if (data === "technicalDirector") {
@@ -227,9 +193,7 @@ export class PerformanceFreeProfessionalComponent {
       this.store.dispatch(ModalActions.changeAlertType({ alertType: 'warning' }));
       this.store.dispatch(ModalActions.openAlert());
       this.incorrectFormat = true;
-      if (data === "forecast") {
-        this.performanceForm.patchValue({ ForecastTravelExpenses: '' });
-      } else if (data === "freeProfessional") {
+      if (data === "freeProfessional") {
         this.performanceForm.patchValue({ FP_TravelExpenses: '' });
         this.performanceForm.patchValue({ FP_Remuneration: '' });
       } else if (data === "technicalDirector") {
