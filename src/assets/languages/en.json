@@ -139,7 +139,7 @@
   "claimAmount": "Claim Amount",
   "claimantCompensation": "Compensation Obtained by the Claimant",
   "institutionEntitySavings": "Institution/Entity Savings Improvement",
-  "entityRating": "Claimant Rating 0 to 5",
+  "entityRating": "Claimant Rating",
   "defendantRating": "Defendant Rating",
   "OSDRating": "OSD Rating",
   "osdEconomicResult": "OSD: Income-Expenses/ Economic Result",

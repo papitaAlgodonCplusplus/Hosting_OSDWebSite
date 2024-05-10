@@ -227,6 +227,20 @@ export class OSDService {
     });
   }
 
+  public GetTransparencyReportsSubscriberClients() {
+    const event: WebBaseEvent = this.eventFactoryService.CreateGetTransparencyReportsSubscriberClients();
+    console.log('Se envia el evento',event)
+    this.restApiService.SendOSDEvent(event).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.GetTransparencyReportsSubscriberClientsResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+
   public HandleGettingFreeProfessionalsListResponse(webBaseEvent: WebBaseEvent) {
     try {
       if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['ListFreeProfessionals']) {
@@ -396,6 +410,34 @@ export class OSDService {
 
         this.osdDataService.emitPerformanceFreeProfessionalList(performancesFreeProfessionalsModels);
         this.osdDataService.emitPerformanceBuyList(performancesBuyModels);
+      }
+
+    }
+    catch (err) {
+      //TODO: create exception event and send to local file or core
+    }
+  }
+
+  public GetTransparencyReportsSubscriberClientsResponse(webBaseEvent: WebBaseEvent) {
+    try {
+      console.log('Lista de reportes:', webBaseEvent)
+      var institutionsNames = webBaseEvent.getBodyProperty(EventConstants.INSTITUTIONS_NAMES);
+      var claimsAmount = webBaseEvent.getBodyProperty(EventConstants.CLAIMS_AMOUNT);
+      var compensationObtainedByClaimant = webBaseEvent.getBodyProperty(EventConstants.COMPENASTION_OBTAINED_BY_CLAIMANT);
+      var savingsImprovement = webBaseEvent.getBodyProperty(EventConstants.SAVINGS_IMPROVEMENT);
+      var claimantsRating = webBaseEvent.getBodyProperty(EventConstants.CLAIMANTS_RATING);
+      var claimedRating = webBaseEvent.getBodyProperty(EventConstants.CLAIMED_RATING);
+      var osdRating = webBaseEvent.getBodyProperty(EventConstants.OSD_RATING);
+      
+
+      if (institutionsNames != null && claimsAmount != null && compensationObtainedByClaimant != null && savingsImprovement != null && claimantsRating != null && claimedRating != null && osdRating != null) {
+        this.osdDataService.emitInstitutionsNames(institutionsNames);
+        this.osdDataService.emitClaimsAmount(claimsAmount);
+        this.osdDataService.emitCompensationObtainedByClaimant(compensationObtainedByClaimant);
+        this.osdDataService.emitSavingsImprovement(savingsImprovement);
+        this.osdDataService.emitClaimantsRating(claimantsRating);
+        this.osdDataService.emitClaimedRating(claimedRating);
+        this.osdDataService.emitOsdRating(osdRating);
       }
 
     }

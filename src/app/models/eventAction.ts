@@ -20,6 +20,8 @@ export class EventAction {
   public static GET_PERFORMANCES: string = "GetPerformances";
   public static CREATE_CLAIM: string = "CreateClaim";
   public static HANDLE_CREATE_CLAIM_RESPONSE: string = "HandleCreateClaimResponse";
+  public static GET_TRANSPARENCY_REPORTS_SUBSCRIBER_CLIENTES: string = "GetTransparencyReportsSubscriberClients";
+  public static GET_TRANSPARENCY_REPORTS_SUBSCRIBER_CLIENTES_RESPONSE: string = "GetTransparencyReportsSubscriberClientsResponse";
 
   //Response
   public static HANDLE_AUTHENTICATION_RESPONSE: string = "HandleAuthenticationResponse";

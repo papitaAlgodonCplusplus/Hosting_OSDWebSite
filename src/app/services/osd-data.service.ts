@@ -22,6 +22,13 @@ export class OSDDataService {
   private freeProfessionalTypeId = new Subject<string>();
   private freeProfessionalTR = new Subject<any[]>();
   private usersFreeProfessionalTR = new Subject<any[]>();
+  private InstitutionsNames = new Subject<any[]>();
+  private ClaimsAmount = new Subject<any[]>();
+  private CompensationObtainedByClaimant = new Subject<any[]>();
+  private SavingsImprovement = new Subject<any[]>();
+  private ClaimantsRating = new Subject<any[]>();
+  private ClaimedRating = new Subject<any[]>();
+  private OsdRating = new Subject<any[]>();
 
   private performanceFreeProfessionalList = new Subject<PerformanceFreeProfessional[]>();
   private performanceBuyList = new Subject<PerformanceBuy[]>();
@@ -40,6 +47,14 @@ export class OSDDataService {
   performanceBuyList$ = this.performanceBuyList.asObservable();
   freeProfessionalTR$ = this.freeProfessionalTR.asObservable();
   usersFreeProfessionalTR$ = this.usersFreeProfessionalTR.asObservable();
+
+  InstitutionsNames$ = this.InstitutionsNames.asObservable();
+  ClaimsAmount$ = this.ClaimsAmount.asObservable();
+  CompensationObtainedByClaimant$ = this.CompensationObtainedByClaimant.asObservable();
+  SavingsImprovement$ = this.SavingsImprovement.asObservable();
+  ClaimantsRating$ = this.ClaimantsRating.asObservable();
+  ClaimedRating$ = this.ClaimedRating.asObservable();
+  OsdRating$ = this.OsdRating.asObservable();
 
   constructor() {
   }
@@ -88,5 +103,27 @@ export class OSDDataService {
 
   emitUsersFreeProfessionalTR(data: any[]) {
     this.usersFreeProfessionalTR.next(data);
+  }
+
+  emitInstitutionsNames(data: any[]) {
+    this.InstitutionsNames.next(data);
+  }  
+  emitClaimsAmount(data: any[]) {
+    this.ClaimsAmount.next(data);
+  }
+  emitCompensationObtainedByClaimant(data: any[]) {
+    this.CompensationObtainedByClaimant.next(data);
+  }
+  emitSavingsImprovement(data: any[]) {
+    this.SavingsImprovement.next(data);
+  }
+  emitClaimantsRating(data: any[]) {
+    this.ClaimantsRating.next(data);
+  }
+  emitClaimedRating(data: any[]) {
+    this.ClaimedRating.next(data);
+  }
+  emitOsdRating(data: any[]) {
+    this.OsdRating.next(data);
   }
 }
