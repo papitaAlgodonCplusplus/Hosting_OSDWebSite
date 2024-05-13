@@ -21,7 +21,8 @@ export class EventAction {
   public static CREATE_CLAIM: string = "CreateClaim";
   public static HANDLE_CREATE_CLAIM_RESPONSE: string = "HandleCreateClaimResponse";
   public static GET_TRANSPARENCY_REPORTS_SUBSCRIBER_CLIENTES: string = "GetTransparencyReportsSubscriberClients";
-  public static GET_TRANSPARENCY_REPORTS_SUBSCRIBER_CLIENTES_RESPONSE: string = "GetTransparencyReportsSubscriberClientsResponse";
+   
+  public static GET_TRANSPARENCY_REPORTS_INCOME_EXPENSES: string = "GetTransparencyReportsIncomeExpenses";
 
   //Response
   public static HANDLE_AUTHENTICATION_RESPONSE: string = "HandleAuthenticationResponse";
@@ -46,7 +47,8 @@ export class EventAction {
   public static HANDLE_GETTING_FREE_PROFESSIONALS_TR_RESPONSE: string = "HandleGettingFreeProfessionalsTRResponse";
   public static ASSIGN_CLAIMS_TO_FREE_PROFESSIONALS: string = "AssignClaimsToFreeProfessionalTR";
   public static HANDLE_ASSIGN_CLAIMS_TO_FREE_PROFESSIONALS_RESPONSE: string = "HandleAssignClaimsToFreeProfessionalTRResponse";
-
+  public static GET_TRANSPARENCY_REPORTS_INCOME_EXPENSES_RESPONSES: string = "GetTransparencyReportsIncomeExpensesResponse";
+  public static GET_TRANSPARENCY_REPORTS_SUBSCRIBER_CLIENTES_RESPONSE: string = "GetTransparencyReportsSubscriberClientsResponse";
   //#endregion 
 
   //#region Monitoring

@@ -227,9 +227,21 @@ export class OSDService {
     });
   }
 
+  public GetTransparencyReportsIncomeExpenses() {
+    const performanceBuyEvent: WebBaseEvent = this.eventFactoryService.CreateGetTransparencyReportsIncomeExpenses();
+    this.restApiService.SendOSDEvent(performanceBuyEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.GetTransparencyReportsIncomeExpensesResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+
   public GetTransparencyReportsSubscriberClients() {
     const event: WebBaseEvent = this.eventFactoryService.CreateGetTransparencyReportsSubscriberClients();
-    console.log('Se envia el evento',event)
     this.restApiService.SendOSDEvent(event).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
@@ -440,6 +452,35 @@ export class OSDService {
         this.osdDataService.emitOsdRating(osdRating);
       }
 
+    }
+    catch (err) {
+      //TODO: create exception event and send to local file or core
+    }
+  }
+  public GetTransparencyReportsIncomeExpensesResponse(webBaseEvent: WebBaseEvent) {
+    console.log('Lista de gastos', webBaseEvent)
+    try {
+      var totalOsdExpenses = webBaseEvent.getBodyProperty(EventConstants.TOTAL_OSD_EXPENSES);
+      var compensationOfClaimant = webBaseEvent.getBodyProperty(EventConstants.COMPENSATION_OF_CLAIMANT);
+      var totalOsdIncomes = webBaseEvent.getBodyProperty(EventConstants.TOTAL_OSD_INCOMES);
+
+      var DT_Expenses = webBaseEvent.getBodyProperty(EventConstants.TECHNICAL_DIRECTOR_EXPENSES);
+      var TC_Expenses = webBaseEvent.getBodyProperty(EventConstants.ACCOUNTING_TECHNITIAN_EXPENSES);
+      var TM_Expenses = webBaseEvent.getBodyProperty(EventConstants.MARKETING_TECHNITIAN_EXPENSES);
+      var TS_Expenses = webBaseEvent.getBodyProperty(EventConstants.SAC_TECHNITIAN_EXPENSES);
+      var IN_Expenses = webBaseEvent.getBodyProperty(EventConstants.SYSTEM_ENGINEER_EXPENSES);
+      
+      if (totalOsdExpenses != null && compensationOfClaimant != null && totalOsdIncomes != null) {
+        this.osdDataService.emitTotalOsdExpenses(totalOsdExpenses);
+        this.osdDataService.emitCompensationOfClaimant(compensationOfClaimant);
+        this.osdDataService.emitTotalOsdIncomes(totalOsdIncomes);
+
+        this.osdDataService.emitDT_Expenses(DT_Expenses);
+        this.osdDataService.emitTC_Expenses(TC_Expenses);
+        this.osdDataService.emitTM_Expenses(TM_Expenses);
+        this.osdDataService.emitTS_Expenses(TS_Expenses);
+        this.osdDataService.emitIN_Expenses(IN_Expenses);
+      }
     }
     catch (err) {
       //TODO: create exception event and send to local file or core

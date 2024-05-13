@@ -6,22 +6,25 @@
     <thead>
       <tr>
         <th class="p-2 border font-normal text-yellow-500">
-          {{'exercise' | translate}} 2024
+          {{'exercise_2024' | translate}}
         </th>
         <th class="py-2 px-4 border text-yellow-500 font-normal hidden md:table-cell"> {{'OSDIncome' | translate}}</th>
         <th class="py-2 px-4 border text-yellow-500 font-normal hidden md:table-cell"> {{'OSDExpenses' | translate}}</th>
-        <th class="py-2 px-4 border text-yellow-500 font-normal hidden md:table-cell"> {{'Reclamaciones' | translate}}</th>
-        <th class="py-2 px-4 border text-yellow-500 font-normal hidden md:table-cell"> {{'Cuantía' | translate}}</th>
-        <th class="py-2 px-4 border text-yellow-500 font-normal hidden md:table-cell"> {{'Indemnización obtenida por el Reclamante' | translate}}</th>
-        <th class="py-2 px-4 border text-yellow-500 font-normal hidden md:table-cell"> {{'Ahorro AA.PP Mejora' | translate}}</th>
+        <th class="py-2 px-4 border text-yellow-500 font-normal hidden md:table-cell"> {{'claimAmount' | translate}}</th>
+        <th class="py-2 px-4 border text-yellow-500 font-normal hidden md:table-cell"> {{'savingsPublicAdministration' | translate}}</th>
       </tr>
     </thead>
     <tbody>
-      <ng-container *ngFor="let informe of listaInformes">
+      <ng-container>
         <tr>
           <td class="p-2 border font-normal text-darkslategray text-center">{{'total' | translate}}</td>
-          <td class="p-2 border text-center"></td>
-          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center">€{{ totalOsdIncomes.toFixed(2) }}</td>
+          <td class="p-2 border text-center">€{{ totalOsdExpenses.toFixed(2) }}</td>
+          <td class="p-2 border text-center"><i class="fa-solid fa-minus"></i></td>
+          <td class="p-2 border text-center">€{{ compensationOfClaimant.toFixed(2) }}</td>
+        </tr>
+        <tr>
+          <td class="p-2 border font-normal text-darkslategray text-center"></td>
           <td class="p-2 border text-center"></td>
           <td class="p-2 border text-center"></td>
           <td class="p-2 border text-center"></td>
@@ -32,62 +35,60 @@
           <td class="p-2 border text-center"></td>
           <td class="p-2 border text-center"></td>
           <td class="p-2 border text-center"></td>
-          <td class="p-2 border text-center"></td>
-          <td class="p-2 border text-center"></td>
-          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center"></td> 
         </tr>
         <tr>
           <td class="p-2 border font-normal text-darkslategray text-center">{{'PLProfessionals' | translate}}</td>
-          <td class="p-2 border text-center"></td>
-          <td class="p-2 border text-center"></td>
-          <td class="p-2 border text-center"></td>
-          <td class="p-2 border text-center"></td>
-          <td class="p-2 border text-center"></td>
-          <td class="p-2 border text-center"></td>
-        </tr>
+          <td class="p-2 border text-center">€{{ (totalOsdIncomes * 0.4).toFixed(2) }}</td>
+          <td class="p-2 border text-center">€{{ totalOsdExpenses.toFixed(2) }}</td>
+          <td class="p-2 border text-center"><i class="fa-solid fa-minus"></i></td>
+          <td class="p-2 border text-center"><i class="fa-solid fa-minus"></i></td>
+        </tr> 
         <tr>
           <td class="p-2 border font-normal text-darkslategray text-center">{{'DTDirecccionTecnica' | translate}}
           </td>
-          <td class="p-2 border text-center"></td>
-          <td class="p-2 border text-center"></td>
-          <td class="p-2 border text-center"></td>
-          <td class="p-2 border text-center"></td>
-          <td class="p-2 border text-center"></td>
-          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center">€{{ (totalOsdIncomes * 0.1).toFixed(2) }}</td>
+          <td class="p-2 border text-center">€{{ TD_Expenses.toFixed(2) }}</td>
+          <td class="p-2 border text-center"><i class="fa-solid fa-minus"></i></td>
+          <td class="p-2 border text-center"><i class="fa-solid fa-minus"></i></td>
         </tr>
         <tr>
           <td class="p-2 border font-normal text-darkslategray text-center">{{'COContabilidad' | translate}}
           </td>
-          <td class="p-2 border text-center"></td>
-          <td class="p-2 border text-center"></td>
-          <td class="p-2 border text-center"></td>
-          <td class="p-2 border text-center"></td>
-          <td class="p-2 border text-center"></td>
-          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center">€{{ (totalOsdIncomes * 0.05).toFixed(2) }}</td>
+          <td class="p-2 border text-center">€{{ TC_Expenses.toFixed(2) }}</td>
+          <td class="p-2 border text-center"><i class="fa-solid fa-minus"></i></td>
+          <td class="p-2 border text-center"><i class="fa-solid fa-minus"></i></td>
         </tr>
         <tr>
           <td class="p-2 border font-normal text-darkslategray text-center">{{'MKMarketing' | translate}}
           </td>
-          <td class="p-2 border text-center"></td>
-          <td class="p-2 border text-center"></td>
-          <td class="p-2 border text-center"></td>
-          <td class="p-2 border text-center"></td>
-          <td class="p-2 border text-center"></td>
-          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center">€{{ (totalOsdIncomes * 0.1).toFixed(2) }}</td>
+          <td class="p-2 border text-center">€{{ TM_Expenses.toFixed(2) }}</td>
+          <td class="p-2 border text-center"><i class="fa-solid fa-minus"></i></td>
+          <td class="p-2 border text-center"><i class="fa-solid fa-minus"></i></td>
         </tr>
         <tr>
           <td class="p-2 font-normal border text-darkslategray text-center">
             <div class="flex flex-col">
               <p>{{'INFInformatica' | translate}}</p>
+            </div>
+          </td>
+          <td class="p-2 border text-center">€{{ (totalOsdIncomes * 0.1).toFixed(2) }}</td>
+          <td class="p-2 border text-center">€{{ IN_Expenses.toFixed(2) }}</td>
+          <td class="p-2 border text-center"><i class="fa-solid fa-minus"></i></td>
+          <td class="p-2 border text-center"><i class="fa-solid fa-minus"></i></td>
+        </tr>
+        <tr>
+          <td class="p-2 font-normal border text-darkslategray text-center">
+            <div class="flex flex-col">
               <p>{{'SACServiceCustomerCare' | translate}}</p>
             </div>
           </td>
-          <td class="p-2 border text-center"></td>
-          <td class="p-2 border text-center"></td>
-          <td class="p-2 border text-center"></td>
-          <td class="p-2 border text-center"></td>
-          <td class="p-2 border text-center"></td>
-          <td class="p-2 border text-center"></td>
+          <td class="p-2 border text-center">€{{ (totalOsdIncomes * 0.05).toFixed(2) }}</td>
+          <td class="p-2 border text-center">€{{ TS_Expenses.toFixed(2) }}</td>
+          <td class="p-2 border text-center"><i class="fa-solid fa-minus"></i></td>
+          <td class="p-2 border text-center"><i class="fa-solid fa-minus"></i></td>
         </tr>
       </ng-container>
     </tbody>

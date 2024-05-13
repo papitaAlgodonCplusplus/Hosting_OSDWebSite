@@ -135,6 +135,15 @@ export class EventConstants {
   public static CLAIMED_RATING: string = "ClaimedRating";
   public static OSD_RATING: string = "OsdRating";
 
+  public static TOTAL_OSD_EXPENSES: string = "TotalOsdExpenses";
+  public static COMPENSATION_OF_CLAIMANT: string = "CompensationOfClaimant";
+  public static TOTAL_OSD_INCOMES: string = "TotalOsdIncomes";
+
+  public static TECHNICAL_DIRECTOR_EXPENSES: string = "TD_Expenses";
+  public static ACCOUNTING_TECHNITIAN_EXPENSES: string = "TC_Expenses";
+  public static MARKETING_TECHNITIAN_EXPENSES: string = "TM_Expenses";
+  public static SYSTEM_ENGINEER_EXPENSES: string = "IN_Expenses";
+  public static SAC_TECHNITIAN_EXPENSES: string = "TS_Expenses";
   //#endregion
   constructor() {
 
