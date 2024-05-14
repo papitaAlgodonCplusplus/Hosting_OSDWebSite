@@ -1,48 +1,42 @@
-<div class="flex flex-col h-full md:flex-row-reverse">
-  <div class="flex-1 flex justify-center items-center p-3">
-    <div
-      class="relative w-full xl:w-full md:w-11/12 h-full rounded-l-3xl rounded-r-8xl bg-white-lightbone md:bg-darkblue-cyan max-w-screen-lg max-h-[800px]">
-      <shared-error-modal *ngIf="errorModalOpen$ | async"></shared-error-modal>
+<div class="flex flex-col h-full lg:flex-row-reverse md:flex-row-reverse">
+  <div class="flex-1 border flex items-center flex-col justify-center space-y-3 py-3">
+    <shared-error-modal *ngIf="errorModalOpen$ | async"></shared-error-modal>
 
-      <div class="">
-        <div class="flex flex-col justify-center items-center w-full h-full gap-12 mt-10 md:mt-o">
-          <h2 class="text-center text-4xl text-darkslategray font-medium mb-10">
-            {{'iniciar_sesion' | translate}}
-          </h2>
+    <h2 class="text-center text-4xl text-darkslategray font-medium ">
+      {{'access' | translate}}
+    </h2>
 
-          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" autocomplete="off"
-            class="flex flex-col items-center justify-center h-4/5 w-full md:w-4/5 px-2 pb-20 2xl:px-10 gap-6">
-            <shared-input-field class="w-full" fieldName="email" label="{{ 'email' | translate }}" inputType="email"
-              [formGroup]="loginForm"></shared-input-field>
-            <auth-input-password class="w-full" [formGroup]="loginForm" fieldName="password"
-              label="{{'contraseña' | translate}}"></auth-input-password>
-            <div class="w-full flex justify-end">
-              <a class="cursor-pointer underline decoration-1 text-blue text-sm"
-                routerLink="">{{'olvidaste_tu_contraseña' | translate}}</a>
-            </div>
-            <button type="submit"
-              class="w-96 bg-line text-darkslategray rounded-xl text-lg p-2 font-medium">
-              {{'iniciar_sesion' | translate}}
-            </button>
-            <a class="w-full text-center text-sm underline cursor-pointer" routerLink="/onboarding">
-              {{'nuevo_en_OSD' | translate}}</a>
-          </form>
-        </div>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" autocomplete="off"
+      class="flex flex-col space-y-3 w-full p-3">
+      <shared-input-field class="w-full" fieldName="email" label="{{ 'email' | translate }}" inputType="email"
+        [formGroup]="loginForm"></shared-input-field>
+      <auth-input-password class="w-full" [formGroup]="loginForm" fieldName="password"
+        label="{{'contraseña' | translate}}"></auth-input-password>
+      <div class="w-full flex justify-end">
+        <!-- <a class="cursor-pointer underline decoration-1 text-blue text-sm" routerLink="">{{'olvidaste_tu_contraseña' |
+          translate}}</a> -->
       </div>
-    </div>
+      <div class="flex justify-center">
+        <button type="submit" class="bg-line text-darkslategray rounded-xl py-2 px-20 text-lg font-medium">
+          {{'iniciar_sesion' | translate}}
+        </button>
+      </div>
+      <a class="text-center text-sm underline cursor-pointer" routerLink="/onboarding">
+        {{'nuevo_en_OSD' | translate}}</a>
+    </form>
   </div>
 
-  <div class="flex-1 bg-darkslategray flex justify-center items-center p-3">
+  <div class="flex-1 bg-darkslategray flex justify-center items-center">
     <shared-switch-languages></shared-switch-languages>
-    <div class="flex  flex-col space-y-3 font-medium text-line">
+    <div class="flex flex-col space-y-3 font-medium text-line py-3">
       <img src="/./assets/img/OSD.png" alt="Logo OSD" class="">
       <div class="flex flex-col space-y-3 px-20">
-        <button class="flex flex-row items-center justify-center p-2 space-x-3 rounded-xl hover:bg-line hover:text-darkslategray transition duration-300 ease-in-out"
+        <button class="flex flex-row items-center justify-center py-2  space-x-3 rounded-xl hover:bg-line hover:text-darkslategray transition duration-300 ease-in-out"
         routerLink="/onboarding/selector-registry-claimant">
         {{'presentar_reclamación' | translate}} <i class="fa-solid fa-chevron-right text-sm pl-2 animate-pulse"></i>
       </button>
       <button routerLink="/reports"
-        class="flex flex-row items-center justify-center p-2 space-x-3 rounded-xl hover:bg-line hover:text-darkslategray transition duration-300 ease-in-out">
+        class="flex flex-row items-center justify-center py-2 space-x-3 rounded-xl hover:bg-line hover:text-darkslategray transition duration-300 ease-in-out">
         {{'transparencia' | translate}} <img src="/./assets/img/transparency.png" alt="" class="pl-3"> </button>
       </div>    
     </div>

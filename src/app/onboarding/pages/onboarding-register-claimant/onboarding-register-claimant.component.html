@@ -71,7 +71,7 @@
                     [selectedItem]="selectedClaimant">
                 </shared-simple-dropdown>
 
-                <shared-input-field [readOnly]="false" class="w-full md:w-1/2" fieldName="subscriberClaimed"
+                <shared-input-field [readOnly]="false" (click)="showModal()" class="w-full md:w-1/2" fieldName="subscriberClaimed"
                     inputType="text" label="{{'suscriptor_reclamado' | translate}}" [formGroup]="accountForm">
                 </shared-input-field>
 
