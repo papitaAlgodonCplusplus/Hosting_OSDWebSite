@@ -9,6 +9,8 @@ import { OSDRevenueExpenditureEconomicResultReportComponent } from './pages/osd-
 import { PLRemunerationResultsReportComponent } from './pages/pl-remuneration-results-report/pl-remuneration-results-report.component';
 import { CFHResultReportComponent } from './pages/cfhresult-report/cfhresult-report.component';
 import { SharedModule } from '../shared/shared.module';
+import { MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginator';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -22,7 +24,14 @@ import { SharedModule } from '../shared/shared.module';
     CommonModule,
     ReportsRoutingModule,
     TranslateModule,
-    SharedModule
+    SharedModule,
+    MatPaginatorModule
+  ],
+  providers:[
+    DatePipe,
+    {
+      provide: MatPaginatorIntl
+    }
   ]
 })
 export class ReportsModule { }

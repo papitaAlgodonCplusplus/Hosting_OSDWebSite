@@ -144,6 +144,12 @@ export class EventConstants {
   public static MARKETING_TECHNITIAN_EXPENSES: string = "TM_Expenses";
   public static SYSTEM_ENGINEER_EXPENSES: string = "IN_Expenses";
   public static SAC_TECHNITIAN_EXPENSES: string = "TS_Expenses";
+
+  public static FP_FULL_NAMES: string = "fpFullNames";
+  public static HOURS_PERFORMANCES: string = "hoursPerformances";
+  public static SUMMATION_FILES: string = "summationFiles";
+  public static SUMMATION_PERFORMANCES: string = "summationPerformances";
+  public static FORMATION_COST: string = "formationCost"
   //#endregion
   constructor() {
 

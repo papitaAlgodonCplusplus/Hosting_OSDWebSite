@@ -239,6 +239,18 @@ export class OSDService {
       }
     });
   }
+  public GetTransparencyFreeProfessionals() {
+    const performanceBuyEvent: WebBaseEvent = this.eventFactoryService.CreateGetTransparencyFreeProfessionals();
+    this.restApiService.SendOSDEvent(performanceBuyEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.GET_TRANSPARENCY_FREE_PROFESSIONALS_RESPONSE(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
 
   public GetTransparencyReportsSubscriberClients() {
     const event: WebBaseEvent = this.eventFactoryService.CreateGetTransparencyReportsSubscriberClients();
@@ -480,6 +492,27 @@ export class OSDService {
         this.osdDataService.emitTM_Expenses(TM_Expenses);
         this.osdDataService.emitTS_Expenses(TS_Expenses);
         this.osdDataService.emitIN_Expenses(IN_Expenses);
+      }
+    }
+    catch (err) {
+      //TODO: create exception event and send to local file or core
+    }
+  }
+  public GET_TRANSPARENCY_FREE_PROFESSIONALS_RESPONSE(webBaseEvent: WebBaseEvent) {
+    console.log('Lista de fp', webBaseEvent)
+    try {
+      var fpFullNames = webBaseEvent.getBodyProperty(EventConstants.FP_FULL_NAMES);
+      var hoursPerformances = webBaseEvent.getBodyProperty(EventConstants.HOURS_PERFORMANCES);
+      var summationFiles = webBaseEvent.getBodyProperty(EventConstants.SUMMATION_FILES);
+      var summationPerformances = webBaseEvent.getBodyProperty(EventConstants.SUMMATION_PERFORMANCES);
+      var formationCost = webBaseEvent.getBodyProperty(EventConstants.FORMATION_COST);
+      
+      if (fpFullNames != null && hoursPerformances != null && summationFiles != null) {
+        this.osdDataService.emitFpFullNames(fpFullNames);
+        this.osdDataService.emitHoursPerformances(hoursPerformances);
+        this.osdDataService.emitSummationFiles(summationFiles);
+        this.osdDataService.emitSummationPerformances(summationPerformances);
+        this.osdDataService.emitFormationCost(formationCost);
       }
     }
     catch (err) {

@@ -39,6 +39,12 @@ export class OSDDataService {
   private TS_Expenses = new Subject<any>();
   private IN_Expenses = new Subject<any>();
 
+  private FpFullNames = new Subject<string[]>();
+  private HoursPerformances = new Subject<number[]>();
+  private SummationFiles = new Subject<any[]>();
+  private SummationPerformances = new Subject<any[]>();
+  private FormationCost = new Subject<any[]>();
+
   private performanceFreeProfessionalList = new Subject<PerformanceFreeProfessional[]>();
   private performanceBuyList = new Subject<PerformanceBuy[]>();
 
@@ -74,6 +80,12 @@ export class OSDDataService {
   TM_Expenses$ = this.TM_Expenses.asObservable();
   TS_Expenses$ = this.TS_Expenses.asObservable();
   IN_Expenses$ = this.IN_Expenses.asObservable();
+
+  FpFullNames$ = this.FpFullNames.asObservable();
+  HoursPerformances$ = this.HoursPerformances.asObservable();
+  SummationFiles$ = this.SummationFiles.asObservable();
+  SummationPerformances$ = this.SummationPerformances.asObservable();
+  FormationCost$ = this.FormationCost.asObservable();
 
   constructor() {
   }
@@ -168,5 +180,20 @@ export class OSDDataService {
   }
   emitIN_Expenses(data: any) {
     this.IN_Expenses.next(data);
+  }
+  emitFpFullNames(data: string[]) {
+    this.FpFullNames.next(data);
+  }
+  emitHoursPerformances(data: number[]) {
+    this.HoursPerformances.next(data);
+  }
+  emitSummationFiles(data: any) {
+    this.SummationFiles.next(data);
+  }
+  emitSummationPerformances(data: any) {
+    this.SummationPerformances.next(data);
+  }
+  emitFormationCost(data: any) {
+    this.FormationCost.next(data);
   }
 }

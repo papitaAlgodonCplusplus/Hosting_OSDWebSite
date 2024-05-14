@@ -228,6 +228,19 @@ export class EventFactoryService {
 
     return event;
   }
+  public CreateGetTransparencyFreeProfessionals(): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.GET_TRANSPARENCY_FREE_PROFESSIONALS;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient'; //TODO: change to use an application identifier
+
+    return event;
+  }
 
   public CreatePerformanceClaimEvent(performance: PerformanceClaim, claimId: string): WebBaseEvent {
     let event: WebBaseEvent;
