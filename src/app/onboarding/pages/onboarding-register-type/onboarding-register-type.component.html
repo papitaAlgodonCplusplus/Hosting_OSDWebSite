@@ -1,4 +1,4 @@
-<div class="flex flex-col bg-white justify-center space-y-16 p-3 ">
+<div class="flex flex-col bg-white justify-center space-y-10 p-3 ">
     <div class="absolute right-3 bottom-3">
         <a routerLink="/auth" class="text-darkslategray bg-line rounded-xl p-2 text-start font-medium">
             {{'regresar' | translate}}
@@ -9,38 +9,38 @@
         <p class="text-xs sm:text-sm mb-2">{{'subTitulo' | translate}}</p>
     </div>
     <div class="flex flex-col sm:flex-row items-center justify-center animate__animated animate__fadeInDown">
-        <div class="flex flex-col lg:flex-row items-center justify-center space-y-3 lg:space-x-3 lg:space-y-0 p-2">
-            <div class="flex-1 flex flex-col justify-center items-center text-darkslategray w-full">
-                <h1>
+        <div class="w-full flex flex-col lg:flex-row items-center justify-center space-y-3 lg:space-x-3 lg:space-y-0 p-2">
+            <div class="space-y-3 flex-1 flex flex-col justify-center items-center text-darkslategray w-full">
+                <h1 class="w-full text-center ">
                     <i class="fa-solid fa-user pr-3"></i>
                     {{'usuarios' | translate}}:
                 </h1>
-                <div class="flex flex-row space-x-3 justify-center">
+                <div class="flex flex-row justify-center w-full p-3">
                     <div routerLink="/onboarding/selector-registry-claimant"
-                        class="flex flex-col justify-center items-center p-2">
-                        <i class="fa-solid fa-user-alt cursor-pointer text-4xl sm:text-5xl transition duration-300 ease-in-out hover:text-line"></i>
-                        <button>{{'reclamante' | translate}}</button>
+                        class="flex-1 flex flex-col justify-center items-center space-y-3">
+                        <i class=" text-center  fa-solid fa-user-alt cursor-pointer text-4xl sm:text-5xl transition duration-300 ease-in-out hover:text-line"></i>
+                        <button class="">{{'reclamante' | translate}}</button>
                     </div>
                     <div routerLink="/onboarding/onboarding-register-sub-client"
-                        class="flex flex-col justify-center items-center p-2">
+                        class="flex-1 flex flex-col justify-center items-center space-y-3">
                         <i class="fa-solid fa-user-check cursor-pointer text-4xl sm:text-5xl transition duration-300 ease-in-out hover:text-line"></i>
                         <button>{{'suscriptor_cliente' | translate}}</button>
                     </div>
                 </div>
             </div>
-            <div class="flex-1 text-center flex flex-col justify-center items-center text-darkslategray w-full">
-                <h1>
+            <div class="space-y-3 flex-1 flex flex-col justify-center items-center text-darkslategray w-full">
+                <h1 class="w-full text-center">
                     <i class="fa-solid fa-users pr-3"></i>
                     {{'equipo_OSD' | translate}}:
                 </h1>
-                <div class="flex flex-row justify-center">
+                <div class="flex flex-row space-x-3 justify-center w-full p-3">
                     <div routerLink="/onboarding/onboarding-register-cfh"
-                        class="flex flex-col justify-center items-center p-2">
+                        class="flex-1 flex flex-col justify-center items-center space-y-3">
                         <i class="fa-solid fa-graduation-cap cursor-pointer text-4xl sm:text-5xl transition duration-300 ease-in-out hover:text-line"></i>
                         <button class="lg:whitespace-nowrap">{{'CFH' | translate}}</button>
                     </div>
                     <div routerLink="/onboarding/onboarding-register-free-professional"
-                        class="flex flex-col justify-center items-center p-2">
+                        class="flex-1 flex flex-col justify-center items-center space-y-3">
                         <i class="fa-solid fa-user-tie pl-1 cursor-pointer text-4xl sm:text-5xl transition duration-300 ease-in-out hover:text-line"></i>
                         <button class="lg:whitespace-nowrap">{{'profesional_libre' | translate}}</button>
                     </div>
