@@ -1,43 +1,55 @@
-<div class="border-b-2 w-full font-normal text-darkslategray text-lg">
+<div class="border-b-2 py-2 px-2 w-full font-normal text-darkslategray text-lg">
     <h1>{{'claimantRating' | translate}}</h1>
 </div>
-<div class="container mt-8 mx-auto">
+<div class="container mt-1 mx-auto">
     <div class="overflow-x-auto">
-        <table class="bg-white shadow-xl" >
+        <table class="bg-white shadow-xl max-w-auto">
             <thead>
-                <tr class="">
-                    <th class="py-2 px-4 text-center font-normal text-darkslategray">
+                <tr>
+                    <th class="py-2 px-4 text-center font-normal text-darkslategray w-auto">
                         {{'institutionEntity' | translate}}
                     </th>
-                    <th class="py-2 px-4 text-center font-normal text-darkslategray">
+                    <th class="py-2 px-4 text-center font-normal text-darkslategray w-auto">
                         {{'claimAmount' | translate}}
                     </th>
-                    <th class="py-2 px-4 text-center font-normal text-darkslategray">
+                    <th class="py-2 px-4 text-center font-normal text-darkslategray w-auto">
                         {{'claimantCompensation' | translate}}
                     </th>
-                    <th class="py-2 px-4 text-center font-normal text-darkslategray">
+                    <th class="py-2 px-4 text-center font-normal text-darkslategray w-auto">
                         {{'institutionEntitySavings' | translate}}
                     </th>
-                    <th class="py-2 px-4 text-center font-normal text-darkslategray">
+                    <th class="py-2 px-4 text-center font-normal text-darkslategray w-auto">
                         {{'entityRating' | translate}}
                     </th>
-                    <th class="py-2 px-4  text-center font-normal text-darkslategray">
+                    <th class="py-2 px-4 text-center font-normal text-darkslategray w-auto">
                         {{'defendantRating' | translate}}
                     </th>
-                    <th class="py-2 px-4  text-center font-normal text-darkslategray">
+                    <th class="py-2 px-4 text-center font-normal text-darkslategray w-auto">
                         {{'OSDRating' | translate}}
                     </th>
                 </tr>
             </thead>
             <tbody class="text-center">
-                <tr *ngFor="let item of reports">
-                    <td class="py-2 px-4 border-y">{{ item.institutionEntity }}</td>
-                    <td class="py-2 px-4 border-y">{{ item.claimsAmount }}</td>
-                    <td class="py-2 px-4 border-y">{{ item.claimantCompensation }}</td>
-                    <td class="py-2 px-4 border-y">{{ item.savingsImprovement }}</td>
-                    <td class="py-2 px-4 border-y">{{ item.claimantRating }}</td>
-                    <td class="py-2 px-4 border-y">{{ item.claimedRating }}</td>
-                    <td class="py-2 px-4 border-y">{{ item.osdRating }}</td>
+                <tr *ngFor="let index of institutionsNames; let i = index">
+                    <td class="py-2 px-4 border-y">{{ institutionsNames[i] }}</td>
+                    <td class="py-2 px-4 border-y">€{{ claimsAmount[i] }}</td>
+                    <td class="py-2 px-4 border-y">€{{ compensationObtainedByClaimant[i] }}</td>
+                    <td class="py-2 px-4 border-y">€{{ savingsImprovement[i] }}</td>
+                    <td class="py-2 px-4 border-y whitespace-nowrap" [innerHTML]="generateStarRating(claimantsRating[i])"></td>
+                    <td class="py-2 px-4 border-y whitespace-nowrap" [innerHTML]="generateStarRating(claimedRating[i])"></td>
+                    <td class="py-2 px-4 border-y whitespace-nowrap" [innerHTML]="generateStarRating(osdRating[i])"></td>
+                </tr>                
+            </tbody>
+            
+            <tbody *ngIf="institutionsNames.length === 0" class="text-center">
+                <tr>
+                    <td class="py-2 px-4 border-y"><i class="fa-solid fa-minus"></i></td>
+                    <td class="py-2 px-4 border-y"><i class="fa-solid fa-minus"></i></td>
+                    <td class="py-2 px-4 border-y"><i class="fa-solid fa-minus"></i></td>
+                    <td class="py-2 px-4 border-y"><i class="fa-solid fa-minus"></i></td>
+                    <td class="py-2 px-4 border-y"><i class="fa-solid fa-minus"></i></td>
+                    <td class="py-2 px-4 border-y"><i class="fa-solid fa-minus"></i></td>
+                    <td class="py-2 px-4 border-y"><i class="fa-solid fa-minus"></i></td>
                 </tr>
             </tbody>
         </table>

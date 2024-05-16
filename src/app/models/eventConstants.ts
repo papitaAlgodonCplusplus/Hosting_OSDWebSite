@@ -127,6 +127,29 @@ export class EventConstants {
   public static APPROVED_TRAINING_CENTER: string ='ApprovedTrainingCenter';
   public static UNREGISTERED: string = 'Unregistered';
 
+  public static INSTITUTIONS_NAMES: string = "InstitutionsNames";
+  public static CLAIMS_AMOUNT: string = "ClaimsAmount";
+  public static COMPENASTION_OBTAINED_BY_CLAIMANT: string = "CompensationObtainedByClaimant";
+  public static SAVINGS_IMPROVEMENT: string = "SavingsImprovement";
+  public static CLAIMANTS_RATING: string = "ClaimantsRating";
+  public static CLAIMED_RATING: string = "ClaimedRating";
+  public static OSD_RATING: string = "OsdRating";
+
+  public static TOTAL_OSD_EXPENSES: string = "TotalOsdExpenses";
+  public static COMPENSATION_OF_CLAIMANT: string = "CompensationOfClaimant";
+  public static TOTAL_OSD_INCOMES: string = "TotalOsdIncomes";
+
+  public static TECHNICAL_DIRECTOR_EXPENSES: string = "TD_Expenses";
+  public static ACCOUNTING_TECHNITIAN_EXPENSES: string = "TC_Expenses";
+  public static MARKETING_TECHNITIAN_EXPENSES: string = "TM_Expenses";
+  public static SYSTEM_ENGINEER_EXPENSES: string = "IN_Expenses";
+  public static SAC_TECHNITIAN_EXPENSES: string = "TS_Expenses";
+
+  public static FP_FULL_NAMES: string = "fpFullNames";
+  public static HOURS_PERFORMANCES: string = "hoursPerformances";
+  public static SUMMATION_FILES: string = "summationFiles";
+  public static SUMMATION_PERFORMANCES: string = "summationPerformances";
+  public static FORMATION_COST: string = "formationCost"
   //#endregion
   constructor() {
 

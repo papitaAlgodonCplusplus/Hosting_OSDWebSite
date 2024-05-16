@@ -227,6 +227,44 @@ export class OSDService {
     });
   }
 
+  public GetTransparencyReportsIncomeExpenses() {
+    const performanceBuyEvent: WebBaseEvent = this.eventFactoryService.CreateGetTransparencyReportsIncomeExpenses();
+    this.restApiService.SendOSDEvent(performanceBuyEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.GetTransparencyReportsIncomeExpensesResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+  public GetTransparencyFreeProfessionals() {
+    const performanceBuyEvent: WebBaseEvent = this.eventFactoryService.CreateGetTransparencyFreeProfessionals();
+    this.restApiService.SendOSDEvent(performanceBuyEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.GET_TRANSPARENCY_FREE_PROFESSIONALS_RESPONSE(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+
+  public GetTransparencyReportsSubscriberClients() {
+    const event: WebBaseEvent = this.eventFactoryService.CreateGetTransparencyReportsSubscriberClients();
+    this.restApiService.SendOSDEvent(event).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.GetTransparencyReportsSubscriberClientsResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+
   public HandleGettingFreeProfessionalsListResponse(webBaseEvent: WebBaseEvent) {
     try {
       if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['ListFreeProfessionals']) {
@@ -398,6 +436,84 @@ export class OSDService {
         this.osdDataService.emitPerformanceBuyList(performancesBuyModels);
       }
 
+    }
+    catch (err) {
+      //TODO: create exception event and send to local file or core
+    }
+  }
+
+  public GetTransparencyReportsSubscriberClientsResponse(webBaseEvent: WebBaseEvent) {
+    try {
+      console.log('Lista de reportes:', webBaseEvent)
+      var institutionsNames = webBaseEvent.getBodyProperty(EventConstants.INSTITUTIONS_NAMES);
+      var claimsAmount = webBaseEvent.getBodyProperty(EventConstants.CLAIMS_AMOUNT);
+      var compensationObtainedByClaimant = webBaseEvent.getBodyProperty(EventConstants.COMPENASTION_OBTAINED_BY_CLAIMANT);
+      var savingsImprovement = webBaseEvent.getBodyProperty(EventConstants.SAVINGS_IMPROVEMENT);
+      var claimantsRating = webBaseEvent.getBodyProperty(EventConstants.CLAIMANTS_RATING);
+      var claimedRating = webBaseEvent.getBodyProperty(EventConstants.CLAIMED_RATING);
+      var osdRating = webBaseEvent.getBodyProperty(EventConstants.OSD_RATING);
+      
+
+      if (institutionsNames != null && claimsAmount != null && compensationObtainedByClaimant != null && savingsImprovement != null && claimantsRating != null && claimedRating != null && osdRating != null) {
+        this.osdDataService.emitInstitutionsNames(institutionsNames);
+        this.osdDataService.emitClaimsAmount(claimsAmount);
+        this.osdDataService.emitCompensationObtainedByClaimant(compensationObtainedByClaimant);
+        this.osdDataService.emitSavingsImprovement(savingsImprovement);
+        this.osdDataService.emitClaimantsRating(claimantsRating);
+        this.osdDataService.emitClaimedRating(claimedRating);
+        this.osdDataService.emitOsdRating(osdRating);
+      }
+
+    }
+    catch (err) {
+      //TODO: create exception event and send to local file or core
+    }
+  }
+  public GetTransparencyReportsIncomeExpensesResponse(webBaseEvent: WebBaseEvent) {
+    console.log('Lista de gastos', webBaseEvent)
+    try {
+      var totalOsdExpenses = webBaseEvent.getBodyProperty(EventConstants.TOTAL_OSD_EXPENSES);
+      var compensationOfClaimant = webBaseEvent.getBodyProperty(EventConstants.COMPENSATION_OF_CLAIMANT);
+      var totalOsdIncomes = webBaseEvent.getBodyProperty(EventConstants.TOTAL_OSD_INCOMES);
+
+      var DT_Expenses = webBaseEvent.getBodyProperty(EventConstants.TECHNICAL_DIRECTOR_EXPENSES);
+      var TC_Expenses = webBaseEvent.getBodyProperty(EventConstants.ACCOUNTING_TECHNITIAN_EXPENSES);
+      var TM_Expenses = webBaseEvent.getBodyProperty(EventConstants.MARKETING_TECHNITIAN_EXPENSES);
+      var TS_Expenses = webBaseEvent.getBodyProperty(EventConstants.SAC_TECHNITIAN_EXPENSES);
+      var IN_Expenses = webBaseEvent.getBodyProperty(EventConstants.SYSTEM_ENGINEER_EXPENSES);
+      
+      if (totalOsdExpenses != null && compensationOfClaimant != null && totalOsdIncomes != null) {
+        this.osdDataService.emitTotalOsdExpenses(totalOsdExpenses);
+        this.osdDataService.emitCompensationOfClaimant(compensationOfClaimant);
+        this.osdDataService.emitTotalOsdIncomes(totalOsdIncomes);
+
+        this.osdDataService.emitDT_Expenses(DT_Expenses);
+        this.osdDataService.emitTC_Expenses(TC_Expenses);
+        this.osdDataService.emitTM_Expenses(TM_Expenses);
+        this.osdDataService.emitTS_Expenses(TS_Expenses);
+        this.osdDataService.emitIN_Expenses(IN_Expenses);
+      }
+    }
+    catch (err) {
+      //TODO: create exception event and send to local file or core
+    }
+  }
+  public GET_TRANSPARENCY_FREE_PROFESSIONALS_RESPONSE(webBaseEvent: WebBaseEvent) {
+    console.log('Lista de fp', webBaseEvent)
+    try {
+      var fpFullNames = webBaseEvent.getBodyProperty(EventConstants.FP_FULL_NAMES);
+      var hoursPerformances = webBaseEvent.getBodyProperty(EventConstants.HOURS_PERFORMANCES);
+      var summationFiles = webBaseEvent.getBodyProperty(EventConstants.SUMMATION_FILES);
+      var summationPerformances = webBaseEvent.getBodyProperty(EventConstants.SUMMATION_PERFORMANCES);
+      var formationCost = webBaseEvent.getBodyProperty(EventConstants.FORMATION_COST);
+      
+      if (fpFullNames != null && hoursPerformances != null && summationFiles != null) {
+        this.osdDataService.emitFpFullNames(fpFullNames);
+        this.osdDataService.emitHoursPerformances(hoursPerformances);
+        this.osdDataService.emitSummationFiles(summationFiles);
+        this.osdDataService.emitSummationPerformances(summationPerformances);
+        this.osdDataService.emitFormationCost(formationCost);
+      }
     }
     catch (err) {
       //TODO: create exception event and send to local file or core

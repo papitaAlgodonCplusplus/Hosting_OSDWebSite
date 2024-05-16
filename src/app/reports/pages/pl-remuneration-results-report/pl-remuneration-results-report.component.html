@@ -3,16 +3,16 @@
 </div>
 <div class="container mx-auto mt-8 overflow-x-auto">
     <table class="min-w-full">
-        <ng-container *ngFor="let informe of datos">
+        <ng-container *ngFor="let name of displayedFpFullNames; let i = index">
             <thead>
                 <tr>
-                    <th class="border py-2 px-4 font-normal" colspan="3">{{'exercise' | translate}} 2024</th>
+                    <th class="border py-2 px-4 font-normal text-yellow-500" colspan="3">{{'exercise' | translate}} 2024</th>
                 </tr>
                 <tr>
-                    <th class="border py-2 px-4 font-normal" colspan="3">{{'fullName' | translate}} : </th>
+                    <th class="border py-2 px-4 font-normal" colspan="3">{{'fullName' | translate}} : {{name}}</th>
                 </tr>
                 <tr>
-                    <th class="border p-2"></th> <!-- Espacio vacío en la esquina superior izquierda -->
+                    <th class="border p-2"></th> 
                     <th class="border py-2 px-4 text-yellow-500 font-normal">€</th>
                     <th class="border py-2 px-4 text-yellow-500 font-normal">{{'results' | translate}}</th>
                 </tr>
@@ -20,34 +20,55 @@
             <tbody>
                 <tr>
                     <td class="border p-2 fp-2 font-medium text-darkslategray text-center">{{'OSDCertificate' | translate}}</td>
-                    <td class="border p-2 text-center"></td>
-                    <td class="border border-y-0 p-2 text-center"></td>
+                    <td class="border p-2 text-center">€{{displayedSummationFiles[i]}}</td>
+                    <td class="border border-y-0 p-2 text-center" rowspan="2">
+                        <b>{{"CLAIMING_BENEFITS" | translate}}</b>
+                        <p>{{"Amount_Field" | translate}}</p>
+                        <p>{{"Amount_Paid" | translate}}</p>
+                        <b>{{"CUSTOMER_SUBSCRIBE_BENEFITS" | translate}}</b>
+                        <p>{{"SumRCREFOFiles" | translate}}</p>
+                        <p>{{"SavingsUpgrades" | translate}}</p>
+                        <p>{{"CostSavings" | translate}}</p>
+                        <p>{{"ImprovementsEuros" | translate}}</p>
+                    </td>
                 </tr>
 
                 <tr>
                     <td class="border p-2 font-medium text-darkslategray text-center">{{'outsourcing' | translate}}</td>
-                    <td class="border p-2 text-center"></td>
-                    <td class="border p-2 text-center"></td>
+                    <td class="border p-2 text-center">{{displayedHoursPerformances[i]}} {{"Hours" | translate}}</td>
                 </tr>
 
                 <tr>
                     <td class="border p-2 font-medium text-darkslategray text-center">{{'training' | translate}}</td>
-                    <td class="border p-2 text-center"></td>
-                    <td class="border p-2 text-center"></td>
+                    <td class="border p-2 text-center"><i class="fa-solid fa-minus"></i></td>
+                    <td class="border p-2 text-center">
+                        <b>{{"OSDPROCESSORTRAINING" | translate}}</b>
+                        <p>{{"StudentsApproved" | translate}}</p>
+                    </td>
                 </tr>
 
                 <tr>
                     <td class="border p-2 font-medium text-darkslategray text-center">{{'marketing' | translate}}</td>
-                    <td class="border p-2 text-center"></td>
-                    <td class="border p-2 text-center"></td>
+                    <td class="border p-2 text-center">€{{displayedSummationPerformances[i]}}</td>
+                    <td class="border p-2 text-center">
+                        <b>{{"MKEXTERNALIZACION" | translate}}</b>
+                        <p>{{"Suma_Expedientes_RE_2024_Campo" | translate}}</p>
+                        <b>{{"Mk_CERTIFICADO_OSD" | translate}}</b>
+                        <p>{{"Emision_Renovacion_Certificados" | translate}}</p>
+                    </td>
                 </tr>
 
                 <tr>
                     <td class="border p-2 font-medium text-darkslategray text-center">{{'accumulatedAnnualCompensation' | translate}}</td>
-                    <td class="border p-2 text-center"></td>
-                    <td class="border p-2 text-center"></td>
+                    <td class="border p-2 text-center">€{{displayedSummationPerformances[i] + displayedFormationCost[i]}}</td>
+                    <td class="border p-2 text-center">
+                        <p>{{"SumEconomicResults" | translate}}</p>
+                    </td>
                 </tr>
             </tbody>
+            
+            <br>
         </ng-container>
+        <mat-paginator *ngIf="fpFullNames.length !== 0" [length]="totalItems" [pageSize]="itemsPerPage" (page)="onPageChange($event)"></mat-paginator>
     </table>
 </div>
