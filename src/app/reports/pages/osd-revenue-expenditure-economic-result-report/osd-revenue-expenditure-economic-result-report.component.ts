@@ -63,6 +63,9 @@ export class OSDRevenueExpenditureEconomicResultReportComponent {
     this.osdDataService.TS_Expenses$.subscribe(item => {
       this.TS_Expenses = item;
     })
+    this.osdDataService.IN_Expenses$.subscribe(item => {
+      this.IN_Expenses = item;
+    })
     this.osdDataService.TotalOsdExpenses$.subscribe(item => {
       this.totalOsdExpenses = item;
     })
