@@ -7,7 +7,7 @@
             </shared-input-field>
 
             <div class="font-bold flex flex-col justify-center items-center space-y-3 p-3">
-                <span class="rounded-xl text-line bg-darkslategray p-2 transition duration-300 ease-in-out hover:bg-line hover:text-darkslategray cursor-pointer">{{'viewPerformance' | translate}} </span>
+                <span class="rounded-xl text-line bg-darkslategray p-2 transition duration-300 ease-in-out hover:bg-line hover:text-darkslategray cursor-pointer" (click)="openPerformanceClaimsModal()">{{'viewPerformance' | translate}} </span>
                 <button
                     class="space-x-2 flex items-center hover:underline"
                     routerLink="/functions/claims-performance">
@@ -75,3 +75,46 @@
         </form>
     </div>
 </div>
+
+<!-- Modal -->
+<div id="performanceModal" class="modal-overlay">
+    <div class="modal-content">
+      <span class="close-button" (click)="closePerformanceModal()">&times;</span>
+      <h2 class="modal-title">{{ 'ClaimPerformances' | translate }}</h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>{{ 'Date' | translate }}</th>
+            <th>{{ 'Type' | translate }}</th>
+            <th>{{ 'Justyfing_document' | translate }}</th>
+            <th>{{ 'Free_Professional_Work_Hours' | translate }}</th>
+            <th>{{ 'Free_Professional_Travel_Hours' | translate }}</th>
+            <th>{{ 'Free_Professional_Travel_Expenses' | translate }}</th>
+            <th>{{ 'Free_Professional_Remuneration' | translate }}</th>
+            <th>{{ 'Technical_Director_Date' | translate }}</th>
+            <th>{{ 'Technical_Director_Work_Hours' | translate }}</th>
+            <th>{{ 'Technical_Director_Travel_Hours' | translate }}</th>
+            <th>{{ 'Technical_Director_Travel_Expenses' | translate }}</th>
+            <th>{{ 'Technical_Director_Remuneration' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let performance of performancesClaimsTheClaim">
+            <td>{{ performance.Date }}</td>
+            <td>{{ performance.Type }}</td>
+            <td>{{ performance.JustifyingDocument }}</td>
+            <td>{{ performance.FreeProfessionalWorkHours }}</td>
+            <td>{{ performance.FreeProfessionalTravelHours }}</td>
+            <td>{{ performance.FreeProfessionalTravelExpenses }}</td>
+            <td>{{ performance.FreeProfessionalRemuneration }}</td>
+            <td>{{ performance.TechnicalDirectorDate }}</td>
+            <td>{{ performance.TechnicalDirectorWorkHours }}</td>
+            <td>{{ performance.TechnicalDirectorTravelHours }}</td>
+            <td>{{ performance.TechnicalDirectorTravelExpenses }}</td>
+            <td>{{ performance.TechnicalDirectorRemuneration }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  

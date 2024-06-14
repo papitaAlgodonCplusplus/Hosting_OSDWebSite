@@ -265,5 +265,17 @@
   "Suma_Expedientes_RE_2024_Campo": "Sum of RE Files ../2024/Field",
   "Mk_CERTIFICADO_OSD": "Mk CERTIFICATE OSD",
   "Emision_Renovacion_Certificados": "Certificate Issuance/Renewal",
-  "SumEconomicResults" : "Sum Economic Results"
+  "SumEconomicResults" : "Sum Economic Results",
+  "ClaimPerformances" : "Claim performances",
+  "Type" : "Type",
+  "Justyfing_document" : "Justyfing document",
+  "Free_Professional_Work_Hours" : "Free professional work hours",
+  "Free_Professional_Travel_Hours" : "Free professional travel hours",
+  "Free_Professional_Travel_Expenses" : "Free professional travel expenses",
+  "Free_Professional_Remuneration" : "Free professional remuneration",
+  "Technical_Director_Date" : "Technical director date",
+  "Technical_Director_Work_Hours" : "Technical director work hours",
+  "Technical_Director_Travel_Hours" : "Technical director travel hours",
+  "Technical_Director_Travel_Expenses" : "Technical director travel expenses",
+  "Technical_Director_Remuneration" : "Technical director remuneration"
 }

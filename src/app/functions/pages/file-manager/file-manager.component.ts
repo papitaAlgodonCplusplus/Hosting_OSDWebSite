@@ -5,8 +5,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { Claim } from 'src/app/models/claim';
 import { AuthenticationService } from 'src/app/services/authentication.service';
+import { OSDService } from 'src/app/services/osd-event.services';
 import { UiActions } from 'src/app/store/actions';
 import { ClaimSelectors } from 'src/app/store/selectors';
+import { PerformanceClaims } from '../../models/PerformanceClaims';
+import { OSDDataService } from 'src/app/services/osd-data.service';
 
 @Component({
   selector: 'app-file-manager',
@@ -18,18 +21,34 @@ export class FileManagerComponent implements OnDestroy {
 
   registerForm!: FormGroup;
   claim$: Observable<Claim> = this.store.select(ClaimSelectors.claim);
+  performancesClaims: PerformanceClaims [] = [];
+  performancesClaimsTheClaim: PerformanceClaims [] = [];
+  claimId!: string;
+
   constructor(private store: Store,
     private formBuilder: FormBuilder,
+    private osdEventService : OSDService,
     private translate: TranslateService,
+    private osdDataService: OSDDataService,
     private authenticationService: AuthenticationService) {
     this.registerForm = this.createForm();
   }
 
   ngOnInit() {
+    this.osdEventService.getPerformanceList();
+
     setTimeout(() => {
       this.claim$.subscribe(claim => {
         this.registerForm = this.fillForm(claim);
+        this.claimId = claim.Id;
+        console.log("ClaimId",this.claimId)
       })
+
+      this.osdDataService.performanceClaimList$.subscribe(performanceClaim => {
+        this.performancesClaims = performanceClaim;
+        console.log("PerformanceClaims",this.performancesClaims)
+      })
+
       this.store.dispatch(UiActions.hideFooter());
       this.store.dispatch(UiActions.hideLeftSidebar());
     }, 0);
@@ -98,4 +117,26 @@ export class FileManagerComponent implements OnDestroy {
       //  this.securityEventService.userRegister(this.registerForm.value);
     }
   }
+
+  openPerformanceClaimsModal(): void {
+
+    this.performancesClaims.forEach(element => {
+      if(element.Claimid = this.claimId){
+        this.performancesClaimsTheClaim.push(element);
+      }
+    });
+
+    const modal = document.getElementById('performanceModal');
+    if (modal) {
+      modal.style.display = 'flex';
+    }
+  }
+
+  closePerformanceModal(): void {
+    const modal = document.getElementById('performanceModal');
+    if (modal) {
+      modal.style.display = 'none';
+    }
+  }
+
 }

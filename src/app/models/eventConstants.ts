@@ -92,6 +92,7 @@ export class EventConstants {
   public static LIST_OSD_USERS_SUBSCRIBERS: string = "ListOsdUsersSubscribers"
   public static PERFORMANCE_FREE_PROFESSIONAL_LIST: string = "PerformanceFreeProfessionalList"
   public static PERFORMANCE_BUY_LIST: string = "PerformanceBuyList"
+  public static PERFORMANCE_CLAIM_LIST: string = "PerformanceClaimList"
   public static CLAIM_ID: string = "ClaimId";
   public static FREE_PROFESSIONAL_ID: string = "FreeProfessionalId";
   public static FREE_PROFESSIONAL_TYPE_ID: string = "FreeProfessionalTypeId";

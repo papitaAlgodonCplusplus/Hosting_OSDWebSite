@@ -37,6 +37,7 @@
     "@syncfusion/ej2-angular-buttons": "^23.1.39",
     "@syncfusion/ej2-angular-kanban": "^23.1.36",
     "@tailwindcss/forms": "^0.5.6",
+    "bootstrap": "^5.3.3",
     "date-fns": "^2.30.0",
     "express": "^4.15.2",
     "guid-typescript": "^1.0.9",

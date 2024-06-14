@@ -421,19 +421,19 @@ export class OSDService {
 
   public HandleGetPerformancesResponse(webBaseEvent: WebBaseEvent) {
     try {
-      console.log('Lista de performances Recuperadas:', webBaseEvent)
       var performancesFreeProfessionals = webBaseEvent.getBodyProperty(EventConstants.PERFORMANCE_FREE_PROFESSIONAL_LIST);
+
+      var performancesClaims = webBaseEvent.getBodyProperty(EventConstants.PERFORMANCE_CLAIM_LIST);
 
       if (performancesFreeProfessionals != null) {
         var performancesBuy = webBaseEvent.getBodyProperty(EventConstants.PERFORMANCE_BUY_LIST);
         const performancesFreeProfessionalsModels = performancesFreeProfessionals;
         const performancesBuyModels = performancesBuy;
-
-        console.log('Ventas', performancesBuyModels)
-        console.log('FP', performancesFreeProfessionalsModels)
+        const performancesClaimModels = performancesClaims;
 
         this.osdDataService.emitPerformanceFreeProfessionalList(performancesFreeProfessionalsModels);
         this.osdDataService.emitPerformanceBuyList(performancesBuyModels);
+        this.osdDataService.emitPerformanceClaimList(performancesClaimModels);
       }
 
     }
