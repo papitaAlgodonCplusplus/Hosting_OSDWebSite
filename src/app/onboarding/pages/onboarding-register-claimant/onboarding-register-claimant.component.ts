@@ -20,7 +20,6 @@ import { AuthSelectors } from 'src/app/store/selectors';
 })
 export class OnboardingRegisterClaimantComponent {
   selectorRegistry!: boolean;
-  items: any[] = [];
   displayedItems: any[] = [];
   isValidToken$: Observable<boolean> = this.store.select(AuthSelectors.authenticationToken);
   accountForm: FormGroup;
@@ -114,8 +113,8 @@ export class OnboardingRegisterClaimantComponent {
     this.updateDisplayedItems(startIndex, endIndex);
   }
 
-  updateDisplayedItems(startIndex: number = 0, endIndex: number = 10) {
-    this.displayedItems = this.items.slice(startIndex, endIndex);
+  updateDisplayedItems(startIndex: number = 0, endIndex: number = 5) {
+    this.displayedItems = this.filteredSubscribers.slice(startIndex, endIndex);
   }
 
   private createAccountForm(): FormGroup {
@@ -146,6 +145,7 @@ export class OnboardingRegisterClaimantComponent {
   }
 
   onSubmit(): void {
+    console.log(this.accountForm.value)
     this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
     this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: this.translate.instant('incompleteData') }))
 
@@ -161,22 +161,22 @@ export class OnboardingRegisterClaimantComponent {
       return;
     }
 
-    if (!this.personalForm.value.acceptConditions) {
-      this.isAcceptConditions = true;
-      return;
-    }
-
     this.accountForm.patchValue({
       subscriberClaimed: this.selectedSubscribers
     });
 
     if (this.selectorRegistry === true) {
+      if (!this.personalForm.value.acceptConditions) {
+        this.isAcceptConditions = true;
+        return;
+      }
       this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, "Claimant");
     } else {
       if (this.authenticationService.userInfo?.Id) {
         const claimantIdControl = new FormControl(this.authenticationService.userInfo.Id);
         this.accountForm.addControl(EventConstants.CLAIMANT_ID, claimantIdControl);
       }
+      console.log(this.accountForm.value)
       this.osdEventService.addClaim(this.accountForm.value);
     }
   }

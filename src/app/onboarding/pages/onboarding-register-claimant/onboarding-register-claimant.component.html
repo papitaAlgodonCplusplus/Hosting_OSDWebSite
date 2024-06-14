@@ -71,8 +71,9 @@
                     [selectedItem]="selectedClaimant">
                 </shared-simple-dropdown>
 
-                <shared-input-field [readOnly]="false" (click)="showModal()" class="w-full md:w-1/2" fieldName="subscriberClaimed"
-                    inputType="text" label="{{'suscriptor_reclamado' | translate}}" [formGroup]="accountForm">
+                <shared-input-field [readOnly]="false" (click)="showModal()" class="w-full md:w-1/2"
+                    fieldName="subscriberClaimed" inputType="text" label="{{'suscriptor_reclamado' | translate}}"
+                    [formGroup]="accountForm">
                 </shared-input-field>
 
                 <shared-input-field class="w-full md:w-1/3" fieldName="serviceProvided"
@@ -86,87 +87,86 @@
                 <shared-text-area class="w-full" fieldName="facts" label="{{'hechos' | translate}}" inputType="text"
                     [formGroup]="accountForm" [bgColor]="'bg-white-lightbone'"></shared-text-area>
 
-                <div class="flex flex-col p-1">
-                    <div class="mb-4 flex flex-wrap items-center space-x-2">
-                        <label for="supportingDocument1" class="block text-gray-700 mb-1">{{'documento1' |
+                <div class="w-full flex flex-col p-3 space-y-4 lg:flex-row md:flex-row md:space-y-0 lg:space-y-0">
+
+                    <div class="flex-1 flex flex-col items-center space-y-1 ">
+                        <label for="supportingDocument1" class="text-center">{{'documento1' |
                             translate}}
                         </label>
-                        <div class=" flex flex-col">
+                        <div class="flex items-center justify-center flex-col space-y-1">
                             <input type="file" id="supportingDocument1" formControlName="supportingDocument1"
                                 class="hidden" (change)="displayFileName()">
                             <label for="supportingDocument1"
-                                class="cursor-pointer py-2 px-4 border hover:bg-gray-100 focus:outline-none focus:ring focus:border-blue-300">
+                                class="cursor-pointer p-2 bg-darkslategray text-white rounded-xl">
                                 {{'seleccionar_archivo' | translate}}
                             </label>
                         </div>
-                        <span class="ml-2 text-yellow-500">{{this.documentNames[0]}}</span>
+                        <span class="ml-2 text-sm text-darkslategray">{{this.documentNames[0]}}</span>
                     </div>
-                    <div class="mb-4 flex flex-wrap items-center space-x-2">
-                        <label for="supportingDocument2" class="block text-gray-700 mb-1"> {{'documento2' |
+
+                    <div class="flex-1 flex flex-col items-center space-y-1 ">
+                        <label for="supportingDocument2" class="text-center"> {{'documento2' |
                             translate}}
                         </label>
-                        <div class=" flex flex-col">
+                        <div class="flex items-center justify-center flex-col space-y-1">
                             <input type="file" id="supportingDocument2" formControlName="supportingDocument2"
                                 class="hidden" (change)="displayFileName()">
                             <label for="supportingDocument2"
-                                class="cursor-pointer py-2 px-4 border hover:bg-gray-100 focus:outline-none focus:ring focus:border-blue-300">
+                                class="cursor-pointer p-2 bg-darkslategray text-white rounded-xl">
                                 {{'seleccionar_archivo' | translate}}
                             </label>
                         </div>
-                        <span class="ml-2 text-yellow-500">{{this.documentNames[1]}}</span>
+                        <span class="ml-2 text-sm text-darkslategray">{{this.documentNames[1]}}</span>
                     </div>
+
                 </div>
             </form>
         </div>
 
-        <div id="InfoDiv" *ngIf="selectorRegistry" class="w-full flex flex-row justify-center font-medium text-darkslategray">
+        <div id="InfoDiv" *ngIf="selectorRegistry"
+            class="w-full flex flex-row justify-center font-medium text-darkslategray">
             <a [ngClass]="{'text-line' : showPersonalInfo}"
-                class="transition duration-300 ease-in-out flex items-center cursor-pointer mt-2 p-2 "
-                type="button" (click)="toggleForm()"><i
-                    class="fa-solid fa-chevron-left animate-pulse pr-2"></i>
+                class="transition duration-300 ease-in-out flex items-center cursor-pointer mt-2 p-2 " type="button"
+                (click)="toggleForm()"><i class="fa-solid fa-chevron-left animate-pulse pr-2"></i>
                 {{'regresar' | translate}} </a>
 
             <a [ngClass]="{'text-line' : !showPersonalInfo}"
-                class="transition duration-300 ease-in-out flex items-center cursor-pointer mt-2 p-2"
-                type="button" (click)="toggleForm()">
+                class="transition duration-300 ease-in-out flex items-center cursor-pointer mt-2 p-2" type="button"
+                (click)="toggleForm()">
                 {{'continue' | translate}} <i class="fa-solid fa-chevron-right animate-pulse pl-2"></i></a>
         </div>
 
-        <form [formGroup]="personalForm" autocomplete="off" class="flex flex-col lg:flex-row lg:items-center w-full">
-            <div *ngIf="!(isValidToken$ | async)" class="flex-1 pt-2 flex flex-row space-x-2 justify-start">
-                <div>
+        <form [formGroup]="personalForm" autocomplete="off" class="w-full">
+            <div *ngIf="!(isValidToken$ | async)" class="p-3 flex flex-col justify-start">
+                <div class="flex flex-row space-x-3">
                     <input type="checkbox" id="acceptConditions" formControlName="acceptConditions">
                     <label for="acceptConditions"> {{'aceptar_condiciones'| translate}}</label>
                 </div>
-
-                <div *ngIf="!personalForm.value.acceptConditions" class="text-red-700 pl-1">
+ 
+                <div *ngIf="!personalForm.value.acceptConditions" class="block text-red-700">
                     {{'error_condiciones' | translate}}
                 </div>
             </div>
+        </form>
 
-            <div class="flex-1 flex flex-row justify-end w-full space-x-2 py-3 font-medium">
+        <div class="flex-1 flex flex-row justify-end w-full space-x-2 p-3 font-medium mt-10">
+            <button *ngIf="!(isValidToken$ | async) else isValidToken" routerLink="/onboarding/onboarding-register"
+                class="p-2 bg-line rounded-xl text-darkslategray">
+                {{'cancelar' | translate}}
+            </button>
 
-                <button *ngIf="!(isValidToken$ | async) else isValidToken" routerLink="/onboarding/onboarding-register"
-                    class="p-2 bg-line rounded-xl text-darkslategray animate__animated animate__fadeInDown">
+            <button (click)="onSubmit()" class="p-2 bg-darkslategray rounded-xl text-white">
+                {{'confirm' | translate}}
+            </button>
+
+            <ng-template #isValidToken>
+
+                <button routerLink="/home" class="p-2 bg-line rounded-xl text-darkslategray" i18n="@@signin">
                     {{'cancelar' | translate}}
                 </button>
 
-                <button (click)="onSubmit()"
-                    class="p-2 bg-darkslategray rounded-xl text-white  animate__animated animate__fadeInDown">
-                    {{'confirm' | translate}}
-                </button>
-
-                <ng-template #isValidToken>
-
-                    <button routerLink="/home"
-                        class="p-2 bg-line rounded-xl text-darkslategray animate__animated animate__fadeInDown"
-                        i18n="@@signin">
-                        {{'cancelar' | translate}}
-                    </button>
-
-                </ng-template>
-            </div>
-        </form>
+            </ng-template>
+        </div>
 
     </div>
 
@@ -175,23 +175,14 @@
 
 <div *ngIf="openModal" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-3">
     <div class="bg-opacity-75 bg-black absolute inset-0 "></div>
-    <div class="relative z-50 bg-white rounded-xl shadow-md space-y-1 ">
+    <div class="relative z-50 bg-white rounded-xl shadow-md space-y-3">
         <i (click)="closeModal()" class="fa-solid fa-xmark text-lg text-end w-full px-3 cursor-pointer absolute"></i>
         <div class="justify-center">
             <div class="p-4">
-                <div class="my-3 justify-end items-center space-x-3">
-                    <input type="text" placeholder="{{'FilterbyCountry' | translate}}" [(ngModel)]="filterCountry"
-                        class="input border rounded p-2 text-grey-darker" (input)="applyFilters()">
-                    <input type="text" placeholder="{{'FilterbyCompanyName' | translate}}"
-                        [(ngModel)]="filterCompanyName" class="input border rounded p-2 text-grey-darker "
-                        (input)="applyFilters()">
-                </div>
-
                 <table class="table-auto w-full">
                     <thead>
-                        <tr class="bg-line text-darkslategray">
+                        <tr class="text-darkslategray">
                             <th class="px-4 py-2"></th>
-                            <th class="px-4 py-2">{{'name' | translate}}</th>
                             <th class="px-4 py-2">{{'RazonSocial' | translate}}</th>
                             <th class="px-4 py-2">{{'pais' | translate}}</th>
                         </tr>
@@ -202,12 +193,22 @@
                                 (click)="selectSubscriber(subscriber.Id, subscriber.CompanyName)"> <a
                                     class="bg-line p-2 rounded-xl text-darkslategray font-medium cursor-pointer transition duration-300 ease-in-out hover:bg-darkslategray hover:text-line">Select</a>
                             </td>
-                            <td class="px-4 border-b py-2 text-center">{{ subscriber.Name }}</td>
                             <td class="px-4 border-b py-2 text-center">{{ subscriber.CompanyName }}</td>
                             <td class="px-4 border-b py-2 text-center">{{ subscriber.Country }}</td>
                         </tr>
                     </tbody>
                 </table>
+                <div class="flex flex-col space-y-3 p-3">
+                    <input type="text" placeholder="{{'FilterbyCountry' | translate}}" [(ngModel)]="filterCountry"
+                        class="placeholder:text-darkgray text-black block border-solid border p-2  focus:outline-none focus:border-blue-950"
+                        (input)="applyFilters()">
+                    <input type="text" placeholder="{{'FilterbyCompanyName' | translate}}"
+                        [(ngModel)]="filterCompanyName"
+                        class="placeholder:text-darkgray text-black block border-solid border p-2  focus:outline-none focus:border-blue-950"
+                        (input)="applyFilters()">
+                </div>
+                <mat-paginator [length]="filteredSubscribers.length" [pageSize]="5"
+                    (page)="onPageChange($event)"></mat-paginator>
             </div>
         </div>
     </div>

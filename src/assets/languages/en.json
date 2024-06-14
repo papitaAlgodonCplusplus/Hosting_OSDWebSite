@@ -182,7 +182,7 @@
   "assignedTRClaim": "A processor was assigned to the corresponding claim",
   "Close": "Close",
   "Assignation": "Assignment",
-  "assignProcessor": "Assign a processor",
+  "assignProcessor": "Assign",
   "noClaims": "No claims",
   "SubscribedClaim": "Subscribed claim",
   "servicecProveded": "Service Provided: ",
@@ -277,5 +277,6 @@
   "Technical_Director_Work_Hours" : "Technical director work hours",
   "Technical_Director_Travel_Hours" : "Technical director travel hours",
   "Technical_Director_Travel_Expenses" : "Technical director travel expenses",
-  "Technical_Director_Remuneration" : "Technical director remuneration"
+  "Technical_Director_Remuneration" : "Technical director remuneration",
+  "ClaimDetails" : "Claim Details"
 }

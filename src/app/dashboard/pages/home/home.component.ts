@@ -25,12 +25,12 @@ export class HomeComponent implements OnInit {
   ];
 
   menuOptionClaimant: MenuOption[] = [
-    { name: 'presentar_reclamación', path: '/onboarding/onboarding-register-claimant', icon: 'fa-balance-scale' },
-    { name: 'transparent_project', path: '/project-manager', icon: 'fa-project-diagram' }
+    { name: 'presentar_reclamación', path: '/onboarding/onboarding-register-claimant/False', icon: 'fa-balance-scale' },
+    { name: 'file_claim', path: '/functions/claims-file', icon: 'fa-file' }
   ]
 
   menuOptionCFH: MenuOption[] = [
-    { name: 'transparent_project', path: '/project-manager', icon: 'fa-project-diagram' }
+    //{ name: 'transparent_project', path: '/project-manager', icon: 'fa-project-diagram' }
   ]
 
   menuOptionSubscriber: MenuOption[] = [

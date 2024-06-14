@@ -67,6 +67,7 @@ export class AssignPLTRClaimsComponent implements OnDestroy {
 
     this.osdEventService.getClaimList().then(claims => {
       this.claims = claims
+      console.log(claims)
     },)
 
     this.osdDataService.freeProfessionalTR$.subscribe(item => {
@@ -101,7 +102,6 @@ export class AssignPLTRClaimsComponent implements OnDestroy {
     this.cleanDataToAssignFreeProfessionalTRToClaim();
     this.modalState = false
   }
-
 
   actualSegment = 0;
   freeProfessionalsTRPerPage = 5;

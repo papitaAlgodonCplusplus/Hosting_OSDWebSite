@@ -1,6 +1,7 @@
 <div class="flex justify-center flex-col space-y-2 ">
-    <div class="text-xl font-medium text-darkslategray px-5  text-center">
-        <h1 class="">{{'Assign_Processor_to_Claim' | translate}}</h1>
+    <div class="text-darkslategray text-start py-3 text-xl font-medium animate__animated animate__fadeInLeft">
+        <span class="pl-5 pr-3 py-1 bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden">
+            {{'Assign_Processor_to_Claim' | translate}}</span>
     </div>
     <shared-confirmation-modal [showModal]="showModalConfirm" [message]="messageModal" (confirm)="onConfirmHandler()"
         (cancel)="onCancelHandler()">
@@ -15,7 +16,7 @@
                 </div>
                 <div class="flex justify-center items-center space-x-4 p-4">
                     <button
-                        class="inline-flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white rounded-md focus:outline-none"
+                        class="bg-darkslategray text-line p-2 rounded-xl"
                         (click)="closeDialog()">
                         {{ 'Close' | translate }}
                     </button>
@@ -24,22 +25,23 @@
         </div>
     </div>
 
-    <div class="flex mt-0 flex-col" *ngIf="claims.length > 0">
+    <div class="flex mt-0 flex-col p-3" *ngIf="claims.length > 0">
         <div class="overflow-x-auto mt-0">
             <table class="table-auto w-full">
                 <thead>
-                    <tr class="bg-line text-black">
+                    <tr class="text-darkslategray">
                         <th class="px-4 py-2">{{'reclamacion' | translate}}</th>
+                        <th class="px-4 py-2">{{'hechos' | translate}} </th>
                         <th class="px-4 py-2">{{'Assignation' | translate}} </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let claim of claims" class="text-center">
-                        <td class="text-center border-y px-4 py-2">{{ claim.Subscriberclaimed }}</td>
+                        <td class="text-center border-y px-4 py-2">{{ claim.Claimtype | translate }}</td>
+                        <td class="text-center border-y px-4 py-2">{{ claim.Facts }}</td>
                         <td class="text-center border-y px-4 py-2">
-                            <button
-                                class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-                                (click)="openModal(claim)" data-modal-target="default-modal">
+                            <button class="rounded-xl bg-line text-darkslategray p-2" (click)="openModal(claim)"
+                                data-modal-target="default-modal">
                                 {{'assignProcessor' | translate}}
                             </button>
                         </td>
@@ -48,60 +50,31 @@
             </table>
         </div>
         <mat-paginator [length]="claims.length" [pageSize]="10" (page)="onPageChange($event)"></mat-paginator>
-        
-    </div>
-    <div *ngIf="claims.length === 0" class="text-xl font-medium text-gray-400 text-center">
-        <p class="">{{'No hay reclamos' | translate}}</p>
-    </div>
-    <div class="text-base font-medium text-gray-400 text-center">
-        <a [routerLink]="'/home'" class="items-center text-gray-400 rounded-md focus:outline-none">
-            {{ 'regresar_a_home' | translate }}
-          </a>
-    </div>
 
-
-
-    <div class="modal mt-0" [class.visible]="modalState">
+    </div>
+    <div class="modal mt-0 rounded-xl" [class.visible]="modalState">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Detalles del Reclamo</h2>
-                <span class="close" (click)="closeModal()"><i class="fa-solid fa-rectangle-xmark"></i></span>
+                <h2>{{'ClaimDetails' | translate}}</h2>
+                <span class="close" (click)="closeModal()"><i class="fa-solid fa-xmark"></i></span>
             </div>
             <div class="modal-body">
-                <p><b>{{'SubscribedClaim' | translate}}</b> {{ claim?.Subscriberclaimed }}</p>
-                <p><b>{{'servicecProveded'}}</b> {{ claim?.Serviceprovided }}</p>
-                <p><b>{{'facts' | translate}}</b> {{ claim?.Facts }}</p>
-                <p><b>{{'ClaimedAmount' | translate}}</b> {{ claim?.Amountclaimed }}</p>
-                <div *ngIf="userName.length > 0">
-                    <tr>
-                        <th class="px-0 py-3">
-                            <span class="font-bold">{{'processorAssigned' | translate}}</span> {{userName}}
-                            
-                        </th>
-                        <th class="px-6 py-3">
-                            <button
-                                class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-                                (click)="assignFreeProfessionalToClaim(); closeModal()"
-                                data-modal-target="default-modal">
-                                {{'finishAssignment' | translate}}
-                            </button>
-                        </th>
-                    </tr>
-
-                </div>
+                <p><b>{{'SubscribedClaim' | translate}}: </b> {{ claim?.Subscriberclaimed }}</p>
+                <p><b>{{'servicio_prestado' | translate}}: </b> {{ claim?.Serviceprovided }}</p>
+                <p><b>{{'facts' | translate}}:</b> {{ claim?.Facts }}</p>
+                <p><b>{{'ClaimedAmount' | translate}} </b> {{ claim?.Amountclaimed }}</p>
             </div>
-            <div class="m-8" *ngIf="freeProfessionalsTr.length > 0">
-
-                <div class="relative overflow-x-auto ">
+            <div class="" *ngIf="freeProfessionalsTr.length > 0">
+                <div class="relative overflow-x-auto">
                     <table class="w-full text-sm  rtl:text-right text-slate-950 text-center">
                         <thead class="text-xs text-slate-950 uppercase bg-slate-200">
                             <tr>
                                 <th scope="col" class="px-6 py-3">
                                     {{'Tramitador' | translate}}
                                 </th>
-                                <th scope="col" class="px-6 py-3">
+                                <!-- <th scope="col" class="px-6 py-3">
                                     {{"ServiceFees" | translate}}
-                                </th>
+                                </th> -->
                                 <th scope="col" class="px-6 py-3">
                                     {{"Action" | translate}}
                                 </th>
@@ -112,37 +85,43 @@
                                 *ngFor="let fp of freeProfessionalsTr; let i = index">
                                 <th scope="row" class="px-6 py-4 font-medium text-slate-950 whitespace-nowrap">
                                     <ng-container *ngIf="users[i]">
-                                        {{ users[i].Firstname }} {{users[i].Middlesurname}} {{users[i].Name}}
+                                        {{users[i].Name}} {{ users[i].Firstname }} {{users[i].Middlesurname}}
                                     </ng-container>
                                 </th>
-                                <th scope="row" class="px-6 py-4 font-medium text-slate-950 whitespace-nowrap">
+                                <!-- <th scope="row" class="px-6 py-4 font-medium text-slate-950 whitespace-nowrap">
                                     {{ fp.Servicerates }}
-                                </th>
+                                </th> -->
                                 <td class="px-6 py-4">
                                     <button
-                                        class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                                        class="rounded-xl p-2 bg-line text-darkslategray"
                                         (click)="setDataToAssignFreeProfessionalTRToClaim(claim.Id, fp.Id, users[i].Firstname + ' ' + users[i].Middlesurname+ ' '+ users[i].Name)">
                                         {{ 'Associate' | translate }}
                                     </button>
                                 </td>
                             </tr>
-
                         </tbody>
                     </table>
+                </div>
+                <div *ngIf="userName.length > 0" class="flex justify-center">
+                    <tr class="">                  
+                        <th class="px-6 py-3">
+                            <button class="rounded bg-darkslategray text-line p-2"
+                                (click)="assignFreeProfessionalToClaim(); closeModal()"
+                                data-modal-target="default-modal">
+                                {{'finishAssignment' | translate}}
+                            </button>
+                        </th>
+                    </tr>
 
-                    <div class="flex justify-between mt-4" *ngIf="freeProfessionalsTr.length > 5">
-                        <button [disabled]="actualSegment === 1" (click)="setPage(actualSegment - 1)"
-                            class="modal-navigation-button bg-gray-200 hover:bg-gray-300 text-gray-600 font-bold py-2 px-4 rounded">
-                            {{'regresar' | translate}}
-                        </button>
-                        <button [disabled]="actualSegment === totalSegments" (click)="setPage(actualSegment + 1)"
-                            class="modal-navigation-button bg-gray-200 hover:bg-gray-300 text-gray-600 font-bold py-2 px-4 rounded">
-                            {{"Next" | translate}}
-                        </button>
-
-                    </div>
                 </div>
             </div>
-
         </div>
+    </div>
+    <div *ngIf="claims.length === 0" class="text-xl font-medium text-center text-gray-400 absolute top-1/2 w-full">
+        <p class="">{{'No hay reclamos' | translate}}</p>
+    </div>
+    <div class="font-medium text-end p-3">
+        <a [routerLink]="'/home'" class="items-center text-line bg-darkslategray rounded-xl p-2">
+            {{ 'regresar_a_home' | translate }}
+        </a>
     </div>

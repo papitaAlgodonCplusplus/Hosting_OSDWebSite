@@ -1,13 +1,12 @@
 <div class="flex flex-col h-full lg:flex-row-reverse md:flex-row-reverse">
-  <div class="flex-1 border flex items-center flex-col justify-center space-y-3 py-3">
+  <div class="flex items-center flex-col justify-center space-y-3 py-3 w-full">
     <shared-error-modal *ngIf="errorModalOpen$ | async"></shared-error-modal>
-
+    <shared-switch-languages></shared-switch-languages>
     <h2 class="text-center text-4xl text-darkslategray font-medium ">
       {{'access' | translate}}
     </h2>
 
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" autocomplete="off"
-      class="flex flex-col space-y-3 w-full p-3">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" autocomplete="off" class="flex flex-col space-y-3 p-3 w-2/3">
       <shared-input-field class="w-full" fieldName="email" label="{{ 'email' | translate }}" inputType="email"
         [formGroup]="loginForm"></shared-input-field>
       <auth-input-password class="w-full" [formGroup]="loginForm" fieldName="password"
@@ -17,7 +16,7 @@
           translate}}</a> -->
       </div>
       <div class="flex justify-center">
-        <button type="submit" class="bg-line text-darkslategray rounded-xl py-2 px-20 text-lg font-medium">
+        <button type="submit" class="bg-darkslategray text-line rounded-xl py-2 px-3 text-lg font-medium">
           {{'iniciar_sesion' | translate}}
         </button>
       </div>
@@ -26,19 +25,17 @@
     </form>
   </div>
 
-  <div class="flex-1 bg-darkslategray flex justify-center items-center">
-    <shared-switch-languages></shared-switch-languages>
-    <div class="flex flex-col space-y-3 font-medium text-line py-3">
-      <img src="/./assets/img/OSD.png" alt="Logo OSD" class="">
-      <div class="flex flex-col space-y-3 px-20">
-        <button class="flex flex-row items-center justify-center py-2  space-x-3 rounded-xl hover:bg-line hover:text-darkslategray transition duration-300 ease-in-out"
+  <div class="flex flex-col space-y-3 font-medium text-line px-3 bg-darkslategray justify-center">
+    <img src="/./assets/img/OSD.png" alt="Logo OSD" class="">
+    <div class="flex flex-col space-y-3 px-20 ">
+      <button
+        class="flex flex-row items-center justify-center p-2 space-x-3 rounded-xl hover:bg-line hover:text-darkslategray transition duration-300 ease-in-out"
         routerLink="/onboarding/selector-registry-claimant">
         {{'presentar_reclamación' | translate}} <i class="fa-solid fa-chevron-right text-sm pl-2 animate-pulse"></i>
       </button>
       <button routerLink="/reports"
-        class="flex flex-row items-center justify-center py-2 space-x-3 rounded-xl hover:bg-line hover:text-darkslategray transition duration-300 ease-in-out">
-        {{'transparencia' | translate}} <img src="/./assets/img/transparency.png" alt="" class="pl-3"> </button>
-      </div>    
+        class="flex flex-row items-center justify-center p-2 space-x-3 rounded-xl hover:bg-line hover:text-darkslategray transition duration-300 ease-in-out">
+        {{'transparencia' | translate}} <i class="fa-solid fa-chevron-right text-sm pl-2 animate-pulse"></i> </button>
     </div>
   </div>
 </div>

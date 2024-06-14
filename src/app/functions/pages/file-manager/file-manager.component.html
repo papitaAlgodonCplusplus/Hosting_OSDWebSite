@@ -1,7 +1,6 @@
-<div class="flex flex-col lg:flex-row">
-    <div class="flex-1 bg-line flex justify-center border-gray-400 text-darkslategray py-3 lg:py-0">
-        <div class="lg:fixed flex flex-col h-full justify-center">
-            <h1 class="text-center text-lg font-medium border-b-2 border-yellow-500">{{'file_claim' | translate}}</h1>
+<div class="flex flex-col lg:flex-col ">
+    <div class="flex-1 bg-line flex justify-center border-gray-400 text-darkslategray py-3">
+        <div class="flex flex-col">
             <shared-input-field [readOnly]="true" class="w-full" label="{{'freeProfessionalsIntervention' | translate}}"
                 fieldName="freeProfessional" [formGroup]="registerForm">
             </shared-input-field>
@@ -17,58 +16,58 @@
             </div>
         </div>
     </div>
-    <div class="flex-1 bg-white py-5 flex justify-center px-2">
-        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" autocomplete="off" class="flex flex-col items-center">
-            <shared-input-field [readOnly]="true" class="w-full" fieldName="claimant"
+    <div class="flex-1 bg-white py-5 flex justify-center px-2 h-full">
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" autocomplete="off" class="flex flex-wrap items-center">
+            <shared-input-field [readOnly]="true" class="w-full lg:w-1/2" fieldName="claimant"
                 label="{{'reclamacion' | translate}}" inputType="text" [formGroup]="registerForm"
                 [bgColor]="'bg-white-lightbone'">
             </shared-input-field>
 
-            <shared-input-field [readOnly]="true" class="w-full" label="{{'status' | translate}}" fieldName="state"
+            <shared-input-field [readOnly]="true" class="w-full lg:w-1/2" label="{{'status' | translate}}" fieldName="state"
                 inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'">
             </shared-input-field>
 
-            <shared-input-field [readOnly]="true" class="w-full" fieldName="subscriber"
+            <shared-input-field [readOnly]="true" class="w-full lg:w-1/2" fieldName="subscriber"
                 label="{{'subscriber' | translate}}" inputType="text" [formGroup]="registerForm"
                 [bgColor]="'bg-white-lightbone'">
             </shared-input-field>
 
-            <shared-input-field [readOnly]="true" class="w-full" fieldName="amountClaimed"
+            <shared-input-field [readOnly]="true" class="w-full lg:w-1/2" fieldName="amountClaimed"
                 label="{{'cuantia_reclamada' | translate}}" inputType="text" [formGroup]="registerForm"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-            <shared-input-field [readOnly]="true" class="w-full" fieldName="AAsavingsPP"
+            <shared-input-field [readOnly]="true" class="w-full lg:w-1/2" fieldName="AAsavingsPP"
                 label="{{'amountPaidByOtherParty' | translate}}" inputType="text" [formGroup]="registerForm"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-            <shared-input-field [readOnly]="true" class="w-full" fieldName="AAsavingsPP"
+            <shared-input-field [ReadOnly]="true" class="w-full lg:w-1/2" fieldName="AAsavingsPP"
                 label="{{'institutionalImprovementSavings' | translate}}" inputType="text" [formGroup]="registerForm"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-            <shared-input-field [readOnly]="true" class="w-full" fieldName="creditingDate"
+            <shared-input-field [readOnly]="true" class="w-full lg:w-1/2" fieldName="creditingDate"
                 label="{{'creditingDate' | translate}}" inputType="text" [formGroup]="registerForm"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-            <shared-input-field class="w-full" fieldName="OSDvaluation"
+            <shared-input-field class="w-full lg:w-1/2" fieldName="OSDvaluation"
                 label="{{'institutionOsdValuation' | translate}}" inputType="number" [formGroup]="registerForm"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-            <shared-input-field class="w-full" fieldName="valuationClaimant"
+            <shared-input-field class="w-full lg:w-1/2" fieldName="valuationClaimant"
                 label="{{'institutionClaimantRating' | translate}}" inputType="number" [formGroup]="registerForm"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-            <shared-input-field class="w-full" fieldName="valuationFreeOSDprofessionals"
+            <shared-input-field class="w-full lg:w-1/2" fieldName="valuationFreeOSDprofessionals"
                 label="{{'institutionValuationFreeOsdProfessionals' | translate}}" inputType="number"
                 [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-            <div class="flex flex-row space-x-2 w-full justify-end  ">
+            <div class="flex flex-row space-x-2 w-full justify-end">
                 <button routerLink="/functions/claims-file"
-                    class="p-2 rounded-xl bg-darkslategray text-line font-medium  animate__animated animate__fadeInDown">
+                    class="p-2 rounded-xl bg-darkslategray text-line font-medium animate__animated animate__fadeInDown">
                     {{'regresar' | translate}}
                 </button>
                 <!-- 
                 <button type="submit"
-                    class="p-2 bg-darkslategray text-white font-normal  animate__animated animate__fadeInDown">
+                    class="p-2 bg-darkslategray text-white font-normal animate__animated animate__fadeInDown">
                     {{'registrarse'|translate}}
                 </button> -->
             </div>
