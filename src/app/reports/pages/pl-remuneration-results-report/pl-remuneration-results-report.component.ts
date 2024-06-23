@@ -65,7 +65,6 @@ export class PLRemunerationResultsReportComponent {
     this.osdService.GetTransparencyFreeProfessionals();
     setTimeout(() => {
       this.store.dispatch(UiActions.hideFooter());
-      this.store.dispatch(UiActions.hideLeftSidebar());
     }, 0);
     this.assignData();
   }

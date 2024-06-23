@@ -12,8 +12,6 @@ import { AuthSelectors, UiSelectors } from 'src/app/store/selectors';
   styleUrls: ['./transparency.component.css']
 })
 export class TransparencyComponent implements OnDestroy{
-
-  leftSidebarOpen$: Observable<boolean> = this.store.select(UiSelectors.leftSidebarOpen);
   reportOpen$: Observable<string> = this.store.select(UiSelectors.selectSwitchReport);
   TEST! : string;
   arrowLeftSidebar : boolean = false;
@@ -46,10 +44,7 @@ export class TransparencyComponent implements OnDestroy{
   }
   
   toggleLeftSidebar(): void {
-    this.store.dispatch(UiActions.toggleLeftSidebar());
-    if (this.arrowLeftSidebar === true) {
-      this.arrowLeftSidebar = false;
-    }
+      this.arrowLeftSidebar = !this.arrowLeftSidebar; 
   }
 
   showArrow(): void {

@@ -10,7 +10,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PerformanceBuyComponent } from './pages/performance-buy/performance-buy.component';
 import { PerformanceFreeProfessionalComponent } from './pages/performance-free-professional/performance-free-professional.component';
 import { MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginator';
-import { CustomPaginator } from '../services/custom-paginator';
+import { CustomPaginator } from '../services/custom-paginator.service';
 
 
 @NgModule({

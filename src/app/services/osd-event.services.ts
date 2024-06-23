@@ -565,6 +565,7 @@ export class OSDService {
 
       if (userAuthenticationSuccess) {
         userInfo = webBaseEvent.getBodyProperty(EventConstants.USER_INFO);
+        console.log(webBaseEvent.getBodyProperty(EventConstants.USER_INFO))
         sessionKey = webBaseEvent.getBodyProperty(EventConstants.GENERATED_SESSION_KEY);
         // this.authenticationService.startSession(sessionKey);
         this.authenticationService.userInfo = userInfo;

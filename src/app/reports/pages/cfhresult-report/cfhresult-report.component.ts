@@ -42,8 +42,7 @@ export class CFHResultReportComponent implements OnDestroy {
 
   ngOnInit(): void{
     setTimeout(() => {
-      this.store.dispatch(UiActions.hideFooter());
-      this.store.dispatch(UiActions.hideLeftSidebar());
+      this.store.dispatch(UiActions.hideAll());
     }, 0);
   }
   ngOnDestroy(): void {

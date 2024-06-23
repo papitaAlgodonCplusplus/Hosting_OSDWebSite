@@ -46,7 +46,7 @@ export class FileManagerComponent implements OnDestroy {
 
       this.osdDataService.performanceClaimList$.subscribe(performanceClaim => {
         this.performancesClaims = performanceClaim;
-        console.log("PerformanceClaims",this.performancesClaims)
+        console.log("PerformanceClaims",performanceClaim)
       })
 
       this.store.dispatch(UiActions.hideFooter());

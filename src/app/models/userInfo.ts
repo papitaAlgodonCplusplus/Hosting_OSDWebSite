@@ -6,6 +6,7 @@ export interface UserInfo {
   Firstname: string;
   Middlesurname: string;
   Isauthorized: string;
+  Isadmin: string;
   AccountType: string;
   CompanyName: string;
 }

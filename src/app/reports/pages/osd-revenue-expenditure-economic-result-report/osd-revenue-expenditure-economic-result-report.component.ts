@@ -30,8 +30,7 @@ export class OSDRevenueExpenditureEconomicResultReportComponent {
     this.osdService.GetTransparencyReportsIncomeExpenses();
 
     setTimeout(() => {
-      this.store.dispatch(UiActions.hideFooter());
-      this.store.dispatch(UiActions.hideLeftSidebar());
+      this.store.dispatch(UiActions.hideAll());
     }, 0);
     this.assignData();
   }

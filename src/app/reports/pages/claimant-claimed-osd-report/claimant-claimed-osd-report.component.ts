@@ -32,8 +32,7 @@ export class ClaimantClaimedOsdReportComponent implements OnDestroy {
   ngOnInit(): void{
     this.osdService.GetTransparencyReportsSubscriberClients();
     setTimeout(() => {
-      this.store.dispatch(UiActions.hideFooter());
-      this.store.dispatch(UiActions.hideLeftSidebar());
+      this.store.dispatch(UiActions.hideAll());
     }, 0);
     this.assignData();
   }

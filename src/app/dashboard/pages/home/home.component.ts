@@ -17,6 +17,11 @@ export class HomeComponent implements OnInit {
 
   menuOptionFreeProfessional: MenuOption[] = [
     { name: 'transparent_project', path: '/project-manager', icon: 'fa-project-diagram' },
+    { name: 'file_claim', path: '/functions/claims-file', icon: 'fa-file' }
+  ];
+
+  menuOptionAdmin: MenuOption[] = [
+    { name: 'transparent_project', path: '/project-manager', icon: 'fa-project-diagram' },
     // { name: 'TitlePerformance', path: '/home/free-professional-file', icon: 'fa-file' },
     { name: 'registerNewUser', path: '/onboarding', icon: 'fa-user-plus' },
     { name: 'Assign_Processor_to_Claim', path: '/functions/assign-pltr-claims', icon: 'fa-user' },
@@ -55,7 +60,13 @@ export class HomeComponent implements OnInit {
         } else if (this.user.AccountType === "SubscriberCustomer") {
           this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuOptionSubscriber }));
         } else {
-          this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuOptionFreeProfessional }));
+          console.log(this.user.Isadmin)
+          if(this.user.Isadmin === true){
+            this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuOptionAdmin }));
+          }
+          else{
+            this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuOptionFreeProfessional }));
+          }
         }
         if (this.user.AccountType === EventConstants.SUBSCRIBER_CUSTOMER || this.user.AccountType === EventConstants.FREE_PROFESSIONAL) {
           if (this.user.Isauthorized === false) {

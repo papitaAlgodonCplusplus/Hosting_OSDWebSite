@@ -8,7 +8,7 @@ import { SubAuthorizedComponent } from './pages/sub-authorized/sub-authorized.co
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginator';
-import { CustomPaginator } from '../services/custom-paginator';
+import { CustomPaginator } from '../services/custom-paginator.service';
 import { ClaimsFileComponent } from './pages/claims-file/claims-file.component';
 import { FileManagerComponent } from './pages/file-manager/file-manager.component';
 import { ClaimsPerformanceComponent } from './pages/claims-performance/claims-performance.component';

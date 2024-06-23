@@ -14,7 +14,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthModule } from '../auth/auth.module';
 import { SelectorRegistryClaimantComponent } from './pages/selector-registry-claimant/selector-registry-claimant.component';
 import { MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginator';
-import { CustomPaginator } from '../services/custom-paginator';
+import { CustomPaginator } from '../services/custom-paginator.service';
 
 
 @NgModule({
