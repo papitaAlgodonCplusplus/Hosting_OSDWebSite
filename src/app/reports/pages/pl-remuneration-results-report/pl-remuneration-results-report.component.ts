@@ -64,7 +64,7 @@ export class PLRemunerationResultsReportComponent {
   ngOnInit(): void {
     this.osdService.GetTransparencyFreeProfessionals();
     setTimeout(() => {
-      this.store.dispatch(UiActions.hideFooter());
+      this.store.dispatch(UiActions.hideAll());
     }, 0);
     this.assignData();
   }

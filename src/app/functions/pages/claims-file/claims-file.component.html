@@ -10,6 +10,7 @@
                 <thead>
                     <tr class="text-darkslategray">
                         <th class="py-2 px-4 font-normal"></th>
+                        <th class="py-2 px-4 font-normal">{{'Code' | translate}}</th>
                         <th class="py-2 px-4 font-normal">{{'facts' | translate}}</th>
                         <th class="py-2 px-4 font-normal">{{'status' | translate}}</th>
                         <th class="py-2 px-4 font-normal">{{'Date' | translate}}</th>
@@ -20,9 +21,10 @@
                         <tr *ngFor="let claim of displayedItems" class="my-5">
                             <td class="p-2 border-y text-center">
                                 <span routerLink="/functions/file-manager" (click)="selectClaim(claim)"
-                                    class="font-medium bg-line text-darkslategray transition duration-300 ease-in-out hover:bg-darkslategray hover:text-line cursor-pointer px-4 py-2 inline-block rounded-xl">{{'View'
+                                    class="font-medium bg-darkslategray text-line transition duration-300 ease-in-out hover:bg-darkslategray hover:text-line cursor-pointer px-4 py-2 inline-block rounded-xl">{{'View'
                                     | translate}}</span>
                             </td>
+                            <td class="p-2 border-y text-center">RE/1/2024</td>
                             <td class="p-2 border-y text-center">{{claim.Facts}}</td>
                             <td class="p-2 border-y text-center"> <i class="fa-solid fa-circle pr-3"
                                     [ngClass]="{'text-yellow-500' : claim.Status == 'Unassigned',
@@ -35,7 +37,7 @@
             </table>
         </div>
         <mat-paginator [length]="claims.length" [pageSize]="10" (page)="onPageChange($event)"></mat-paginator>
-        <button class="absolute bottom-3 right-3 text-line bg-darkslategray p-2 rounded-xl " routerLink="/home">
+        <button class="absolute bottom-3 right-3 text-darkslategray bg-line p-2 rounded-xl " routerLink="/home">
         {{'regresar' | translate }}
         </button>
     </div>

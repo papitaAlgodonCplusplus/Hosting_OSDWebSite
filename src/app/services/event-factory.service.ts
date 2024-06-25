@@ -13,8 +13,7 @@ import { EmailVerificationCodeResendEvent } from '../auth/interfaces/resend-emai
 import { Form } from '@angular/forms';
 import { PerformanceFreeProfessional } from '../project-manager/Models/performanceFreeProfessional';
 import { PerformanceBuy } from '../project-manager/Models/performanceBuy';
-
-import { PerformanceClaim } from '../functions/models/performanceClaim';
+import { PerformanceClaim } from '../functions/models/PerformanceClaims';
 
 @Injectable({
   providedIn: 'root',
@@ -253,20 +252,19 @@ export class EventFactoryService {
     event.Date = new Date().toUTCString();
     event.ApplicationIdentifier = 'WebClient'; //TODO: change to use an application identifier
 
-    event.setBodyProperty(EventConstants.DATE_PERFORMANCE, performance.date);
-    event.setBodyProperty(EventConstants.TYPE_PERFORMANCE, performance.type);
-    event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, performance.justifyingDocument);
-    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_WORK_HOURS, performance.freeProfessionalWorkHours);
-    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_TRAVEL_HOURS, performance.freeProfessionalTravelHours);
-    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_TRAVEL_EXPENSES, performance.freeProfessionalTravelExpenses);
-    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_REMUNERATION, performance.freeProfessionalRemuneration);
-    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_DATE, performance.technicalDirectorDate);
-    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_WORK_HOURS, performance.technicalDirectorWorkHours);
-    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_TRAVEL_HOURS, performance.freeProfessionalTravelHours);
-    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_TRAVEL_EXPENSES, performance.technicalDirectorTravelExpenses);
-    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_REMUNERATION, performance.technicalDirectorRemuneration);
-    event.setBodyProperty(EventConstants.SUMMARY, performance.summary);
-    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_ID, this.authenticationService.userInfo?.Id);
+    event.setBodyProperty(EventConstants.DATE_PERFORMANCE, performance.Date);
+    event.setBodyProperty(EventConstants.TYPE_PERFORMANCE, performance.Type);
+    event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, performance.JustifyingDocument);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_WORK_HOURS, performance.FreeProfessionalWorkHours);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_TRAVEL_HOURS, performance.FreeProfessionalTravelHours);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_TRAVEL_EXPENSES, performance.FreeProfessionalTravelExpenses);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_REMUNERATION, performance.FreeProfessionalRemuneration);
+    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_DATE, performance.TechnicalDirectorDate);
+    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_WORK_HOURS, performance.TechnicalDirectorWorkHours);
+    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_TRAVEL_HOURS, performance.FreeProfessionalTravelHours);
+    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_TRAVEL_EXPENSES, performance.TechnicalDirectorTravelExpenses);
+    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_REMUNERATION, performance.TechnicalDirectorRemuneration);
+    event.setBodyProperty(EventConstants.SUMMARY, performance.Summary);
     event.setBodyProperty(EventConstants.CLAIM_ID, claimId);
     return event;
   }

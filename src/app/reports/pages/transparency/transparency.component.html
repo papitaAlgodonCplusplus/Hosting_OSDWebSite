@@ -24,7 +24,7 @@
 </div>
 
 <div *ngIf="arrowLeftSidebar"
-    class="bg-white w-6 h-full absolute top-0 left-0 border-r-2 animate__animated animate__fadeInLeft border-black"
+    class="bg-white w-6 h-full fixed top-0 left-0 border-r-2 animate__animated animate__fadeInLeft border-black"
     style="border-color: #eeeff2; border-collapse: collapse;">
     <button (click)="toggleLeftSidebar()" class="absolute rounded-full top-1/2 left-5 px-2">
         <i class="fa-solid fa-chevron-right text-darkslategray"></i>
@@ -32,7 +32,7 @@
 </div>
 
 <div *ngIf="!arrowLeftSidebar"
-    class="pr-3 pt-3 absolute bg-white h-full border top-0 animate__animated animate__fadeInLeft">
+    class="pr-3 pt-3 fixed bg-white h-full border top-0 animate__animated animate__fadeInLeft">
     <button (click)="toggleLeftSidebar()" class="absolute top-1/2 rounded-full px-2" style="left: 100%;">
         <i class="fa-solid fa-chevron-left text-darkslategray"></i>
     </button>
@@ -41,7 +41,7 @@
             {{'transparencia' | translate}} <i class="fa-solid fa-eye"></i></span>
     </div>
     <div class="space-y-3 text-darkslategray text-sm font-medium flex flex-col justify-center">
-        <a class="cursor-pointer" (click)="changeReport('sub')">
+        <a class="cursor-pointer" (click)="changeReport('sub')" (click)="toggleLeftSidebar()">
             <span
                 class="px-3 py-1 transition duration-300 ease-in-out hover:bg-line rounded-r-full whitespace-nowrap overflow-hidden">1.
                 {{'customer_subscribers_results' | translate}}</span>
@@ -53,21 +53,21 @@
             </a>
             <ul class="">
                 <li class="mb-2">
-                    <a class="mb-2 cursor-pointer" (click)="changeReport('osd')">
+                    <a class="mb-2 cursor-pointer" (click)="changeReport('osd')" (click)="toggleLeftSidebar()">
                         <span
                             class="px-5 py-1 transition duration-300 ease-in-out hover:bg-line rounded-r-full whitespace-nowrap overflow-hidden">2.1.
                             {{'income_expenses_benefits' | translate}}</span>
                     </a>
                 </li>
                 <li class="mb-2">
-                    <a class="cursor-pointer" (click)="changeReport('pl')">
+                    <a class="cursor-pointer" (click)="changeReport('pl')" (click)="toggleLeftSidebar()">
                         <span
                             class="px-5 py-1 transition duration-300 ease-in-out hover:bg-line rounded-r-full whitespace-nowrap overflow-hidden">2.2.
                             {{'profesionales_libres' | translate}}</span>
                     </a>
                 </li>
                 <li class="mb-2">
-                    <a class="cursor-pointer" (click)="changeReport('cfh')">
+                    <a class="cursor-pointer" (click)="changeReport('cfh')" (click)="toggleLeftSidebar()">
                         <span
                             class="px-5 py-1 transition duration-300 ease-in-out hover:bg-line rounded-r-full whitespace-nowrap overflow-hidden">2.3.
                             {{'CFH' | translate}}</span>

@@ -15,7 +15,7 @@ import { UserInfo } from '../models/userInfo';
 import { PerformanceFreeProfessional } from '../project-manager/Models/performanceFreeProfessional';
 import { PerformanceBuy } from '../project-manager/Models/performanceBuy';
 import { TranslateService } from '@ngx-translate/core';
-import { PerformanceClaim } from '../functions/models/performanceClaim';
+import { PerformanceClaim } from '../functions/models/PerformanceClaims';
 
 @Injectable({
   providedIn: 'root'

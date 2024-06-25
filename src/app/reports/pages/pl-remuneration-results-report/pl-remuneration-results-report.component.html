@@ -6,20 +6,22 @@
         <ng-container *ngFor="let name of displayedFpFullNames; let i = index">
             <thead>
                 <tr>
-                    <th class="border py-2 px-4 font-normal text-yellow-500" colspan="3">{{'exercise' | translate}} 2024</th>
+                    <th class="border py-2 px-4 font-normal text-yellow-500" colspan="3">{{'exercise' | translate}} 2024
+                    </th>
                 </tr>
                 <tr>
                     <th class="border py-2 px-4 font-normal" colspan="3">{{'fullName' | translate}} : {{name}}</th>
                 </tr>
                 <tr>
-                    <th class="border p-2"></th> 
+                    <th class="border p-2"></th>
                     <th class="border py-2 px-4 text-yellow-500 font-normal">€</th>
                     <th class="border py-2 px-4 text-yellow-500 font-normal">{{'results' | translate}}</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td class="border p-2 fp-2 font-medium text-darkslategray text-center">{{'OSDCertificate' | translate}}</td>
+                    <td class="border p-2 fp-2 font-medium text-darkslategray text-center">{{'OSDCertificate' |
+                        translate}}</td>
                     <td class="border p-2 text-center">€{{displayedSummationFiles[i]}}</td>
                     <td class="border border-y-0 p-2 text-center" rowspan="2">
                         <b>{{"CLAIMING_BENEFITS" | translate}}</b>
@@ -59,16 +61,21 @@
                 </tr>
 
                 <tr>
-                    <td class="border p-2 font-medium text-darkslategray text-center">{{'accumulatedAnnualCompensation' | translate}}</td>
-                    <td class="border p-2 text-center">€{{displayedSummationPerformances[i] + displayedFormationCost[i]}}</td>
+                    <td class="border p-2 font-medium text-darkslategray text-center">{{'accumulatedAnnualCompensation'
+                        | translate}}</td>
+                    <td class="border p-2 text-center">€{{displayedSummationPerformances[i] +
+                        displayedFormationCost[i]}}</td>
                     <td class="border p-2 text-center">
                         <p>{{"SumEconomicResults" | translate}}</p>
                     </td>
                 </tr>
             </tbody>
-            
+
             <br>
         </ng-container>
-        <mat-paginator *ngIf="fpFullNames.length !== 0" [length]="totalItems" [pageSize]="itemsPerPage" (page)="onPageChange($event)"></mat-paginator>
     </table>
+    <div class="flex justify-center">
+        <mat-paginator *ngIf="fpFullNames.length !== 0" [length]="totalItems" [pageSize]="itemsPerPage"
+            (page)="onPageChange($event)"></mat-paginator>
+    </div>
 </div>

@@ -5,8 +5,7 @@ import { UserInfo } from '../models/userInfo';
 import { Subscriber } from '../models/subscriber';
 import { PerformanceFreeProfessional } from '../project-manager/Models/performanceFreeProfessional';
 import { PerformanceBuy } from '../project-manager/Models/performanceBuy';
-import { PerformanceClaim } from '../functions/models/performanceClaim';
-import { PerformanceClaims } from '../functions/models/PerformanceClaims';
+import { PerformanceClaim } from '../functions/models/PerformanceClaims';
 
 @Injectable({
   providedIn: 'root'
@@ -49,7 +48,7 @@ export class OSDDataService {
 
   private performanceFreeProfessionalList = new Subject<PerformanceFreeProfessional[]>();
   private performanceBuyList = new Subject<PerformanceBuy[]>();
-  private performanceClaimList = new Subject<PerformanceClaims[]>();
+  private performanceClaimList = new Subject<PerformanceClaim[]>();
 
   actionRegisterSuccess$ = this.actionRegisterSuccessSubject.asObservable();
   userRegisterSuccess$ = this.userRegisterSuccessSubject.asObservable();
@@ -125,7 +124,7 @@ export class OSDDataService {
   emitPerformanceBuyList(data: PerformanceBuy[]) {
     this.performanceBuyList.next(data);
   }
-  emitPerformanceClaimList(data: PerformanceClaims[]) {
+  emitPerformanceClaimList(data: PerformanceClaim[]) {
     this.performanceClaimList.next(data);
   }
   emitFreeProfessionalId(data: string) {

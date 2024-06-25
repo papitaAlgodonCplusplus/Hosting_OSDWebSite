@@ -164,7 +164,7 @@ export class ProjectManagementDossierComponent implements OnDestroy {
   }
 
   cleanPerformance() {
-    this.store.dispatch(PerformanceActions.setPerformance({ performance: this.emptyPerformance }))
+    this.store.dispatch(PerformanceActions.setPerformanceBuy({ performanceBuy: this.emptyPerformance }))
   }
 
   chargePerformanceFP(performanceId: any) {
@@ -174,7 +174,7 @@ export class ProjectManagementDossierComponent implements OnDestroy {
 
   selectPerformance(id: string) {
     var performance = this.performancesBuys.find(item => item.Id === id);
-    this.store.dispatch(PerformanceActions.setPerformance({ performance: performance }))
+    this.store.dispatch(PerformanceActions.setPerformanceBuy({ performanceBuy: performance }))
   }
 
   onPageChange(event: any) {

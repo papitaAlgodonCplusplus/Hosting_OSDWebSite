@@ -69,7 +69,7 @@ export class ClaimsFileComponent {
     this.updateDisplayedItems(startIndex, endIndex);
   }
 
-  updateDisplayedItems(startIndex: number = 0, endIndex: number = 10) {
+  updateDisplayedItems(startIndex: number = 0, endIndex: number = 5) {
     this.displayedItems = this.claims.slice(startIndex, endIndex);
   }
 }

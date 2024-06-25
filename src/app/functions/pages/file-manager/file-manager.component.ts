@@ -8,7 +8,7 @@ import { AuthenticationService } from 'src/app/services/authentication.service';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { UiActions } from 'src/app/store/actions';
 import { ClaimSelectors } from 'src/app/store/selectors';
-import { PerformanceClaims } from '../../models/PerformanceClaims';
+import { PerformanceClaim } from '../../models/PerformanceClaims';
 import { OSDDataService } from 'src/app/services/osd-data.service';
 
 @Component({
@@ -21,9 +21,10 @@ export class FileManagerComponent implements OnDestroy {
 
   registerForm!: FormGroup;
   claim$: Observable<Claim> = this.store.select(ClaimSelectors.claim);
-  performancesClaims: PerformanceClaims [] = [];
-  performancesClaimsTheClaim: PerformanceClaims [] = [];
+  performancesClaims: PerformanceClaim [] = [];
+  performancesClaimsTheClaim: PerformanceClaim [] = [];
   claimId!: string;
+  displayedItems: any[] = [];
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
@@ -119,10 +120,10 @@ export class FileManagerComponent implements OnDestroy {
   }
 
   openPerformanceClaimsModal(): void {
-
     this.performancesClaims.forEach(element => {
       if(element.Claimid = this.claimId){
         this.performancesClaimsTheClaim.push(element);
+        this.updateDisplayedItems()
       }
     });
 
@@ -133,10 +134,24 @@ export class FileManagerComponent implements OnDestroy {
   }
 
   closePerformanceModal(): void {
+    this.performancesClaimsTheClaim = [];
     const modal = document.getElementById('performanceModal');
     if (modal) {
       modal.style.display = 'none';
     }
   }
 
+  onPageChange(event: any) {
+    const startIndex = event.pageIndex * event.pageSize;
+    const endIndex = startIndex + event.pageSize;
+    this.updateDisplayedItems(startIndex, endIndex);
+  }
+
+  updateDisplayedItems(startIndex: number = 0, endIndex: number = 5) {
+    this.displayedItems = this.performancesClaimsTheClaim.slice(startIndex, endIndex);
+  }
+
+  viewPerformance(id : string){
+
+  }
 }

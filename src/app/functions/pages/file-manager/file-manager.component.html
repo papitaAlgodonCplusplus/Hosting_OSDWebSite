@@ -6,10 +6,9 @@
             </shared-input-field>
 
             <div class="font-bold flex flex-col justify-center items-center space-y-3 p-3">
-                <span class="rounded-xl text-line bg-darkslategray p-2 transition duration-300 ease-in-out hover:bg-line hover:text-darkslategray cursor-pointer" (click)="openPerformanceClaimsModal()">{{'viewPerformance' | translate}} </span>
-                <button
-                    class="space-x-2 flex items-center hover:underline"
-                    routerLink="/functions/claims-performance">
+                <span class="rounded-xl p-2 bg-darkslategray text-line cursor-pointer"
+                    (click)="openPerformanceClaimsModal()">{{'viewPerformance' | translate}} </span>
+                <button class="space-x-2 flex items-center hover:underline" routerLink="/functions/claims-performance">
                     <span>{{'newAction' | translate }}</span> <i
                         class="fa-solid fa-chevron-right text-base animate-pulse"></i>
                 </button>
@@ -23,8 +22,8 @@
                 [bgColor]="'bg-white-lightbone'">
             </shared-input-field>
 
-            <shared-input-field [readOnly]="true" class="w-full lg:w-1/2" label="{{'status' | translate}}" fieldName="state"
-                inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'">
+            <shared-input-field [readOnly]="true" class="w-full lg:w-1/2" label="{{'status' | translate}}"
+                fieldName="state" inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'">
             </shared-input-field>
 
             <shared-input-field [readOnly]="true" class="w-full lg:w-1/2" fieldName="subscriber"
@@ -62,7 +61,7 @@
 
             <div class="flex flex-row space-x-2 w-full justify-end">
                 <button routerLink="/functions/claims-file"
-                    class="p-2 rounded-xl bg-darkslategray text-line font-medium animate__animated animate__fadeInDown">
+                    class="p-2 rounded-xl bg-line text-darkslategray font-medium animate__animated animate__fadeInDown">
                     {{'regresar' | translate}}
                 </button>
                 <!-- 
@@ -78,42 +77,34 @@
 <!-- Modal -->
 <div id="performanceModal" class="modal-overlay">
     <div class="modal-content">
-      <span class="close-button" (click)="closePerformanceModal()">&times;</span>
-      <h2 class="modal-title">{{ 'ClaimPerformances' | translate }}</h2>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>{{ 'Date' | translate }}</th>
-            <th>{{ 'Type' | translate }}</th>
-            <th>{{ 'Justyfing_document' | translate }}</th>
-            <th>{{ 'Free_Professional_Work_Hours' | translate }}</th>
-            <th>{{ 'Free_Professional_Travel_Hours' | translate }}</th>
-            <th>{{ 'Free_Professional_Travel_Expenses' | translate }}</th>
-            <th>{{ 'Free_Professional_Remuneration' | translate }}</th>
-            <th>{{ 'Technical_Director_Date' | translate }}</th>
-            <th>{{ 'Technical_Director_Work_Hours' | translate }}</th>
-            <th>{{ 'Technical_Director_Travel_Hours' | translate }}</th>
-            <th>{{ 'Technical_Director_Travel_Expenses' | translate }}</th>
-            <th>{{ 'Technical_Director_Remuneration' | translate }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let performance of performancesClaimsTheClaim">
-            <td>{{ performance.Date }}</td>
-            <td>{{ performance.Type }}</td>
-            <td>{{ performance.JustifyingDocument }}</td>
-            <td>{{ performance.FreeProfessionalWorkHours }}</td>
-            <td>{{ performance.FreeProfessionalTravelHours }}</td>
-            <td>{{ performance.FreeProfessionalTravelExpenses }}</td>
-            <td>{{ performance.FreeProfessionalRemuneration }}</td>
-            <td>{{ performance.TechnicalDirectorDate }}</td>
-            <td>{{ performance.TechnicalDirectorWorkHours }}</td>
-            <td>{{ performance.TechnicalDirectorTravelHours }}</td>
-            <td>{{ performance.TechnicalDirectorTravelExpenses }}</td>
-            <td>{{ performance.TechnicalDirectorRemuneration }}</td>
-          </tr>
-        </tbody>
-      </table>
+        <span class="close-button" (click)="closePerformanceModal()">&times;</span>
+        <h2 class="modal-title">{{ 'performances' | translate }}</h2>
+        <table class="table">
+            <thead>
+                <tr class="text-darkslategray">
+                    <th></th>
+                    <th>{{ 'Code' | translate }}</th>
+                    <th>{{ 'Date' | translate }}</th>
+                    <th>{{ 'Type' | translate }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="border-t text-center" *ngFor="let performance of displayedItems">
+                    <td class="p-3">
+                        <button (click)="viewPerformance(performance.Id)" class="bg-darkslategray text-line p-2 rounded-xl">
+                            {{'View' | translate}}
+                        </button>
+                    </td>
+                    <td class="p-3">RE/A/1/2024</td>
+                    <td class="p-3">{{ performance.Date | date:'dd-MM-yyyy'}}</td>
+                    <td class="p-3">{{ performance.Type }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="absolute bottom-0 right-0">
+            <mat-paginator [length]="performancesClaimsTheClaim.length" [pageSize]="5"
+                (page)="onPageChange($event)"></mat-paginator>
+        </div>
+
     </div>
-  </div>
-  
+</div>

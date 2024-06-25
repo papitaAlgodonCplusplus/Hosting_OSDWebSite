@@ -19,7 +19,7 @@ export class PerformanceBuyComponent implements OnDestroy {
 
   performanceForm: FormGroup;
   documentName: string | undefined;
-  performance$: Observable<PerformanceBuy> = this.store.select(PerformanceSelectors.performance)
+  performance$: Observable<PerformanceBuy> = this.store.select(PerformanceSelectors.performanceBuy)
   performance!: any;
   isView: boolean = false;
   isAuthenticated$: Observable<boolean> = this.store.select(AuthSelectors.authenticationToken)

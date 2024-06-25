@@ -11,6 +11,7 @@ import { AuthSelectors, ClaimSelectors } from 'src/app/store/selectors';
 import { DatePipe } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import { Claim } from 'src/app/models/claim';
+import { PerformanceClaim } from '../../models/PerformanceClaims';
 
 @Component({
   selector: 'app-claims-performance',
@@ -35,6 +36,7 @@ export class ClaimsPerformanceComponent {
   documentName!: string;
   freeProfessionalId!: string
   incorrectFormat: boolean = false
+  performanceData!: PerformanceClaim;
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
@@ -129,31 +131,23 @@ export class ClaimsPerformanceComponent {
       return;
     }
     let formValues = this.performanceForm.value;
-    let performanceData: PerformanceFreeProfessional = new PerformanceFreeProfessional();
-
-    performanceData.date = formValues.Date;
-    performanceData.type = formValues.Type;
-    performanceData.justifyingDocument = formValues.JustifyingDocument;
-    performanceData.freeProfessionalWorkHours = formValues.FP_WorkHours;
-    performanceData.freeProfessionalTravelHours = formValues.FP_TravelTime;
-    performanceData.freeProfessionalTravelExpenses = formValues.FP_TravelExpenses;
-    performanceData.freeProfessionalRemuneration = formValues.FP_Remuneration;
-    performanceData.technicalDirectorDate = formValues.TD_Date;
-    performanceData.technicalDirectorWorkHours = formValues.TD_WorkHours;
-    performanceData.technicalDirectorTravelHours = formValues.TD_TravelTime;
-    performanceData.technicalDirectorTravelExpenses = formValues.TD_TravelExpenses;
-    performanceData.technicalDirectorRemuneration = formValues.TD_Remuneration;
-    performanceData.summary = formValues.Summary;
-    performanceData.technicalDirectorTravelExpenses = formValues.TD_TravelExpenses;
-    performanceData.technicalDirectorRemuneration = formValues.TD_Remuneration;
-    performanceData.summary = formValues.Summary;
-
-    performanceData.freeprofessionalId = this.freeProfessionalId
-    performanceData.proyectManagerId = '065d461a-cc09-4162-b4e9-f121c11d3348'
+    this.performanceData.Date = formValues.Date;
+    this.performanceData.Type = formValues.Type;
+    this.performanceData.JustifyingDocument = formValues.JustifyingDocument;
+    this.performanceData.FreeProfessionalWorkHours = formValues.FP_WorkHours;
+    this.performanceData.FreeProfessionalTravelHours = formValues.FP_TravelTime;
+    this.performanceData.FreeProfessionalTravelExpenses = formValues.FP_TravelExpenses;
+    this.performanceData.FreeProfessionalRemuneration = formValues.FP_Remuneration;
+    this.performanceData.TechnicalDirectorDate = formValues.TD_Date;
+    this.performanceData.TechnicalDirectorWorkHours = formValues.TD_WorkHours;
+    this.performanceData.TechnicalDirectorTravelHours = formValues.TD_TravelTime;
+    this.performanceData.TechnicalDirectorTravelExpenses = formValues.TD_TravelExpenses;
+    this.performanceData.TechnicalDirectorRemuneration = formValues.TD_Remuneration;
+    this.performanceData.Summary = formValues.Summary;
 
     this.claim$.subscribe(claim => {
       var claimId = claim.Id;
-      this.OSDEventService.createPerformanceClaim(performanceData, claimId);
+      this.OSDEventService.createPerformanceClaim(this.performanceData, claimId);
     })
   }
 
