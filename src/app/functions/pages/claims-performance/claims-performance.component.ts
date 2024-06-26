@@ -12,6 +12,8 @@ import { DatePipe } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import { Claim } from 'src/app/models/claim';
 import { PerformanceClaim } from '../../models/PerformanceClaims';
+import { AuthenticationService } from 'src/app/services/authentication.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-claims-performance',
@@ -25,6 +27,7 @@ export class ClaimsPerformanceComponent {
   editOtherInformation: boolean = true;
   performanceForm: FormGroup;
   selectedType: string | undefined;
+  user!: any;
   type: DropDownItem[] = [
     { value: 'Escritos', key: 'Posted' },
     { value: 'E-mails', key: 'E-mails' },
@@ -43,12 +46,18 @@ export class ClaimsPerformanceComponent {
     private OSDEventService: OSDService,
     private OSDDataService: OSDDataService,
     private datePipe: DatePipe,
+    private authenticationService: AuthenticationService,
     private translate: TranslateService) {
     this.performanceForm = this.validatePerformanceOnDataService()
     this.OSDDataService.setPerformance("")
+    this.performanceData = {} as PerformanceClaim
   }
 
   validatePerformanceOnDataService(): FormGroup {
+    if (this.authenticationService.userInfo){
+      this.user = this.authenticationService.userInfo
+    }
+
     this.performanceFP = this.OSDDataService.getPerformance()
     if (this.performanceFP !== "" && this.performanceFP !== undefined) {
 
@@ -63,7 +72,7 @@ export class ClaimsPerformanceComponent {
       const form = this.formBuilder.group({
         Date: formatedDate,
         Type: this.performanceFP.Type,
-        JustifyingDocument: this.performanceFP.documentName,
+        JustifyingDocument: this.documentName,
         FP_WorkHours: this.performanceFP.FreeProfessionalWorkHours,
         FP_TravelTime: this.performanceFP.FreeProfessionalTravelHours,
         FP_TravelExpenses: this.performanceFP.FreeProfessionalTravelExpenses,
@@ -111,16 +120,16 @@ export class ClaimsPerformanceComponent {
       Date: ['', [Validators.required]],
       Type: ['', [Validators.required]],
       JustifyingDocument: [''],
-      FP_WorkHours: ['', [Validators.required]],
-      FP_TravelTime: ['', [Validators.required]],
-      FP_TravelExpenses: ['', [Validators.required]],
-      FP_Remuneration: ['', [Validators.required]],
-      TD_Date: ['', [Validators.required]],
-      TD_WorkHours: ['', [Validators.required]],
-      TD_TravelTime: ['', [Validators.required]],
-      TD_TravelExpenses: ['', [Validators.required]],
-      TD_Remuneration: ['', [Validators.required]],
-      Summary: ['', [Validators.required]],
+      FP_WorkHours: [''],
+      FP_TravelTime: [''],
+      FP_TravelExpenses: [''],
+      FP_Remuneration: [''],
+      TD_Date: [''],
+      TD_WorkHours: [''],
+      TD_TravelTime: [''],
+      TD_TravelExpenses: [''],
+      TD_Remuneration: [''],
+      Summary: [''],
     });
     return form;
   }
@@ -130,6 +139,7 @@ export class ClaimsPerformanceComponent {
       this.performanceForm.markAllAsTouched();
       return;
     }
+
     let formValues = this.performanceForm.value;
     this.performanceData.Date = formValues.Date;
     this.performanceData.Type = formValues.Type;
@@ -154,7 +164,6 @@ export class ClaimsPerformanceComponent {
   verifiedFormat(data: string) {
     const formValues = this.performanceForm.value;
     let travelTime, workHours, errorMessage;
-
     switch (data) {
       case "freeProfessional":
         travelTime = formValues.FP_TravelTime;
@@ -196,8 +205,6 @@ export class ClaimsPerformanceComponent {
       }
     }
   }
-
-
 
   validarHora(horaStr: string): boolean {
     console.log(horaStr)
