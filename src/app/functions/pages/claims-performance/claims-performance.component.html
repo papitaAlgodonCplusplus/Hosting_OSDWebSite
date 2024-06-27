@@ -33,7 +33,7 @@
 
         </div>
 
-        <div *ngIf=" this.user.AccountType === 'FreeProfessional' || this.user.Isadmin === true ">
+        <div *ngIf=" this.user.AccountType === 'FreeProfessional' || this.user.AccountType === 'TechnicalDirector' || this.user.Isadmin === true ">
             <div class="text-darkslategray  text-base pl-1 mt-3 text-start font-medium">
                 <h1 class="border-b">
                     {{'profesional_libre' | translate}}
