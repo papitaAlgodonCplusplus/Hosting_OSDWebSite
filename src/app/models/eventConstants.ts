@@ -108,7 +108,7 @@ export class EventConstants {
   public static TECHNICAL_DIRECTOR_TRAVEL_EXPENSES: string = 'TD_TravelExpenses';
   public static TECHNICAL_DIRECTOR_REMUNERATION: string = 'TD_Remuneration';
   public static PERFORMANCE_FREE_PROFESSIONAL: string = 'PerformanceFreeProfessional';
-  public static PERFORMANCE_FREE_PROFESSIONAL_MESSAGE: string = 'PerformanceFreeProfessional';
+  public static PERFORMANCE_FREE_PROFESSIONAL_MESSAGE: string = 'PerformanceFreeProfessionalMessage';
 
   public static ESTIMATED_WORK_HOURS: string = "EstimatedWorkHours";
   public static ESTIMATED_TRANSPORT_HOURS: string = "EstimatedTransportHours";
