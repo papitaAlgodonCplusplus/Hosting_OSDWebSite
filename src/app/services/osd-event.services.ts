@@ -389,7 +389,16 @@ export class OSDService {
     try {
       var actionGetOsdUsersSusbscriberResultMessage = webBaseEvent.getBodyProperty(EventConstants.ACTION_OSD_RESULT_MESSAGE);
       if (actionGetOsdUsersSusbscriberResultMessage != null) {
-        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: actionGetOsdUsersSusbscriberResultMessage }))
+        
+        if(this.translate.currentLang == "en"){
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: actionGetOsdUsersSusbscriberResultMessage }));
+        }else{
+          if(actionGetOsdUsersSusbscriberResultMessage == "Was Successfully Created"){
+            actionGetOsdUsersSusbscriberResultMessage = "Actuacion creada correctamente"
+            this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: actionGetOsdUsersSusbscriberResultMessage }));
+          }
+        }
+
         this.store.dispatch(ModalActions.openAlert())
       }
 
@@ -588,7 +597,16 @@ export class OSDService {
 
     try {
       message = webBaseEvent.getBodyProperty(EventConstants.PERFORMANCE_FREE_PROFESSIONAL_MESSAGE);
-      this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
+
+      if(this.translate.currentLang == "en"){
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
+      }else{
+        if(message == "Was Successfully Created"){
+          message = "Actuacion creada correctamente"
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
+        }
+      }
+
       this.store.dispatch(ModalActions.openAlert())
     } catch {
 
