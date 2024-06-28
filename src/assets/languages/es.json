@@ -20,8 +20,8 @@
     "entidad": "Entidad",
     "Public Entity": "Entidad pública",
     "Private Entity": "Entidad privada",
-    "identity": "CIF/D.N.I/PASAPORTE",
-    "name": "Nombre",
+    "Identity": "CIF/D.N.I/PASAPORTE",
+    "Name": "Nombre",
     "RazonSocial": "Razón social",
     "primer_apellido": "Primer Apellido",
     "segundo_apellido": "Segundo Apellido",
@@ -155,7 +155,7 @@
     "OSDExpenses": "OSD GASTOS",
     "savingsPublicAdministration": "Indemnización obtenida por el Reclamante Ahorro AA.PP Mejora",
     "total": "Total",
-    "workspaceArea": "Área de trabajo",
+    "Workspace": "Área de trabajo",
     "PLProfessionals": "PL- PROFESIONALES LIBRES",
     "DTDirecccionTecnica": "DT- DIRECCIÓN TÉCNICA",
     "COContabilidad": "CO- CONTABILIDAD",
@@ -206,7 +206,7 @@
     "clientType": "Tipo de cliente",
     "customer_subscribers_results": "CLIENTES-SUSCRIPTORES: RESULTADOS",
     "osd_results": "OSD: RESULTADOS",
-    "income_expenses_benefits": "INGRESOS / GASTOS/ BENEFICIOS",
+    "income_expenses": "INGRESOS/GASTOS",
     "transparent_project": "Gestión ética y transparente de proyecto",
     "Certificate_OSD_1500€": "Certificado OSD",
     "Management_of_complaints_and_suggestions_for_improvement": "Gestion de reclamaciones y sugerencias de mejora",
@@ -279,5 +279,7 @@
     "Technical_Director_Travel_Expenses": "Gastos de viaje del director tecnico",
     "Technical_Director_Remuneration": "Gastos de remuneracion del director tecnico",
     "ClaimDetails": "Detalles del reclamo",
-    "Code": "Código"
+    "Code": "Código",
+    "NewProject" : "Nuevo Proyecto",
+    "Objective" : "Objetivo"
 }

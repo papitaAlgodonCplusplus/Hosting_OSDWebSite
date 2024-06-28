@@ -3,9 +3,10 @@ import { Store } from '@ngrx/store';
 import { ModalActions, UiActions } from 'src/app/store/actions';
 import { OSDDataService } from 'src/app/services/osd-data.service';
 import { UserInfo } from 'src/app/models/userInfo';
-import { Subscriber } from 'src/app/models/subscriber';
+
 import { TranslateService } from '@ngx-translate/core';
 import { OSDService } from 'src/app/services/osd-event.services';
+import { Subscriber } from '../../models/Subscriber';
 
 @Component({
   selector: 'app-sub-authorized',

@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { Claim } from '../models/claim';
 import { UserInfo } from '../models/userInfo';
-import { Subscriber } from '../models/subscriber';
 import { PerformanceFreeProfessional } from '../project-manager/Models/performanceFreeProfessional';
 import { PerformanceBuy } from '../project-manager/Models/performanceBuy';
 import { PerformanceClaim } from '../functions/models/PerformanceClaims';
+import { Subscriber } from '../functions/models/Subscriber';
+import { Project } from '../project-manager/Models/project';
 
 @Injectable({
   providedIn: 'root'
@@ -50,6 +51,8 @@ export class OSDDataService {
   private performanceBuyList = new Subject<PerformanceBuy[]>();
   private performanceClaimList = new Subject<PerformanceClaim[]>();
 
+  private projectsList = new Subject<Project[]>();
+
   actionRegisterSuccess$ = this.actionRegisterSuccessSubject.asObservable();
   userRegisterSuccess$ = this.userRegisterSuccessSubject.asObservable();
   verifyEmailSuccess$ = this.verifyEmailSuccessSubject.asObservable();
@@ -90,12 +93,15 @@ export class OSDDataService {
   SummationPerformances$ = this.SummationPerformances.asObservable();
   FormationCost$ = this.FormationCost.asObservable();
 
+  ProjectsList$ = this.projectsList.asObservable();
+
   constructor() {
   }
 
   setPerformance(performance: any) {
     this.performanceFP = performance
   }
+
   getPerformance() {
     return this.performanceFP
   }
@@ -144,7 +150,7 @@ export class OSDDataService {
 
   emitInstitutionsNames(data: any[]) {
     this.InstitutionsNames.next(data);
-  }  
+  }
   emitClaimsAmount(data: any[]) {
     this.ClaimsAmount.next(data);
   }
@@ -202,4 +208,9 @@ export class OSDDataService {
   emitFormationCost(data: any) {
     this.FormationCost.next(data);
   }
+
+  emitGetProjectsSuccess(data: Project[]) {
+    this.projectsList.next(data);
+  }
+
 }

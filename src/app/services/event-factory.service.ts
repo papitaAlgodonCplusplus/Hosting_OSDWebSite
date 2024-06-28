@@ -14,6 +14,7 @@ import { Form } from '@angular/forms';
 import { PerformanceFreeProfessional } from '../project-manager/Models/performanceFreeProfessional';
 import { PerformanceBuy } from '../project-manager/Models/performanceBuy';
 import { PerformanceClaim } from '../functions/models/PerformanceClaims';
+import { CreateProjectEvent } from '../project-manager/Interface/project.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -366,6 +367,38 @@ export class EventFactoryService {
     return event;
   }
 
+  public CreateProjectEvent(projectForm : CreateProjectEvent): WebBaseEvent {
+    let event: WebBaseEvent;
+
+    event = new WebBaseEvent();
+    event.Action = EventAction.CREATE_PROJECT;
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Date = (new Date()).toUTCString();
+    event.ApplicationIdentifier = "WebClient";
+    event.setBodyProperty(EventConstants.OBJECTIVE, projectForm.Objective);
+    event.setBodyProperty(EventConstants.EXPECTED_HOURS, projectForm.Expected_hours);
+    event.setBodyProperty(EventConstants.ECONOMIC_BUDGET, projectForm.Economic_budget);
+    event.setBodyProperty(EventConstants.START_DATE, projectForm.Start_Date);
+    return event;
+  }
+
+  public CreateGetProjectsEvent(): WebBaseEvent {
+    let event: WebBaseEvent;
+
+    event = new WebBaseEvent();
+    event.Action = EventAction.GET_PROJECTS;
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Date = (new Date()).toUTCString();
+    event.ApplicationIdentifier = "WebClient";
+   
+    return event;
+  }
   public CreateVerifyEmailEvent(verifyEmailForm: VerifyEmailEvent): WebBaseEvent {
     let event: WebBaseEvent;
 
@@ -453,5 +486,4 @@ export class EventFactoryService {
 
     return event;
   }
-
 }

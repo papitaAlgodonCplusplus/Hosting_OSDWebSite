@@ -5,8 +5,9 @@ import { ModalActions } from 'src/app/store/actions';
 import { MatPaginator } from '@angular/material/paginator';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { UserInfo } from 'src/app/models/userInfo';
-import { Subscriber } from 'src/app/models/subscriber';
 import { TranslateService } from '@ngx-translate/core';
+import { Subscriber } from '../../models/Subscriber';
+import { FreeProfessional } from '../../models/freeProfessional';
 
 @Component({
   selector: 'app-autorization-pl',
@@ -15,14 +16,13 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class AutorizationPlComponent implements OnDestroy {
   items: any[] = [];
-  freeProfessionals: any[] = [];
   displayedItems: any;
   showModalConfirm: boolean = false; 
   selectedUser: any = null; 
   user!: any;
   message: string = "";
   showAuthorizatedModal: boolean = false;
-  subscriber: any;
+  freeProfessional: any;
 
   constructor(private store: Store,
               private osdEventService : OSDService,
@@ -31,9 +31,13 @@ export class AutorizationPlComponent implements OnDestroy {
 
   ngOnInit(): void {
     this.osdEventService.getFreeProfessionalsList().then(freeProfessionals => {
-      this.freeProfessionals = freeProfessionals;
-      this.items = this.freeProfessionals;
-      this.displayedItems = this.items.slice(0, 10);
+      freeProfessionals.forEach(item => {
+        if (item.Isadmin === false) {
+           this.items.push(item)
+        }
+      });
+     
+      this.updateDisplayedItems();
     });
 
     setTimeout(() => {
@@ -50,12 +54,12 @@ export class AutorizationPlComponent implements OnDestroy {
 
     userDTO.Identity = this.selectedUser?.Identity;
     userDTO.Name = this.selectedUser?.Name;
-    userDTO.Email = this.selectedUser?.Email;
     this.user = userDTO;
 
-    const subscriberDTO: Subscriber = {} as Subscriber;
-    subscriberDTO.clientType = this.translate.instant("profesional_libre");
-    this.subscriber = subscriberDTO;
+    const FreeProfessionalDTO: FreeProfessional = {} as FreeProfessional;
+    FreeProfessionalDTO.clientType = this.translate.instant("profesional_libre");
+    FreeProfessionalDTO.Workspace = this.selectedUser.Freeprofessionaltype;
+    this.freeProfessional = FreeProfessionalDTO;
 
     this.showAuthorizatedModal = true;
   }

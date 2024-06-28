@@ -11,6 +11,7 @@ import { PerformanceBuyComponent } from './pages/performance-buy/performance-buy
 import { PerformanceFreeProfessionalComponent } from './pages/performance-free-professional/performance-free-professional.component';
 import { MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginator';
 import { CustomPaginator } from '../services/custom-paginator.service';
+import { CreateProjectComponent } from './pages/create-project/create-project.component';
 
 
 @NgModule({
@@ -18,6 +19,7 @@ import { CustomPaginator } from '../services/custom-paginator.service';
     ProjectManagementDossierComponent,
     PerformanceBuyComponent,
     PerformanceFreeProfessionalComponent,
+    CreateProjectComponent,
   ],
   imports: [
     CommonModule,

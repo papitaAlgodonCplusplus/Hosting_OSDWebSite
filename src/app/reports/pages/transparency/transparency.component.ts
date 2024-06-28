@@ -2,6 +2,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { OSDService } from 'src/app/services/osd-event.services';
 import { UiActions } from 'src/app/store/actions';
 import { switchReport } from 'src/app/store/actions/ui.actions';
 import { AuthSelectors, UiSelectors } from 'src/app/store/selectors';
@@ -20,7 +21,8 @@ export class TransparencyComponent implements OnDestroy{
 
   constructor(
     private store : Store,
-    private router : Router
+    private router : Router,
+    private osdEventService : OSDService
   ){
 
   }

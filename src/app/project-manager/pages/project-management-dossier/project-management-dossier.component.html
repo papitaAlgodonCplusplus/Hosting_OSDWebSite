@@ -1,34 +1,57 @@
-<div class="text-darkslategray text-start py-3 text-xl font-medium animate__animated animate__fadeInLeft">
-    <span class="pl-5 pr-3 py-1 bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden">
-        {{'transparent_project' | translate}} <i class="fa-solid fa-project-diagram"></i></span>
-</div>
-<div class="flex justify-center flex-col lg:flex-row">
-    <div class="p-3">
-        <div class="lg:sticky top-3 px-3 lg:overflow-y-auto lg:max-h-screen">
-            <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="objetives"
-                label="{{'objectives' | translate}}:" inputType="text" [formGroup]="formProjectManager"
-                [bgColor]="'bg-white-lightbone'"></shared-input-field>
-            <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="economicBudget"
-                label="{{'economicBudget' | translate}}:" inputType="text" [formGroup]="formProjectManager"
-                [bgColor]="'bg-white-lightbone'"></shared-input-field>
-            <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="expectedTimes"
-                label="{{'expectedTimes' | translate}}:" inputType="text" [formGroup]="formProjectManager"
-                [bgColor]="'bg-white-lightbone'"></shared-input-field>
-            <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="startDate"
-                label="{{'start_date' | translate}}:" inputType="text" [formGroup]="formProjectManager"
-                [bgColor]="'bg-white-lightbone'"></shared-input-field>
-            <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="endDate"
-                label="{{'end_date' | translate}}:" inputType="text" [formGroup]="formProjectManager"
-                [bgColor]="'bg-white-lightbone'"></shared-input-field>
-            <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="projectAmount"
-                label="{{'project_amount' | translate}}:" inputType="text" [formGroup]="formProjectManager"
-                [bgColor]="'bg-white-lightbone'"></shared-input-field>
-            <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="expensesEmployeesVolunteers"
-                label="{{'expenses_employees_volunteers' | translate}}:" inputType="text"
-                [formGroup]="formProjectManager" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-            <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="supplierExpensesPurchases"
-                label="{{'supplier_purchasing_expenses' | translate}}:" inputType="text"
-                [formGroup]="formProjectManager" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+<div class="flex justify-center flex-col">
+    <div *ngIf="!openSideBar"
+        class="text-darkslategray text-start py-3 text-xl font-medium animate__animated animate__fadeInLeft">
+        <span class="pl-8 pr-3 py-1 bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden">
+            {{'transparent_project' | translate}} <i class="fa-solid fa-project-diagram"></i></span>
+    </div>
+    <div *ngIf="!openSideBar" style="top: 9%;"
+        class="fixed flex py-3 pl-1 bg-white w-6 h-full border-r-2 animate__animated animate__fadeInLeft">
+        <div (click)="toggleSideBar()" class="text-darkslategray absolute left-7 top-1/2">
+            <i class="fa-solid fa-chevron-right cursor-pointer"></i>
+        </div>
+    </div>
+    <div *ngIf="openSideBar" style="top: 9%;"
+        class="fixed left-0 pb-16 px-3 bg-white overflow-y-auto max-h-screen animate__animated animate__fadeInLeft w-72">
+        <div class="text-end text-darkslategray text-xl">
+            <i (click)="toggleSideBar()" class="cursor-pointer animate-pulse fa-solid fa-xmark"></i>
+        </div>
+
+        <div class="flex flex-col px-1">
+            <label for="objectivesDropdown">{{"Objective" | translate}}</label>
+            <select class="border p-2" (change)="selectProject($event)">
+                <option value="">{{ '' }}</option> <!-- Blank option -->
+                <option *ngFor="let project of (Projects$ | async)" [value]="project.Id">
+                    {{ project.Objective }} 
+                </option>
+            </select>
+        </div>
+        
+        
+        <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="economicBudget"
+            label="{{'economicBudget' | translate}}:" inputType="text" [formGroup]="formProjectManager"
+            [bgColor]="'bg-white-lightbone'"></shared-input-field>
+        <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="expectedTimes"
+            label="{{'expectedTimes' | translate}}:" inputType="text" [formGroup]="formProjectManager"
+            [bgColor]="'bg-white-lightbone'"></shared-input-field>
+        <shared-input-field [readOnly]="readOnly" class="w-16 lg:w-full " fieldName="startDate"
+            label="{{'start_date' | translate}}:" inputType="text" [formGroup]="formProjectManager"
+            [bgColor]="'bg-white-lightbone'"></shared-input-field>
+        <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="endDate"
+            label="{{'end_date' | translate}}:" inputType="text" [formGroup]="formProjectManager"
+            [bgColor]="'bg-white-lightbone'"></shared-input-field>
+        <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="projectAmount"
+            label="{{'project_amount' | translate}}:" inputType="text" [formGroup]="formProjectManager"
+            [bgColor]="'bg-white-lightbone'"></shared-input-field>
+        <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="expensesEmployeesVolunteers"
+            label="{{'expenses_employees_volunteers' | translate}}:" inputType="text" [formGroup]="formProjectManager"
+            [bgColor]="'bg-white-lightbone'"></shared-input-field>
+        <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="supplierExpensesPurchases"
+            label="{{'supplier_purchasing_expenses' | translate}}:" inputType="text" [formGroup]="formProjectManager"
+            [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+        <div *ngIf="!isUser" class="flex justify-end">
+            <button class="bg-darkslategray text-line p-2 rounded-xl"
+                routerLink="/project-manager/create-project">Registrar Proyecto</button>
         </div>
     </div>
     <div class="flex-1 px-3 space-y-3">
@@ -88,16 +111,21 @@
                 </tr>
             </tbody>
         </table>
-        <div class="text-center text-darkslategray px-2 py-2 " *ngIf="displayedItems.length === 0">
-            <i class="fa-solid fa-arrow-rotate-right animate-spin"></i> {{'Loading' | translate}}
-        </div>
         <mat-paginator [length]="allPerformances.length" [pageSize]="10" (page)="onPageChange($event)"></mat-paginator>
-
-        <div class="flex justify-end p-3">
+        <div class="absolute bottom-3 right-3">
             <button [routerLink]="isUser ? '/home' : '/reports'"
                 class="bg-line font-medium p-2 rounded-xl flex items-center text-darkslategray">
-               {{'regresar' | translate}}
+                {{'regresar' | translate}}
             </button>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="loadProjectManager" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
+    <div class="bg-opacity-75 bg-black absolute inset-0 "></div>
+    <div class="relative z-50 space-y-1 ">
+        <div class="justify-center text-white">
+            <i class="fa-solid fa-arrow-rotate-right animate-spin"></i> {{'Loading' | translate}}
         </div>
     </div>
 </div>

@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ProjectManagementDossierComponent } from './pages/project-management-dossier/project-management-dossier.component';
 import { PerformanceBuyComponent } from './pages/performance-buy/performance-buy.component';
 import { PerformanceFreeProfessionalComponent } from './pages/performance-free-professional/performance-free-professional.component';
+import { CreateProjectComponent } from './pages/create-project/create-project.component';
 
 const routes: Routes = [
   {
@@ -16,6 +17,10 @@ const routes: Routes = [
   {
     path: 'performance-free-professional',
     component: PerformanceFreeProfessionalComponent
+  },
+  {
+    path: 'create-project',
+    component: CreateProjectComponent
   }
 ];
 

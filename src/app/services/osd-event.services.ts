@@ -16,6 +16,8 @@ import { PerformanceFreeProfessional } from '../project-manager/Models/performan
 import { PerformanceBuy } from '../project-manager/Models/performanceBuy';
 import { TranslateService } from '@ngx-translate/core';
 import { PerformanceClaim } from '../functions/models/PerformanceClaims';
+import { CreateProjectEvent } from '../project-manager/Interface/project.interface';
+import { Project } from '../project-manager/Models/project';
 
 @Injectable({
   providedIn: 'root'
@@ -269,6 +271,7 @@ export class OSDService {
     try {
       if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['ListFreeProfessionals']) {
         this.freeProfessionals = webBaseEvent.Body['ListFreeProfessionals'];
+        console.log(this.freeProfessionals)
         this.freeProfessionalsResponse = true;
       } else {
         this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'No hay profesionales libres registrados' }));
@@ -385,6 +388,31 @@ export class OSDService {
     });
   }
 
+  public createProject(projectForm: CreateProjectEvent) {
+    const createProjectEvent: WebBaseEvent = this.eventFactoryService.CreateProjectEvent(projectForm);
+    this.restApiService.SendOSDEvent(createProjectEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleCreateProjectResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+
+  public GetProjects() {
+    const createGetProjectsEvent: WebBaseEvent = this.eventFactoryService.CreateGetProjectsEvent();
+    this.restApiService.SendOSDEvent(createGetProjectsEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleCreateGetProjectsResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
   public HandleAddPerformanceBuyResponse(webBaseEvent: WebBaseEvent) {
     try {
       var actionGetOsdUsersSusbscriberResultMessage = webBaseEvent.getBodyProperty(EventConstants.ACTION_OSD_RESULT_MESSAGE);
@@ -461,7 +489,7 @@ export class OSDService {
       var claimantsRating = webBaseEvent.getBodyProperty(EventConstants.CLAIMANTS_RATING);
       var claimedRating = webBaseEvent.getBodyProperty(EventConstants.CLAIMED_RATING);
       var osdRating = webBaseEvent.getBodyProperty(EventConstants.OSD_RATING);
-      
+
 
       if (institutionsNames != null && claimsAmount != null && compensationObtainedByClaimant != null && savingsImprovement != null && claimantsRating != null && claimedRating != null && osdRating != null) {
         this.osdDataService.emitInstitutionsNames(institutionsNames);
@@ -490,7 +518,7 @@ export class OSDService {
       var TM_Expenses = webBaseEvent.getBodyProperty(EventConstants.MARKETING_TECHNITIAN_EXPENSES);
       var TS_Expenses = webBaseEvent.getBodyProperty(EventConstants.SAC_TECHNITIAN_EXPENSES);
       var IN_Expenses = webBaseEvent.getBodyProperty(EventConstants.SYSTEM_ENGINEER_EXPENSES);
-      
+
       if (totalOsdExpenses != null && compensationOfClaimant != null && totalOsdIncomes != null) {
         this.osdDataService.emitTotalOsdExpenses(totalOsdExpenses);
         this.osdDataService.emitCompensationOfClaimant(compensationOfClaimant);
@@ -515,7 +543,7 @@ export class OSDService {
       var summationFiles = webBaseEvent.getBodyProperty(EventConstants.SUMMATION_FILES);
       var summationPerformances = webBaseEvent.getBodyProperty(EventConstants.SUMMATION_PERFORMANCES);
       var formationCost = webBaseEvent.getBodyProperty(EventConstants.FORMATION_COST);
-      
+
       if (fpFullNames != null && hoursPerformances != null && summationFiles != null) {
         this.osdDataService.emitFpFullNames(fpFullNames);
         this.osdDataService.emitHoursPerformances(hoursPerformances);
@@ -673,5 +701,39 @@ export class OSDService {
     }
   }
 
+  public HandleCreateProjectResponse(webBaseEvent: WebBaseEvent) {
+    let message: string;
+    try {
+      message = webBaseEvent.getBodyProperty(EventConstants.ACTION_OSD_RESULT_MESSAGE);
+      this.store.dispatch(ModalActions.changeAlertType({ alertType: 'success' }));
+      this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
+      this.store.dispatch(ModalActions.openAlert())
+      if (this.authenticationService.userInfo != null) {
+        this.securityDataService.emitUserAuthenticationSuccess("/home");
+      }
+      else {
+        this.securityDataService.emitUserAuthenticationSuccess("/auth");
+      }
+    } catch {
 
+    }
+  }
+
+  public HandleCreateGetProjectsResponse(webBaseEvent: WebBaseEvent) {
+    var projectsList: Project[];
+    try {
+      projectsList = webBaseEvent.getBodyProperty(EventConstants.PROJECTS_LIST);
+      console.log(projectsList)
+      if (projectsList.length > 0) {
+        this.osdDataService.emitGetProjectsSuccess(projectsList)
+      }
+      else {
+        this.store.dispatch(ModalActions.changeAlertType({ alertType: 'warning' }));
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Error" }));
+        this.store.dispatch(ModalActions.openAlert())
+      }
+    } catch {
+
+    }
+  }
 }

@@ -85,7 +85,6 @@ export class EventConstants {
 
   public static PERFORMANCE_FORM: string = "PerformanceForm";
   public static USER_INFO: string = "UserInfo";
-  public static ACTION_OSD_RESULT_MESSAGE: string = "ActionOSDResultMessage";
 
   public static LIST_CLAIM: string = "ListClaim"
   public static LIST_SUBSCRIBERS: string = "ListSubscribers"
@@ -124,8 +123,8 @@ export class EventConstants {
 
   public static FREE_PROFESSIONAL: string = 'FreeProfessional';
   public static SUBSCRIBER_CUSTOMER: string = 'SubscriberCustomer';
-  public static CLAIMANT: string ="Claimant";
-  public static APPROVED_TRAINING_CENTER: string ='ApprovedTrainingCenter';
+  public static CLAIMANT: string = "Claimant";
+  public static APPROVED_TRAINING_CENTER: string = 'ApprovedTrainingCenter';
   public static UNREGISTERED: string = 'Unregistered';
 
   public static INSTITUTIONS_NAMES: string = "InstitutionsNames";
@@ -151,6 +150,15 @@ export class EventConstants {
   public static SUMMATION_FILES: string = "summationFiles";
   public static SUMMATION_PERFORMANCES: string = "summationPerformances";
   public static FORMATION_COST: string = "formationCost"
+
+   
+  public static PROJECTS_LIST : string = "ProjectsList"
+  public static OBJECTIVE: string = "Objective"
+  public static EXPECTED_HOURS: string = "ExpectedHours"
+  public static ECONOMIC_BUDGET: string = "EconomicBudget"
+  public static START_DATE: string = "StartDate"
+
+  public static ACTION_OSD_RESULT_MESSAGE : string = "ActionOSDResultMessage"
   //#endregion
   constructor() {
 
