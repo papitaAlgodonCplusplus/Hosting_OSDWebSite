@@ -4,14 +4,16 @@
         <span class="pl-8 pr-3 py-1 bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden">
             {{'transparent_project' | translate}} <i class="fa-solid fa-project-diagram"></i></span>
     </div>
-    <div *ngIf="!openSideBar" style="top: 9%;"
-        class="fixed flex py-3 pl-1 bg-white w-6 h-full border-r-2 animate__animated animate__fadeInLeft">
-        <div (click)="toggleSideBar()" class="text-darkslategray absolute left-7 top-1/2">
+    <div *ngIf="!openSideBar"
+        class="fixed top-0 left-0 flex py-3 pl-1 bg-white w-6 h-full border-r-2 animate__animated animate__fadeInLeft">
+        <div (click)="toggleSideBar()" class="text-darkslategray absolute left-6 top-1/2 transform -translate-y-1/2">
             <i class="fa-solid fa-chevron-right cursor-pointer"></i>
         </div>
     </div>
+
+
     <div *ngIf="openSideBar" style="top: 9%;"
-        class="fixed left-0 pb-16 px-3 bg-white overflow-y-auto max-h-screen animate__animated animate__fadeInLeft w-72">
+        class="absolute left-0  pb-5 px-3 bg-white overflow-y-auto max-h-screen animate__animated animate__fadeInLeft w-72">
         <div class="text-end text-darkslategray text-xl">
             <i (click)="toggleSideBar()" class="cursor-pointer animate-pulse fa-solid fa-xmark"></i>
         </div>
@@ -55,10 +57,10 @@
         <div class="text-center text-xs font-extralight flex flex-row justify-end items-center space-x-3 px-1">
             <span class="m-1 cursor-pointer border-b" (click)="sortDateLowestHighest(true)">
                 {{ 'date_low_to_major' | translate }}
-              </span>
-              <span class="m-1 cursor-pointer border-b" (click)="sortDateLowestHighest(false)">
+            </span>
+            <span class="m-1 cursor-pointer border-b" (click)="sortDateLowestHighest(false)">
                 {{ 'date_major_to_minor' | translate }}
-              </span>
+            </span>
             <div class="flex items-center justify-end space-x-3" *ngIf="isUser">
                 <div *ngIf="showOptions" class="animate__animated animate__fadeInRight flex flex-row space-x-3">
                     <i (click)="cleanPerformance()" routerLink="/project-manager/performance-buy"
@@ -105,12 +107,13 @@
             </tbody>
         </table>
         <mat-paginator [length]="allPerformances.length" [pageSize]="10" (page)="onPageChange($event)"></mat-paginator>
-        <div class="flex flex-row space-x-3">
+  
+        <div class="flex flex-row space-x-3 justify-end py-3">
             <div *ngIf="isUser" class="flex justify-end">
                 <button class="bg-darkslategray text-line p-2 rounded-xl"
-                    routerLink="/project-manager/create-project">Registrar Proyecto</button>
+                    routerLink="/project-manager/create-project">{{'RegisterProject' | translate}}</button>
             </div>
-            
+
             <button [routerLink]="isUser ? '/home' : '/reports'"
                 class="bg-line font-medium p-2 rounded-xl flex items-center text-darkslategray">
                 {{'regresar' | translate}}

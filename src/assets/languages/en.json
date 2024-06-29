@@ -281,5 +281,6 @@
   "ClaimDetails": "Claim Details",
   "Code": "Code",
   "NewProject" : "New Project",
-  "Objective" : "Objective"
+  "Objective" : "Objective",
+  "RegisterProject" : "Register Project"
 }

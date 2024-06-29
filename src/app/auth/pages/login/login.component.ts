@@ -58,7 +58,7 @@ export class LoginComponent implements OnDestroy {
 
   private createLoginForm(): FormGroup {
     return this.formBuilder.group({
-      email: ['jaencarlogonzalezarauz4@gmail.com'],
+      email: [''],
       password: ['']
     });
   }

@@ -281,5 +281,6 @@
     "ClaimDetails": "Detalles del reclamo",
     "Code": "Código",
     "NewProject" : "Nuevo Proyecto",
-    "Objective" : "Objetivo"
+    "Objective" : "Objetivo",
+    "RegisterProject" : "Registrar Proyecto"
 }
