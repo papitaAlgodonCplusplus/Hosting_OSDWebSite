@@ -78,7 +78,6 @@ export class ProjectManagementDossierComponent implements OnDestroy {
       }));
 
       let normalizedFreeProfesional = this.performancesFreeProfesional.map(freeProfessional => {
-        console.log(freeProfessional)
         const hours = {
           FreeProfessionalTravelHours: freeProfessional.FreeProfessionalTravelHours,
           FreeProfessionalWorkHours: freeProfessional.FreeProfessionalWorkHours,
@@ -107,19 +106,21 @@ export class ProjectManagementDossierComponent implements OnDestroy {
       });
       this.allPerformances = [...normalizedFreeProfesional, ...normalizedBuys];
       this.updateDisplayedItems();
+      this.loadProjectManager = false;
       this.sortDateLowestHighest(true);
-    }, 1000);
+      this.formProjectManager = this.createForm();
+    }, 3000);
 
     await this.loadProjects();
   }
 
   sortDateLowestHighest(ascending: boolean = true) {
-    const sortedPerformances = this.allPerformances.sort((a, b) => {
+    this.allPerformances.sort((a, b) => {
       let dateA = new Date(a.Date);
       let dateB = new Date(b.Date);
       return ascending ? dateA.getTime() - dateB.getTime() : dateB.getTime() - dateA.getTime();
     });
-    return sortedPerformances;
+    this.updateDisplayedItems();
   }
 
   ngOnDestroy(): void {
@@ -199,6 +200,7 @@ export class ProjectManagementDossierComponent implements OnDestroy {
         if (element.Id === id) {
             this.selectedProject = element;
             this.formProjectManager = this.createForm();
+            this.openSideBar = true
         }
     });
 }
@@ -206,8 +208,8 @@ export class ProjectManagementDossierComponent implements OnDestroy {
 async loadProjects(): Promise<void> {
   try {
       this.allProjects = await firstValueFrom(this.Projects$);
-      this.loadProjectManager = false;
-      console.log(this.allProjects);
+      this.selectedProject = this.allProjects[0];
+      this.formProjectManager = this.createForm();
   } catch (error) {
       console.error('Error loading projects:', error);
   }

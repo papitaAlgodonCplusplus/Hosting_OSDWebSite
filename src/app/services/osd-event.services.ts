@@ -634,7 +634,7 @@ export class OSDService {
           this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
         }
       }
-
+      this.securityDataService.emitUserAuthenticationSuccess("/project-manager");
       this.store.dispatch(ModalActions.openAlert())
     } catch {
 
@@ -708,12 +708,9 @@ export class OSDService {
       this.store.dispatch(ModalActions.changeAlertType({ alertType: 'success' }));
       this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
       this.store.dispatch(ModalActions.openAlert())
-      if (this.authenticationService.userInfo != null) {
-        this.securityDataService.emitUserAuthenticationSuccess("/home");
-      }
-      else {
-        this.securityDataService.emitUserAuthenticationSuccess("/auth");
-      }
+      
+      this.securityDataService.emitUserAuthenticationSuccess("/project-manager");
+    
     } catch {
 
     }
