@@ -22,8 +22,6 @@ export class HomeComponent implements OnInit {
 
   menuOptionAdmin: MenuOption[] = [
     { name: 'transparent_project', path: '/project-manager', icon: 'fa-project-diagram' },
-    // { name: 'TitlePerformance', path: '/home/free-professional-file', icon: 'fa-file' },
-    { name: 'registerNewUser', path: '/onboarding', icon: 'fa-user-plus' },
     { name: 'Assign_Processor_to_Claim', path: '/functions/assign-pltr-claims', icon: 'fa-user' },
     { name: 'authorizeCustomers', path: '/functions/sub-authorized', icon: 'fa-check-circle' },
     { name: 'authorizeFreeProfessionals', path: '/functions/autorization-pl', icon: 'fa-check-circle' }

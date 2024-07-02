@@ -280,7 +280,9 @@
     "Technical_Director_Remuneration": "Gastos de remuneracion del director tecnico",
     "ClaimDetails": "Detalles del reclamo",
     "Code": "Código",
-    "NewProject" : "Nuevo Proyecto",
-    "Objective" : "Objetivo",
-    "RegisterProject" : "Registrar Proyecto"
+    "NewProject": "Nuevo Proyecto",
+    "Objective": "Objetivo",
+    "RegisterProject": "Registrar Proyecto",
+    "Valoration": "Valuación",
+    "MakeAreview": "Realizar valoración"
 }

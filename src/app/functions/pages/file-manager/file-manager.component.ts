@@ -10,6 +10,8 @@ import { UiActions } from 'src/app/store/actions';
 import { ClaimSelectors } from 'src/app/store/selectors';
 import { PerformanceClaim } from '../../models/PerformanceClaims';
 import { OSDDataService } from 'src/app/services/osd-data.service';
+import { isSubscription } from 'rxjs/internal/Subscription';
+import { CreateClaimValuationEvent } from '../../Interface/ClaimValuation.interface';
 
 @Component({
   selector: 'app-file-manager',
@@ -19,35 +21,38 @@ import { OSDDataService } from 'src/app/services/osd-data.service';
 
 export class FileManagerComponent implements OnDestroy {
 
-  registerForm!: FormGroup;
+  fileManager!: FormGroup;
   claim$: Observable<Claim> = this.store.select(ClaimSelectors.claim);
-  performancesClaims: PerformanceClaim [] = [];
-  performancesClaimsTheClaim: PerformanceClaim [] = [];
+  performancesClaims: PerformanceClaim[] = [];
+  performancesClaimsTheClaim: PerformanceClaim[] = [];
   claimId!: string;
   displayedItems: any[] = [];
+  isSubscriber: boolean = true;
+  isClaimant: boolean = true;
+  isFreeProfessional: boolean = true;
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
-    private osdEventService : OSDService,
+    private osdEventService: OSDService,
     private translate: TranslateService,
     private osdDataService: OSDDataService,
     private authenticationService: AuthenticationService) {
-    this.registerForm = this.createForm();
+    this.fileManager = this.createForm();
   }
 
   ngOnInit() {
     this.osdEventService.getPerformanceList();
-
+    this.assignValuation()
     setTimeout(() => {
       this.claim$.subscribe(claim => {
-        this.registerForm = this.fillForm(claim);
+        this.fileManager = this.fillForm(claim);
         this.claimId = claim.Id;
-        console.log("ClaimId",this.claimId)
+
       })
 
       this.osdDataService.performanceClaimList$.subscribe(performanceClaim => {
         this.performancesClaims = performanceClaim;
-        console.log("PerformanceClaims",performanceClaim)
+        console.log("PerformanceClaims", performanceClaim)
       })
 
       this.store.dispatch(UiActions.hideFooter());
@@ -69,16 +74,15 @@ export class FileManagerComponent implements OnDestroy {
       amountClaimed: [''],
       AAsavingsPP: [''],
       creditingDate: [''],
-      OSDvaluation: [''],
+      freeProfessional: [''],
+      valuationSubscriber: [''],
       valuationClaimant: [''],
-      valuationFreeOSDprofessionals: [''],
-      freeProfessional: ['']
+      valuationFreeProfessionals: [''],
     });
     return form;
   }
 
   private fillForm(claim: Claim): FormGroup {
-    const fecha = this.convertDate(claim.Date);
 
     const form = this.formBuilder.group({
       claimant: [this.translate.instant(claim.Claimtype)],
@@ -87,10 +91,10 @@ export class FileManagerComponent implements OnDestroy {
       amountClaimed: [claim.Amountclaimed],
       AAsavingsPP: [''],
       creditingDate: [''],
-      OSDvaluation: [''],
+      freeProfessional: [''],
+      valuationSubscriber: [''],
       valuationClaimant: [''],
-      valuationFreeOSDprofessionals: [''],
-      freeProfessional: ['']
+      valuationFreeProfessionals: [''],
     });
     return form;
   }
@@ -107,21 +111,16 @@ export class FileManagerComponent implements OnDestroy {
   }
 
   onSubmit(): void {
-    if (this.registerForm.invalid) {
-      this.registerForm.markAllAsTouched();
+    console.log(this.fileManager.value)
+    if (this.fileManager.invalid) {
+      this.fileManager.markAllAsTouched();
       return;
-    }
-
-    if (this.registerForm.value.acceptConditions) {
-      const userEmail = this.registerForm.value.email;
-      localStorage.setItem('userEmail', userEmail);
-      //  this.securityEventService.userRegister(this.registerForm.value);
     }
   }
 
   openPerformanceClaimsModal(): void {
     this.performancesClaims.forEach(element => {
-      if(element.Claimid = this.claimId){
+      if (element.Claimid = this.claimId) {
         this.performancesClaimsTheClaim.push(element);
         this.updateDisplayedItems()
       }
@@ -151,7 +150,30 @@ export class FileManagerComponent implements OnDestroy {
     this.displayedItems = this.performancesClaimsTheClaim.slice(startIndex, endIndex);
   }
 
-  viewPerformance(id : string){
+  viewPerformance(id: string) {
 
+  }
+
+  assignValuation() {
+    var userInfo = this.authenticationService.userInfo
+    if (userInfo?.AccountType == "SubscriberCustomer") {
+      this.isSubscriber = false
+    }
+    else if (userInfo?.AccountType == "Claimant") {
+      this.isClaimant = false
+    }
+    else {
+      this.isFreeProfessional = false
+    }
+  }
+
+  updateValuation() {
+    var valuationForm: CreateClaimValuationEvent = {
+      ClaimId : this.claimId,
+      ValuationClaimant: this.fileManager.value.valuationClaimant,
+      ValuationFreeProfessionals: this.fileManager.value.valuationFreeProfessionals,
+      ValuationSubscriber: this.fileManager.value.valuationSubscriber
+    }
+      this.osdEventService.UpdateValuation(valuationForm);
   }
 }

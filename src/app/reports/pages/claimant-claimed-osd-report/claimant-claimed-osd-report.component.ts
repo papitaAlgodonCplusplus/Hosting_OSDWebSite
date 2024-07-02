@@ -53,10 +53,10 @@ export class ClaimantClaimedOsdReportComponent implements OnDestroy {
       this.claimantsRating = item;
     })
     this.osdDataService.ClaimedRating$.subscribe(item => {
-      this.claimedRating = item;
+      this.osdRating = item;
     })
     this.osdDataService.OsdRating$.subscribe(item => {
-      this.osdRating = item;
+      this.claimedRating = item;
     })
   }
   ngOnDestroy(): void {

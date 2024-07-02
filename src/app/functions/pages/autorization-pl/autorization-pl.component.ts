@@ -7,7 +7,7 @@ import { OSDService } from 'src/app/services/osd-event.services';
 import { UserInfo } from 'src/app/models/userInfo';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscriber } from '../../models/Subscriber';
-import { FreeProfessional } from '../../models/freeProfessional';
+import { FreeProfessional } from '../../models/FreeProfessional';
 
 @Component({
   selector: 'app-autorization-pl',
@@ -49,6 +49,7 @@ export class AutorizationPlComponent implements OnDestroy {
 
   selectUser(user: any) {
     this.selectedUser = user; 
+    console.log(user)
     this.showAuthorizatedModal = true;
     const userDTO: UserInfo = {} as UserInfo;
 
@@ -82,7 +83,7 @@ export class AutorizationPlComponent implements OnDestroy {
   }
 
   onConfirmHandler(selectedUser: any) {
-    this.osdEventService.changingUsdUserAutorizationStatusEvent(selectedUser.Id)
+    this.osdEventService.changingUsdUserAutorizationStatusEvent(selectedUser.Userid)
     this.store.dispatch(ModalActions.openAlert());
     
     this.items.forEach(item => {

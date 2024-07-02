@@ -15,6 +15,7 @@ import { PerformanceFreeProfessional } from '../project-manager/Models/performan
 import { PerformanceBuy } from '../project-manager/Models/performanceBuy';
 import { PerformanceClaim } from '../functions/models/PerformanceClaims';
 import { CreateProjectEvent } from '../project-manager/Interface/project.interface';
+import { CreateClaimValuationEvent } from '../functions/Interface/ClaimValuation.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -399,6 +400,26 @@ export class EventFactoryService {
    
     return event;
   }
+
+  public CreateUpdateValuationEvent(ClaimValuationForm : CreateClaimValuationEvent): WebBaseEvent {
+    let event: WebBaseEvent;
+
+    event = new WebBaseEvent();
+    event.Action = EventAction.UPDATE_EVALUATION;
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Date = (new Date()).toUTCString();
+    event.ApplicationIdentifier = "WebClient";
+    event.setBodyProperty(EventConstants.CLAIM_ID, ClaimValuationForm.ClaimId);
+    event.setBodyProperty(EventConstants.VALUATION_SUBSCRIBER, ClaimValuationForm.ValuationSubscriber);
+    event.setBodyProperty(EventConstants.VALUATION_CLAIMANT, ClaimValuationForm.ValuationClaimant);
+    event.setBodyProperty(EventConstants.VALUATION_FREE_PROFESSIONAL, ClaimValuationForm.ValuationFreeProfessionals);
+   
+    return event;
+  }
+
   public CreateVerifyEmailEvent(verifyEmailForm: VerifyEmailEvent): WebBaseEvent {
     let event: WebBaseEvent;
 

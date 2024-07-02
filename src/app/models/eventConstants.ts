@@ -151,14 +151,18 @@ export class EventConstants {
   public static SUMMATION_PERFORMANCES: string = "summationPerformances";
   public static FORMATION_COST: string = "formationCost"
 
-   
-  public static PROJECTS_LIST : string = "ProjectsList"
+
+  public static PROJECTS_LIST: string = "ProjectsList"
   public static OBJECTIVE: string = "Objective"
   public static EXPECTED_HOURS: string = "ExpectedHours"
   public static ECONOMIC_BUDGET: string = "EconomicBudget"
   public static START_DATE: string = "StartDate"
 
-  public static ACTION_OSD_RESULT_MESSAGE : string = "ActionOSDResultMessage"
+  public static VALUATION_SUBSCRIBER: string = "ValuationSubscriber"
+  public static VALUATION_CLAIMANT: string = "ValuationClaimant"
+  public static VALUATION_FREE_PROFESSIONAL: string = "ValuationFreeProfessional"
+
+  public static ACTION_OSD_RESULT_MESSAGE: string = "ActionOSDResultMessage"
   //#endregion
   constructor() {
 

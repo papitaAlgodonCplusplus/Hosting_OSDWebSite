@@ -4,13 +4,11 @@ import { HomeComponent } from './pages/home/home.component';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
-import { CourseFilesComponent } from './pages/course-files/course-files.component';
 import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
-    HomeComponent,
-    CourseFilesComponent
+    HomeComponent
   ],
   imports: [
     CommonModule,

@@ -4,6 +4,7 @@ import { ModalActions, UiActions } from 'src/app/store/actions';
 import { MatPaginator } from '@angular/material/paginator';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { OSDDataService } from 'src/app/services/osd-data.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-assign-pltr-claims',
@@ -29,7 +30,8 @@ export class AssignPLTRClaimsComponent implements OnDestroy {
 
   constructor(private store: Store,
     private osdEventService: OSDService,
-    private osdDataService: OSDDataService) {
+    private osdDataService: OSDDataService,
+    private translate: TranslateService) {
   }
 
   showModal() {
@@ -67,18 +69,29 @@ export class AssignPLTRClaimsComponent implements OnDestroy {
 
     this.osdEventService.getClaimList().then(claims => {
       this.claims = claims
-      console.log(claims)
     },)
 
     this.osdDataService.freeProfessionalTR$.subscribe(item => {
-      console.log(item)
       this.freeProfessionalsTr = item;
     })
 
     this.osdDataService.usersFreeProfessionalTR$.subscribe(item => {
-      console.log(item)
       this.users = item;
     })
+
+    setTimeout(() => {
+      if (this.freeProfessionalsTr.length < 0) {
+        this.store.dispatch(ModalActions.changeAlertType({ alertType: 'warning' }));
+        if (this.translate.currentLang == "en") {
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: 'There are no authorized processors' }));
+        }
+        else {
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: 'No hay tramitadores autorizados' }));
+        }
+        this.store.dispatch(ModalActions.openAlert());
+      }
+    }, 2000);
+
   }
 
   assignFreeProfessionalToClaim() {

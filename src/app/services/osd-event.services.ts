@@ -18,6 +18,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { PerformanceClaim } from '../functions/models/PerformanceClaims';
 import { CreateProjectEvent } from '../project-manager/Interface/project.interface';
 import { Project } from '../project-manager/Models/project';
+import { CreateClaimValuationEvent } from '../functions/Interface/ClaimValuation.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -260,6 +261,19 @@ export class OSDService {
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
         this.GetTransparencyReportsSubscriberClientsResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+
+  public UpdateValuation(ClaimValuationForm : CreateClaimValuationEvent) {
+    const UpdateValuationEvent: WebBaseEvent = this.eventFactoryService.CreateUpdateValuationEvent(ClaimValuationForm);
+    this.restApiService.SendOSDEvent(UpdateValuationEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleUpdateValuationResponse(osdEvent);
       },
       error: (error) => {
         //TODO: Pending implementation
@@ -729,6 +743,25 @@ export class OSDService {
         this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Error" }));
         this.store.dispatch(ModalActions.openAlert())
       }
+    } catch {
+
+    }
+  }
+
+  public HandleUpdateValuationResponse(webBaseEvent: WebBaseEvent) {
+    let message: string;
+    try {
+      message = webBaseEvent.getBodyProperty(EventConstants.ACTION_OSD_RESULT_MESSAGE);
+      if(this.translate.currentLang == "en"){
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
+      }
+      else{
+         this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Éxito en la valuación" }));
+      }
+      this.store.dispatch(ModalActions.changeAlertType({ alertType: 'success' }));
+      
+      this.store.dispatch(ModalActions.openAlert())
+     
     } catch {
 
     }

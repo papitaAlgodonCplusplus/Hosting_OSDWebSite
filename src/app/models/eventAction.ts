@@ -25,6 +25,7 @@ export class EventAction {
   public static GET_TRANSPARENCY_FREE_PROFESSIONALS: string = "GetTransparencyFreeProfessionals";
   public static CREATE_PROJECT: string = "CreateProject";
   public static GET_PROJECTS : string = "GetProjects";
+  public static UPDATE_EVALUATION : string = "UpdateEvaluation"
   //Response
   public static HANDLE_AUTHENTICATION_RESPONSE: string = "HandleAuthenticationResponse";
   public static HANDLE_REGISTER_USER_RESPONSE: string = "HandleRegisterResponse";

@@ -35,7 +35,6 @@ export class ClaimsFileComponent {
     setTimeout(() => {
       this.osdEventService.getClaimList().then(claims => {
         this.claims = claims
-        console.log(claims)
         this.updateDisplayedItems();
       },)
     }, 1000);

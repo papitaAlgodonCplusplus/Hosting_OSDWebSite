@@ -282,5 +282,7 @@
   "Code": "Code",
   "NewProject" : "New Project",
   "Objective" : "Objective",
-  "RegisterProject" : "Register Project"
+  "RegisterProject" : "Register Project",
+  "Valoration" : "Valoration",
+  "MakeAreview" : "Make a review"
 }

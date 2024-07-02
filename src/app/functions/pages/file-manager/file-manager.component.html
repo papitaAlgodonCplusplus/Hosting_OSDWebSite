@@ -2,7 +2,7 @@
     <div class="flex-1 bg-line flex justify-center border-gray-400 text-darkslategray py-3">
         <div class="flex flex-col">
             <shared-input-field [readOnly]="true" class="w-full" label="{{'freeProfessionalsIntervention' | translate}}"
-                fieldName="freeProfessional" [formGroup]="registerForm">
+                fieldName="freeProfessional" [formGroup]="fileManager">
             </shared-input-field>
 
             <div class="font-bold flex flex-col justify-center items-center space-y-3 p-3">
@@ -15,65 +15,78 @@
             </div>
         </div>
     </div>
-    <div class="flex-1 bg-white py-5 flex justify-center px-2 h-full">
-        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" autocomplete="off" class="flex flex-wrap items-center">
+    <div class="py-5 flex justify-center px-2 h-full">
+        <form [formGroup]="fileManager" (ngSubmit)="onSubmit()" autocomplete="off" class="flex flex-wrap items-center">
             <shared-input-field [readOnly]="true" class="w-full lg:w-1/2" fieldName="claimant"
-                label="{{'reclamacion' | translate}}" inputType="text" [formGroup]="registerForm"
+                label="{{'reclamacion' | translate}}" inputType="text" [formGroup]="fileManager"
                 [bgColor]="'bg-white-lightbone'">
             </shared-input-field>
 
             <shared-input-field [readOnly]="true" class="w-full lg:w-1/2" label="{{'status' | translate}}"
-                fieldName="state" inputType="text" [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'">
+                fieldName="state" inputType="text" [formGroup]="fileManager" [bgColor]="'bg-white-lightbone'">
             </shared-input-field>
 
             <shared-input-field [readOnly]="true" class="w-full lg:w-1/2" fieldName="subscriber"
-                label="{{'subscriber' | translate}}" inputType="text" [formGroup]="registerForm"
+                label="{{'subscriber' | translate}}" inputType="text" [formGroup]="fileManager"
                 [bgColor]="'bg-white-lightbone'">
             </shared-input-field>
 
             <shared-input-field [readOnly]="true" class="w-full lg:w-1/2" fieldName="amountClaimed"
-                label="{{'cuantia_reclamada' | translate}}" inputType="text" [formGroup]="registerForm"
+                label="{{'cuantia_reclamada' | translate}}" inputType="text" [formGroup]="fileManager"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
             <shared-input-field [readOnly]="true" class="w-full lg:w-1/2" fieldName="AAsavingsPP"
-                label="{{'amountPaidByOtherParty' | translate}}" inputType="text" [formGroup]="registerForm"
+                label="{{'amountPaidByOtherParty' | translate}}" inputType="text" [formGroup]="fileManager"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
             <shared-input-field [ReadOnly]="true" class="w-full lg:w-1/2" fieldName="AAsavingsPP"
-                label="{{'institutionalImprovementSavings' | translate}}" inputType="text" [formGroup]="registerForm"
+                label="{{'institutionalImprovementSavings' | translate}}" inputType="text" [formGroup]="fileManager"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
             <shared-input-field [readOnly]="true" class="w-full lg:w-1/2" fieldName="creditingDate"
-                label="{{'creditingDate' | translate}}" inputType="text" [formGroup]="registerForm"
+                label="{{'creditingDate' | translate}}" inputType="text" [formGroup]="fileManager"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-            <shared-input-field class="w-full lg:w-1/2" fieldName="OSDvaluation"
-                label="{{'institutionOsdValuation' | translate}}" inputType="number" [formGroup]="registerForm"
-                [bgColor]="'bg-white-lightbone'"></shared-input-field>
+            <div class="w-full flex flex-col space-y-3 px-1 ">
+                <h1 class="text-center text-darkslategray font-medium">{{'Valoration' | translate}}</h1>
+                <div class="flex flex-col items-center space-x-0 lg:flex-row lg:space-x-3 md:flex-row md:space-x-3">
 
-            <shared-input-field class="w-full lg:w-1/2" fieldName="valuationClaimant"
-                label="{{'institutionClaimantRating' | translate}}" inputType="number" [formGroup]="registerForm"
-                [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                    <div class="flex flex-col w-full lg:w-1/2">
+                        <label for="valuationSubscriber">{{'institutionOsdValuation' | translate}}</label>
+                        <input [readonly]="isSubscriber" formControlName="valuationSubscriber" id="valuationSubscriber" class=" border p-2" type="number"
+                            max="5" min="0">
+                    </div>
 
-            <shared-input-field class="w-full lg:w-1/2" fieldName="valuationFreeOSDprofessionals"
-                label="{{'institutionValuationFreeOsdProfessionals' | translate}}" inputType="number"
-                [formGroup]="registerForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                    <div class="flex flex-col w-full lg:w-1/2">
+                        <label for="valuationClaimant">{{'institutionClaimantRating' | translate}}</label>
+                        <input [readonly]="isClaimant" formControlName="valuationClaimant" id="valuationClaimant" class="border p-2"
+                            type="number" max="5" min="0">
+                    </div>
 
-            <div class="flex flex-row space-x-2 w-full justify-end">
-                <button routerLink="/functions/claims-file"
-                    class="p-2 rounded-xl bg-line text-darkslategray font-medium animate__animated animate__fadeInDown">
-                    {{'regresar' | translate}}
-                </button>
-                <!-- 
-                <button type="submit"
-                    class="p-2 bg-darkslategray text-white font-normal animate__animated animate__fadeInDown">
-                    {{'registrarse'|translate}}
-                </button> -->
+                    <div class="flex flex-col w-full lg:w-1/2">
+                        <label for="valuationFreeProfessionals">{{'institutionValuationFreeOsdProfessionals' |
+                            translate}}</label>
+                        <input [readonly]="isFreeProfessional" formControlName="valuationFreeProfessionals" id="valuationFreeProfessionals"
+                            class="border p-2" type="number" max="5" min="0">
+                    </div>
+                </div>
+                <div class="flex justify-center">
+                    <button (click)="updateValuation()"
+                        class="p-2 rounded-xl bg-darkslategray text-line font-medium animate__animated animate__fadeInDown">
+                        {{'MakeAreview' | translate}}
+                    </button>
+                </div>
             </div>
         </form>
     </div>
 </div>
 
+<div class="flex w-full justify-end p-2">
+    <button routerLink="/functions/claims-file"
+        class="p-2 rounded-xl bg-line text-darkslategray font-medium animate__animated animate__fadeInDown">
+        {{'regresar' | translate}}
+    </button>
+</div>
 <!-- Modal -->
 <div id="performanceModal" class="modal-overlay">
     <div class="modal-content">
@@ -89,13 +102,14 @@
                 </tr>
             </thead>
             <tbody>
-                <tr class="border-t text-center" *ngFor="let performance of displayedItems">
+                <tr class="border-t text-center" *ngFor="let performance of displayedItems; let i = index">
                     <td class="p-3">
-                        <button (click)="viewPerformance(performance.Id)" class="bg-darkslategray text-line p-2 rounded-xl">
+                        <button (click)="viewPerformance(performance.Id)"
+                            class="bg-darkslategray text-line p-2 rounded-xl">
                             {{'View' | translate}}
                         </button>
                     </td>
-                    <td class="p-3">RE/A/1/2024</td>
+                    <td class="p-3">RE/A/{{i}}/2024</td>
                     <td class="p-3">{{ performance.Date | date:'dd-MM-yyyy'}}</td>
                     <td class="p-3">{{ performance.Type }}</td>
                 </tr>
