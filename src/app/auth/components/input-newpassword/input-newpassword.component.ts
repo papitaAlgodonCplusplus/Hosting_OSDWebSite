@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 @Component({
-  selector: 'app-input-newpassword',
+  selector: 'auth-input-newpassword',
   templateUrl: './input-newpassword.component.html',
   styleUrls: ['./input-newpassword.component.css']
 })

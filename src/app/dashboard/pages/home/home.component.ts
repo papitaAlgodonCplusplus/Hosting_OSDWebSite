@@ -6,6 +6,7 @@ import { MenuOptionsActions, ModalActions, UiActions } from 'src/app/store/actio
 import { MenuOption } from 'src/app/models/menuOptions';
 import { EventConstants } from 'src/app/models/eventConstants';
 import { TranslateService } from '@ngx-translate/core';
+import { MenuService } from 'src/app/services/menu.service';
 
 @Component({
   selector: 'dashboard-home',
@@ -15,55 +16,36 @@ import { TranslateService } from '@ngx-translate/core';
 export class HomeComponent implements OnInit {
   user!: any;
 
-  menuOptionFreeProfessional: MenuOption[] = [
-    { name: 'transparent_project', path: '/project-manager', icon: 'fa-project-diagram' },
-    { name: 'file_claim', path: '/functions/claims-file', icon: 'fa-file' }
-  ];
 
-  menuOptionAdmin: MenuOption[] = [
-    { name: 'transparent_project', path: '/project-manager', icon: 'fa-project-diagram' },
-    { name: 'Assign_Processor_to_Claim', path: '/functions/assign-pltr-claims', icon: 'fa-user' },
-    { name: 'authorizeCustomers', path: '/functions/sub-authorized', icon: 'fa-check-circle' },
-    { name: 'authorizeFreeProfessionals', path: '/functions/autorization-pl', icon: 'fa-check-circle' }
-  ];
-
-  menuOptionClaimant: MenuOption[] = [
-    { name: 'presentar_reclamación', path: '/onboarding/onboarding-register-claimant/False', icon: 'fa-balance-scale' },
-    { name: 'file_claim', path: '/functions/claims-file', icon: 'fa-file' }
-  ]
-
-  menuOptionCFH: MenuOption[] = [
-    //{ name: 'transparent_project', path: '/project-manager', icon: 'fa-project-diagram' }
-  ]
-
-  menuOptionSubscriber: MenuOption[] = [
-    { name: 'file_claim', path: '/functions/claims-file', icon: 'fa-file' }
-  ]
 
   constructor(
     public eventFactoryService: EventFactoryService,
     private authenticationService: AuthenticationService,
     private store: Store,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private menuService: MenuService
   ) {
   }
+
   ngOnInit(): void {
+    setTimeout(() => {
+      this.store.dispatch(UiActions.showAll());
+    }, 0);
       if (this.authenticationService.userInfo) {
         this.user = this.authenticationService.userInfo;
 
         if (this.user.AccountType === "ApprovedTrainingCenter") {
-          this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuOptionCFH }));
+          this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuService.getMenuOptionCFH() }));
         } else if (this.user.AccountType === "Claimant") {
-          this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuOptionClaimant }));
+          this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuService.getMenuOptionClaimant() }));
         } else if (this.user.AccountType === "SubscriberCustomer") {
-          this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuOptionSubscriber }));
+          this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuService.getMenuOptionSubscriber()}));
         } else {
-          console.log(this.user.Isadmin)
           if(this.user.Isadmin === true){
-            this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuOptionAdmin }));
+            this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuService.getMenuOptionAdmin() }));
           }
           else{
-            this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuOptionFreeProfessional }));
+            this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuService.getMenuOptionFreeProfessional()}));
           }
         }
         if (this.user.AccountType === EventConstants.SUBSCRIBER_CUSTOMER || this.user.AccountType === EventConstants.FREE_PROFESSIONAL) {

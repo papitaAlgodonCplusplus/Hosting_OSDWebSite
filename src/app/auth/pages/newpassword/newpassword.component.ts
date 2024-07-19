@@ -11,13 +11,14 @@ import { Observable, Subscription } from 'rxjs';
 import { AuthSelectors, ModalSelectors } from 'src/app/store/selectors';
 import { SecurityDataService } from 'src/app/services/security-data.service';
 import { RestAPIService } from 'src/app/services/rest-api.service';
+import { OSDService } from 'src/app/services/osd-event.services';
 
 @Component({
   selector: 'app-newpassword',
   templateUrl: './newpassword.component.html',
   styleUrls: ['./newpassword.component.css']
 })
-export class NewpasswordComponent implements OnInit, OnDestroy {
+export class NewpasswordComponent implements OnDestroy {
 
   passwordForm: FormGroup;
   showError = false;
@@ -31,10 +32,8 @@ export class NewpasswordComponent implements OnInit, OnDestroy {
     private store: Store,
     private router: Router,
     private fb: FormBuilder,
-    private validationsService: ValidationsService,
-    private securityDataService: SecurityDataService,
-    public eventFactoryService: EventFactoryService, 
-    private restApiService: RestAPIService) {
+    public eventFactoryService: EventFactoryService,
+    private osdEventeService: OSDService) {
     this.passwordForm = this.createLoginForm();
     this.securityEventSubscriber = new Subscription();
     this.initialized = false;
@@ -48,15 +47,6 @@ export class NewpasswordComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.store.dispatch(UiActions.hideAll());
     }, 0);
-    const hash = window.location.hash;
-    if (!hash) {
-      this.router.navigate(['/']);
-    }
-    this.securityDataService.userRegisterSuccess$.subscribe((data: boolean) => {
-      if(data){
-        this.router.navigate(['/']);
-      }
-    });
   }
 
   ngOnDestroy() {
@@ -78,11 +68,8 @@ export class NewpasswordComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void{
-    const hash = window.location.hash;
-    const hashWithoutHashSymbol = hash.substring(1);
     const passwordValue = this.passwordForm.value.password;
-    const updatePassword: WebBaseEvent = this.eventFactoryService.UpdatePassword(hashWithoutHashSymbol,passwordValue);
-    this.restApiService.SendSecurityEvent(updatePassword);
+    this.osdEventeService.ChangePassword(passwordValue);
   }
 
 }

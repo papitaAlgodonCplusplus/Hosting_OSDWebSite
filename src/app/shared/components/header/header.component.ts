@@ -14,22 +14,15 @@ import { UserInfo } from 'src/app/models/userInfo';
 export class HeaderComponent implements OnInit {
   imgProfile = "/./assets/img/profile.png";
   open = false;
-  isAuthenticated$: Observable<boolean> = this.store.select(AuthSelectors.authenticationToken)
-  showButton: boolean = false;
   userInfo: UserInfo | null = null;
   constructor(private router: Router, private store: Store,
-    private authDataService: AuthenticationService
+    private authService: AuthenticationService
   ) {
   }
 
   ngOnInit(): void {
     setTimeout(() => {
-      this.isAuthenticated$.subscribe((isAuthenticated: boolean) => {
-        if (isAuthenticated === true) {
-          this.showButton = true
-        }
-      });
-      this.userInfo = this.authDataService.userInfo;
+      this.userInfo = this.authService.userInfo;
     }, 0)
   }
 
@@ -38,8 +31,7 @@ export class HeaderComponent implements OnInit {
   }
 
   onClick() {
-    this.router.navigateByUrl('auth/login').then(() => {
-      window.location.reload()
-    })
+    this.router.navigateByUrl('auth/login');
+    this.authService.endSession();
   }
 }

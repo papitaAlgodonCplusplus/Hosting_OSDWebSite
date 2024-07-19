@@ -281,6 +281,20 @@ export class OSDService {
     });
   }
 
+  public ChangePassword(password: string) {
+    const ChangePasswordEvent: WebBaseEvent = this.eventFactoryService.ChangePassword(password);
+    console.log(ChangePasswordEvent)
+    this.restApiService.SendOSDEvent(ChangePasswordEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleChangePasswordResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+
   public HandleGettingFreeProfessionalsListResponse(webBaseEvent: WebBaseEvent) {
     try {
       if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['ListFreeProfessionals']) {
@@ -761,6 +775,26 @@ export class OSDService {
       this.store.dispatch(ModalActions.changeAlertType({ alertType: 'success' }));
       
       this.store.dispatch(ModalActions.openAlert())
+     
+    } catch {
+
+    }
+  }
+
+  public HandleChangePasswordResponse(webBaseEvent: WebBaseEvent) {
+    let message: string;
+    try {
+      message = webBaseEvent.getBodyProperty(EventConstants.ACTION_OSD_RESULT_MESSAGE);
+      if(this.translate.currentLang == "en"){
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
+      }
+      else{
+         this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Se ha cambiado la contraseña correctamente" }));
+      }
+      this.store.dispatch(ModalActions.changeAlertType({ alertType: 'success' }));
+      
+      this.store.dispatch(ModalActions.openAlert())
+      this.securityDataService.emitUserAuthenticationSuccess("/home");
      
     } catch {
 

@@ -5,10 +5,12 @@ import { DashboardRoutingModule } from './dashboard-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { ProfileComponent } from './pages/profile/profile.component';
 
 @NgModule({
   declarations: [
-    HomeComponent
+    HomeComponent,
+    ProfileComponent
   ],
   imports: [
     CommonModule,

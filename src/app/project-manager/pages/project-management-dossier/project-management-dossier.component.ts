@@ -46,8 +46,7 @@ export class ProjectManagementDossierComponent implements OnDestroy {
 
   async ngOnInit() {
     setTimeout(() => {
-      this.store.dispatch(UiActions.hideLeftSidebar())
-      this.store.dispatch(UiActions.hideFooter())
+      this.store.dispatch(UiActions.hideAll())
       this.osdEventService.getPerformanceList();
       this.osdEventService.GetProjects();
       this.isAuthenticated$.subscribe((isAuthenticated: boolean) => {

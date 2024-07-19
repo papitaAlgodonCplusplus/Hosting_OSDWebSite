@@ -21,6 +21,8 @@ import { HttpClient } from '@angular/common/http';
 import { claimReducers } from './store/reducers/claim.reducer';
 import { performanceReducers } from './store/reducers/performance.reducer';
 import { menuOptionsReducers } from './store/reducers/MenuOptions.reducer';
+import { metaReducers } from './store/store';
+import { reducers } from './store/reducers';
 
 @NgModule({
   declarations: [
@@ -33,14 +35,7 @@ import { menuOptionsReducers } from './store/reducers/MenuOptions.reducer';
     SharedModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    StoreModule.forRoot({
-      uiState: uiReducers,
-      modalState: modalReducers,
-      authenticationState: authenticationReducers,
-      claimState : claimReducers,
-      performanceState : performanceReducers,
-      menuOptionsState : menuOptionsReducers 
-    }),
+    StoreModule.forRoot(reducers, { metaReducers }),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: !isDevMode(),
@@ -63,11 +58,11 @@ import { menuOptionsReducers } from './store/reducers/MenuOptions.reducer';
       useClass: AuthInterceptorService,
       multi: true
     },
-    
   ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+
 export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http, './assets/languages/', '.json')
+  return new TranslateHttpLoader(http, './assets/languages/', '.json');
 }

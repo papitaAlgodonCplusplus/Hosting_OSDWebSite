@@ -1,10 +1,9 @@
 <div class="flex justify-center flex-col">
-    <div *ngIf="!openSideBar"
-        class="text-darkslategray text-start py-3 text-xl font-medium animate__animated animate__fadeInLeft">
+    <div class="text-darkslategray text-start py-3 text-xl font-medium animate__animated animate__fadeInLeft">
         <span class="pl-8 pr-3 py-1 bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden">
             {{'transparent_project' | translate}} <i class="fa-solid fa-project-diagram"></i></span>
     </div>
-    <div *ngIf="!openSideBar"
+    <div *ngIf="openSideBar"
         class="fixed top-0 left-0 flex py-3 pl-1 bg-white w-6 h-full border-r-2 animate__animated animate__fadeInLeft">
         <div (click)="toggleSideBar()" class="text-darkslategray absolute left-6 top-1/2 transform -translate-y-1/2">
             <i class="fa-solid fa-chevron-right cursor-pointer"></i>
@@ -12,8 +11,8 @@
     </div>
 
 
-    <div *ngIf="openSideBar" style="top: 9%;"
-        class="absolute left-0  pb-5 px-3 bg-white overflow-y-auto max-h-screen animate__animated animate__fadeInLeft w-72">
+    <div *ngIf="!openSideBar"
+        class="fixed top-0 left-0 px-3 bg-white overflow-y-auto max-h-screen animate__animated animate__fadeInLeft w-72">
         <div class="text-end text-darkslategray text-xl">
             <i (click)="toggleSideBar()" class="cursor-pointer animate-pulse fa-solid fa-xmark"></i>
         </div>
@@ -40,84 +39,87 @@
             label="{{'supplier_purchasing_expenses' | translate}}:" inputType="text" [formGroup]="formProjectManager"
             [bgColor]="'bg-white-lightbone'"></shared-input-field>
     </div>
-    <div class="flex-1 px-3 space-y-3">
-        <div class="text-darkslategray text-center text-xl mt-3 font-bold">
-            <h1>
-                {{'performances' | translate}}
-            </h1>
-        </div>
-        <div class="flex flex-col px-1 items-center">
+    <div class="flex-1 space-y-3 flex justify-center flex-col">
+        <div class="flex flex-col items-center">
             <label for="objectivesDropdown">{{"Objective" | translate}}</label>
-            <select class="border p-2 w-64" (change)="selectProject($event)">
+            <select class=" p-2 w-64" (change)="selectProject($event)">
                 <option *ngFor="let project of (Projects$ | async)" [value]="project.Id">
                     {{ project.Objective }}
                 </option>
             </select>
         </div>
-        <div class="text-center text-xs font-extralight flex flex-row justify-end items-center space-x-3 px-1">
-            <span class="m-1 cursor-pointer border-b" (click)="sortDateLowestHighest(true)">
-                {{ 'date_low_to_major' | translate }}
-            </span>
-            <span class="m-1 cursor-pointer border-b" (click)="sortDateLowestHighest(false)">
-                {{ 'date_major_to_minor' | translate }}
-            </span>
-            <div class="flex items-center justify-end space-x-3" *ngIf="isUser">
-                <div *ngIf="showOptions" class="animate__animated animate__fadeInRight flex flex-row space-x-3">
-                    <i (click)="cleanPerformance()" routerLink="/project-manager/performance-buy"
-                        class="cursor-pointer px-2 py-1 fa-solid fa-cart-shopping text-xl bg-line text-darkslategray rounded-full"></i>
-                    <i routerLink="/project-manager/performance-free-professional" (click)="cleanPerformance()"
-                        class="cursor-pointer px-2 py-1 fa-solid fa-user-tie text-xl bg-line text-darkslategray rounded-full"></i>
-                </div>
-                <button class="flex items-center bg-darkslategray p-2 rounded-lg text-line text-sm"
-                    (click)="showOptionsPerformance()">
-                    <i class="fas animate-pulse pr-3 "
-                        [ngClass]="{'fa-chevron-right' : showOptions, 'fa-chevron-left':!showOptions}"></i>
-                    {{'CreatePerformance' | translate}}
-                </button>
+
+        <div class="w-full p-8 flex flex-col justify-center space-y-3">
+            <div class="text-darkslategray text-center text-xl mt-3 font-bold">
+                <h1>
+                    {{'performances' | translate}}
+                </h1>
             </div>
+            <div class="text-center text-xs font-extralight flex flex-row justify-end items-center space-x-3 px-1">
+                <span class="m-1 cursor-pointer border-b" (click)="sortDateLowestHighest(true)">
+                    {{ 'date_low_to_major' | translate }}
+                </span>
+                <span class="m-1 cursor-pointer border-b" (click)="sortDateLowestHighest(false)">
+                    {{ 'date_major_to_minor' | translate }}
+                </span>
+                <div class="flex items-center justify-end space-x-3" *ngIf="isUser">
+                    <div *ngIf="showOptions" class="animate__animated animate__fadeInRight flex flex-row space-x-3">
+                        <i (click)="cleanPerformance()" routerLink="/project-manager/performance-buy"
+                            class="cursor-pointer px-2 py-1 fa-solid fa-cart-shopping text-xl bg-line text-darkslategray rounded-full"></i>
+                        <i routerLink="/project-manager/performance-free-professional" (click)="cleanPerformance()"
+                            class="cursor-pointer px-2 py-1 fa-solid fa-user-tie text-xl bg-line text-darkslategray rounded-full"></i>
+                    </div>
+                    <button class="flex items-center bg-darkslategray p-2 rounded-lg text-line text-sm"
+                        (click)="showOptionsPerformance()">
+                        <i class="fas animate-pulse pr-3 "
+                            [ngClass]="{'fa-chevron-right' : showOptions, 'fa-chevron-left':!showOptions}"></i>
+                        {{'CreatePerformance' | translate}}
+                    </button>
+                </div>
+            </div>
+            <table class="table-auto w-full">
+                <thead>
+                    <tr class="text-darkslategray font-normal border-b text-start">
+                        <th class=""></th>
+                        <th class="">{{'TypePerformance' | translate}}</th>
+                        <th class="">{{'Summary' | translate}}</th>
+                        <th class="">{{'Date' | translate}}</th>
+                        <th class="">{{'Hours' | translate}}</th>
+                        <th class="">{{'Amount' | translate}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="font-light text-center" *ngFor="let performance of displayedItems">
+                        <td routerLink="/project-manager/performance-buy"
+                            class="text-darkslategray font-medium text-s border-y px-2 py-2 hover:underline cursor-pointer"
+                            (click)="selectPerformance(performance.Id)" *ngIf="performance.Type === '-'">{{'viewData' |
+                            translate}}</td>
+                        <td routerLink="/project-manager/performance-free-professional"
+                            class="text-darkslategray font-medium  text-s border-y px-2 py-2 hover:underline cursor-pointer"
+                            (click)="chargePerformanceFP(performance.Id)" *ngIf="performance.Type !== '-'">{{'viewData'
+                            | translate}}</td>
+                        <td class="border-y px-2 py-2">{{performance.Type}}</td>
+                        <td class="border-y px-2 py-2">{{performance.Summary}}</td>
+                        <td class="border-y px-3 py-2">{{ performance.Date | date:'dd-MM-yyyy' }}</td>
+                        <td class="border-y px-3 py-2">{{performance.Hours}}</td>
+                        <td class="border-y px-3 py-2"> {{performance.Amount}}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
-        <table class="table-auto w-full">
-            <thead>
-                <tr class="text-darkslategray font-normal border-b text-center">
-                    <th class="px-2" style="width: 5%;"></th>
-                    <th class="px-2">{{'TypePerformance' | translate}}</th>
-                    <th class="px-2">{{'Summary' | translate}}</th>
-                    <th class="px-2 py-1">{{'Date' | translate}}</th>
-                    <th class="px-2 py-1">{{'Hours' | translate}}</th>
-                    <th class="px-2 py-1">{{'Amount' | translate}}</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="font-light" *ngFor="let performance of displayedItems">
-                    <td routerLink="/project-manager/performance-buy"
-                        class="text-center text-darkslategray font-medium text-s border-y px-2 py-2 hover:underline cursor-pointer"
-                        (click)="selectPerformance(performance.Id)" [title]="performance.Id"
-                        *ngIf="performance.Type === '-'">{{'viewData' | translate}}</td>
-                    <td routerLink="/project-manager/performance-free-professional"
-                        class="text-center text-darkslategray font-medium  text-s border-y px-2 py-2 hover:underline cursor-pointer"
-                        (click)="chargePerformanceFP(performance.Id)" [title]="performance.Id"
-                        *ngIf="performance.Type !== '-'">{{'viewData' | translate}}</td>
-                    <td class="text-center text-s border-y px-2 py-2">{{performance.Type}}</td>
-                    <td class="text-center text-s border-y px-2 py-2">{{performance.Summary}}</td>
-                    <td class="text-center border-y px-3 py-2">{{ performance.Date | date:'dd-MM-yyyy' }}</td>
-                    <td class="text-center border-y px-3 py-2">{{performance.Hours}}</td>
-                    <td class="text-center border-y px-3 py-2"> {{performance.Amount}}</td>
-                </tr>
-            </tbody>
-        </table>
         <mat-paginator [length]="allPerformances.length" [pageSize]="10" (page)="onPageChange($event)"></mat-paginator>
-  
-        <div class="flex flex-row space-x-3 justify-end py-3">
-            <div *ngIf="isUser" class="flex justify-end">
-                <button class="bg-darkslategray text-line p-2 rounded-xl"
-                    routerLink="/project-manager/create-project">{{'RegisterProject' | translate}}</button>
-            </div>
 
+        <div class="flex flex-row space-x-3 justify-end py-3 px-3">
             <button [routerLink]="isUser ? '/home' : '/reports'"
                 class="bg-line font-medium p-2 rounded-xl flex items-center text-darkslategray">
                 {{'regresar' | translate}}
             </button>
+
+            <div *ngIf="isUser" class="flex justify-end">
+                <button class="bg-darkslategray text-line p-2 rounded-xl"
+                    routerLink="/project-manager/create-project">{{'RegisterProject' | translate}}</button>
+            </div>
         </div>
     </div>
 </div>

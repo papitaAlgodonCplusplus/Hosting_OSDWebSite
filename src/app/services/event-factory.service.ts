@@ -491,19 +491,20 @@ export class EventFactoryService {
     return event;
   }
 
-  public UpdatePassword(hash: string, password: string): WebBaseEvent {
+  public ChangePassword(password: string): WebBaseEvent {
     let event: WebBaseEvent;
 
     event = new WebBaseEvent();
-    event.Action = EventAction.UPDATE_ACCOUNT_PASSWORD;
+    event.Action = EventAction.CHANGE_PASSWORD;
     event.SessionKey = this.authenticationService.sessionKey;
     event.SecurityToken = "3746736473";
     event.TraceIdentifier = Guid.create().toString();
-    event.Type = EventType.Security;
+    event.Type = EventType.OSD;
     event.Date = (new Date()).toUTCString();
     event.ApplicationIdentifier = "WebClient";
-    event.setBodyProperty(EventConstants.HASHTOKEN, hash);
+
     event.setBodyProperty(EventConstants.PASSWORD, password);
+    event.setBodyProperty(EventConstants.USER_ID, this.authenticationService.userInfo?.Id);
 
     return event;
   }

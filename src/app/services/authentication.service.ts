@@ -1,15 +1,17 @@
 import { Injectable } from '@angular/core';
 import { UserInfo } from '../models/userInfo';
+import { Store } from '@ngrx/store';
+import { AuthenticationActions } from '../store/actions';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
 
-  constructor()
+  constructor(private store : Store)
   {
-    localStorage.removeItem('sessionKey');
-    localStorage.removeItem('userInfo');
+    //localStorage.removeItem('sessionKey');
+    //localStorage.removeItem('userInfo');
   }
 
   //Correccion temporal 
@@ -25,11 +27,12 @@ export class AuthenticationService {
     localStorage.removeItem('sessionlessKey');
   }
 
-  public endSession(sessionlessKey : string)
+  public endSession() //sessionlessKey : string //TODO: In the future Handle the use of the session key correctly
   {
     localStorage.removeItem('sessionKey');
     localStorage.removeItem('userInfo');
-    localStorage.setItem('sessionlessKey', sessionlessKey);
+    this.store.dispatch(AuthenticationActions.signOut())
+    //localStorage.setItem('sessionlessKey', sessionlessKey);
   }
 
   get sessionKey() : string

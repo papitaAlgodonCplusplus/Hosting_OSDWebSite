@@ -1,6 +1,6 @@
 <!-- The next div checks whether the left sidebar is open or not -->
 <div *ngIf="!(leftSidebarOpen$ | async); else leftSidebarIsOpen"
-  class="bg-white w-6 h-screen absolute lg:relative left-0 border-r-2 drop-shadow-lg animate__animated animate__fadeInRight"
+  class="bg-white w-6 h-screen fixed left-0 border-r-2 drop-shadow-lg animate__animated animate__fadeInRight"
   style="border-color: #eeeff2; border-collapse: collapse;">
   <button (click)="toggleLeftSidebar()" class="absolute top-10 left-4 rounded-full px-2">
     <i class="fa-solid fa-chevron-right text-black"></i>
@@ -9,7 +9,7 @@
 
 <ng-template #leftSidebarIsOpen>
   <div (mouseenter)="showArrow()" (mouseleave)="hideArrow()"
-    class=" bg-white content-center flex flex-col h-screen py-10 px-2  shadow-lg w-64 absolute lg:relative left-0.5 left-sidebar open border-r-2"
+    class=" bg-white content-center flex flex-col h-screen py-10 px-2  shadow-lg w-64 fixed left-0.5 left-sidebar open border-r-2"
     style="border-color: #eeeff2;">
     <button *ngIf="arrowLeftSidebar" (click)="toggleLeftSidebar()"
       class="arrow-left absolute top-10 bg-yellow rounded-full px-2 hover:bg-white-bone animate__animated animate__fadeInLeft">

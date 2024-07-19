@@ -11,7 +11,7 @@ export class EventAction {
   public static VERIFY_EMAIL: string = "VerifyEmail";
   public static RESEND_EMAIL_VERIFICATION_CODE: string = "ResendEmailVerificationCode";
   public static GENERATE_MAIL_PASSWORD_RESET_TOKEN: string = "GenerateMailPasswordResetToken";
-  public static UPDATE_ACCOUNT_PASSWORD: string = "UpdateAccountPassword";
+  public static CHANGE_PASSWORD: string = "ChangePassword";
   public static CREATE_PERFORMANCE: string = "CreatePerformance";
   public static GET_CLAIMS: string = "GetClaims";
   public static GET_SUBSCRIBERS: string = "GetSubscribers";
