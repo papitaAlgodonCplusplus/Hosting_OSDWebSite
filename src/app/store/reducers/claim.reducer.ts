@@ -16,7 +16,10 @@ const initialState: ClaimState = {
         FreeprofessionalId: '',
         Serviceprovided: '',
         Amountclaimed: '',
-        Date:''
+        Date:'',
+        Valuationclaimant: '',
+        Valuationfreeprofessionals: '',
+        Valuationsubscriber: ''
     },
 }
 

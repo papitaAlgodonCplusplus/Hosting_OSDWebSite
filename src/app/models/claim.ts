@@ -7,4 +7,7 @@ export interface Claim {
     Serviceprovided: string;
     Amountclaimed: string;
     Date: string;
+    Valuationclaimant: string;
+    Valuationfreeprofessionals: string;
+    Valuationsubscriber: string;
 }

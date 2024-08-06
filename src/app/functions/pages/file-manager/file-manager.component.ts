@@ -75,15 +75,15 @@ export class FileManagerComponent implements OnDestroy {
       AAsavingsPP: [''],
       creditingDate: [''],
       freeProfessional: [''],
-      valuationSubscriber: [''],
-      valuationClaimant: [''],
-      valuationFreeProfessionals: [''],
+      valuationSubscriber: [],
+      valuationClaimant: [],
+      valuationFreeProfessionals: [],
     });
     return form;
   }
 
   private fillForm(claim: Claim): FormGroup {
-
+    console.log(claim)
     const form = this.formBuilder.group({
       claimant: [this.translate.instant(claim.Claimtype)],
       state: [this.translate.instant(claim.Status)],
@@ -92,9 +92,9 @@ export class FileManagerComponent implements OnDestroy {
       AAsavingsPP: [''],
       creditingDate: [''],
       freeProfessional: [''],
-      valuationSubscriber: [''],
-      valuationClaimant: [''],
-      valuationFreeProfessionals: [''],
+      valuationSubscriber: [claim.Valuationsubscriber || 0],
+      valuationClaimant: [claim.Valuationclaimant  || 0],
+      valuationFreeProfessionals: [claim.Valuationfreeprofessionals  || 0],
     });
     return form;
   }

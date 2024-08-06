@@ -12,6 +12,7 @@ import { authenticationReducers } from 'src/app/store/reducers/authentication.re
 import { OSDDataService } from 'src/app/services/osd-data.service';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { MenuOption } from 'src/app/models/menuOptions';
+import { AuthenticationService } from 'src/app/services/authentication.service';
 
 @Component({
   selector: 'auth-login',
@@ -31,7 +32,8 @@ export class LoginComponent implements OnDestroy {
     private validationsService: ValidationsService,
     public eventFactoryService: EventFactoryService,
     private osdEventService: OSDService,
-    private router: Router
+    private router: Router,
+    private authenticationService: AuthenticationService
   ) {
     this.loginForm = this.createLoginForm();
   }
@@ -39,6 +41,7 @@ export class LoginComponent implements OnDestroy {
   ngOnInit() {
     setTimeout(() => {
       this.store.dispatch(UiActions.hideAll());
+      this.authenticationService.endSession()
     }, 0);
   }
 
