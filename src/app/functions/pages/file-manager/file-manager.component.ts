@@ -152,7 +152,7 @@ export class FileManagerComponent implements OnDestroy {
   }
 
   viewPerformance(performance: PerformanceClaim) {    
-    sessionStorage.setItem('performance', JSON.stringify(performance));
+    sessionStorage.setItem('Performance', JSON.stringify(performance));
     this.router.navigate(['functions/claims-performance'])
   }
 
