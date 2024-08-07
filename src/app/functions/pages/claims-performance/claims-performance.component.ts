@@ -15,6 +15,7 @@ import { PerformanceClaim } from '../../models/PerformanceClaims';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { CommonModule } from '@angular/common';
 
+
 @Component({
   selector: 'app-claims-performance',
   templateUrl: './claims-performance.component.html',
@@ -28,6 +29,8 @@ export class ClaimsPerformanceComponent {
   performanceForm: FormGroup;
   selectedType: string | undefined;
   user!: any;
+  performance: PerformanceClaim | undefined;
+
   type: DropDownItem[] = [
     { value: 'Escritos', key: 'Posted' },
     { value: 'E-mails', key: 'E-mails' },
@@ -96,6 +99,20 @@ export class ClaimsPerformanceComponent {
       this.store.dispatch(UiActions.hideFooter());
       this.store.dispatch(UiActions.hideLeftSidebar());
     }, 0);
+
+    const performanceData = sessionStorage.getItem('Performance');
+    if (performanceData) {
+      this.performance = JSON.parse(performanceData);
+
+      if(this.performance != undefined){
+        this.performanceForm.patchValue({
+          Date: this.performance.Date,
+          Type: this.performance.Type,
+          Summary: this.performance.Summary
+        });
+        sessionStorage.removeItem('Performance');
+      }
+    }
 
     this.OSDDataService.freeProfessionalId$.subscribe(id => {
       this.freeProfessionalId = id;

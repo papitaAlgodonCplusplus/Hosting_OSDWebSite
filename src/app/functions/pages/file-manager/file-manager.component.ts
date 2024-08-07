@@ -12,6 +12,7 @@ import { PerformanceClaim } from '../../models/PerformanceClaims';
 import { OSDDataService } from 'src/app/services/osd-data.service';
 import { isSubscription } from 'rxjs/internal/Subscription';
 import { CreateClaimValuationEvent } from '../../Interface/ClaimValuation.interface';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-file-manager',
@@ -36,6 +37,7 @@ export class FileManagerComponent implements OnDestroy {
     private osdEventService: OSDService,
     private translate: TranslateService,
     private osdDataService: OSDDataService,
+    private router: Router,
     private authenticationService: AuthenticationService) {
     this.fileManager = this.createForm();
   }
@@ -52,7 +54,6 @@ export class FileManagerComponent implements OnDestroy {
 
       this.osdDataService.performanceClaimList$.subscribe(performanceClaim => {
         this.performancesClaims = performanceClaim;
-        console.log("PerformanceClaims", performanceClaim)
       })
 
       this.store.dispatch(UiActions.hideFooter());
@@ -150,8 +151,9 @@ export class FileManagerComponent implements OnDestroy {
     this.displayedItems = this.performancesClaimsTheClaim.slice(startIndex, endIndex);
   }
 
-  viewPerformance(id: string) {
-
+  viewPerformance(performance: PerformanceClaim) {    
+    sessionStorage.setItem('performance', JSON.stringify(performance));
+    this.router.navigate(['functions/claims-performance'])
   }
 
   assignValuation() {
