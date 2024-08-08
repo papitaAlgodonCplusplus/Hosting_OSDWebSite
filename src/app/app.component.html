@@ -3,8 +3,7 @@
   <shared-alert *ngIf="(alertOpen$ | async)"></shared-alert>
   <div class="flex h-screen">
     <shared-left-sidebar *ngIf="!(hideLeftSidebar$ | async)"></shared-left-sidebar>
-    <div [ngClass]="{'mx-0 my-0': (hideLeftSidebar$ | async),
-                'mx-12 my-6': !((hideLeftSidebar$ | async))}" class="flex-grow">
+    <div [ngClass]="{'mx-0 my-0': (hideLeftSidebar$ | async), 'mx-12 my-6': !(hideLeftSidebar$ | async)}" class="flex-grow">
       <router-outlet></router-outlet>
     </div>
   </div>

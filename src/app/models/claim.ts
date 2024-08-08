@@ -3,6 +3,7 @@ export interface Claim {
     //Claimant: string;
     Claimtype: string;
     Status: string;
+    Facts: string;
     FreeprofessionalId: string;
     Serviceprovided: string;
     Amountclaimed: string;

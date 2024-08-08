@@ -15,9 +15,7 @@
                     <p class="text-gray-700 text-base mt-3">{{ 'assignedTRClaim' | translate }}</p>
                 </div>
                 <div class="flex justify-center items-center space-x-4 p-4">
-                    <button
-                        class="bg-darkslategray text-line p-2 rounded-xl"
-                        (click)="closeDialog()">
+                    <button class="bg-darkslategray text-line p-2 rounded-xl" (click)="closeDialog()">
                         {{ 'Close' | translate }}
                     </button>
                 </div>
@@ -32,6 +30,7 @@
                     <tr class="text-darkslategray">
                         <th class="px-4 py-2">{{'reclamacion' | translate}}</th>
                         <th class="px-4 py-2">{{'hechos' | translate}} </th>
+                        <th class="px-4 py-2">{{'Date' | translate}} </th>
                         <th class="px-4 py-2">{{'Assignation' | translate}} </th>
                     </tr>
                 </thead>
@@ -39,12 +38,14 @@
                     <tr *ngFor="let claim of claims" class="text-center">
                         <td class="text-center border-y px-4 py-2">{{ claim.Claimtype | translate }}</td>
                         <td class="text-center border-y px-4 py-2">{{ claim.Facts }}</td>
+                        <td class="border-y px-3 py-2">{{ showDate(claim.Date) }}</td>
                         <td class="text-center border-y px-4 py-2">
                             <button class="rounded-xl bg-line text-darkslategray p-2" (click)="openModal(claim)"
                                 data-modal-target="default-modal">
                                 {{'assignProcessor' | translate}}
                             </button>
                         </td>
+
                     </tr>
                 </tbody>
             </table>
@@ -54,15 +55,8 @@
     </div>
     <div class="modal mt-0 rounded-xl" [class.visible]="modalState">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2>{{'ClaimDetails' | translate}}</h2>
-                <span class="close" (click)="closeModal()"><i class="fa-solid fa-xmark"></i></span>
-            </div>
-            <div class="modal-body">
-                <p><b>{{'SubscribedClaim' | translate}}: </b> {{ claim?.Subscriberclaimed }}</p>
-                <p><b>{{'servicio_prestado' | translate}}: </b> {{ claim?.Serviceprovided }}</p>
-                <p><b>{{'facts' | translate}}:</b> {{ claim?.Facts }}</p>
-                <p><b>{{'ClaimedAmount' | translate}} </b> {{ claim?.Amountclaimed }}</p>
+            <div class="text-end text-xl">
+                <i class="fa-solid fa-xmark cursor-pointer" (click)="closeModal()"></i>
             </div>
             <div class="" *ngIf="freeProfessionalsTr.length > 0">
                 <div class="relative overflow-x-auto">
@@ -72,11 +66,7 @@
                                 <th scope="col" class="px-6 py-3">
                                     {{'Tramitador' | translate}}
                                 </th>
-                                <!-- <th scope="col" class="px-6 py-3">
-                                    {{"ServiceFees" | translate}}
-                                </th> -->
                                 <th scope="col" class="px-6 py-3">
-                                    {{"Action" | translate}}
                                 </th>
                             </tr>
                         </thead>
@@ -93,35 +83,20 @@
                                 </th> -->
                                 <td class="px-6 py-4">
                                     <button
-                                        class="rounded-xl p-2 bg-line text-darkslategray"
-                                        (click)="setDataToAssignFreeProfessionalTRToClaim(claim.Id, fp.Id, users[i].Firstname + ' ' + users[i].Middlesurname+ ' '+ users[i].Name)">
-                                        {{ 'Associate' | translate }}
+                                        (click)="assignFreeProfessionalToClaim(claim.Id, fp.Id)"
+                                        class="rounded-xl p-2 bg-darkslategray text-line">
+                                        {{ 'Select' | translate }}
                                     </button>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-                </div>
-                <div *ngIf="userName.length > 0" class="flex justify-center">
-                    <tr class="">                  
-                        <th class="px-6 py-3">
-                            <button class="rounded bg-darkslategray text-line p-2"
-                                (click)="assignFreeProfessionalToClaim(); closeModal()"
-                                data-modal-target="default-modal">
-                                {{'finishAssignment' | translate}}
-                            </button>
-                        </th>
-                    </tr>
-
-                </div>
+                </div>        
             </div>
         </div>
     </div>
-    <div *ngIf="claims.length === 0" class="text-xl font-medium text-center text-gray-400 absolute top-1/2 w-full">
-        <p class="">{{'No hay reclamos' | translate}}</p>
-    </div>
-    <div class="font-medium text-end p-3">
-        <a [routerLink]="'/home'" class="items-center text-line bg-darkslategray rounded-xl p-2">
-            {{ 'regresar_a_home' | translate }}
+    <div class=" font-medium p-3 rounded-xl text-end">
+        <a [routerLink]="'/home'" class="items-center text-darkslategray bg-line rounded-xl p-2">
+            {{ 'regresar' | translate }}
         </a>
     </div>

@@ -5,6 +5,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { OSDDataService } from 'src/app/services/osd-data.service';
 import { TranslateService } from '@ngx-translate/core';
+import { Claim } from 'src/app/models/claim';
 
 @Component({
   selector: 'app-assign-pltr-claims',
@@ -12,7 +13,7 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./assign-pltr-claims.component.css']
 })
 export class AssignPLTRClaimsComponent implements OnDestroy {
-  claims: any[] = [];
+  claims: Claim[] = [];
   freeProfessionalsTr: any[] = [];
   users: any[] = [];
   idTRSelected: string = '';
@@ -69,6 +70,7 @@ export class AssignPLTRClaimsComponent implements OnDestroy {
 
     this.osdEventService.getClaimList().then(claims => {
       this.claims = claims
+      console.log(claims);
     },)
 
     this.osdDataService.freeProfessionalTR$.subscribe(item => {
@@ -94,16 +96,11 @@ export class AssignPLTRClaimsComponent implements OnDestroy {
 
   }
 
-  assignFreeProfessionalToClaim() {
+  assignFreeProfessionalToClaim(idClaim: string, idTR: string) {
     this.showDialog()
     this.osdEventService.cleanClaimList();
-    this.osdEventService.assignFreeProfessionalsTRToClaim(this.idClaim, this.idTRSelected);
-    this.claims = this.claims.filter(claim => claim.Id !== this.idClaim);
-
-    this.osdEventService.getClaimList().then(claims => {
-      this.claims = claims
-    },)
-
+    this.osdEventService.assignFreeProfessionalsTRToClaim(idClaim, idTR);
+    this.closeModal()
     this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: 'Se asigno el Tramitador' }));
   }
 
@@ -111,8 +108,8 @@ export class AssignPLTRClaimsComponent implements OnDestroy {
     this.claim = claim
     this.modalState = true
   }
+
   closeModal(): void {
-    this.cleanDataToAssignFreeProfessionalTRToClaim();
     this.modalState = false
   }
 
@@ -129,21 +126,21 @@ export class AssignPLTRClaimsComponent implements OnDestroy {
     }
   }
 
-  setDataToAssignFreeProfessionalTRToClaim(idClaim: string, idTR: string, userName: string) {
-    this.idClaim = idClaim;
-    this.idTRSelected = idTR;
-    this.userName = userName;
-  }
-  cleanDataToAssignFreeProfessionalTRToClaim() {
-    this.idClaim = '';
-    this.idTRSelected = '';
-    this.userName = '';
-  }
-
   closeDialog() {
     this.showDialogState = false;
   }
   showDialog() {
     this.showDialogState = true;
+  }
+
+  showDate(dateAndHour: string): string {
+    const [datePart, timePart] = dateAndHour.split(' ');
+    const [day, month, year] = datePart.split('/');
+    const [hour, minute, second] = timePart.split(':');
+
+    const fechaConHora = new Date(+year, +month - 1, +day, +hour, +minute, +second);
+    const soloFecha = fechaConHora.toLocaleDateString();
+
+    return soloFecha;
   }
 }

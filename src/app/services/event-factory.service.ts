@@ -263,7 +263,7 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_REMUNERATION, performance.FreeProfessionalRemuneration);
     event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_DATE, performance.TechnicalDirectorDate);
     event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_WORK_HOURS, performance.TechnicalDirectorWorkHours);
-    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_TRAVEL_HOURS, performance.FreeProfessionalTravelHours);
+    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_TRAVEL_HOURS, performance.TechnicalDirectorTravelHours);
     event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_TRAVEL_EXPENSES, performance.TechnicalDirectorTravelExpenses);
     event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_REMUNERATION, performance.TechnicalDirectorRemuneration);
     event.setBodyProperty(EventConstants.SUMMARY, performance.Summary);

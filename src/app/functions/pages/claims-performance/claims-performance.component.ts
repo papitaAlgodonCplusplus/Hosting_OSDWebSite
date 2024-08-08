@@ -7,7 +7,7 @@ import { PerformanceFreeProfessional } from 'src/app/project-manager/Models/perf
 import { OSDService } from 'src/app/services/osd-event.services';
 import { ModalActions, UiActions } from 'src/app/store/actions';
 import { OSDDataService } from 'src/app/services/osd-data.service';
-import { AuthSelectors, ClaimSelectors } from 'src/app/store/selectors';
+import { AuthSelectors, ClaimSelectors, PerformanceSelectors } from 'src/app/store/selectors';
 import { DatePipe } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import { Claim } from 'src/app/models/claim';
@@ -24,13 +24,14 @@ import { CommonModule } from '@angular/common';
 export class ClaimsPerformanceComponent {
   isAuthenticated$: Observable<boolean> = this.store.select(AuthSelectors.authenticationToken)
   claim$: Observable<Claim> = this.store.select(ClaimSelectors.claim);
-  performanceFP: any;
+  performanceClaim$: Observable<PerformanceClaim> = this.store.select(PerformanceSelectors.performanceClaim);
+  performanceFP!: PerformanceClaim;
   editOtherInformation: boolean = true;
   performanceForm: FormGroup;
   selectedType: string | undefined;
   user!: any;
   performance: PerformanceClaim | undefined;
-
+  viewAll: boolean = false;
   type: DropDownItem[] = [
     { value: 'Escritos', key: 'Posted' },
     { value: 'E-mails', key: 'E-mails' },
@@ -57,13 +58,16 @@ export class ClaimsPerformanceComponent {
   }
 
   validatePerformanceOnDataService(): FormGroup {
-    if (this.authenticationService.userInfo){
+    if (this.authenticationService.userInfo) {
       this.user = this.authenticationService.userInfo
     }
 
-    this.performanceFP = this.OSDDataService.getPerformance()
-    if (this.performanceFP !== "" && this.performanceFP !== undefined) {
+    this.performanceClaim$.subscribe(performance => {
+      this.performanceFP = performance;
+    })
 
+    if (Object.keys(this.performanceFP).length !== 0) {
+      this.viewAll = true;
       this.documentName = this.performanceFP.JustifyingDocument;
 
       let originalDate = this.performanceFP.Date;
@@ -72,9 +76,12 @@ export class ClaimsPerformanceComponent {
       let originalDTDate = this.performanceFP.TechnicalDirectorDate;
       let formatedDTDate = this.datePipe.transform(originalDTDate, 'yyyy-MM-dd');
 
+      console.log(this.performanceFP)
+      
       const form = this.formBuilder.group({
         Date: formatedDate,
         Type: this.performanceFP.Type,
+        Summary: this.performanceFP.Summary,
         JustifyingDocument: this.documentName,
         FP_WorkHours: this.performanceFP.FreeProfessionalWorkHours,
         FP_TravelTime: this.performanceFP.FreeProfessionalTravelHours,
@@ -85,7 +92,6 @@ export class ClaimsPerformanceComponent {
         TD_TravelTime: this.performanceFP.TechnicalDirectorTravelHours,
         TD_TravelExpenses: this.performanceFP.TechnicalDirectorTravelExpenses,
         TD_Remuneration: this.performanceFP.TechnicalDirectorRemuneration,
-        Summary: this.performanceFP.Summary
       });
       return form;
     }
@@ -99,20 +105,6 @@ export class ClaimsPerformanceComponent {
       this.store.dispatch(UiActions.hideFooter());
       this.store.dispatch(UiActions.hideLeftSidebar());
     }, 0);
-
-    const performanceData = sessionStorage.getItem('Performance');
-    if (performanceData) {
-      this.performance = JSON.parse(performanceData);
-
-      if(this.performance != undefined){
-        this.performanceForm.patchValue({
-          Date: this.performance.Date,
-          Type: this.performance.Type,
-          Summary: this.performance.Summary
-        });
-        sessionStorage.removeItem('Performance');
-      }
-    }
 
     this.OSDDataService.freeProfessionalId$.subscribe(id => {
       this.freeProfessionalId = id;
@@ -174,6 +166,7 @@ export class ClaimsPerformanceComponent {
 
     this.claim$.subscribe(claim => {
       var claimId = claim.Id;
+      console.log(this.performanceData)
       this.OSDEventService.createPerformanceClaim(this.performanceData, claimId);
     })
   }
@@ -224,7 +217,6 @@ export class ClaimsPerformanceComponent {
   }
 
   validarHora(horaStr: string): boolean {
-    console.log(horaStr)
     const horaRegex = /^(0?\d|1\d|2[0-3]):([0-5]\d)$/;
 
     if (!horaRegex.test(horaStr)) {

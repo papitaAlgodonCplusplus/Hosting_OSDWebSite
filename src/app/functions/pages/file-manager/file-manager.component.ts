@@ -6,13 +6,14 @@ import { Observable } from 'rxjs';
 import { Claim } from 'src/app/models/claim';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { OSDService } from 'src/app/services/osd-event.services';
-import { UiActions } from 'src/app/store/actions';
+import { PerformanceActions, UiActions } from 'src/app/store/actions';
 import { ClaimSelectors } from 'src/app/store/selectors';
 import { PerformanceClaim } from '../../models/PerformanceClaims';
 import { OSDDataService } from 'src/app/services/osd-data.service';
 import { isSubscription } from 'rxjs/internal/Subscription';
 import { CreateClaimValuationEvent } from '../../Interface/ClaimValuation.interface';
 import { Router } from '@angular/router';
+import { PerformAction } from '@ngrx/store-devtools/src/actions';
 
 @Component({
   selector: 'app-file-manager',
@@ -46,18 +47,18 @@ export class FileManagerComponent implements OnDestroy {
     this.osdEventService.getPerformanceList();
     this.assignValuation()
     setTimeout(() => {
+      this.store.dispatch(UiActions.hideFooter());
+      this.store.dispatch(UiActions.hideLeftSidebar());
       this.claim$.subscribe(claim => {
         this.fileManager = this.fillForm(claim);
         this.claimId = claim.Id;
-
       })
 
       this.osdDataService.performanceClaimList$.subscribe(performanceClaim => {
         this.performancesClaims = performanceClaim;
       })
 
-      this.store.dispatch(UiActions.hideFooter());
-      this.store.dispatch(UiActions.hideLeftSidebar());
+      this.store.dispatch(PerformanceActions.setPerformanceClaim({performanceClaim: {} as PerformanceClaim}))
     }, 0);
   }
 
@@ -84,7 +85,7 @@ export class FileManagerComponent implements OnDestroy {
   }
 
   private fillForm(claim: Claim): FormGroup {
-    console.log(claim)
+
     const form = this.formBuilder.group({
       claimant: [this.translate.instant(claim.Claimtype)],
       state: [this.translate.instant(claim.Status)],
@@ -152,8 +153,7 @@ export class FileManagerComponent implements OnDestroy {
   }
 
   viewPerformance(performance: PerformanceClaim) {    
-    sessionStorage.setItem('Performance', JSON.stringify(performance));
-    this.router.navigate(['functions/claims-performance'])
+   this.store.dispatch(PerformanceActions.setPerformanceClaim({performanceClaim: performance}))
   }
 
   assignValuation() {

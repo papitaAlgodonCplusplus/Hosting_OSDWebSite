@@ -5,6 +5,7 @@ import { AuthSelectors } from 'src/app/store/selectors';
 import { Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { UserInfo } from 'src/app/models/userInfo';
+import { UiActions } from 'src/app/store/actions';
 
 @Component({
   selector: 'shared-header',

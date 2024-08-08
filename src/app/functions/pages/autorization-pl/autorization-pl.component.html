@@ -1,13 +1,14 @@
 <div class="flex justify-center flex-col space-y-2">
-  <div class="text-xl font-medium text-darkslategray px-5 text-center">
-    <h1 class="">{{'authorizeFreeProfessionals' | translate}}</h1>
+  <div class="text-darkslategray text-start py-3 text-xl font-medium animate__animated animate__fadeInLeft">
+    <span class="pl-5 pr-3 py-1 bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden">
+      {{'authorizeFreeProfessionals' | translate}} </span>
   </div>
-  <div class="flex justify-center flex-col">
+  <div class="flex justify-center flex-col p-3">
     <div class="overflow-x-auto">
       <table class="table-auto w-full">
         <thead>
-          <tr class="bg-darkslategray text-white">
-            <th class="px-2 py-2" style="width: 30%;">{{'identity' | translate}}</th>
+          <tr class="text-darkslategray">
+            <th class="px-2 py-2" style="width: 30%;">{{'Identity' | translate}}</th>
             <th class="px-2 py-2" style="width: 30%;">{{'profesionales_libres' | translate}} </th>
             <th class="px-2 py-2" style="width: 30%;">{{'actions' | translate}}</th>
             <th class="px-2 py-2" style="width: 30%;">{{'authorized' | translate}}</th>
@@ -16,18 +17,19 @@
         <tbody>
           <tr *ngFor="let item of displayedItems">
             <td class="text-center border-y px-2  py-2">{{ item.Identity }}</td>
-            <td class="text-center border-y px-2  py-2">{{ item.Name + " " + item.Firstname + " " + item.Middlesurname }}
+            <td class="text-center border-y px-2  py-2">{{ item.Name + " " + item.Firstname + " " + item.Middlesurname
+              }}
             </td>
-            
+
             <td class="text-center space-x-2 border-y px-4 py-2">
               <button (click)="selectUser(item)" class="underline text-darkslategray text-sm">
                 <i class="fas fa-eye"></i>{{'viewData' | translate}}</button>
             </td>
             <td class="text-center border-y px-2 py-2">
               <i class="fa-solid fa-circle"
-                  [ngClass]="{'text-green-500': item.Isauthorized, 'text-red-600': !item.Isauthorized}">
+                [ngClass]="{'text-green-500': item.Isauthorized, 'text-red-600': !item.Isauthorized}">
               </i>
-          </td>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -37,12 +39,12 @@
 
 <mat-paginator [length]="items.length" [pageSize]="10" (page)="onPageChange($event)"></mat-paginator>
 
-<div class="absolute bottom-3 left-3">
+<shared-authorized-modal [personalDataObject]="user" [message]="''" [accountDataObject]="freeProfessional"
+  [showModal]="showAuthorizatedModal" (confirm)="onConfirmHandler(selectedUser)" (cancel)="onCancelHandler()">
+</shared-authorized-modal>
+
+<div class="font-medium rounded-xl w-full flex items-end justify-end p-3">
   <button class="px-2 py-1 bg-line text-darkslategray rounded-lg" routerLink="/home">
-    <i class="fa-solid fa-chevron-left animate-pulse"></i> {{'regresar' | translate}}
+    {{'regresar' | translate}}
   </button>
 </div>
-
-<shared-authorized-modal [personalDataObject]="user" [message]="''" [accountDataObject]="freeProfessional"
-[showModal]="showAuthorizatedModal" (confirm)="onConfirmHandler(selectedUser)" (cancel)="onCancelHandler()">
-</shared-authorized-modal>

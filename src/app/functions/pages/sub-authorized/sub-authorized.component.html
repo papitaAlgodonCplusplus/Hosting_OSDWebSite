@@ -1,18 +1,18 @@
-<div class="flex justify-center flex-col space-y-1">
-    <div class="text-xl font-medium text-darkslategray flex justify-center">
-        <h1 class="border-b">{{'authorizeCustomers' | translate}}</h1>
-    </div>
-
+<div class="flex justify-center flex-col space-y-1 ">
+        <div class="text-darkslategray text-start py-3 text-xl font-medium animate__animated animate__fadeInLeft">
+            <span class="pl-5 pr-3 py-1 bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden">
+                {{'authorizeCustomers' | translate}} </span>
+        </div>
     <shared-authorized-modal [personalDataObject]="user" [message]="messageModal" [accountDataObject]="subscriber"
         [showModal]="showAuthorizatedModal" (confirm)="onConfirmHandler()" (cancel)="onCancelHandler()">
     </shared-authorized-modal>
 
-    <div class="flex justify-center flex-col    ">
+    <div class="flex justify-center flex-col p-5">
         <div class="overflow-x-auto">
             <table class="table-auto w-full">
                 <thead>
-                    <tr class="bg-darkslategray text-white">
-                        <th class="px-2 py-2" style="width: 30%;">{{'identity' | translate}}</th>
+                    <tr class="text-darkslategray">
+                        <th class="px-2 py-2" style="width: 30%;">{{'Identity' | translate}}</th>
                         <th class="px-2 py-2" style="width: 30%;">{{'suscriptor_cliente' | translate}} </th>
                         <th class="px-2" style="width: 30%;">{{'actions' | translate}}</th>
                         <th class="px-2" style="width: 30%;">{{'authorized' | translate}}</th>
@@ -38,11 +38,12 @@
             </table>
         </div>
 
-        <div class="absolute bottom-3 left-3">
-            <button class="px-2 py-1 bg-line text-darkslategray rounded-lg" routerLink="/home">
-                <i class="fa-solid fa-chevron-left animate-pulse"></i> {{'regresar' | translate}}
-            </button>
-        </div>
         <mat-paginator [length]="items.length" [pageSize]="10" (page)="onPageChange($event)"></mat-paginator>
     </div>
+</div>
+
+<div class="font-medium rounded-xl w-full flex items-end justify-end p-3">
+    <button class="px-2 py-1 bg-line text-darkslategray rounded-lg" routerLink="/home">
+       {{'regresar' | translate}}
+    </button>
 </div>

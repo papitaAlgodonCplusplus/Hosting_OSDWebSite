@@ -13,10 +13,11 @@ const initialState: ClaimState = {
         Id: '',
         Claimtype: '',
         Status: '',
+        Facts: '',
         FreeprofessionalId: '',
         Serviceprovided: '',
         Amountclaimed: '',
-        Date:'',
+        Date: '',
         Valuationclaimant: '',
         Valuationfreeprofessionals: '',
         Valuationsubscriber: ''

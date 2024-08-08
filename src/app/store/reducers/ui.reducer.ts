@@ -1,6 +1,5 @@
-import { createReducer, on } from "@ngrx/store";
-import { UiActions } from "../actions";
-import { tr } from "date-fns/locale";
+import { createReducer, on } from '@ngrx/store';
+import { UiActions } from '../actions';
 
 export interface UiState {
   headerOpen: boolean;
@@ -19,18 +18,18 @@ const initialState: UiState = {
   hideHeader: false,
   hideFooter: false,
   hideLeftSidebar: false,
-  reportName: 'null'
-}
+  reportName: ''
+};
 
-// Reducer for toggling the visibility of the header, footer and left sidebar components
-export const uiReducers = createReducer(initialState,
+export const uiReducers = createReducer(
+  initialState,
   on(UiActions.hideHeader, (currentState) => ({
     ...currentState,
-    hideHeader: !currentState.hideHeader
+    hideHeader: true
   })),
   on(UiActions.hideFooter, (currentState) => ({
     ...currentState,
-    hideFooter: !currentState.hideFooter
+    hideFooter: true
   })),
   on(UiActions.toggleLeftSidebar, (currentState) => ({
     ...currentState,
@@ -38,7 +37,7 @@ export const uiReducers = createReducer(initialState,
   })),
   on(UiActions.hideLeftSidebar, (currentState) => ({
     ...currentState,
-    hideLeftSidebar: !currentState.hideLeftSidebar
+    hideLeftSidebar: true
   })),
   on(UiActions.hideAll, (currentState) => ({
     ...currentState,
