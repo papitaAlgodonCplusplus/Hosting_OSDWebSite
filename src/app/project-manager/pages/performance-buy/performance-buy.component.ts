@@ -9,6 +9,7 @@ import { ModalActions, UiActions } from 'src/app/store/actions';
 import { AuthSelectors, PerformanceSelectors } from 'src/app/store/selectors';
 import { PerformanceBuy } from '../../Models/performanceBuy';
 import { DatePipe } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-performance-buy',
@@ -28,7 +29,8 @@ export class PerformanceBuyComponent implements OnDestroy {
   constructor(private store: Store,
     private osdEventService: OSDService,
     private formBuilder: FormBuilder,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private router: Router
   ) {
     this.performanceForm = this.createForm()
   }
@@ -78,7 +80,7 @@ export class PerformanceBuyComponent implements OnDestroy {
   private createForm(): FormGroup {
     const form = this.formBuilder.group({
       date: ['', [Validators.required]],
-      productServiceId: ['', [Validators.required]],
+      productServiceId: ['', []],
       minimumUnits: ['', [Validators.required]],
       maximumUnits: ['', [Validators.required]],
       unitaryCost: ['', [Validators.required]],
@@ -98,6 +100,7 @@ export class PerformanceBuyComponent implements OnDestroy {
       return;
     }
     this.osdEventService.performanceBuy(this.performanceForm.value);
+    this.router.navigate(['/project-manager']);
   }
 
   displayFileName(): void {
