@@ -12,7 +12,7 @@ import { PerformanceClaim } from '../../models/PerformanceClaims';
 import { OSDDataService } from 'src/app/services/osd-data.service';
 import { isSubscription } from 'rxjs/internal/Subscription';
 import { CreateClaimValuationEvent } from '../../Interface/ClaimValuation.interface';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute  } from '@angular/router';
 import { PerformAction } from '@ngrx/store-devtools/src/actions';
 
 @Component({
@@ -28,6 +28,7 @@ export class FileManagerComponent implements OnDestroy {
   performancesClaims: PerformanceClaim[] = [];
   performancesClaimsTheClaim: PerformanceClaim[] = [];
   claimId!: string;
+  claimIdUrl!: string;
   displayedItems: any[] = [];
   isSubscriber: boolean = true;
   isClaimant: boolean = true;
@@ -39,11 +40,16 @@ export class FileManagerComponent implements OnDestroy {
     private translate: TranslateService,
     private osdDataService: OSDDataService,
     private router: Router,
+    private route: ActivatedRoute,
     private authenticationService: AuthenticationService) {
     this.fileManager = this.createForm();
   }
 
   ngOnInit() {
+    this.route.queryParamMap.subscribe(params => {
+      this.claimIdUrl = params.get('claimId') || '';
+    });
+
     this.osdEventService.getPerformanceList();
     this.assignValuation()
     setTimeout(() => {

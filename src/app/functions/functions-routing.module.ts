@@ -7,6 +7,7 @@ import { SubAuthorizedComponent } from './pages/sub-authorized/sub-authorized.co
 import { ClaimsFileComponent } from './pages/claims-file/claims-file.component';
 import { FileManagerComponent } from './pages/file-manager/file-manager.component';
 import { ClaimsPerformanceComponent } from './pages/claims-performance/claims-performance.component';
+import { RestoreHistoryComponent } from './pages/restore-history/restore-history.component';
 
 const routes: Routes = [
   {
@@ -32,6 +33,10 @@ const routes: Routes = [
   {
     path: 'claims-performance',
     component: ClaimsPerformanceComponent
+  },
+  {
+    path: 'restore-history',
+    component: RestoreHistoryComponent
   }
   
 ];

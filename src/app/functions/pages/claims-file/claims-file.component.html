@@ -20,7 +20,7 @@
                     <tbody>
                         <tr *ngFor="let claim of displayedItems; let i = index" class="my-5">
                             <td class="p-2 border-y text-center">
-                                <span routerLink="/functions/file-manager" (click)="selectClaim(claim)"
+                                <span (click)="selectClaim(claim,i)"
                                     class="font-medium bg-darkslategray text-line transition duration-300 ease-in-out hover:bg-darkslategray hover:text-line cursor-pointer px-4 py-2 inline-block rounded-xl">{{'View'
                                     | translate}}</span>
                             </td>

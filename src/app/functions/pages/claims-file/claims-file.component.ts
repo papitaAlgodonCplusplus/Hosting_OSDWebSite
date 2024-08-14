@@ -5,6 +5,7 @@ import { UserInfo } from 'src/app/models/userInfo';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { ClaimActions, UiActions } from 'src/app/store/actions';
+import { Router, ActivatedRoute  } from '@angular/router';
 
 @Component({
   selector: 'app-claims-file',
@@ -19,6 +20,7 @@ export class ClaimsFileComponent {
   constructor(
     private osdEventService: OSDService,
     private store: Store,
+    private router: Router,
     private authenticationService: AuthenticationService
   ) { }
 
@@ -58,8 +60,9 @@ export class ClaimsFileComponent {
   }
 
 
-  selectClaim(claim: Claim) {
+  selectClaim(claim: Claim, i: number) {
     this.store.dispatch(ClaimActions.setClaim({ claim: claim }))
+    this.getFileManagerLink(i);
   }
 
   onPageChange(event: any) {
@@ -71,4 +74,9 @@ export class ClaimsFileComponent {
   updateDisplayedItems(startIndex: number = 0, endIndex: number = 5) {
     this.displayedItems = this.claims.slice(startIndex, endIndex);
   }
+
+  getFileManagerLink(i: number){
+    const url = `/functions/file-manager?claimId=RE/${i}/`;
+    this.router.navigateByUrl(url);
+  }  
 }

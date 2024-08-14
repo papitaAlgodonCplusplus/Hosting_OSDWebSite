@@ -12,6 +12,7 @@ import { CustomPaginator } from '../services/custom-paginator.service';
 import { ClaimsFileComponent } from './pages/claims-file/claims-file.component';
 import { FileManagerComponent } from './pages/file-manager/file-manager.component';
 import { ClaimsPerformanceComponent } from './pages/claims-performance/claims-performance.component';
+import { RestoreHistoryComponent } from './pages/restore-history/restore-history.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { ClaimsPerformanceComponent } from './pages/claims-performance/claims-pe
     SubAuthorizedComponent,
     ClaimsFileComponent,
     FileManagerComponent,
-    ClaimsPerformanceComponent
+    ClaimsPerformanceComponent,
+    RestoreHistoryComponent
     ],
   imports: [
     CommonModule,
