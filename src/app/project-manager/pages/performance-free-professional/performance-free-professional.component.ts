@@ -99,7 +99,7 @@ export class PerformanceFreeProfessionalComponent {
 
     this.OSDDataService.SummaryTypesList$.subscribe(summaryTypes => {
       summaryTypes.forEach(items => {
-        let decodedSummary = decodeURIComponent(escape(items.summary));
+        let decodedSummary = decodeURIComponent(escape(items.Summary));
         console.log(decodedSummary);
         var entityDropDownItem: DropDownItem = { value: decodedSummary, key: items.Id };
         this.summaryTypes.push(entityDropDownItem);
