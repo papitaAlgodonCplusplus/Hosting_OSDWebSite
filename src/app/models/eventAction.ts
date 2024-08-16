@@ -26,7 +26,11 @@ export class EventAction {
   public static CREATE_PROJECT: string = "CreateProject";
   public static GET_PROJECTS : string = "GetProjects";
   public static UPDATE_EVALUATION : string = "UpdateEvaluation"
+
+  public static ADD_SUMMARY_TYPE : string = "AddSummaryType";
   //Response
+  
+  public static ADD_SUMMARY_TYPE_RESPONSE : string = "AddSummaryTypeResponse"
   public static HANDLE_AUTHENTICATION_RESPONSE: string = "HandleAuthenticationResponse";
   public static HANDLE_REGISTER_USER_RESPONSE: string = "HandleRegisterResponse";
   public static HANDLE_VERIFY_EMAIL_RESPONSE: string = "HandleVerifyEmailResponse";

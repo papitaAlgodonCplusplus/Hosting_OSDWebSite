@@ -75,6 +75,10 @@
                             [ngClass]="{'fa-chevron-right' : showOptions, 'fa-chevron-left':!showOptions}"></i>
                         {{'CreatePerformance' | translate}}
                     </button>
+                    <button class="flex items-center bg-darkslategray p-2 rounded-lg text-line text-sm"
+                        (click)="openModal()">
+                        {{'Registrar Resumen' | translate}}
+                    </button>
                 </div>
             </div>
             <table class="table-auto w-full">
@@ -134,3 +138,5 @@
         </div>
     </div>
 </div>
+
+<summary-type-modal *ngIf="isModalOpen" (close)="isModalOpen = false"></summary-type-modal>

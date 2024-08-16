@@ -285,5 +285,12 @@
     "RegisterProject": "Registrar Proyecto",
     "Valoration": "Valuación",
     "MakeAreview": "Realizar valoración",
-    "City": "Ciudad"
+    "City": "Ciudad",
+    "Performance Buy" : "Actuación de Compra",
+    "Performance Claim" : "Performance de Reclamo",
+    "Performance Free Professional" : "Actuación de Profesional Libre",
+    "Create Summary" : "Crear Resumen",
+    "The summary was successfully added": "El resumen se agregó correctamente",
+    "Registrar Resumen": "Registrar Resumen",
+    "El nombre es requerido.": "El nombre es requerido."
 }

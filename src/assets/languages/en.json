@@ -284,5 +284,12 @@
   "Objective" : "Objective",
   "RegisterProject" : "Register Project",
   "Valoration" : "Valoration",
-  "MakeAreview" : "Make a review"
+  "MakeAreview" : "Make a review",
+  "Performance Buy" : "Performance Buy",
+  "Performance Claim" : "Performance Claim",
+  "Performance Free Professional" : "Performance Free Professional",
+  "Create Summary" : "Create Summary",
+  "The summary was successfully added": "The summary was successfully added",
+  "Registrar Resumen": "Register Summary",
+  "El nombre es requerido.": "Name is required."
 }

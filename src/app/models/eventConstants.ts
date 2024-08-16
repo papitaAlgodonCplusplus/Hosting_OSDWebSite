@@ -120,7 +120,8 @@ export class EventConstants {
   public static MAXIMUM_UNITS: string = "MaximumUnits";
   public static UNITARY_COST: string = "UnitaryCost";
   public static SHELF_LIFE: string = "ShelfLife";
-
+  public static SUMMARY_NAME: string = "SummaryName";
+  public static SUMMARY_TYPE: string = "SummaryType";
   public static FREE_PROFESSIONAL: string = 'FreeProfessional';
   public static SUBSCRIBER_CUSTOMER: string = 'SubscriberCustomer';
   public static CLAIMANT: string = "Claimant";

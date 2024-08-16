@@ -12,7 +12,7 @@ import { PerformanceFreeProfessionalComponent } from './pages/performance-free-p
 import { MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginator';
 import { CustomPaginator } from '../services/custom-paginator.service';
 import { CreateProjectComponent } from './pages/create-project/create-project.component';
-
+import { SummaryTypeModalComponent } from './shared/summary-type-modal/summary-type-modal.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +20,7 @@ import { CreateProjectComponent } from './pages/create-project/create-project.co
     PerformanceBuyComponent,
     PerformanceFreeProfessionalComponent,
     CreateProjectComponent,
+    SummaryTypeModalComponent,
   ],
   imports: [
     CommonModule,
@@ -30,7 +31,7 @@ import { CreateProjectComponent } from './pages/create-project/create-project.co
     ReactiveFormsModule,
     MatPaginatorModule
   ],
-  providers:[
+  providers: [
     DatePipe,
     {
       provide: MatPaginatorIntl,
@@ -40,6 +41,7 @@ import { CreateProjectComponent } from './pages/create-project/create-project.co
       },
       deps: [TranslateService]
     }
-  ]
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA] 
 })
 export class ProjectManagerModule { }

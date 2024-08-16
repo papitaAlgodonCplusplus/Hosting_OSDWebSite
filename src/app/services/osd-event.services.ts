@@ -202,6 +202,19 @@ export class OSDService {
     });
   }
 
+  public addSummaryType(name: string, type: string) {
+    const event: WebBaseEvent = this.eventFactoryService.CreateAddSummaryTypeEvent(name, type);
+    this.restApiService.SendOSDEvent(event).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.AddSummaryTypeResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+
   public performanceBuy(performanceForm: PerformanceBuy) {
     const performanceBuyEvent: WebBaseEvent = this.eventFactoryService.CreatePerformanceBuyEvent(performanceForm);
     console.log(performanceBuyEvent)
@@ -670,6 +683,25 @@ export class OSDService {
   }
 
   public HandleAddClaimResponse(webBaseEvent: WebBaseEvent) {
+    let message: string;
+
+    try {
+      message = webBaseEvent.getBodyProperty(EventConstants.MESSAGE);
+      this.store.dispatch(ModalActions.changeAlertType({ alertType: 'success' }));
+      this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
+      this.store.dispatch(ModalActions.openAlert())
+      if (this.authenticationService.userInfo != null) {
+        this.securityDataService.emitUserAuthenticationSuccess("/home");
+      }
+      else {
+        this.securityDataService.emitUserAuthenticationSuccess("/auth");
+      }
+    } catch {
+
+    }
+  }
+
+  public AddSummaryTypeResponse(webBaseEvent: WebBaseEvent) {
     let message: string;
 
     try {

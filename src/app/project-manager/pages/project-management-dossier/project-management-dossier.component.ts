@@ -20,6 +20,7 @@ import { Project } from '../../Models/project';
 })
 
 export class ProjectManagementDossierComponent implements OnDestroy {
+  isModalOpen = false;
   readOnly: boolean = true;
   formProjectManager: FormGroup
   showOptions: boolean = false;
@@ -204,14 +205,18 @@ export class ProjectManagementDossierComponent implements OnDestroy {
     });
 }
 
-async loadProjects(): Promise<void> {
-  try {
-      this.allProjects = await firstValueFrom(this.Projects$);
-      this.selectedProject = this.allProjects[0];
-      this.formProjectManager = this.createForm();
-  } catch (error) {
-      console.error('Error loading projects:', error);
+  async loadProjects(): Promise<void> {
+    try {
+        this.allProjects = await firstValueFrom(this.Projects$);
+        this.selectedProject = this.allProjects[0];
+        this.formProjectManager = this.createForm();
+    } catch (error) {
+        console.error('Error loading projects:', error);
+    }
   }
-}
 
+
+  openModal() {
+    this.isModalOpen = true;
+  }
 }

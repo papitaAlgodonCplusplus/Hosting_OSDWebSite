@@ -368,6 +368,24 @@ export class EventFactoryService {
     return event;
   }
 
+  public CreateAddSummaryTypeEvent(name: string, type: string): WebBaseEvent {
+    let event: WebBaseEvent;
+
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.ADD_SUMMARY_TYPE;
+    event.Date = (new Date()).toUTCString();
+    event.ApplicationIdentifier = "WebClient"; //TODO: change to use an application identifier
+
+    event.setBodyProperty(EventConstants.SUMMARY_NAME, name);
+    event.setBodyProperty(EventConstants.SUMMARY_TYPE, type);
+
+    return event;
+  }
+
   public CreateProjectEvent(projectForm : CreateProjectEvent): WebBaseEvent {
     let event: WebBaseEvent;
 
