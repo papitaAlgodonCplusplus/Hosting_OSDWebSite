@@ -21,8 +21,8 @@
                     label="{{'RazonSocial' | translate}}" inputType="text" [formGroup]="personalForm"
                     [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-                <shared-text-area class="w-full md:w-1/2 " fieldName="address" label="{{'direccion' | translate}}"
-                    inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-text-area>
+                <shared-input-field class="w-full md:w-1/2 " fieldName="address" label="{{'direccion' | translate}}"
+                    inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
                 <shared-input-field class="w-full md:w-1/3" fieldName="city" label="{{'City' | translate}}"
                     inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
@@ -76,11 +76,11 @@
                     [formGroup]="accountForm">
                 </shared-input-field>
 
-                <shared-input-field class="w-full md:w-1/3" fieldName="serviceProvided"
+                <shared-input-field class="w-full md:w-1/2" fieldName="serviceProvided"
                     label="{{'servicio_prestado' | translate}}" inputType="text" [formGroup]="accountForm"
                     [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-                <shared-input-field class="w-full md:w-1/3" fieldName="amountClaimed"
+                <shared-input-field class="w-full md:w-1/2" fieldName="amountClaimed"
                     label="{{'cuantia_reclamada' | translate}}" inputType="text" [formGroup]="accountForm"
                     [bgColor]="'bg-white-lightbone'"></shared-input-field>
 

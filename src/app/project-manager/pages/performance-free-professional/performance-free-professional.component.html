@@ -119,11 +119,12 @@
                 class="p-2 bg-line text-darkslategray font-normal  animate__animated animate__fadeInDown">
                 {{'regresar' | translate}}
             </button>
-
-            <button type="submit" *ngIf="editOtherInformation"
-                class="p-2 bg-darkslategray text-white font-normal  animate__animated animate__fadeInDown">
-                {{'CreatePerformance'|translate}}
-            </button>
+            <div *ngIf="!performanceFP">
+                <button type="submit" *ngIf="editOtherInformation"
+                    class="p-2 bg-darkslategray text-white font-normal  animate__animated animate__fadeInDown">
+                    {{'CreatePerformance'|translate}}
+                </button>
+            </div>            
         </div>
     </form>
 </div>
