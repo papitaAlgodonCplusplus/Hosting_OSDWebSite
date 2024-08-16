@@ -33,6 +33,7 @@ export class OnboardingRegisterClaimantComponent {
     { value: this.translate.instant('MediationArbitration'), key: 'MediationArbitration' }
   ];
   selectedSubscribers: string | undefined;
+  selectedSubscriberId: string = '';
   subscribers: any[] = [];
   documentNames: string[] = new Array(2);
   isAcceptConditions!: boolean;
@@ -145,40 +146,39 @@ export class OnboardingRegisterClaimantComponent {
   }
 
   onSubmit(): void {
-    console.log(this.accountForm.value)
-    this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
-    this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: this.translate.instant('incompleteData') }))
-
     if (this.accountForm.invalid && this.personalForm.invalid && this.selectorRegistry === true) {
-      this.accountForm.markAllAsTouched();
-      this.personalForm.markAllAsTouched();
-      this.store.dispatch(ModalActions.openAlert());
-      return;
-    }
-    else if (this.accountForm.invalid && this.selectorRegistry === false) {
-      this.accountForm.markAllAsTouched();
-      this.store.dispatch(ModalActions.openAlert());
-      return;
+        this.accountForm.markAllAsTouched();
+        this.personalForm.markAllAsTouched();
+        this.store.dispatch(ModalActions.openAlert());
+        return;
+    } else if (this.accountForm.invalid && this.selectorRegistry === false) {
+        this.accountForm.markAllAsTouched();
+        this.store.dispatch(ModalActions.openAlert());
+        return;
     }
 
+    const subscriberName = this.accountForm.get('subscriberClaimed')?.value;
     this.accountForm.patchValue({
-      subscriberClaimed: this.selectedSubscribers
+        subscriberClaimed: this.selectedSubscribers 
     });
 
     if (this.selectorRegistry === true) {
-      if (!this.personalForm.value.acceptConditions) {
-        this.isAcceptConditions = true;
-        return;
-      }
-      this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, "Claimant");
+        if (!this.personalForm.value.acceptConditions) {
+            this.isAcceptConditions = true;
+            return;
+        }
+        this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, "Claimant");
     } else {
-      if (this.authenticationService.userInfo?.Id) {
-        const claimantIdControl = new FormControl(this.authenticationService.userInfo.Id);
-        this.accountForm.addControl(EventConstants.CLAIMANT_ID, claimantIdControl);
-      }
-      console.log(this.accountForm.value)
-      this.osdEventService.addClaim(this.accountForm.value);
+        if (this.authenticationService.userInfo?.Id) {
+            const claimantIdControl = new FormControl(this.authenticationService.userInfo.Id);
+            this.accountForm.addControl(EventConstants.CLAIMANT_ID, claimantIdControl);
+        }
+        this.osdEventService.addClaim(this.accountForm.value);
     }
+
+    this.accountForm.patchValue({
+        subscriberClaimed: subscriberName 
+    });
   }
 
   showModal() {
@@ -198,8 +198,9 @@ export class OnboardingRegisterClaimantComponent {
 
   selectSubscriber(id: string, name: string) {
     this.accountForm.patchValue({
-      subscriberClaimed: name
+        subscriberClaimed: name 
     });
+    
     this.selectedSubscribers = id;
     this.openModal = false;
   }
