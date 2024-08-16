@@ -724,7 +724,7 @@ export class OSDService {
       this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
       this.store.dispatch(ModalActions.openAlert())
       if (this.authenticationService.userInfo != null) {
-        this.securityDataService.emitUserAuthenticationSuccess("/home");
+        this.securityDataService.emitUserAuthenticationSuccess("/project-manager");
       }
       else {
         this.securityDataService.emitUserAuthenticationSuccess("/auth");
