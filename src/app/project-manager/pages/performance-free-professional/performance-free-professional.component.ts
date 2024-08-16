@@ -136,19 +136,19 @@ export class PerformanceFreeProfessionalComponent {
       Date: ['', [Validators.required]],
       Type: ['', [Validators.required]],
       JustifyingDocument: [''],
-      FP_WorkHours: ['', [Validators.required]],
-      FP_TravelTime: ['', [Validators.required]],
-      FP_TravelExpenses: ['', [Validators.required]],
-      FP_Remuneration: ['', [Validators.required]],
+      FP_WorkHours: ['00:00', [Validators.required]],
+      FP_TravelTime: ['00:00', [Validators.required]],
+      FP_TravelExpenses: ['0', [Validators.required]],
+      FP_Remuneration: ['0', [Validators.required]],
       TD_Date: ['', [Validators.required]],
-      TD_WorkHours: ['', [Validators.required]],
-      TD_TravelTime: ['', [Validators.required]],
-      TD_TravelExpenses: ['', [Validators.required]],
-      TD_Remuneration: ['', [Validators.required]],
+      TD_WorkHours: ['00:00', [Validators.required]],
+      TD_TravelTime: ['00:00', [Validators.required]],
+      TD_TravelExpenses: ['0', [Validators.required]],
+      TD_Remuneration: ['0', [Validators.required]],
       Summary: ['', [Validators.required]],
-      ForecastTravelExpenses: [this.performanceFP.ForecastTravelExpenses],
-      ForecastTravelTime: ['', [Validators.required]],
-      ForecastWorkHours: ['', [Validators.required]],
+      ForecastTravelExpenses: ['0', this.performanceFP.ForecastTravelExpenses],
+      ForecastTravelTime: ['00:00', [Validators.required]],
+      ForecastWorkHours: ['00:00', [Validators.required]],
       JustifyChangeEstimatedWorkHours: ['', [Validators.required]]
     });
     return form;
@@ -321,6 +321,12 @@ export class PerformanceFreeProfessionalComponent {
     this.performanceForm.patchValue({
       TD_TravelExpenses: remuneration
     });
+  }
+
+  preventEnter(event: KeyboardEvent): void {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+    }
   }
 
   chargeEstimatedTravelExpenses(formValues: any) {
