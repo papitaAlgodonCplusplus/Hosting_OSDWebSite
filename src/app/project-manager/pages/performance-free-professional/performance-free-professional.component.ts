@@ -32,6 +32,8 @@ export class PerformanceFreeProfessionalComponent {
     { value: 'Video Conferencias', key: 'Video Conferencias' },
     { value: 'Reuniones/Juzgado', key: 'Reuniones/Juzgado' }
   ];
+  selectedSummaryType: string | undefined;
+  summaryTypes: DropDownItem[] = [];
   PL_FreeProfessional: string | undefined;
   FreeProfessional: DropDownItem[] = [];
   isDropdownOpenPL = true;
@@ -76,7 +78,7 @@ export class PerformanceFreeProfessionalComponent {
         TD_TravelTime: this.performanceFP.TechnicalDirectorTravelHours,
         TD_TravelExpenses: this.performanceFP.TechnicalDirectorTravelExpenses,
         TD_Remuneration: this.performanceFP.TechnicalDirectorRemuneration,
-        Summary: this.performanceFP.Summary,
+        Summary: this.performanceFP.SummaryName,
         ForecastTravelExpenses: this.performanceFP.EstimatedTransportExpenses,
         ForecastTravelTime: this.performanceFP.EstimatedTransportHours,
         ForecastWorkHours: this.performanceFP.EstimatedWorkHours,
@@ -89,10 +91,22 @@ export class PerformanceFreeProfessionalComponent {
     }
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     setTimeout(() => {
       this.store.dispatch(UiActions.hideAll());
+      this.OSDEventService.GetSummaryTypes()
     }, 0);
+
+    this.OSDDataService.SummaryTypesList$.subscribe(summaryTypes => {
+      summaryTypes.forEach(items => {
+        let decodedSummary = decodeURIComponent(escape(items.summary));
+        console.log(decodedSummary);
+        var entityDropDownItem: DropDownItem = { value: decodedSummary, key: items.Id };
+        this.summaryTypes.push(entityDropDownItem);
+      });
+      console.log(this.summaryTypes);
+    });
+
     this.isAuthenticated$.subscribe((isAuthenticated: boolean) => {
       if (isAuthenticated === false) {
         this.editOtherInformation = false
@@ -181,6 +195,7 @@ export class PerformanceFreeProfessionalComponent {
     performanceData.freeprofessionalId = this.freeProfessionalId
     performanceData.proyectManagerId = '065d461a-cc09-4162-b4e9-f121c11d3348'
 
+    console.log(performanceData)
     this.OSDEventService.addPerformanceFreeProfessional(performanceData);
   }
 

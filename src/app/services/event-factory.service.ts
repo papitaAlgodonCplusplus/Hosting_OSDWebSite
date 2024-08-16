@@ -508,4 +508,19 @@ export class EventFactoryService {
 
     return event;
   }
+
+  public CreateGetSummaryTypes(): WebBaseEvent {
+    let event: WebBaseEvent;
+
+    event = new WebBaseEvent();
+    event.Action = EventAction.GET_SUMMARY_TYPES;
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Date = (new Date()).toUTCString();
+    event.ApplicationIdentifier = "WebClient";
+
+    return event;
+  }
 }

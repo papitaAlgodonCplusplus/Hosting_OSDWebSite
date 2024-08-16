@@ -19,6 +19,7 @@ import { PerformanceClaim } from '../functions/models/PerformanceClaims';
 import { CreateProjectEvent } from '../project-manager/Interface/project.interface';
 import { Project } from '../project-manager/Models/project';
 import { CreateClaimValuationEvent } from '../functions/Interface/ClaimValuation.interface';
+import { SummaryTypes } from '../project-manager/Models/summaryTypes';
 
 @Injectable({
   providedIn: 'root'
@@ -441,6 +442,19 @@ export class OSDService {
       }
     });
   }
+
+  public GetSummaryTypes() {
+    const createGetSummaryTypesEvent: WebBaseEvent = this.eventFactoryService.CreateGetSummaryTypes();
+    this.restApiService.SendOSDEvent(createGetSummaryTypesEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleCreateGetSummaryTypesResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
   public HandleAddPerformanceBuyResponse(webBaseEvent: WebBaseEvent) {
     try {
       var actionGetOsdUsersSusbscriberResultMessage = webBaseEvent.getBodyProperty(EventConstants.ACTION_OSD_RESULT_MESSAGE);
@@ -739,6 +753,24 @@ export class OSDService {
       
       this.securityDataService.emitUserAuthenticationSuccess("/project-manager");
     
+    } catch {
+
+    }
+  }
+
+  public HandleCreateGetSummaryTypesResponse(webBaseEvent: WebBaseEvent) {
+    var summaryTypesList: SummaryTypes[];
+    try {
+      summaryTypesList = webBaseEvent.getBodyProperty(EventConstants.SUMMARY_TYPES_LIST);
+      console.log(summaryTypesList)
+      if (summaryTypesList.length > 0) {
+        this.osdDataService.emitGetSummaryTypesListSuccess(summaryTypesList)
+      }
+      else {
+        this.store.dispatch(ModalActions.changeAlertType({ alertType: 'warning' }));
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Error" }));
+        this.store.dispatch(ModalActions.openAlert())
+      }
     } catch {
 
     }

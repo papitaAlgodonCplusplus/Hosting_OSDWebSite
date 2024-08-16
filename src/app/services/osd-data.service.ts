@@ -7,6 +7,7 @@ import { PerformanceBuy } from '../project-manager/Models/performanceBuy';
 import { PerformanceClaim } from '../functions/models/PerformanceClaims';
 import { Subscriber } from '../functions/models/Subscriber';
 import { Project } from '../project-manager/Models/project';
+import { SummaryTypes } from '../project-manager/Models/summaryTypes';
 
 @Injectable({
   providedIn: 'root'
@@ -53,6 +54,8 @@ export class OSDDataService {
 
   private projectsList = new Subject<Project[]>();
 
+  private summaryTypesList = new Subject<SummaryTypes[]>();
+
   actionRegisterSuccess$ = this.actionRegisterSuccessSubject.asObservable();
   userRegisterSuccess$ = this.userRegisterSuccessSubject.asObservable();
   verifyEmailSuccess$ = this.verifyEmailSuccessSubject.asObservable();
@@ -94,6 +97,8 @@ export class OSDDataService {
   FormationCost$ = this.FormationCost.asObservable();
 
   ProjectsList$ = this.projectsList.asObservable();
+
+  SummaryTypesList$ = this.summaryTypesList.asObservable();
 
   constructor() {
   }
@@ -213,4 +218,7 @@ export class OSDDataService {
     this.projectsList.next(data);
   }
 
+  emitGetSummaryTypesListSuccess(data: SummaryTypes[]) {
+   this.summaryTypesList.next(data);
+  }
 }

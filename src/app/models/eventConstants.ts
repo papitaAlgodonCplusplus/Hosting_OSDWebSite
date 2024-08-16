@@ -163,6 +163,8 @@ export class EventConstants {
   public static VALUATION_FREE_PROFESSIONAL: string = "ValuationFreeProfessional"
 
   public static ACTION_OSD_RESULT_MESSAGE: string = "ActionOSDResultMessage"
+
+  public static SUMMARY_TYPES_LIST: string = "SummaryTypesList"
   //#endregion
   constructor() {
 
