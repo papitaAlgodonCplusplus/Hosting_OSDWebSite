@@ -81,6 +81,7 @@
                 <thead>
                     <tr class="text-darkslategray font-normal border-b text-start">
                         <th class=""></th>
+                        <th class="">{{'Code' | translate}}</th>
                         <th class="">{{'TypePerformance' | translate}}</th>
                         <th class="">{{'Summary' | translate}}</th>
                         <th class="">{{'Date' | translate}}</th>
@@ -89,7 +90,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="font-light text-center" *ngFor="let performance of displayedItems">
+                    <tr class="font-light text-center" *ngFor="let performance of displayedItems; let i = index">
                         <td routerLink="/project-manager/performance-buy"
                             class="text-darkslategray font-medium text-s border-y px-2 py-2 hover:underline cursor-pointer"
                             (click)="selectPerformance(performance.Id)" *ngIf="performance.Type === '-'">{{'viewData' |
@@ -98,6 +99,7 @@
                             class="text-darkslategray font-medium  text-s border-y px-2 py-2 hover:underline cursor-pointer"
                             (click)="chargePerformanceFP(performance.Id)" *ngIf="performance.Type !== '-'">{{'viewData'
                             | translate}}</td>
+                            <td class="border-y px-2 py-2">GETP{{i}}A/{{i}}/2024</td>
                         <td class="border-y px-2 py-2">{{performance.Type}}</td>
                         <td class="border-y px-2 py-2">{{performance.Summary}}</td>
                         <td class="border-y px-3 py-2">{{ performance.Date | date:'dd-MM-yyyy' }}</td>
