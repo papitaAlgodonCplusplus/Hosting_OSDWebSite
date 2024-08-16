@@ -19,8 +19,8 @@
                 [formGroup]="performanceForm" [dropdownItems]="type" [selectedItem]="selectedType">
             </shared-simple-dropdown>
 
-            <shared-input-field class="w-full md:w-1/2" fieldName="Summary" label="{{'Summary'|translate}}"
-                inputType="text" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+            <shared-simple-dropdown class="w-full md:w-1/2" fieldName="Summary" label="{{'Summary'|translate}}"
+                inputType="text" [formGroup]="performanceForm" [selectedItem]="selectedSummaryType" [dropdownItems]="summaryTypes" [bgColor]="'bg-white-lightbone'"></shared-simple-dropdown>
 
             <div class="flex flex-wrap items-center space-x-2 w-full md:w-1/2">
                 <input type="file" id="JustifyingDocument" formControlName="JustifyingDocument" class="hidden"

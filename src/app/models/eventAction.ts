@@ -28,6 +28,8 @@ export class EventAction {
   public static UPDATE_EVALUATION : string = "UpdateEvaluation"
 
   public static ADD_SUMMARY_TYPE : string = "AddSummaryType";
+  public static GET_SUMMARY_TYPES : string = "GetSummaryTypes"
+
   //Response
   
   public static ADD_SUMMARY_TYPE_RESPONSE : string = "AddSummaryTypeResponse"
