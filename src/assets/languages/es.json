@@ -240,7 +240,7 @@
     "expectedTimes": "Horas previstas ",
     "Hours": "Horas",
     "Amount": "Cuantía",
-    "FormatHoursIncorrect": "Error en el formato de la hora. Use 00:00 y asegúrese de que ambos campos estén entre 0 y 24",
+    "FormatHoursIncorrect": "Error asegúrese de que ambos campos estén entre 0 y 24",
     "incompleteData": "Datos incompletos",
     "incompleteClaim": "Datos de la reclamación incompleta",
     "OSDSystemsEngineer": "Ingeniero en Sistemas OSD",

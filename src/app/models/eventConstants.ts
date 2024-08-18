@@ -165,8 +165,7 @@ export class EventConstants {
 
   public static ACTION_OSD_RESULT_MESSAGE: string = "ActionOSDResultMessage"
 
-  public static SUMMARY_TYPES_LIST: string = "SummaryTypesList"
-  public static SUMMARY_TYPES_FP_LIST: string = "SummaryTypesPerformanceFreeProfessionalList"
+  public static SUMMARY_TYPES_PERFORMANCE_FREEPROFESSIONAL_LIST: string = "SummaryTypesPerformanceFreeProfessionalList"
   //#endregion
   constructor() {
 

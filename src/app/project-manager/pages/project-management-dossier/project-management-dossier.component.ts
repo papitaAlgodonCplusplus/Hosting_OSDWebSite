@@ -91,20 +91,21 @@ export class ProjectManagementDossierComponent implements OnDestroy {
         var amountProject = 0;
         amountProject = freeProfessional.EstimatedTransportExpenses + freeProfessional.FreeProfessionalRemuneration + freeProfessional.FreeProfessionalTravelExpenses + freeProfessional.TechnicalDirectorRemuneration + freeProfessional.TechnicalDirectorTravelExpenses
         this.amountProject = amountProject + this.amountProject
-
+        console.log(freeProfessional)
         return {
           Id: freeProfessional.Id,
           Code: 'GET/A/1/2024',
           Date: freeProfessional.Date,
           Type: freeProfessional.Type,
           JustifyingDocument: freeProfessional.JustifyingDocument,
-          Summary: freeProfessional.Summary,
+          Summary: freeProfessional.SummaryName,
           Hours: totalHours,
           Amount: "€ " + amountProject
         };
 
       });
       this.allPerformances = [...normalizedFreeProfesional, ...normalizedBuys];
+      
       this.updateDisplayedItems();
       this.loadProjectManager = false;
       this.sortDateLowestHighest(true);
@@ -144,23 +145,18 @@ export class ProjectManagementDossierComponent implements OnDestroy {
 
   sumHours(hoursObject: any): string {
     let totalHours = 0;
-    let totalMinutes = 0;
     for (const prop in hoursObject) {
       if (hoursObject.hasOwnProperty(prop)) {
 
         const [hoursStr, minutesStr] = hoursObject[prop].split(':');
         const hours = parseInt(hoursStr, 10);
-        const minutes = parseInt(minutesStr, 10);
 
         totalHours += hours;
-        totalMinutes += minutes;
       }
     }
-    totalHours += Math.floor(totalMinutes / 60);
-    totalMinutes %= 60;
+
     return `${totalHours} ${this.translate.instant('Hours')}`;
   }
-
 
   showOptionsPerformance() {
     this.showOptions = !this.showOptions;
@@ -188,6 +184,7 @@ export class ProjectManagementDossierComponent implements OnDestroy {
 
   updateDisplayedItems(startIndex: number = 0, endIndex: number = 10) {
     this.displayedItems = this.allPerformances.slice(startIndex, endIndex);
+    console.log(this.displayedItems)
   }
 
   toggleSideBar() {
@@ -214,7 +211,6 @@ export class ProjectManagementDossierComponent implements OnDestroy {
         console.error('Error loading projects:', error);
     }
   }
-
 
   openModal() {
     this.isModalOpen = true;

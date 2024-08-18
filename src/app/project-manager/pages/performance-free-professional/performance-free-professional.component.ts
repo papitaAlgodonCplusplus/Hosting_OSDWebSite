@@ -64,7 +64,7 @@ export class PerformanceFreeProfessionalComponent {
 
       let originalDTDate = this.performanceFP.TechnicalDirectorDate;
       let formatedDTDate = this.datePipe.transform(originalDTDate, 'yyyy-MM-dd');
-
+      console.log(this.performanceFP)
       const form = this.formBuilder.group({
         Date: formatedDate,
         Type: this.performanceFP.Type,
@@ -78,7 +78,7 @@ export class PerformanceFreeProfessionalComponent {
         TD_TravelTime: this.performanceFP.TechnicalDirectorTravelHours,
         TD_TravelExpenses: this.performanceFP.TechnicalDirectorTravelExpenses,
         TD_Remuneration: this.performanceFP.TechnicalDirectorRemuneration,
-        Summary: this.performanceFP.SummaryName,
+        Summary: this.performanceFP.SummaryId,
         ForecastTravelExpenses: this.performanceFP.EstimatedTransportExpenses,
         ForecastTravelTime: this.performanceFP.EstimatedTransportHours,
         ForecastWorkHours: this.performanceFP.EstimatedWorkHours,
@@ -98,15 +98,14 @@ export class PerformanceFreeProfessionalComponent {
     }, 0);
 
     this.OSDDataService.SummaryTypesList$.subscribe(summaryTypes => {
+      console.log(summaryTypes)
       summaryTypes.forEach(items => {
-        let decodedSummary = decodeURIComponent(escape(items.Summary));
-        console.log(decodedSummary);
-        var entityDropDownItem: DropDownItem = { value: decodedSummary, key: items.Id };
+        var entityDropDownItem: DropDownItem = { value: items.Summary, key: items.Id };
         this.summaryTypes.push(entityDropDownItem);
       });
-      console.log(this.summaryTypes);
     });
-
+    
+    console.log(this.summaryTypes)
     this.isAuthenticated$.subscribe((isAuthenticated: boolean) => {
       if (isAuthenticated === false) {
         this.editOtherInformation = false
@@ -136,19 +135,19 @@ export class PerformanceFreeProfessionalComponent {
       Date: ['', [Validators.required]],
       Type: ['', [Validators.required]],
       JustifyingDocument: [''],
-      FP_WorkHours: ['00:00', [Validators.required]],
-      FP_TravelTime: ['00:00', [Validators.required]],
-      FP_TravelExpenses: ['0', [Validators.required]],
-      FP_Remuneration: ['0', [Validators.required]],
+      FP_WorkHours: ['', [Validators.required]],
+      FP_TravelTime: ['', [Validators.required]],
+      FP_TravelExpenses: ['', [Validators.required]],
+      FP_Remuneration: ['', [Validators.required]],
       TD_Date: ['', [Validators.required]],
-      TD_WorkHours: ['00:00', [Validators.required]],
-      TD_TravelTime: ['00:00', [Validators.required]],
-      TD_TravelExpenses: ['0', [Validators.required]],
-      TD_Remuneration: ['0', [Validators.required]],
+      TD_WorkHours: ['', [Validators.required]],
+      TD_TravelTime: ['', [Validators.required]],
+      TD_TravelExpenses: ['', [Validators.required]],
+      TD_Remuneration: ['', [Validators.required]],
       Summary: ['', [Validators.required]],
-      ForecastTravelExpenses: ['0', this.performanceFP.ForecastTravelExpenses],
-      ForecastTravelTime: ['00:00', [Validators.required]],
-      ForecastWorkHours: ['00:00', [Validators.required]],
+      ForecastTravelExpenses: ['', this.performanceFP.ForecastTravelExpenses],
+      ForecastTravelTime: ['', [Validators.required]],
+      ForecastWorkHours: ['', [Validators.required]],
       JustifyChangeEstimatedWorkHours: ['', [Validators.required]]
     });
     return form;
@@ -164,6 +163,13 @@ export class PerformanceFreeProfessionalComponent {
   }
 
   onSubmit(): void {
+    console.log(this.incorrectFormat)
+    if(this.incorrectFormat){
+      this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: this.translate.instant('FormatHoursIncorrect') }));
+      this.store.dispatch(ModalActions.changeAlertType({ alertType: 'warning' }));
+      this.store.dispatch(ModalActions.openAlert());
+      this.incorrectFormat = true;
+    }
     if (this.performanceForm.invalid) {
       this.performanceForm.markAllAsTouched();
       return;
@@ -195,29 +201,25 @@ export class PerformanceFreeProfessionalComponent {
     performanceData.freeprofessionalId = this.freeProfessionalId
     performanceData.proyectManagerId = '065d461a-cc09-4162-b4e9-f121c11d3348'
 
-    console.log(performanceData)
     this.OSDEventService.addPerformanceFreeProfessional(performanceData);
   }
 
   verifiedFormat(data: string) {
     const formValues = this.performanceForm.value;
-    let travelTime, workHours, errorMessage;
+    let travelTime, workHours;
 
     switch (data) {
       case "forecast":
         travelTime = formValues.ForecastTravelTime;
         workHours = formValues.ForecastWorkHours;
-        errorMessage = this.translate.instant('ForecastData');
         break;
       case "freeProfessional":
         travelTime = formValues.FP_TravelTime;
         workHours = formValues.FP_WorkHours;
-        errorMessage = this.translate.instant('profesional_libre');
         break;
       case "technicalDirector":
         travelTime = formValues.TD_TravelTime;
         workHours = formValues.TD_WorkHours;
-        errorMessage = this.translate.instant('TechnicalDirector');
         break;
       default:
         return;
@@ -238,9 +240,6 @@ export class PerformanceFreeProfessionalComponent {
       }
       this.incorrectFormat = false;
     } else {
-      this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: errorMessage + ': ' + this.translate.instant('FormatHoursIncorrect') }));
-      this.store.dispatch(ModalActions.changeAlertType({ alertType: 'warning' }));
-      this.store.dispatch(ModalActions.openAlert());
       this.incorrectFormat = true;
       if (data === "forecast") {
         this.performanceForm.patchValue({ ForecastTravelExpenses: '' });
@@ -254,36 +253,18 @@ export class PerformanceFreeProfessionalComponent {
     }
   }
 
-
-
   validarHora(horaStr: string): boolean {
-    console.log(horaStr)
-    const horaRegex = /^(0?\d|1\d|2[0-3]):([0-5]\d)$/;
-
-    if (!horaRegex.test(horaStr)) {
+    const horaNum = parseInt(horaStr);
+    
+    if (horaNum > 24 || horaNum <= 0) {
       return false;
     }
-
-    const [hora, minutos] = horaStr.split(':');
-    const horaNum = parseInt(hora, 10);
-    const minutosNum = parseInt(minutos, 10);
-
-    if (horaNum > 24 || horaNum < 0) {
-      return false;
-    }
-
-    if (minutosNum > 59 || minutosNum < 0) {
-      return false;
-    }
-
     return true;
   }
 
   chargeRemuneration(formValues: any) {
-    const [hours, minutes] = formValues.FP_WorkHours.split(':').map(Number);
-    const totalMinutes = hours * 60 + minutes;
-    const remunerationPerMinute = 1;
-    const remuneration = totalMinutes * remunerationPerMinute;
+    const hours = formValues.FP_WorkHours;
+    const remuneration = hours * 60;
 
     this.performanceForm.patchValue({
       FP_Remuneration: remuneration
@@ -291,21 +272,17 @@ export class PerformanceFreeProfessionalComponent {
   }
 
   chargeTravelExpenses(formValues: any) {
-    const [hours, minutes] = formValues.FP_TravelTime.split(':').map(Number);
-    const totalMinutes = hours * 60 + minutes;
-    const remunerationPerMinute = 1;
-    const remuneration = totalMinutes * remunerationPerMinute;
-    this.verifiedFormat('w')
+    const hours= formValues.FP_TravelTime;
+    const remuneration = hours * 60 ;
+
     this.performanceForm.patchValue({
       FP_TravelExpenses: remuneration
     });
   }
 
   chargeRemunerationTD(formValues: any) {
-    const [hours, minutes] = formValues.TD_WorkHours.split(':').map(Number);
-    const totalMinutes = hours * 60 + minutes;
-    const remunerationPerMinute = 1;
-    const remuneration = totalMinutes * remunerationPerMinute;
+    const hours= formValues.TD_WorkHours;
+    const remuneration = hours * 60 ;
 
     this.performanceForm.patchValue({
       TD_Remuneration: remuneration
@@ -313,28 +290,18 @@ export class PerformanceFreeProfessionalComponent {
   }
 
   chargeTravelExpensesTD(formValues: any) {
-    const [hours, minutes] = formValues.TD_TravelTime.split(':').map(Number);
-    const totalMinutes = hours * 60 + minutes;
-    const remunerationPerMinute = 1;
-    const remuneration = totalMinutes * remunerationPerMinute;
+    const hours= formValues.TD_TravelTime;
+    const remuneration =  hours * 60;
 
     this.performanceForm.patchValue({
       TD_TravelExpenses: remuneration
     });
   }
 
-  preventEnter(event: KeyboardEvent): void {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-    }
-  }
-
   chargeEstimatedTravelExpenses(formValues: any) {
-    const [hours, minutes] = formValues.ForecastTravelTime.split(':').map(Number);
-    const totalMinutes = hours * 60 + minutes;
-    const remunerationPerMinute = 1;
-    const remuneration = totalMinutes * remunerationPerMinute;
-    this.verifiedFormat('d')
+    const hours = formValues.ForecastTravelTime;
+    const remuneration = hours * 60;
+   
     this.performanceForm.patchValue({
       ForecastTravelExpenses: remuneration
     });

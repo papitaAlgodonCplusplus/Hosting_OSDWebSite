@@ -240,7 +240,7 @@
   "Assign_Processor_to_Claim": "Assign Processor to Claim",
   "Hours": "Hours",
   "Amount": "Amount",
-  "FormatHoursIncorrect": "Error in the time format. Use 00:00 and make sure both fields are between 0 and 24",
+  "FormatHoursIncorrect": "Error make sure both fields are between 0 and 24",
   "incompleteData": "All fields must be completed",
   "incompleteClaim": "Incomplete Claim Details",
   "OSDSystemsEngineer": "OSD Systems Engineer",

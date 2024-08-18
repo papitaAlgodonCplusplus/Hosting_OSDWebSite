@@ -461,6 +461,7 @@ export class OSDService {
     this.restApiService.SendOSDEvent(createGetSummaryTypesEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        console.log(osdEvent)
         this.HandleCreateGetSummaryTypesResponse(osdEvent);
       },
       error: (error) => {
@@ -793,7 +794,7 @@ export class OSDService {
   public HandleCreateGetSummaryTypesResponse(webBaseEvent: WebBaseEvent) {
     var summaryTypesList: SummaryTypes[];
     try {
-      summaryTypesList = webBaseEvent.getBodyProperty(EventConstants.SUMMARY_TYPES_FP_LIST);
+      summaryTypesList = webBaseEvent.getBodyProperty(EventConstants.SUMMARY_TYPES_PERFORMANCE_FREEPROFESSIONAL_LIST);
       console.log(summaryTypesList)
       if (summaryTypesList.length > 0) {
         this.osdDataService.emitGetSummaryTypesListSuccess(summaryTypesList)

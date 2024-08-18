@@ -4,7 +4,7 @@
         <img src="../../../../../assets/img/OSD_2.png" alt="Logo OSD" class="w-32">
 
     </div>
-    <form [formGroup]="performanceForm" (ngSubmit)="onSubmit()" (keydown)="preventEnter($event)" autocomplete="off" class="px-10 py-2">
+    <form [formGroup]="performanceForm" (ngSubmit)="onSubmit()" autocomplete="off" class="px-10 py-2">
 
         <div class="text-darkslategray text-center">
             <h1 class="text-3xl py-2">{{'TitlePerformance'|translate}}</h1>
@@ -45,17 +45,17 @@
         </div>
         <div class="flex flex-wrap">
             <shared-input-field class="w-full md:w-1/3" fieldName="ForecastWorkHours"
-                label="{{'ForecastWorkHours'|translate}}" inputType="time" [formGroup]="performanceForm"
+                label="{{'ForecastWorkHours'|translate}}" inputType="number" [formGroup]="performanceForm"
                 [bgColor]="'bg-white-lightbone'" (change)="verifiedFormat('forecast')">
             </shared-input-field>
 
             <shared-input-field class="w-full md:w-1/3" fieldName="ForecastTravelTime"
-                label="{{'ForecastTravelTime'|translate}}" inputType="time" [formGroup]="performanceForm"
+                label="{{'ForecastTravelTime'|translate}}" inputType="number" [formGroup]="performanceForm"
                 [bgColor]="'bg-white-lightbone'" (change)="verifiedFormat('forecast')">
             </shared-input-field>
 
             <shared-input-field class="w-full md:w-1/3" fieldName="ForecastTravelExpenses"
-                label="{{'ForecastTravelExpenses'|translate}}" inputType="number" [formGroup]="performanceForm"
+                label="{{'ForecastTravelExpenses'|translate}}" inputType="text" [formGroup]="performanceForm"
                 [bgColor]="'bg-white-lightbone'" [readOnly]="true"></shared-input-field>
 
             <shared-input-field class="w-full" fieldName="JustifyChangeEstimatedWorkHours"
@@ -70,18 +70,18 @@
 
         <div *ngIf="isDropdownOpenPL" class="flex flex-wrap">
             <shared-input-field class="w-full md:w-1/2" fieldName="FP_WorkHours" label="{{'WorkHours'|translate}}"
-                inputType="time" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"
+                inputType="number" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"
                 (change)="verifiedFormat('freeProfessional')"></shared-input-field>
 
             <shared-input-field class="w-full md:w-1/2" fieldName="FP_TravelTime" label="{{'TravelTime'|translate}}"
-                inputType="time" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"
+                inputType="number" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"
                 (change)="verifiedFormat('freeProfessional')"></shared-input-field>
 
             <shared-input-field class="w-full md:w-1/2" fieldName="FP_Remuneration" label="{{'Remuneration'|translate}}"
-                inputType="number" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"
+                inputType="text" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"
                 [readOnly]="true"></shared-input-field>
 
-            <shared-input-field class="w-full md:w-1/2" fieldName="FP_TravelExpenses" inputType="number"
+            <shared-input-field class="w-full md:w-1/2" fieldName="FP_TravelExpenses" inputType="text"
                 label="{{'TravelExpenses'|translate}}" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"
                 [readOnly]="true"></shared-input-field>
 
@@ -98,19 +98,19 @@
                 [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
             <shared-input-field class="w-full md:w-1/2" fieldName="TD_WorkHours" label="{{'WorkHours'|translate}}"
-                inputType="time" (change)="verifiedFormat('technicalDirector')" [formGroup]="performanceForm"
+                inputType="number" (change)="verifiedFormat('technicalDirector')" [formGroup]="performanceForm"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
             <shared-input-field class="w-full md:w-1/2" (change)="verifiedFormat('technicalDirector')"
-                fieldName="TD_TravelTime" label="{{'TravelTime'|translate}}" inputType="time"
+                fieldName="TD_TravelTime" label="{{'TravelTime'|translate}}" inputType="number"
                 [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
             <shared-input-field class="w-full md:w-1/2" fieldName="TD_Remuneration" label="{{'Remuneration'|translate}}"
-                inputType="number" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"
+                inputType="text" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"
                 [readOnly]="true"></shared-input-field>
 
             <shared-input-field class="w-full md:w-1/2" fieldName="TD_TravelExpenses"
-                label="{{'TravelExpenses'|translate}}" inputType="number" [formGroup]="performanceForm"
+                label="{{'TravelExpenses'|translate}}" inputType="text" [formGroup]="performanceForm"
                 [bgColor]="'bg-white-lightbone'" [readOnly]="true"></shared-input-field>
         </div>
 
