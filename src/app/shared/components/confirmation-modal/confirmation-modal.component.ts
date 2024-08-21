@@ -7,6 +7,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 export class ConfirmationModalComponent {
   @Input() showModal!: boolean;
   @Input() message: string = '';
+  @Input() messageType: string = '';
   @Output() confirm = new EventEmitter<void>();
   @Output() cancel = new EventEmitter<void>();
 

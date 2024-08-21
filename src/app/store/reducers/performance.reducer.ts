@@ -5,12 +5,14 @@ import { PerformanceClaim} from "src/app/functions/models/PerformanceClaims";
 
 export interface PerformanceState {  
     performanceBuy: PerformanceBuy,
-    performanceClaim: PerformanceClaim
+    performanceClaim: PerformanceClaim,
+    fileCode: string
 }
 
 const initialState: PerformanceState = {   
     performanceBuy: {} as PerformanceBuy,
-    performanceClaim: {} as PerformanceClaim
+    performanceClaim: {} as PerformanceClaim,
+    fileCode: ""
 }
 
 export const performanceReducers = createReducer(initialState,
@@ -21,5 +23,9 @@ export const performanceReducers = createReducer(initialState,
     on(PerformanceActions.setPerformanceClaim, (currentState, { performanceClaim }) => ({
         ...currentState,
         performanceClaim: performanceClaim
+    })),
+    on(PerformanceActions.setFileCode, (currentState, { fileCode }) => ({
+        ...currentState,
+        fileCode: fileCode
     })),
     )

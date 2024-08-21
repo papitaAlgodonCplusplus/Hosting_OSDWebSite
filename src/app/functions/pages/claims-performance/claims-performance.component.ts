@@ -44,6 +44,7 @@ export class ClaimsPerformanceComponent {
   freeProfessionalId!: string
   incorrectFormat: boolean = false
   performanceData!: PerformanceClaim;
+  claimId! : string;
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
@@ -75,8 +76,6 @@ export class ClaimsPerformanceComponent {
 
       let originalDTDate = this.performanceFP.TechnicalDirectorDate;
       let formatedDTDate = this.datePipe.transform(originalDTDate, 'yyyy-MM-dd');
-
-      console.log(this.performanceFP)
       
       const form = this.formBuilder.group({
         Date: formatedDate,
@@ -106,6 +105,9 @@ export class ClaimsPerformanceComponent {
       this.store.dispatch(UiActions.hideLeftSidebar());
     }, 0);
 
+    this.claim$.subscribe(claim => {
+      this.claimId = claim.Id;
+    })
     this.OSDDataService.freeProfessionalId$.subscribe(id => {
       this.freeProfessionalId = id;
     });
@@ -164,11 +166,9 @@ export class ClaimsPerformanceComponent {
     this.performanceData.TechnicalDirectorRemuneration = formValues.TD_Remuneration;
     this.performanceData.Summary = formValues.Summary;
 
-    this.claim$.subscribe(claim => {
-      var claimId = claim.Id;
-      console.log(this.performanceData)
-      this.OSDEventService.createPerformanceClaim(this.performanceData, claimId);
-    })
+    if(this.claimId){
+      this.OSDEventService.createPerformanceClaim(this.performanceData, this.claimId);
+    } 
   }
 
   verifiedFormat(data: string) {

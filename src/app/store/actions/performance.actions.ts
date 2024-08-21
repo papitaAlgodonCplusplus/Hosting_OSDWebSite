@@ -11,3 +11,8 @@ export const setPerformanceBuy = createAction(
     '[Performance Id] Add performance Id',
     props<{ performanceClaim: PerformanceClaim }>()
   );
+
+  export const setFileCode = createAction(
+    '[file code] Add file Code',
+    props<{ fileCode: string }>()
+  );

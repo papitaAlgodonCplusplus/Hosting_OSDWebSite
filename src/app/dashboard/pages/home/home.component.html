@@ -1,0 +1,9 @@
+<shared-confirmation-modal *ngIf="!user.Isauthorized" [showModal]="true" [message]="this.message" [messageType]="'success'"></shared-confirmation-modal>
+<div *ngIf="!user.Isauthorized" class="h-full">
+    <div class="flex flex-col items-center justify-center space-y-3 font-medium h-full">
+        <span class="text-darkslategray">Regresar a inicio de sesion</span>
+        <div routerLink="/auth" class="bg-yellow-500 text-darkslategray p-3 rounded-xl cursor-pointer animate-bounce">
+            <i class="text-3xl fa-solid fa-lock"></i>
+        </div>
+    </div>
+</div>

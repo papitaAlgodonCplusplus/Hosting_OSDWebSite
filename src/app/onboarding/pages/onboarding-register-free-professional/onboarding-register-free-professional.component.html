@@ -1,51 +1,38 @@
 <div class="flex flex-col justify-center items-center md:px-10 lg:px-10 py-2 space-y-3">
 
-    <div class="flex flex-col w-full space-y-3 md:flex-row md:space-y-0 lg:space-y-0 lg:flex-row">
+    <div class="flex flex-col w-full space-y-3">
         <div class="flex-1 items-center flex flex-col font-medium px-3">
             <div class="flex">
-                <h2 class=" text-darkslategray border-b border-yellow-500">
+                <h2 class=" text-darkslategray">
                     {{'Trainer_&_Consultant_250€'| translate }}</h2>
             </div>
-            <div class="flex flex-row space-x-3 pt-3">
-                <div class="flex flex-row space-x-3 items-center">
-                    <button
-                        class="text-sm rounded-xl p-2 bg-darkslategray text-line"
-                        (click)="openVideoTrainerConsultant()">
-                        {{'Video_Trainer_Consultant'| translate }}
-                    </button>
-                </div>
+            <div class="flex flex-col pt-3 space-y-3">
+                <button class="font-medium rounded-xl p-2 bg-darkslategray text-line"
+                    (click)="openVideoTrainerConsultant()">
+                    {{'Video_Trainer_Consultant'| translate }}
+                </button>
 
-                <div class="flex flex-row space-x-3 items-center">
-                    <button
-                        class="text-sm rounded-xl p-2 bg-line text-darkslategray"
-                        (click)="makeAPurchaseTrainerConsultant()">
-                        {{'Payment_TPV'| translate }}
-                    </button>
-                </div>
+                <button class="font-medium rounded-xl p-2 bg-darkslategray text-line"
+                    (click)="makeAPurchaseTrainerConsultant()">
+                    {{'Payment_TPV'| translate }}
+                </button>
             </div>
         </div>
 
         <div class="flex-1 items-center flex flex-col font-medium px-3">
             <div class="flex">
-                <h2 class="text-darkslategray border-b border-yellow-500">
+                <h2 class="text-darkslategray ">
                     {{'Tecnic_OSD_(Mk Co,SAC)_100€'| translate }}</h2>
             </div>
-            <div class="flex flex-row space-x-3 pt-3">
-                <div class="flex flex-row space-x-3 items-center">
-                    <button
-                        class="text-sm rounded-xl p-2 bg-darkslategray text-line"
-                        (click)="openVideoTecnicOSD()">
-                        {{'Video_Tecnic_OSD'| translate }}
-                    </button>
-                </div>
+            <div class="flex flex-col space-y-3 pt-3">
+                <button class="font-medium rounded-xl p-2 bg-darkslategray text-line" (click)="openVideoTecnicOSD()">
+                    {{'Video_Tecnic_OSD'| translate }}
+                </button>
 
-                <div class="flex flex-row space-x-3 items-center">
-                    <button
-                        class="text-sm rounded-xl p-2 bg-line text-darkslategray"
-                        (click)="makeAPurchaseTecnicOSDLink()">
-                        {{'Payment_TPV'| translate }}
-                    </button>
-                </div>
+                <button class="font-medium rounded-xl p-2 bg-darkslategray text-line"
+                    (click)="makeAPurchaseTecnicOSDLink()">
+                    {{'Payment_TPV'| translate }}
+                </button>
             </div>
         </div>
     </div>
@@ -60,7 +47,6 @@
             </div>
 
             <div class="w-full flex flex-col p-3 space-y-3 lg:flex-row md:flex-row md:space-y-0 lg:space-y-0">
-
                 <div class="flex-1 flex flex-col items-center space-y-1 ">
                     <label for="collegiateCardArchive" class="text-center">{{'carnet_colegiado' |
                         translate}}</label>

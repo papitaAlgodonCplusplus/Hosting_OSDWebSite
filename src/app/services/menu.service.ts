@@ -1,12 +1,22 @@
-import { Injectable } from '@angular/core';
-import { MenuOption } from '../models/menuOptions';
+import { Injectable, OnInit } from '@angular/core';
+import { MenuOption } from '../models/menuOptions'
+import { AuthenticationService } from './authentication.service';
+import { UserInfo } from '../models/userInfo';
+
 
 @Injectable({
     providedIn: 'root'
 })
-export class MenuService {
+export class MenuService implements OnInit {
+    user! : UserInfo;
 
-    constructor() { }
+    constructor(private authService : AuthenticationService) { }
+
+    ngOnInit(): void {
+        setTimeout(() => {
+            if(this.authService.userInfo){ console.log(this.user); this.user = this.authService.userInfo};
+        }, 0);
+    }
 
     getMenuOptionFreeProfessional(): MenuOption[] {
         return [

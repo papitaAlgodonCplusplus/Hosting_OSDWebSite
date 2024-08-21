@@ -25,10 +25,7 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
     { value: this.translate.instant('Public Entity'), key: "Public Entity" }, //TODO: Implement language switching
     { value: this.translate.instant('Private Entity'), key: "Private Entity" },
   ];
-  selectedPLcode: string | undefined;
-  plCode: DropDownItem[] = [
-    { value: 'PL Code 1', key: 'KeyplCode1' }
-  ];
+  
   constructor(private store: Store,
     private formBuilder: FormBuilder,
     private validationsService: ValidationsService,

@@ -4,7 +4,7 @@ import { Claim } from 'src/app/models/claim';
 import { UserInfo } from 'src/app/models/userInfo';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { OSDService } from 'src/app/services/osd-event.services';
-import { ClaimActions, UiActions } from 'src/app/store/actions';
+import { ClaimActions, PerformanceActions, UiActions } from 'src/app/store/actions';
 import { Router, ActivatedRoute  } from '@angular/router';
 
 @Component({
@@ -61,8 +61,9 @@ export class ClaimsFileComponent {
 
 
   selectClaim(claim: Claim, i: number) {
+    console.log(claim)
     this.store.dispatch(ClaimActions.setClaim({ claim: claim }))
-    this.getFileManagerLink(i);
+    this.store.dispatch(PerformanceActions.setFileCode({fileCode : "RE/"+i+"/"}))
   }
 
   onPageChange(event: any) {
@@ -74,9 +75,4 @@ export class ClaimsFileComponent {
   updateDisplayedItems(startIndex: number = 0, endIndex: number = 5) {
     this.displayedItems = this.claims.slice(startIndex, endIndex);
   }
-
-  getFileManagerLink(i: number){
-    const url = `/functions/file-manager?claimId=RE/${i}/`;
-    this.router.navigateByUrl(url);
-  }  
 }

@@ -30,7 +30,7 @@ export class AuthenticationService {
   public endSession() //sessionlessKey : string //TODO: In the future Handle the use of the session key correctly
   {
     localStorage.removeItem('sessionKey');
-    localStorage.removeItem('userInfo');
+    //  localStorage.removeItem('userInfo');
     this.store.dispatch(AuthenticationActions.signOut())
     //localStorage.setItem('sessionlessKey', sessionlessKey);
   }

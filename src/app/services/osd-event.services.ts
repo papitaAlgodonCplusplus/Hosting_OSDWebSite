@@ -218,7 +218,6 @@ export class OSDService {
 
   public performanceBuy(performanceForm: PerformanceBuy) {
     const performanceBuyEvent: WebBaseEvent = this.eventFactoryService.CreatePerformanceBuyEvent(performanceForm);
-    console.log(performanceBuyEvent)
     this.restApiService.SendOSDEvent(performanceBuyEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
@@ -232,7 +231,6 @@ export class OSDService {
 
   public getPerformanceList() {
     const performanceBuyEvent: WebBaseEvent = this.eventFactoryService.CreateGetPerformancesList();
-    console.log(performanceBuyEvent)
     this.restApiService.SendOSDEvent(performanceBuyEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
@@ -297,7 +295,6 @@ export class OSDService {
 
   public ChangePassword(password: string) {
     const ChangePasswordEvent: WebBaseEvent = this.eventFactoryService.ChangePassword(password);
-    console.log(ChangePasswordEvent)
     this.restApiService.SendOSDEvent(ChangePasswordEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
@@ -313,7 +310,6 @@ export class OSDService {
     try {
       if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['ListFreeProfessionals']) {
         this.freeProfessionals = webBaseEvent.Body['ListFreeProfessionals'];
-        console.log(this.freeProfessionals)
         this.freeProfessionalsResponse = true;
       } else {
         this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'No hay profesionales libres registrados' }));
@@ -356,7 +352,6 @@ export class OSDService {
 
   public HandleGettingClaimListResponse(webBaseEvent: WebBaseEvent) {
     try {
-      console.log('Entra respuesta', webBaseEvent)
       if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['ClaimList']) {
         this.claims = webBaseEvent.Body['ClaimList'];
         this.claimsResponse = true;
@@ -372,11 +367,8 @@ export class OSDService {
   public HandleGettingFreeProfessionalsTRResponse(webBaseEvent: WebBaseEvent) {
     try {
       if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['FreeProfessionalList']) {
-        console.log(webBaseEvent)
         var usersFreeProfessionalsTR = webBaseEvent.Body['OsdUserList'];
-        console.log(usersFreeProfessionalsTR)
         var freeProfessionalsTR = webBaseEvent.Body['FreeProfessionalList'];
-        console.log(freeProfessionalsTR)
         this.freeProfessionalsTRResponse = true;
         this.osdDataService.emitFreeProfessionalTR(freeProfessionalsTR)
         this.osdDataService.emitUsersFreeProfessionalTR(usersFreeProfessionalsTR)
@@ -461,7 +453,6 @@ export class OSDService {
     this.restApiService.SendOSDEvent(createGetSummaryTypesEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
-        console.log(osdEvent)
         this.HandleCreateGetSummaryTypesResponse(osdEvent);
       },
       error: (error) => {
@@ -500,8 +491,6 @@ export class OSDService {
         var actionGetSusbscribersResultMessage = webBaseEvent.getBodyProperty(EventConstants.LIST_SUBSCRIBERS);
         const osdUsersSubscribersModels = actionGetOsdUsersSusbscriberResultMessage;
         const subscribersModels = actionGetSusbscribersResultMessage;
-        console.log(subscribersModels)
-        console.log(osdUsersSubscribersModels)
         this.osdDataService.emitGetOsdUsersSubscribersSuccess(osdUsersSubscribersModels);
         this.osdDataService.emitGetSubscribersSuccess(subscribersModels);
       }
@@ -537,7 +526,6 @@ export class OSDService {
 
   public GetTransparencyReportsSubscriberClientsResponse(webBaseEvent: WebBaseEvent) {
     try {
-      console.log('Lista de reportes:', webBaseEvent)
       var institutionsNames = webBaseEvent.getBodyProperty(EventConstants.INSTITUTIONS_NAMES);
       var claimsAmount = webBaseEvent.getBodyProperty(EventConstants.CLAIMS_AMOUNT);
       var compensationObtainedByClaimant = webBaseEvent.getBodyProperty(EventConstants.COMPENASTION_OBTAINED_BY_CLAIMANT);
@@ -563,7 +551,6 @@ export class OSDService {
     }
   }
   public GetTransparencyReportsIncomeExpensesResponse(webBaseEvent: WebBaseEvent) {
-    console.log('Lista de gastos', webBaseEvent)
     try {
       var totalOsdExpenses = webBaseEvent.getBodyProperty(EventConstants.TOTAL_OSD_EXPENSES);
       var compensationOfClaimant = webBaseEvent.getBodyProperty(EventConstants.COMPENSATION_OF_CLAIMANT);
@@ -592,7 +579,6 @@ export class OSDService {
     }
   }
   public GET_TRANSPARENCY_FREE_PROFESSIONALS_RESPONSE(webBaseEvent: WebBaseEvent) {
-    console.log('Lista de fp', webBaseEvent)
     try {
       var fpFullNames = webBaseEvent.getBodyProperty(EventConstants.FP_FULL_NAMES);
       var hoursPerformances = webBaseEvent.getBodyProperty(EventConstants.HOURS_PERFORMANCES);
@@ -658,7 +644,6 @@ export class OSDService {
 
       if (userAuthenticationSuccess) {
         userInfo = webBaseEvent.getBodyProperty(EventConstants.USER_INFO);
-        console.log(webBaseEvent.getBodyProperty(EventConstants.USER_INFO))
         sessionKey = webBaseEvent.getBodyProperty(EventConstants.GENERATED_SESSION_KEY);
         // this.authenticationService.startSession(sessionKey);
         this.authenticationService.userInfo = userInfo;
@@ -795,7 +780,6 @@ export class OSDService {
     var summaryTypesList: SummaryTypes[];
     try {
       summaryTypesList = webBaseEvent.getBodyProperty(EventConstants.SUMMARY_TYPES_PERFORMANCE_FREEPROFESSIONAL_LIST);
-      console.log(summaryTypesList)
       if (summaryTypesList.length > 0) {
         this.osdDataService.emitGetSummaryTypesListSuccess(summaryTypesList)
       }
@@ -813,7 +797,6 @@ export class OSDService {
     var projectsList: Project[];
     try {
       projectsList = webBaseEvent.getBodyProperty(EventConstants.PROJECTS_LIST);
-      console.log(projectsList)
       if (projectsList.length > 0) {
         this.osdDataService.emitGetProjectsSuccess(projectsList)
       }

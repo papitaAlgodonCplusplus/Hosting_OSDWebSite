@@ -13,12 +13,9 @@ import { AlertComponent } from './components/alert/alert.component';
 import { SimpleDropdownComponent } from './components/simple-dropdown/simple-dropdown.component';
 import { ConfirmationModalComponent } from './components/confirmation-modal/confirmation-modal.component';
 import { SearchDropdownComponent } from './components/search-dropdown/search-dropdown.component';
-
 import { SwitchLanguagesComponent } from './components/switch-languages/switch-languages.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { LeftSidebarComponent } from './components/left-sidebar/left-sidebar.component';
-import { MatPaginatorIntl } from '@angular/material/paginator';
-import { AuthorizedModalComponent } from './components/authorized-modal/authorized-modal.component';
  
 @NgModule({
   declarations: [
@@ -35,8 +32,7 @@ import { AuthorizedModalComponent } from './components/authorized-modal/authoriz
     AlertComponent,
     SearchDropdownComponent,
     LeftSidebarComponent,
-    SwitchLanguagesComponent,
-    AuthorizedModalComponent
+    SwitchLanguagesComponent
   ],
   imports: [
     CommonModule,
@@ -57,8 +53,7 @@ import { AuthorizedModalComponent } from './components/authorized-modal/authoriz
     ConfirmationModalComponent,
     SearchDropdownComponent,
     LeftSidebarComponent,
-    SwitchLanguagesComponent,
-    AuthorizedModalComponent
+    SwitchLanguagesComponent
   ],
 })
 export class SharedModule { }

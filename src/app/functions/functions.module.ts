@@ -13,6 +13,7 @@ import { ClaimsFileComponent } from './pages/claims-file/claims-file.component';
 import { FileManagerComponent } from './pages/file-manager/file-manager.component';
 import { ClaimsPerformanceComponent } from './pages/claims-performance/claims-performance.component';
 import { RestoreHistoryComponent } from './pages/restore-history/restore-history.component';
+import { AuthorizedModalComponent } from './components/authorized-modal/authorized-modal.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { RestoreHistoryComponent } from './pages/restore-history/restore-history
     ClaimsFileComponent,
     FileManagerComponent,
     ClaimsPerformanceComponent,
-    RestoreHistoryComponent
+    RestoreHistoryComponent,
+    AuthorizedModalComponent
     ],
   imports: [
     CommonModule,

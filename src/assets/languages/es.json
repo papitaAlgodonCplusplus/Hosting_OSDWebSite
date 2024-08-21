@@ -15,7 +15,7 @@
     "reclamacion": "Reclamación",
     "CFH": "CFH (Centro de Formación Homologado)",
     "profesional_libre": "Profesional Libre",
-    "profesionales_libres": "Profesionales Libres",
+    "profesionales_libres": "Profesionales Libres: Interconexion con el Gestor de Expediente",
     "suscriptor_cliente": "Suscriptor/Cliente",
     "entidad": "Entidad",
     "Public Entity": "Entidad pública",
@@ -50,7 +50,7 @@
     "formador_consultor": "Formador/Consultor - 250€",
     "engineer": "Ingeniero de Kuarctec. Plataforma digital OSD - 750€",
     "type_client": "Tipo de cliente",
-    "cod_PL": "Código PL",
+    "cod_PL": "Código Profesional Libre",
     "registrarse_plataforma": "Registrarse en la plataforma",
     "no_registrarse": "No registrarse",
     "nombre_usuario": "Nombre de usuario",
@@ -213,9 +213,9 @@
     "Video_Certificate_OSD": "Video Certificado OSD",
     "Download_Contract": "Descargar contrato",
     "Solutions_OSD": "Soluciones OSD",
-    "-Query_Simple_95€": "-Consulta simple 95€",
-    "-Sustainability_report_450€": "-Informe de sostenibilidad 450€",
-    "-Mediation_Arbitration_750€": "-Mediacion arbitraje 750€",
+    "Query_Simple_95€": "Consulta simple 95€",
+    "Sustainability_report_450€": "Informe de sostenibilidad 450€",
+    "Mediation_Arbitration_750€": "Mediacion arbitraje 750€",
     "Trainer_&_Consultant_250€": "Formador & Consultor 250€",
     "Video_Trainer_Consultant": "Video formador/consultor",
     "Video_Tecnic_OSD": "Video técnico OSD",
@@ -292,5 +292,6 @@
     "Create Summary" : "Crear Resumen",
     "The summary was successfully added": "El resumen se agregó correctamente",
     "Registrar Resumen": "Registrar Resumen",
-    "El nombre es requerido.": "El nombre es requerido."
+    "El nombre es requerido.": "El nombre es requerido.",
+    "ErrorMessage":"Mensaje de error"
 }

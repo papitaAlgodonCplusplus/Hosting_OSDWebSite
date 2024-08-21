@@ -1,13 +1,13 @@
-<div class="flex px-10 py-2 flex-col items-start w-full">
+<div class="flex px-10 py-2 flex-col-reverse items-start w-full">
 
     <div class="flex flex-col py-3 bg-white text-black w-full lg:w-full">
         <form [formGroup]="accountForm" (ngSubmit)="onSubmit()" autocomplete="off" class="flex flex-wrap items-center ">
             <shared-simple-dropdown class="w-full md:w-1/2" fieldName="clientType" label="{{'type_client' | translate}}"
                 [formGroup]="accountForm" [dropdownItems]="clientType" [selectedItem]="selectedClientType">
             </shared-simple-dropdown>
-            <shared-simple-dropdown class="w-full md:w-1/2" fieldName="plCode" label="{{'cod_PL' | translate}}"
-                [formGroup]="accountForm" [dropdownItems]="plCode" [selectedItem]="selectedPLcode">
-            </shared-simple-dropdown>
+            <shared-input-field class="w-full md:w-1/2" fieldName="plCode" label="{{'cod_PL' | translate}}"
+                [formGroup]="accountForm">
+            </shared-input-field>
         </form>
 
         <form [formGroup]="personalForm" (ngSubmit)="onSubmit()" autocomplete="off" class="flex flex-col space-y-3 p-2">
@@ -87,15 +87,13 @@
 
                     <div class="display-flex m-2">
                         <a *ngIf="!showDocument"
-                            class="p-3 bg-darkslategray text-white font-normal animate__animated animate__fadeInDown w-50 m-2"
+                            class="font-medium  rounded-xl p-2 bg-darkslategray text-white animate__animated animate__fadeInDown w-50 m-2"
                             href="assets/contracts/18-2-24-Contrato-Suscriptor-Cliente.pdf" download>
-                            <i class="fa-solid fa-download"></i>
                             {{'Contract' | translate }}
                         </a>
                         <a *ngIf="showDocument"
-                            class="p-3 bg-darkslategray text-white font-normal animate__animated animate__fadeInDown w-50"
+                            class="font-medium rounded-xl p-2 bg-darkslategray text-white animate__animated animate__fadeInDown w-50"
                             href="assets/contracts/18-2-24-DSO-Subscriber-Agreement-3.pdf" download>
-                            <i class="fa-solid fa-download"></i>
                             {{'Contract' | translate }}
                         </a>
                     </div>
@@ -106,20 +104,18 @@
         </form>
     </div>
 
-    <div class="flex flex-col justify-center mx-4 md:mx-6 my-2 lg:w-1/3 border">
-        <br>
-        <div class="grid justify-center items-center h-full w-full">
-            <div class="grid grid-cols-1 gap-4 justify-center items-center">
+    <div class="flex flex-col items-center justify-center w-full">
+            <div class="grid p-3">
                 <h2 class="text-darkslategray font-bold justify-center text-center text-xl md:text-2xl">
                     {{'Certificate_OSD_1500€'| translate }}</h2>
 
                 <p class="text-darkslategray mb-2 justify-center text-center font-bold">
                     {{'Management_of_complaints_and_suggestions_for_improvement'| translate }}</p>
-                <p class="text-darkslategray mb-2 justify-center text-center font-bold">{{'1500€'| translate }}</p>
+                <p class="text-darkslategray mb-2 justify-center text-center font-bold">1500€</p>
                 <div class="p-2 bg-white flex flex-col items-center">
                     <p class="text-darkslategray mb-2 font-bold">{{'Video_Certificate_OSD'| translate }}</p>
                     <button
-                        class="p-3 bg-darkslategray text-white font-normal animate__animated animate__fadeInDown w-10/12"
+                        class="p-2 rounded-xl bg-darkslategray text-white font-medium animate__animated animate__fadeInDown w-10/12"
                         (click)="openVideo()"><i class="fa-solid fa-camera"></i>
                         {{'Watch_Video'| translate }}
                     </button>
@@ -127,22 +123,22 @@
                 <div class="p-2 bg-white flex flex-col items-center">
                     <p class="text-darkslategray mb-2 font-bold">{{'Payment_TPV'| translate }}</p>
                     <button
-                        class="p-3 bg-darkslategray text-white font-normal animate__animated animate__fadeInDown w-10/12"
+                        class="p-2 bg-darkslategray rounded-xl text-white font-medium animate__animated animate__fadeInDown w-10/12"
                         (click)="makeAPurchase()"><i class="fa-solid fa-money-bill"></i>
                         {{'Paid_link'| translate }}
                     </button>
                 </div>
-                <br>
+            
                 <h2 class="text-darkslategray font-bold justify-center text-center text-xl md:text-2xl">
                     {{'Solutions_OSD'| translate }}</h2>
                 <div class="p-2 bg-white flex flex-col items-center">
                     <div class="flex flex-col">
-                        <p class="text-darkslategray mb-2">{{'-Query_Simple_95€'| translate }}</p>
-                        <p class="text-darkslategray mb-2">{{'-Sustainability_report_450€'| translate }}</p>
-                        <p class="text-darkslategray mb-2">{{'-Mediation_Arbitration_750€'| translate }}</p>
+                        <p class="text-darkslategray mb-2">- {{'Query_Simple_95€'| translate }}</p>
+                        <p class="text-darkslategray mb-2">- {{'Sustainability_report_450€'| translate }}</p>
+                        <p class="text-darkslategray mb-2">- {{'Mediation_Arbitration_750€'| translate }}</p>
                     </div>
                     <button
-                        class="p-3 bg-darkslategray text-white font-normal animate__animated animate__fadeInDown w-10/12"
+                        class="p-2 rounded-xl bg-darkslategray text-white font-medium animate__animated animate__fadeInDown w-10/12"
                         (click)="openVideoSolutionsOsd()"><i class="fa-solid fa-camera"></i>
                         {{'Watch_Video'| translate }}
                     </button>
@@ -150,24 +146,22 @@
                 <div class="p-2 bg-white flex flex-col items-center">
                     <p class="text-darkslategray mb-2 font-bold">{{'Payment_TPV'| translate }}</p>
                     <button
-                        class="p-3 bg-darkslategray text-white font-normal animate__animated animate__fadeInDown w-10/12"
+                        class="p-2 rounded-xl bg-darkslategray text-white font-medium animate__animated animate__fadeInDown w-10/12"
                         (click)="makeAPurchaseSolutionsOsd()"><i class="fa-solid fa-money-bill"></i>
                         {{'Paid_link'| translate }}
                     </button>
                 </div>
             </div>
         </div>
-        <br>
     </div>
-    <div class="flex flex-wrap justify-end items-center space-x-3 p-2 w-full">
-        <button routerLink="/onboarding/onboarding-register"
-            class="p-2 bg-line text-darkslategray font-medium animate__animated animate__fadeInDown rounded-xl">
-            {{'cancelar' | translate}}
-        </button>
+<div class="flex flex-wrap justify-end items-center space-x-3 p-2 w-full">
+    <button routerLink="/onboarding/onboarding-register"
+        class="p-2 bg-line text-darkslategray font-medium animate__animated animate__fadeInDown rounded-xl">
+        {{'cancelar' | translate}}
+    </button>
 
-        <button type="submit" (click)="onSubmit()"
-            class="p-2 bg-darkslategray text-white font-medium animate__animated animate__fadeInDown rounded-xl">
-            {{'registrarse' | translate}}
-        </button>
-    </div>
+    <button type="submit" (click)="onSubmit()"
+        class="p-2 bg-darkslategray text-white font-medium animate__animated animate__fadeInDown rounded-xl">
+        {{'registrarse' | translate}}
+    </button>
 </div>

@@ -7,7 +7,7 @@ import { Claim } from 'src/app/models/claim';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { PerformanceActions, UiActions } from 'src/app/store/actions';
-import { ClaimSelectors } from 'src/app/store/selectors';
+import { ClaimSelectors, PerformanceSelectors } from 'src/app/store/selectors';
 import { PerformanceClaim } from '../../models/PerformanceClaims';
 import { OSDDataService } from 'src/app/services/osd-data.service';
 import { isSubscription } from 'rxjs/internal/Subscription';
@@ -25,6 +25,8 @@ export class FileManagerComponent implements OnDestroy {
 
   fileManager!: FormGroup;
   claim$: Observable<Claim> = this.store.select(ClaimSelectors.claim);
+  fileCode$ : Observable<string> = this.store.select(PerformanceSelectors.fileCode)
+  fileCode : string ="";
   performancesClaims: PerformanceClaim[] = [];
   performancesClaimsTheClaim: PerformanceClaim[] = [];
   claimId!: string;
@@ -46,10 +48,6 @@ export class FileManagerComponent implements OnDestroy {
   }
 
   ngOnInit() {
-    this.route.queryParamMap.subscribe(params => {
-      this.claimIdUrl = params.get('claimId') || '';
-    });
-
     this.osdEventService.getPerformanceList();
     this.assignValuation()
     setTimeout(() => {
@@ -119,7 +117,6 @@ export class FileManagerComponent implements OnDestroy {
   }
 
   onSubmit(): void {
-    console.log(this.fileManager.value)
     if (this.fileManager.invalid) {
       this.fileManager.markAllAsTouched();
       return;
@@ -128,11 +125,14 @@ export class FileManagerComponent implements OnDestroy {
 
   openPerformanceClaimsModal(): void {
     this.performancesClaims.forEach(element => {
-      if (element.Claimid = this.claimId) {
+      if (element.Claimid == this.claimId) {
         this.performancesClaimsTheClaim.push(element);
         this.updateDisplayedItems()
       }
     });
+    this.fileCode$.subscribe(code =>{
+        this.fileCode = code;
+    })
 
     const modal = document.getElementById('performanceModal');
     if (modal) {

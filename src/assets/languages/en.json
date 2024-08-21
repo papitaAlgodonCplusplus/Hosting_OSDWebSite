@@ -2,7 +2,7 @@
   "es_requerido": "is required",
   "CFH": "CFH (Approved Training Center)",
   "profesional_libre": "Free Professional",
-  "profesionales_libres": "Free Professionals",
+  "profesionales_libres": "Free Professionals: Interconnection with the File Manager",
   "suscriptor_cliente": "Subscriber/Client",
   "entidad": "Entity",
   "Public Entity": "Public Entity",
@@ -66,7 +66,7 @@
   "usuarios": "Users",
   "reclamante": "Claimant",
   "clientType": "Client Type",
-  "cod_PL": "PL Code",
+  "cod_PL": "Free Professioanal Code",
   "Workspace": "Workspace",
   "otra": "Other",
   "seleccionar_archivo": "Select File",
@@ -215,9 +215,9 @@
   "Video_Certificate_OSD": "Video Certificate OSD",
   "Download_Contract": "Download contract",
   "Solutions_OSD": "Solutions OSD",
-  "-Query_Simple_95€": "-Query simple 95€",
-  "-Sustainability_report_450€": "-Sustainability report 450€",
-  "-Mediation_Arbitration_750€": "-Mediation arbitration 750€",
+  "Query_Simple_95€": "Query simple 95€",
+  "Sustainability_report_450€": "Sustainability report 450€",
+  "Mediation_Arbitration_750€": "Mediation arbitration 750€",
   "Trainer_&_Consultant_250€": "Trainer & Consultant 250€",
   "Video_Trainer_Consultant": "Video trainer/consultant",
   "Video_Tecnic_OSD": "Video tecnic OSD",
@@ -291,5 +291,6 @@
   "Create Summary" : "Create Summary",
   "The summary was successfully added": "The summary was successfully added",
   "Registrar Resumen": "Register Summary",
-  "El nombre es requerido.": "Name is required."
+  "El nombre es requerido.": "Name is required.",
+  "ErrorMessage":"Error Message"
 }

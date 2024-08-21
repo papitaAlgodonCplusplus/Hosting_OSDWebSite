@@ -12,3 +12,8 @@ export const performanceClaim = createSelector(
     performanceState,
     (performanceState) => performanceState.performanceClaim
 );
+
+export const fileCode = createSelector(
+    performanceState,
+    (performanceState) => performanceState.fileCode
+);

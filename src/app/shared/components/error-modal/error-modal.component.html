@@ -6,13 +6,13 @@
         <div class="mx-auto bg-red-500 rounded-full flex items-center justify-center w-20 h-20 mb-5">
           <i class="fa-solid fa-xmark text-black text-5xl"></i>
         </div>
-        <h3 class="text-xl text-red-500 font-bold">Mensaje de error</h3>
+        <h3 class="text-xl text-red-500 font-bold">{{'ErrorMessage' | translate}}</h3>
         <p  class="mb-5 font-normal">{{ errorMessage$ | async }}</p>
         <button
           type="button"
           (click)="toggleErrorModal()"
           class="focus:outline-none text-black text-base border font-medium  px-10 py-1.5 mt-2 mx-auto block popup-button"
-        >Cerrar</button>
+        >{{"Close" | translate}}</button>
       </div>
     </div>
   </div>
