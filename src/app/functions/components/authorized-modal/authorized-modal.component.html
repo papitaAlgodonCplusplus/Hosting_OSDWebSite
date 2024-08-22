@@ -22,7 +22,7 @@
         </div>
 
         <div class="flex justify-center p-3">
-            <button *ngIf="personalDataObject.Isauthorized == 'false'" (click)="onConfirm()"
+            <button *ngIf="!isAuthorized" (click)="onConfirm()"
                 class="bg-darkslategray text-white font-medium px-4 py-2 mr-2 rounded">Autorizar</button>
             <button (click)="onCancel()"
                 class="bg-line text-darkslategray font-medium px-4 py-2 rounded">Cancelar</button>

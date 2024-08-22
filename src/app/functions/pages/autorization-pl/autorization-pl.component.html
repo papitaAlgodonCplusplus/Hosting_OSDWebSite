@@ -9,7 +9,7 @@
         <thead>
           <tr class="text-darkslategray">
             <th class="px-2 py-2" style="width: 30%;">{{'Identity' | translate}}</th>
-            <th class="px-2 py-2" style="width: 30%;">{{'profesionales_libres' | translate}} </th>
+            <th class="px-2 py-2" style="width: 30%;">{{'Name' | translate}} </th>
             <th class="px-2 py-2" style="width: 30%;">{{'actions' | translate}}</th>
             <th class="px-2 py-2" style="width: 30%;">{{'authorized' | translate}}</th>
           </tr>
@@ -40,8 +40,8 @@
 
 <mat-paginator [length]="items.length" [pageSize]="10" (page)="onPageChange($event)"></mat-paginator>
 
-<shared-authorized-modal [personalDataObject]="user" [message]="''" [accountDataObject]="freeProfessional"
-  [showModal]="showAuthorizatedModal" (confirm)="onConfirmHandler(selectedUser)" (cancel)="onCancelHandler()">
+<shared-authorized-modal [isAuthorized]="isAuthorized" [personalDataObject]="user" [message]="''" [accountDataObject]="freeProfessional"
+  [showModal]="showAuthorizatedModal" (confirm)="onConfirmHandler()" (cancel)="onCancelHandler()">
 </shared-authorized-modal>
 
 <div class="font-medium rounded-xl w-full flex items-end justify-end p-3">

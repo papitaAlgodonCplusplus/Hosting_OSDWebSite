@@ -1,9 +1,9 @@
 {
   "es_requerido": "is required",
   "CFH": "CFH (Approved Training Center)",
-  "profesional_libre": "Free Professional",
+  "FreeProfessional": "Free Professional",
   "profesionales_libres": "Free Professionals: Interconnection with the File Manager",
-  "suscriptor_cliente": "Subscriber/Client",
+  "SubscriberCustomer": "Subscriber/Client",
   "entidad": "Entity",
   "Public Entity": "Public Entity",
   "Private Entity": "Private Entity",
@@ -29,10 +29,10 @@
   "TM": "TM Marketing",
   "TS": "TS SAC (Citizen Service Service)",
   "reclamacion": "Claim",
-  "SimpleClaim": "Simple Claim - 75€ / 10€ / 7.5€",
-  "ComplexClaim": "Complex Claim - 300€ / 10€ / 7.5€",
-  "ExtrajudicialClaimSustainability": "Extrajudicial Claim/Sustainability Report - 450€ / 10€ / 7.5€",
-  "MediationArbitration": "Mediation/Arbitration - 750€ / 10€ / 7.5€",
+  "SimpleClaim": "Simple Claim",
+  "ComplexClaim": "Complex Claim",
+  "ExtrajudicialClaimSustainability": "Extrajudicial Claim/Sustainability Report",
+  "MediationArbitration": "Mediation/Arbitration",
   "cancelar": "Cancel",
   "registrarse": "Register",
   "cuantia_reclamada": "Amount claimed",
@@ -64,7 +64,7 @@
   "ahora_selecciona_tu_tipo_de_registro": "Select your record type!",
   "equipo_OSD": "OSD Team",
   "usuarios": "Users",
-  "reclamante": "Claimant",
+  "Claimant": "Claimant",
   "clientType": "Client Type",
   "cod_PL": "Free Professioanal Code",
   "Workspace": "Workspace",
@@ -292,5 +292,6 @@
   "The summary was successfully added": "The summary was successfully added",
   "Registrar Resumen": "Register Summary",
   "El nombre es requerido.": "Name is required.",
-  "ErrorMessage":"Error Message"
+  "ErrorMessage":"Error Message",
+  "FreeprofessionaltypeName" : "Free professional type"
 }

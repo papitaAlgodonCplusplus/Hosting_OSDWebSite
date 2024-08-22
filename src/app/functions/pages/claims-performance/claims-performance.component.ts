@@ -33,10 +33,11 @@ export class ClaimsPerformanceComponent {
   performance: PerformanceClaim | undefined;
   viewAll: boolean = false;
   type: DropDownItem[] = [
-    { value: 'Escritos', key: 'Posted' },
-    { value: 'E-mails', key: 'E-mails' },
-    { value: 'Video Conferencias', key: 'Video Conferencing' },
-    { value: 'Reuniones/Juzgado', key: 'Meetings/Court' }
+    { value: 'VERIFICACION HECHOS y PRUEBAS', key: 'VERIFICACION HECHOS' },
+    { value: 'SOLICITUD AMPLIACION INFORMACION', key: 'SOLICITUD INFORMACION' },
+    { value: 'SOLUCION QUEJA', key: 'SOLUCION QUEJA' },
+    { value: 'SOLUCION A LA RECLAMACION', key: 'SOLUCION RECLAMACION' },
+
   ];
   PL_FreeProfessional: string | undefined;
   FreeProfessional: DropDownItem[] = [];

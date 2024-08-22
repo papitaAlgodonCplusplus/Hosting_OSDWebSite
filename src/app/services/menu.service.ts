@@ -18,9 +18,16 @@ export class MenuService implements OnInit {
         }, 0);
     }
 
-    getMenuOptionFreeProfessional(): MenuOption[] {
+    getMenuOptionFreeProfessionalProcessor(): MenuOption[] {
         return [
-            { name: 'file_claim', path: '/functions/claims-file', icon: 'fa-file' }
+            { name: 'file_claim', path: '/functions/claims-file', icon: 'fa-file' },
+        ];
+    }
+
+    getMenuOptionFreeProfessionalTrainer(): MenuOption[] {
+        return [
+            { name: 'file_claim', path: '/functions/claims-file', icon: 'fa-file' },
+            { name: 'Assign_Processor_to_Claim', path: '/functions/assign-pltr-claims', icon: 'fa-user' }
         ];
     }
 

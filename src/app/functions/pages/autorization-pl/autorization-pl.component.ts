@@ -18,11 +18,12 @@ export class AutorizationPlComponent implements OnDestroy {
   items: any[] = [];
   displayedItems: any;
   showModalConfirm: boolean = false; 
-  selectedUser: any = null; 
-  user!: any;
+  user!: UserInfo;
   message: string = "";
   showAuthorizatedModal: boolean = false;
-  freeProfessional: any;
+  freeProfessional!: FreeProfessional;
+  userSelected : string = ""
+  isAuthorized! : boolean
 
   constructor(private store: Store,
               private osdEventService : OSDService,
@@ -47,21 +48,22 @@ export class AutorizationPlComponent implements OnDestroy {
     }, 0);
   }
 
-  selectUser(user: any) {
-    this.selectedUser = user; 
+  selectUser(user: FreeProfessional) {
     console.log(user)
-    this.showAuthorizatedModal = true;
+    if(user.Isauthorized){
+      this.isAuthorized = true
+    }
+    else{
+      this.isAuthorized = false
+    }
     const userDTO: UserInfo = {} as UserInfo;
-
-    userDTO.Identity = this.selectedUser?.Identity;
-    userDTO.Name = this.selectedUser?.Name;
+    userDTO.Identity = user.Identity
     this.user = userDTO;
-
+    this.userSelected = user.Userid
     const FreeProfessionalDTO: FreeProfessional = {} as FreeProfessional;
-    FreeProfessionalDTO.clientType = this.translate.instant("profesional_libre");
-    FreeProfessionalDTO.Workspace = this.selectedUser.Freeprofessionaltype;
+    FreeProfessionalDTO.clientType = this.translate.instant("FreeProfessional");
+    FreeProfessionalDTO.FreeprofessionaltypeName = user.FreeprofessionaltypeName;
     this.freeProfessional = FreeProfessionalDTO;
-
     this.showAuthorizatedModal = true;
   }
 
@@ -82,16 +84,14 @@ export class AutorizationPlComponent implements OnDestroy {
     this.osdEventService.cleanFreeProfessionalsList()
   }
 
-  onConfirmHandler(selectedUser: any) {
-    this.osdEventService.changingUsdUserAutorizationStatusEvent(selectedUser.Userid)
-    this.store.dispatch(ModalActions.openAlert());
-    
+  onConfirmHandler() {
+    console.log(this.userSelected)
+    this.osdEventService.changingUsdUserAutorizationStatusEvent(this.userSelected)
     this.items.forEach(item => {
-      if (item.Id === selectedUser.Id) {
+      if (item.Id === this.userSelected) {
         item.Isauthorized = true; 
       }
     });
-    this.showAuthorizatedModal = false;
   }
 
   onCancelHandler() {

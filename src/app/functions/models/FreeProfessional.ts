@@ -1,7 +1,12 @@
-export interface FreeProfessional {
-    userId: string;
-    clientType: string;
-    Workspace: string;
+export class FreeProfessional {
+    Id: string = "";
+    Identity : string = "";
+    Name: string = "";
+    Userid: string = "";
+    clientType: string= "";
+    FreeprofessionaltypeName: string = "";
+    FreeprofessionaltypeAcronym: string = "";
+    Isauthorized: string = ""
 }
 
 
