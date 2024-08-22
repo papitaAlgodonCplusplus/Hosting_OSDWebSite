@@ -61,7 +61,6 @@ export class ClaimsFileComponent {
 
 
   selectClaim(claim: Claim, i: number) {
-    console.log(claim)
     this.store.dispatch(ClaimActions.setClaim({ claim: claim }))
     this.store.dispatch(PerformanceActions.setFileCode({fileCode : "RE/"+i+"/"}))
   }

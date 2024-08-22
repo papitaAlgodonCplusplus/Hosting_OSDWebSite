@@ -20,6 +20,7 @@ import { CreateProjectEvent } from '../project-manager/Interface/project.interfa
 import { Project } from '../project-manager/Models/project';
 import { CreateClaimValuationEvent } from '../functions/Interface/ClaimValuation.interface';
 import { SummaryTypes } from '../project-manager/Models/summaryTypes';
+import { FreeProfessional } from '../functions/models/FreeProfessional';
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +31,7 @@ export class OSDService {
   freeProfessionalsTR: any[] = [];
   claimsResponse: boolean = false;
   freeProfessionalsTRResponse: boolean = false;
-  freeProfessionals: any[] = [];
+  freeProfessionals: FreeProfessional[] = [];
   freeProfessionalsResponse: boolean = false;
   message: string = "";
   messageResponse: boolean = false;
@@ -752,7 +753,7 @@ export class OSDService {
         } else {
           this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: registerResultMessage }));
         }
-        this.securityDataService.emitUserAuthenticationSuccess("/onboarding");
+        this.securityDataService.emitUserAuthenticationSuccess("/auth");
         this.store.dispatch(ModalActions.toggleErrorModal());
       }
     }

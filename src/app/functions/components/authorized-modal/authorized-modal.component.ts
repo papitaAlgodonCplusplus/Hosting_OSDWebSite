@@ -9,6 +9,7 @@ import { UserInfo } from 'src/app/models/userInfo';
 export class AuthorizedModalComponent {
   @Input() showModal!: boolean;
   @Input() message: string = '';
+  @Input() isAuthorized! : boolean;
   @Input() personalDataObject!: UserInfo;
   @Input() accountDataObject!: any;
   @Output() confirm = new EventEmitter<void>();

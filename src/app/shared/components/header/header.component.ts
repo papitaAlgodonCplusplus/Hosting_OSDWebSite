@@ -24,6 +24,7 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {
     setTimeout(() => {
       this.userInfo = this.authService.userInfo;
+      console.log(this.userInfo)
     }, 0)
   }
 
