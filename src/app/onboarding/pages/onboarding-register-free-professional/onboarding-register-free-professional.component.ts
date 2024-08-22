@@ -97,7 +97,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
       workspace: ['', [Validators.required]],
       otherWorspace: [''],
       collegiateCardArchive: [null,[Validators.required]],
-      lastReceiptCLI: [null,[Validators.required]],
+      lastReceiptCLI: [null],
       servicerates: [''],
     });
     return accountForm;
