@@ -3,7 +3,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
+import { FreeProfessional } from 'src/app/functions/models/FreeProfessional';
 import { EventConstants } from 'src/app/models/eventConstants';
+import { OSDDataService } from 'src/app/services/osd-data.service';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { ValidationsService } from 'src/app/services/validations.service';
 import { ModalActions, UiActions } from 'src/app/store/actions';
@@ -20,17 +22,21 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
   selectedClientType: string | undefined;
   documentName: string = '';
   showDocument!: boolean;
-
+  showModal: boolean = false;
+  professionalFreeTrainers$ = this.osdDataService.ProfessionalFreeTrainerList$;
+  professionalsFree! : FreeProfessional[];
+  freeProfessionalExists! : boolean ;
   clientType: DropDownItem[] = [
     { value: this.translate.instant('Public Entity'), key: "Public Entity" }, //TODO: Implement language switching
     { value: this.translate.instant('Private Entity'), key: "Private Entity" },
   ];
-  
+
   constructor(private store: Store,
     private formBuilder: FormBuilder,
     private validationsService: ValidationsService,
     private osdEventService: OSDService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private osdDataService: OSDDataService
   ) {
     this.accountForm = this.createAccountForm();
     this.personalForm = this.createPersonalForm();
@@ -43,11 +49,15 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
       else {
         this.showDocument = false
       }
-
+      this.osdEventService.GetProfessionalFreeTrainers()
       this.store.dispatch(UiActions.hideFooter());
       this.store.dispatch(UiActions.hideLeftSidebar());
     }, 0);
+    this.professionalFreeTrainers$.subscribe(pft => {
+        this.professionalsFree = pft;
+    });
   }
+
   ngOnDestroy(): void {
     setTimeout(() => {
       this.store.dispatch(UiActions.showAll());
@@ -122,7 +132,8 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
   private createAccountForm(): FormGroup {
     const accountForm = this.formBuilder.group({
       clientType: ['', [Validators.required]],
-      plCode: ['']
+      plCode: [''],
+      showCodepl:['']
     });
     return accountForm;
   }
@@ -156,5 +167,44 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
     const userEmail = this.personalForm.value.email;
     localStorage.setItem('userEmail', userEmail);
     this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.SUBSCRIBER_CUSTOMER);
+  }
+
+  openModal() {
+    this.showModal = !this.showModal;
+    this.accountForm.patchValue({
+      plCode: '', showCodepl:''
+    });  
+    this.freeProfessionalExists = false
+  }
+
+  closeModal() {
+    this.showModal = false;
+  }
+
+  verifiedProfessionalFree(event: Event) {
+    const inputElement = event.target as HTMLInputElement;
+    const inputValue = inputElement.value.trim(); 
+  
+    this.professionalsFree.forEach(pft => {
+      const code = pft.Code.trim(); 
+      if(code === inputValue) {
+      this.freeProfessionalExists = true
+      this.accountForm.patchValue({
+        showCodepl: inputValue,
+        plCode: pft.Id
+      });      
+      }
+      else{
+        this.freeProfessionalExists = false
+      }
+    });
+  }
+  
+  eliminatedProfessionalFree(){
+    this.showModal = false;
+    this.freeProfessionalExists = false
+    this.accountForm.patchValue({
+      plCode: '', showCodepl: ''
+    });  
   }
 }

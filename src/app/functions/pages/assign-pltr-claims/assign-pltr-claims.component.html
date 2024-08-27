@@ -1,7 +1,7 @@
 <div class="flex justify-center flex-col space-y-2 ">
     <div class="text-darkslategray text-start py-3 text-xl font-medium animate__animated animate__fadeInLeft">
         <span class="pl-5 pr-3 py-1 bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden">
-            {{'Assign_Processor_to_Claim' | translate}}</span>
+            {{'Assign_Processor_to_Claim' | translate}}<i class="fa-regular fa-hand-pointer"></i></span>
     </div>
     <shared-confirmation-modal [showModal]="showModalConfirm" [message]="messageModal" (confirm)="onConfirmHandler()"
         (cancel)="onCancelHandler()">

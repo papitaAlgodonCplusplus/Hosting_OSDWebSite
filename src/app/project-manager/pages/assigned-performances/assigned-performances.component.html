@@ -1,0 +1,50 @@
+<div class="flex flex-col items-end justify-end h-full">
+    <div
+        class="w-full text-darkslategray text-start py-3 text-xl font-medium space-x-3 animate__animated animate__fadeInLeft">
+        <span class="pl-5 pr-3 py-1 bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden">
+            {{'Assigned_performance' | translate}}</span>
+    </div>
+    <div class="w-full h-full p-5">
+        <table class="w-full rtl:text-right text-slate-950 text-center">
+            <thead class="font-medium text-darkslategray">
+                <tr>
+                    <th scope="col" class="px-6 py-3">
+                        {{'performances' | translate}}
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        {{'start_date' | translate}}
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        {{'end_date' | translate}}
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="border-y border-gray-700" *ngFor="let sub of subscribers; let i = index">
+                    <th class="text-center border-y px-4 py-2">
+                        {{sub.d}}
+                    </th>
+                    <th class="text-center border-y px-4 py-2">
+                        {{sub.d}}
+                    </th>
+                    <th class="text-center border-y px-4 py-2">
+                        {{sub.d}}
+                    </th>
+                    <td class="text-center border-y px-4 py-2">
+                        <button routerLink="/project-manager/performance-free-professional" class="rounded-xl p-2 bg-darkslategray text-line">
+                            {{ 'newAction' | translate }}
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <mat-paginator [length]="subscribers.length" [pageSize]="10" (page)="onPageChange($event)"></mat-paginator>
+    </div>
+    <div class=" font-medium p-3 rounded-xl text-end">
+        <a [routerLink]="'/project-manager'" class="items-center text-darkslategray bg-line rounded-xl p-2">
+            {{ 'regresar' | translate }}
+        </a>
+    </div>
+</div>

@@ -119,24 +119,26 @@ export class EventFactoryService {
     event.Date = new Date().toUTCString();
     event.ApplicationIdentifier = 'WebClient';
     event.setBodyProperty(EventConstants.PROJECT_MANAGER_ID, performanceFP.proyectManagerId);
-    event.setBodyProperty(EventConstants.DATE_PERFORMANCE, performanceFP.date);
-    event.setBodyProperty(EventConstants.TYPE_PERFORMANCE, performanceFP.type);
+    event.setBodyProperty(EventConstants.START_DATE, performanceFP.start_date);
+    event.setBodyProperty(EventConstants.END_DATE, performanceFP.end_date);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_ID, this.authenticationService.userInfo?.Id);
+    event.setBodyProperty(EventConstants.SUMMARY, performanceFP.summary);
     event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, performanceFP.justifyingDocument);
+
+    event.setBodyProperty(EventConstants.ESTIMATED_TRANSPORT_EXPENSES, performanceFP.estimatedTransportExpenses);
+    event.setBodyProperty(EventConstants.ESTIMATED_TRANSPORT_HOURS, performanceFP.estimatedTransportHours);
+    event.setBodyProperty(EventConstants.ESTIMATED_WORK_HOURS, performanceFP.estimatedWorkHours);  
+    
     event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_WORK_HOURS, performanceFP.freeProfessionalWorkHours);
     event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_TRAVEL_HOURS, performanceFP.freeProfessionalTravelHours);
     event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_TRAVEL_EXPENSES, performanceFP.freeProfessionalTravelExpenses);
-    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_REMUNERATION, performanceFP.freeProfessionalRemuneration);
+    event.setBodyProperty(EventConstants.TOTAL_FREE_PROFESSIONAL, performanceFP.totalfreeProfessional);
+    event.setBodyProperty(EventConstants.JUSTIFY_CHANGE_ESTIMATED_WORK_HOURS, performanceFP.justifyChangeEstimatedWorkHours);
+    event.setBodyProperty(EventConstants.DOCUMENT_INCREASE_WORKING_HOURS, performanceFP.documentIncreaseWorkingHours);
+
     event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_DATE, performanceFP.technicalDirectorDate);
     event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_WORK_HOURS, performanceFP.technicalDirectorWorkHours);
-    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_TRAVEL_HOURS, performanceFP.freeProfessionalTravelHours);
-    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_TRAVEL_EXPENSES, performanceFP.technicalDirectorTravelExpenses);
-    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_REMUNERATION, performanceFP.technicalDirectorRemuneration);
-    event.setBodyProperty(EventConstants.SUMMARY, performanceFP.summary);
-    event.setBodyProperty(EventConstants.ESTIMATED_TRANSPORT_EXPENSES, performanceFP.estimatedTransportExpenses);
-    event.setBodyProperty(EventConstants.ESTIMATED_TRANSPORT_HOURS, performanceFP.estimatedTransportHours);
-    event.setBodyProperty(EventConstants.ESTIMATED_WORK_HOURS, performanceFP.estimatedWorkHours);
-    event.setBodyProperty(EventConstants.JUSTIFY_CHANGE_ESTIMATED_WORK_HOURS, performanceFP.justifyChangeEstimatedWorkHours);
-    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_ID, this.authenticationService.userInfo?.Id);
+    event.setBodyProperty(EventConstants.ACCEPT_INCREASE_IN_HOURS, performanceFP.AcceptIncreaseInHours);
 
     return event;
   }
@@ -532,6 +534,36 @@ export class EventFactoryService {
 
     event = new WebBaseEvent();
     event.Action = EventAction.GET_SUMMARY_TYPES;
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Date = (new Date()).toUTCString();
+    event.ApplicationIdentifier = "WebClient";
+
+    return event;
+  }
+
+  public CreateGetUnassignedSubscribers(): WebBaseEvent {
+    let event: WebBaseEvent;
+
+    event = new WebBaseEvent();
+    event.Action = EventAction.GET_UNASSIGNED_SUBSCRIBERS;
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Date = (new Date()).toUTCString();
+    event.ApplicationIdentifier = "WebClient";
+
+    return event;
+  }
+
+  public CreateGetProfessionalFreeTrainers(): WebBaseEvent {
+    let event: WebBaseEvent;
+
+    event = new WebBaseEvent();
+    event.Action = EventAction.GET_PROFRESSIONALFREE_TRAINERS;
     event.SessionKey = this.authenticationService.sessionKey;
     event.SecurityToken = "3746736473";
     event.TraceIdentifier = Guid.create().toString();

@@ -4,6 +4,7 @@ import { ProjectManagementDossierComponent } from './pages/project-management-do
 import { PerformanceBuyComponent } from './pages/performance-buy/performance-buy.component';
 import { PerformanceFreeProfessionalComponent } from './pages/performance-free-professional/performance-free-professional.component';
 import { CreateProjectComponent } from './pages/create-project/create-project.component';
+import { AssignedPerformancesComponent } from './pages/assigned-performances/assigned-performances.component';
 
 const routes: Routes = [
   {
@@ -21,6 +22,10 @@ const routes: Routes = [
   {
     path: 'create-project',
     component: CreateProjectComponent
+  },
+  {
+    path: 'assigned-performance',
+    component: AssignedPerformancesComponent
   }
 ];
 

@@ -1,10 +1,12 @@
 <div class="flex justify-center flex-col space-y-1 ">
-        <div class="text-darkslategray text-start py-3 text-xl font-medium animate__animated animate__fadeInLeft">
-            <span class="pl-5 pr-3 py-1 bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden">
-                {{'authorizeCustomers' | translate}} </span>
-        </div>
-    <shared-authorized-modal [personalDataObject]="user" [message]="messageModal" [accountDataObject]="subscriber"
-        [showModal]="showAuthorizatedModal" (confirm)="onConfirmHandler()" (cancel)="onCancelHandler()">
+    <div class="text-darkslategray text-start py-3 text-xl font-medium animate__animated animate__fadeInLeft">
+        <span class="pl-5 pr-3 py-1 bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden">
+            {{'authorizeCustomers' | translate}} </span>
+    </div>
+    
+    <shared-authorized-modal [isAuthorized]="isAuthorized" [personalDataObject]="user" [message]="''"
+        [accountDataObject]="subscriber" [showModal]="showAuthorizatedModal" (confirm)="onConfirmHandler()"
+        (cancel)="onCancelHandler()">
     </shared-authorized-modal>
 
     <div class="flex justify-center flex-col p-5">
@@ -13,7 +15,7 @@
                 <thead>
                     <tr class="text-darkslategray">
                         <th class="px-2 py-2" style="width: 30%;">{{'Identity' | translate}}</th>
-                        <th class="px-2 py-2" style="width: 30%;">{{'suscriptor_cliente' | translate}} </th>
+                        <th class="px-2 py-2" style="width: 30%;">{{'SubscriberCustomer' | translate}} </th>
                         <th class="px-2" style="width: 30%;">{{'actions' | translate}}</th>
                         <th class="px-2" style="width: 30%;">{{'authorized' | translate}}</th>
                     </tr>
@@ -25,7 +27,8 @@
                         <td class="text-center border-y px-2  py-2">{{ item.Identity }}</td>
                         <td class="text-center border-y px-2 py-2">{{ item.CompanyName }}</td>
                         <td class="text-center space-x-2 border-y py-2">
-                            <button (click)="selectUser(item.Id)" class="underline text-darkslategray text-sm"><i class="fas fa-check-circle text-xl animate-bounce"></i></button>
+                            <button (click)="selectUser(item.Id)" class="underline text-darkslategray text-sm"><i
+                                    class="fas fa-check-circle text-xl animate-bounce"></i></button>
                         </td>
                         <td class="text-center border-y px-2 py-2">
                             <i class="fa-solid fa-circle"
@@ -43,6 +46,6 @@
 
 <div class="font-medium rounded-xl w-full flex items-end justify-end p-3">
     <button class="px-2 py-1 bg-line text-darkslategray rounded-lg" routerLink="/home">
-       {{'regresar' | translate}}
+        {{'regresar' | translate}}
     </button>
 </div>

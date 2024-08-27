@@ -11,6 +11,8 @@ import { OSDDataService } from 'src/app/services/osd-data.service';
 import { AuthSelectors } from 'src/app/store/selectors';
 import { DatePipe } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
+import { FreeProfessional } from 'src/app/functions/models/FreeProfessional';
+import { FreeProfessionalType } from '../../Models/freeprofessionalType';
 
 @Component({
   selector: 'app-performance-free-professional',
@@ -21,27 +23,21 @@ export class PerformanceFreeProfessionalComponent {
   isAuthenticated$: Observable<boolean> = this.store.select(AuthSelectors.authenticationToken)
   performanceFP: any;
   editOtherInformation: boolean = true;
-  disable: boolean = true;
   performanceForm: FormGroup;
-  Response = "";
   validationsService: any;
-  selectedType: string | undefined;
-  type: DropDownItem[] = [
-    { value: 'Escritos', key: 'Escritos' },
-    { value: 'E-mails', key: 'E-mails' },
-    { value: 'Video Conferencias', key: 'Video Conferencias' },
-    { value: 'Reuniones/Juzgado', key: 'Reuniones/Juzgado' }
-  ];
+  professionalsFree!: FreeProfessional[];
   selectedSummaryType: string | undefined;
   summaryTypes: DropDownItem[] = [];
-  PL_FreeProfessional: string | undefined;
-  FreeProfessional: DropDownItem[] = [];
-  isDropdownOpenPL = true;
-  isDropdownOpenDT = true;
   isAcceptConditions!: boolean;
   documentName!: string;
   freeProfessionalId!: string
   incorrectFormat: boolean = false
+  showModal: boolean = false;
+  professionalTypes: FreeProfessionalType[] = [{ id: '1bfc42c6-0d32-4270-99ed-99567bc7a524', name: 'Accounting Technician' },
+  { id: '2fc2a06a-69ca-4832-a90e-1ff590b80d24', name: 'Processor' },
+  { id: '3d49a5ce-f6d9-42a9-bef7-3e121fe622b0', name: 'IT Administrators' }];
+  selectedType: string = '';
+  filteredProfessionalsFree!: FreeProfessional[];
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
@@ -93,19 +89,19 @@ export class PerformanceFreeProfessionalComponent {
 
   async ngOnInit() {
     setTimeout(() => {
-      this.store.dispatch(UiActions.hideAll());
-      this.OSDEventService.GetSummaryTypes()
+      this.store.dispatch(UiActions.hideFooter());
+      this.store.dispatch(UiActions.hideLeftSidebar());
+      this.OSDEventService.GetSummaryTypes();
+      this.OSDEventService.GetFreeProfessionalsDataEvent();
     }, 0);
 
     this.OSDDataService.SummaryTypesList$.subscribe(summaryTypes => {
-      console.log(summaryTypes)
       summaryTypes.forEach(items => {
         var entityDropDownItem: DropDownItem = { value: items.Summary, key: items.Id };
         this.summaryTypes.push(entityDropDownItem);
       });
     });
-    
-    console.log(this.summaryTypes)
+
     this.isAuthenticated$.subscribe((isAuthenticated: boolean) => {
       if (isAuthenticated === false) {
         this.editOtherInformation = false
@@ -114,6 +110,11 @@ export class PerformanceFreeProfessionalComponent {
 
     this.OSDDataService.freeProfessionalId$.subscribe(id => {
       this.freeProfessionalId = id;
+    });
+
+    this.OSDEventService.getFreeProfessionalsList().then(freeProfessionals => {
+      this.professionalsFree = freeProfessionals;
+      this.filteredProfessionalsFree = freeProfessionals;
     });
   }
 
@@ -132,39 +133,33 @@ export class PerformanceFreeProfessionalComponent {
 
   private createRegisterForm(): FormGroup {
     const form = this.formBuilder.group({
-      Date: ['', [Validators.required]],
-      Type: ['', [Validators.required]],
-      JustifyingDocument: [''],
-      FP_WorkHours: ['', [Validators.required]],
-      FP_TravelTime: ['', [Validators.required]],
-      FP_TravelExpenses: ['', [Validators.required]],
-      FP_Remuneration: ['', [Validators.required]],
-      TD_Date: ['', [Validators.required]],
-      TD_WorkHours: ['', [Validators.required]],
-      TD_TravelTime: ['', [Validators.required]],
-      TD_TravelExpenses: ['', [Validators.required]],
-      TD_Remuneration: ['', [Validators.required]],
+      start_date: ['', [Validators.required]],
+      end_date: ['', [Validators.required]],
+      freeProfessionalId: ['', [Validators.required]],
+      freeProfessionalCode: ['', [Validators.required]],
       Summary: ['', [Validators.required]],
-      ForecastTravelExpenses: ['', this.performanceFP.ForecastTravelExpenses],
-      ForecastTravelTime: ['', [Validators.required]],
-      ForecastWorkHours: ['', [Validators.required]],
-      JustifyChangeEstimatedWorkHours: ['', [Validators.required]]
+      JustifyingDocument: ['', [Validators.required]],
+      ForecastTravelExpenses: [''],
+      ForecastTravelTime: [''],
+      ForecastWorkHours: [''],
+      Totalforecastdata: [''],
+      FP_WorkHours: [''],
+      FP_TravelTime: [''],
+      FP_TravelExpenses: [''],
+      FP_total: [''],
+      JustifyChangeEstimatedWorkHours: [''],
+      DocumentIncreaseWorkingHours: [''],
+      TD_Date: [''],
+      TD_WorkHours: [''],
+      AcceptIncreaseInHours: ['']
     });
     return form;
   }
 
-  toggleDropdown(Response: string) {
-    if (Response == "isDropdownOpen") {
-      this.isDropdownOpenPL = !this.isDropdownOpenPL;
-    }
-    else {
-      this.isDropdownOpenDT = !this.isDropdownOpenDT;
-    }
-  }
 
   onSubmit(): void {
     console.log(this.incorrectFormat)
-    if(this.incorrectFormat){
+    if (this.incorrectFormat) {
       this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: this.translate.instant('FormatHoursIncorrect') }));
       this.store.dispatch(ModalActions.changeAlertType({ alertType: 'warning' }));
       this.store.dispatch(ModalActions.openAlert());
@@ -177,30 +172,29 @@ export class PerformanceFreeProfessionalComponent {
     let formValues = this.performanceForm.value;
     let performanceData: PerformanceFreeProfessional = new PerformanceFreeProfessional();
 
-    performanceData.date = formValues.Date;
-    performanceData.type = formValues.Type;
+    performanceData.start_date = formValues.start_date;
+    performanceData.end_date = formValues.end_date;
+    performanceData.freeProfessionalId = this.freeProfessionalId
+    performanceData.proyectManagerId = '065d461a-cc09-4162-b4e9-f121c11d3348'
+    performanceData.summary = formValues.Summary;
     performanceData.justifyingDocument = formValues.JustifyingDocument;
-    performanceData.freeProfessionalWorkHours = formValues.FP_WorkHours;
-    performanceData.freeProfessionalTravelHours = formValues.FP_TravelTime;
-    performanceData.freeProfessionalTravelExpenses = formValues.FP_TravelExpenses;
-    performanceData.freeProfessionalRemuneration = formValues.FP_Remuneration;
-    performanceData.technicalDirectorDate = formValues.TD_Date;
-    performanceData.technicalDirectorWorkHours = formValues.TD_WorkHours;
-    performanceData.technicalDirectorTravelHours = formValues.TD_TravelTime;
-    performanceData.technicalDirectorTravelExpenses = formValues.TD_TravelExpenses;
-    performanceData.technicalDirectorRemuneration = formValues.TD_Remuneration;
-    performanceData.summary = formValues.Summary;
-    performanceData.technicalDirectorTravelExpenses = formValues.TD_TravelExpenses;
-    performanceData.technicalDirectorRemuneration = formValues.TD_Remuneration;
-    performanceData.summary = formValues.Summary;
+    
     performanceData.estimatedTransportExpenses = formValues.ForecastTravelExpenses;
     performanceData.estimatedTransportHours = formValues.ForecastTravelTime;
     performanceData.estimatedWorkHours = formValues.ForecastWorkHours;
+    performanceData.totalForecastData = formValues.Totalforecastdata;
+
+    performanceData.freeProfessionalWorkHours = formValues.FP_WorkHours;
+    performanceData.freeProfessionalTravelHours = formValues.FP_TravelTime;
+    performanceData.freeProfessionalTravelExpenses = formValues.FP_TravelExpenses;
+    performanceData.totalfreeProfessional = formValues.FP_total;
     performanceData.justifyChangeEstimatedWorkHours = formValues.JustifyChangeEstimatedWorkHours;
+    performanceData.documentIncreaseWorkingHours = formValues.DocumentIncreaseWorkingHours;
 
-    performanceData.freeprofessionalId = this.freeProfessionalId
-    performanceData.proyectManagerId = '065d461a-cc09-4162-b4e9-f121c11d3348'
-
+    performanceData.technicalDirectorDate = formValues.TD_Date;
+    performanceData.technicalDirectorWorkHours = formValues.TD_WorkHours;
+    performanceData.AcceptIncreaseInHours = formValues.AcceptIncreaseInHours;
+    
     this.OSDEventService.addPerformanceFreeProfessional(performanceData);
   }
 
@@ -255,7 +249,7 @@ export class PerformanceFreeProfessionalComponent {
 
   validarHora(horaStr: string): boolean {
     const horaNum = parseInt(horaStr);
-    
+
     if (horaNum > 24 || horaNum <= 0) {
       return false;
     }
@@ -272,8 +266,8 @@ export class PerformanceFreeProfessionalComponent {
   }
 
   chargeTravelExpenses(formValues: any) {
-    const hours= formValues.FP_TravelTime;
-    const remuneration = hours * 60 ;
+    const hours = formValues.FP_TravelTime;
+    const remuneration = hours * 60;
 
     this.performanceForm.patchValue({
       FP_TravelExpenses: remuneration
@@ -281,8 +275,8 @@ export class PerformanceFreeProfessionalComponent {
   }
 
   chargeRemunerationTD(formValues: any) {
-    const hours= formValues.TD_WorkHours;
-    const remuneration = hours * 60 ;
+    const hours = formValues.TD_WorkHours;
+    const remuneration = hours * 60;
 
     this.performanceForm.patchValue({
       TD_Remuneration: remuneration
@@ -290,8 +284,8 @@ export class PerformanceFreeProfessionalComponent {
   }
 
   chargeTravelExpensesTD(formValues: any) {
-    const hours= formValues.TD_TravelTime;
-    const remuneration =  hours * 60;
+    const hours = formValues.TD_TravelTime;
+    const remuneration = hours * 60;
 
     this.performanceForm.patchValue({
       TD_TravelExpenses: remuneration
@@ -301,9 +295,41 @@ export class PerformanceFreeProfessionalComponent {
   chargeEstimatedTravelExpenses(formValues: any) {
     const hours = formValues.ForecastTravelTime;
     const remuneration = hours * 60;
-   
+
     this.performanceForm.patchValue({
       ForecastTravelExpenses: remuneration
     });
   }
+
+  closeModal() {
+    this.showModal = false;
+  }
+
+  openModal() {
+    this.showModal = true;
+  }
+
+  selectProfessionalFree(professionalsFree: FreeProfessional) {
+    this.performanceForm.patchValue({
+      freeProfessionalCode: professionalsFree.Country + "/" + professionalsFree.Code, freeProfessionalId: professionalsFree.Id
+    })
+    this.showModal = false;
+  }
+
+  onPageChange(event: any) {
+    const startIndex = event.pageIndex * event.pageSize;
+    const endIndex = startIndex + event.pageSize;
+    this.filteredProfessionalsFree.slice(startIndex, endIndex);
+  }
+
+  applyFilter() {
+    if (this.selectedType) {
+      this.filteredProfessionalsFree = this.professionalsFree.filter(fp =>
+        fp.FreeprofessionaltypeName.toLowerCase() === this.selectedType.toLowerCase()
+      );
+    } else {
+      this.filteredProfessionalsFree = this.professionalsFree;
+    }
+  }
+
 }

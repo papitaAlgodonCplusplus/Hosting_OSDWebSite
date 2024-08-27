@@ -294,5 +294,7 @@
     "Registrar Resumen": "Registrar Resumen",
     "El nombre es requerido.": "El nombre es requerido.",
     "ErrorMessage":"Mensaje de error",
-    "FreeprofessionaltypeName" : "Tipo de professional libre"
+    "FreeprofessionaltypeName" : "Tipo de professional libre",
+    "Assign_client_to_Trainer" : "Asignar Cliente a Formador", 
+    "Assigned_performance" : "Actuaciones asignadas" 
 }

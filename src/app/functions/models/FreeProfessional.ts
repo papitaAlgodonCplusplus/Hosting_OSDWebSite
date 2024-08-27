@@ -3,10 +3,12 @@ export class FreeProfessional {
     Identity : string = "";
     Name: string = "";
     Userid: string = "";
+    Country: string = "";
     clientType: string= "";
     FreeprofessionaltypeName: string = "";
     FreeprofessionaltypeAcronym: string = "";
-    Isauthorized: string = ""
+    Isauthorized: string = "";
+    Code: string = "";
 }
 
 

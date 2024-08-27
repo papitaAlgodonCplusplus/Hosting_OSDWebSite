@@ -8,6 +8,7 @@ import { PerformanceClaim } from '../functions/models/PerformanceClaims';
 import { Subscriber } from '../functions/models/Subscriber';
 import { Project } from '../project-manager/Models/project';
 import { SummaryTypes } from '../project-manager/Models/summaryTypes';
+import { FreeProfessional } from '../functions/models/FreeProfessional';
 
 @Injectable({
   providedIn: 'root'
@@ -56,6 +57,10 @@ export class OSDDataService {
 
   private summaryTypesList = new Subject<SummaryTypes[]>();
 
+  private unassignedSubscribersList = new Subject<Subscriber[]>();
+
+  private professioanlFreeTrainersList = new Subject<FreeProfessional[]>();
+
   actionRegisterSuccess$ = this.actionRegisterSuccessSubject.asObservable();
   userRegisterSuccess$ = this.userRegisterSuccessSubject.asObservable();
   verifyEmailSuccess$ = this.verifyEmailSuccessSubject.asObservable();
@@ -99,6 +104,10 @@ export class OSDDataService {
   ProjectsList$ = this.projectsList.asObservable();
 
   SummaryTypesList$ = this.summaryTypesList.asObservable();
+
+  UnassignedSubscribersList$ = this.unassignedSubscribersList.asObservable();
+
+  ProfessionalFreeTrainerList$ = this.professioanlFreeTrainersList.asObservable();
 
   constructor() {
   }
@@ -219,6 +228,14 @@ export class OSDDataService {
   }
 
   emitGetSummaryTypesListSuccess(data: SummaryTypes[]) {
-   this.summaryTypesList.next(data);
+    this.summaryTypesList.next(data);
+  }
+
+  emitUnassignedSubscribersListSuccess(data: Subscriber[]) {
+    this.unassignedSubscribersList.next(data);
+  }
+
+  emitProfessionalFreeTrainersListSuccess(data: FreeProfessional[]) {
+    this.professioanlFreeTrainersList.next(data);
   }
 }

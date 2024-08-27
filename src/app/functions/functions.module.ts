@@ -14,6 +14,7 @@ import { FileManagerComponent } from './pages/file-manager/file-manager.componen
 import { ClaimsPerformanceComponent } from './pages/claims-performance/claims-performance.component';
 import { RestoreHistoryComponent } from './pages/restore-history/restore-history.component';
 import { AuthorizedModalComponent } from './components/authorized-modal/authorized-modal.component';
+import { AssignClientToTrainerComponent } from './pages/assign-client-to-trainer/assign-client-to-trainer.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { AuthorizedModalComponent } from './components/authorized-modal/authoriz
     FileManagerComponent,
     ClaimsPerformanceComponent,
     RestoreHistoryComponent,
-    AuthorizedModalComponent
+    AuthorizedModalComponent,
+    AssignClientToTrainerComponent
     ],
   imports: [
     CommonModule,

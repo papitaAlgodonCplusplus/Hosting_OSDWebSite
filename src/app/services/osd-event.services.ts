@@ -21,6 +21,7 @@ import { Project } from '../project-manager/Models/project';
 import { CreateClaimValuationEvent } from '../functions/Interface/ClaimValuation.interface';
 import { SummaryTypes } from '../project-manager/Models/summaryTypes';
 import { FreeProfessional } from '../functions/models/FreeProfessional';
+import { Subscriber } from '../functions/models/Subscriber';
 
 @Injectable({
   providedIn: 'root'
@@ -461,6 +462,33 @@ export class OSDService {
       }
     });
   }
+
+  public GetUnassignedSubscribers() {
+    const CreateGetUnassignedSubscribersEvent: WebBaseEvent = this.eventFactoryService.CreateGetUnassignedSubscribers();
+    this.restApiService.SendOSDEvent(CreateGetUnassignedSubscribersEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleCreateGetUnassignedSubscribersResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+
+  public GetProfessionalFreeTrainers() {
+    const CreateGetProfessionalFreeTrainersEvent: WebBaseEvent = this.eventFactoryService.CreateGetProfessionalFreeTrainers();
+    this.restApiService.SendOSDEvent(CreateGetProfessionalFreeTrainersEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleCreateGetProfessionalFreeTrainersResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+
   public HandleAddPerformanceBuyResponse(webBaseEvent: WebBaseEvent) {
     try {
       var actionGetOsdUsersSusbscriberResultMessage = webBaseEvent.getBodyProperty(EventConstants.ACTION_OSD_RESULT_MESSAGE);
@@ -845,6 +873,38 @@ export class OSDService {
       this.store.dispatch(ModalActions.openAlert())
       this.securityDataService.emitUserAuthenticationSuccess("/home");
      
+    } catch {
+
+    }
+  }
+
+  public HandleCreateGetUnassignedSubscribersResponse(webBaseEvent: WebBaseEvent) {
+    var unassignedSubscribersList: Subscriber[];
+    try {
+      unassignedSubscribersList = webBaseEvent.getBodyProperty(EventConstants.UNASSIGNED_SUBSCRIBERS_LIST);
+      if (unassignedSubscribersList.length > 0) {
+        this.osdDataService.emitUnassignedSubscribersListSuccess(unassignedSubscribersList)
+      }
+      else {
+        this.store.dispatch(ModalActions.changeAlertType({ alertType: 'warning' }));
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Error" }));
+        this.store.dispatch(ModalActions.openAlert())
+      }
+    } catch {
+
+    }
+  }
+
+  public HandleCreateGetProfessionalFreeTrainersResponse(webBaseEvent: WebBaseEvent) {
+    var professionalFreeTrainers: FreeProfessional[];
+    try {
+      professionalFreeTrainers = webBaseEvent.getBodyProperty(EventConstants.PROFESSIONAL_FREE_TRAINERS_LIST);
+      if (professionalFreeTrainers.length > 0) {
+        this.osdDataService.emitProfessionalFreeTrainersListSuccess(professionalFreeTrainers)
+      }
+      else {
+        //TODO: NOT EXISTS PROFESSIONALS FREE BUT IS NECESSARY CATCH ERRORS
+      }
     } catch {
 
     }

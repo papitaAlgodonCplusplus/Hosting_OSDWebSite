@@ -5,8 +5,12 @@
         </div>
         <div class="flex flex-col space-y-3 p-3">
             <div class="">
-                <label class="block text-sm font-medium text-gray-700">Nombre:</label>
-                <p class="text-lg">{{userInfo?.Name}}</p>
+                <label class="block text-sm font-medium text-gray-700">Código de usuario:</label>
+                <p class="text-lg">{{userInfo?.Country}}/{{userInfo?.Code}}</p>
+            </div>
+            <div class="">
+                <label class="block text-sm font-medium text-gray-700">Nombre Completo:</label>
+                <p class="text-lg">{{userInfo?.Name}} {{userInfo?.Firstname}} {{userInfo?.Middlesurname}}</p>
             </div>
             <div class="">
                 <label class="block text-sm font-medium text-gray-700">Correo Electrónico:</label>

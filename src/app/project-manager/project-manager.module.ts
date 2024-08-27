@@ -13,6 +13,7 @@ import { MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginato
 import { CustomPaginator } from '../services/custom-paginator.service';
 import { CreateProjectComponent } from './pages/create-project/create-project.component';
 import { SummaryTypeModalComponent } from './shared/summary-type-modal/summary-type-modal.component';
+import { AssignedPerformancesComponent } from './pages/assigned-performances/assigned-performances.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { SummaryTypeModalComponent } from './shared/summary-type-modal/summary-t
     PerformanceFreeProfessionalComponent,
     CreateProjectComponent,
     SummaryTypeModalComponent,
+    AssignedPerformancesComponent,
   ],
   imports: [
     CommonModule,

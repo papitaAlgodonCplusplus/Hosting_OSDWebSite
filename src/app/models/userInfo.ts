@@ -1,5 +1,6 @@
 export interface UserInfo {
   Id: string;
+  Code: string;
   Identity: string;
   Email: string;
   Name: string;
@@ -9,4 +10,5 @@ export interface UserInfo {
   Isadmin: string;
   AccountType: string;
   CompanyName: string;
+  Country: string;
 }

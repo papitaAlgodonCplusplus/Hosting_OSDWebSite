@@ -36,6 +36,7 @@ export class HomeComponent implements OnDestroy {
     }, 0);
     if (this.authenticationService.userInfo) {
       this.user = this.authenticationService.userInfo;
+      console.log(this.user)
       if (this.user.AccountType === "ApprovedTrainingCenter") {
         this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuService.getMenuOptionCFH() }));
       } else if (this.user.AccountType === "Claimant") {
@@ -48,7 +49,6 @@ export class HomeComponent implements OnDestroy {
           freeProfessionals.forEach(item => {
             var freeProfessional: FreeProfessional = item;
             if (freeProfessional.Userid == this.user.Id) {
-              console.log(freeProfessional)
               if (freeProfessional.FreeprofessionaltypeAcronym == "TR") {
                 this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuService.getMenuOptionFreeProfessionalProcessor() }));
               }

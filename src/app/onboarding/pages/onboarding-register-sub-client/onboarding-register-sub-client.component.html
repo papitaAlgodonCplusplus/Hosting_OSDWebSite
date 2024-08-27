@@ -5,15 +5,19 @@
             <shared-simple-dropdown class="w-full md:w-1/2" fieldName="clientType" label="{{'type_client' | translate}}"
                 [formGroup]="accountForm" [dropdownItems]="clientType" [selectedItem]="selectedClientType">
             </shared-simple-dropdown>
-            <shared-input-field class="w-full md:w-1/2" fieldName="plCode" label="{{'cod_PL' | translate}}"
-                [formGroup]="accountForm">
+            <shared-input-field (click)="openModal()" [readOnly]="true" class="w-full md:w-1/2" fieldName="showCodepl"
+                label="{{'cod_PL' | translate}}" [formGroup]="accountForm">
+            </shared-input-field>
+
+            <shared-input-field *ngIf="false" (click)="openModal()" [readOnly]="true" class="w-full md:w-1/2"
+                fieldName="plCode" [formGroup]="accountForm">
             </shared-input-field>
         </form>
 
         <form [formGroup]="personalForm" (ngSubmit)="onSubmit()" autocomplete="off" class="flex flex-col space-y-3 p-2">
             <div class="flex flex-wrap items-center">
 
-                <shared-input-field class="w-full md:w-1/2" fieldName="identity" label="{{'DNI' | translate}}*"
+                <shared-input-field class="w-full md:w-1/2" fieldName="identity" label="{{'DNI' | translate}}"
                     inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
                 <shared-input-field class="w-full md:w-1/2" fieldName="companyName"
@@ -105,55 +109,55 @@
     </div>
 
     <div class="flex flex-col items-center justify-center w-full">
-            <div class="grid p-3">
-                <h2 class="text-darkslategray font-bold justify-center text-center text-xl md:text-2xl">
-                    {{'Certificate_OSD_1500€'| translate }}</h2>
+        <div class="grid p-3">
+            <h2 class="text-darkslategray font-bold justify-center text-center text-xl md:text-2xl">
+                {{'Certificate_OSD_1500€'| translate }}</h2>
 
-                <p class="text-darkslategray mb-2 justify-center text-center font-bold">
-                    {{'Management_of_complaints_and_suggestions_for_improvement'| translate }}</p>
-                <p class="text-darkslategray mb-2 justify-center text-center font-bold">1500€</p>
-                <div class="p-2 bg-white flex flex-col items-center">
-                    <p class="text-darkslategray mb-2 font-bold">{{'Video_Certificate_OSD'| translate }}</p>
-                    <button
-                        class="p-2 rounded-xl bg-darkslategray text-white font-medium animate__animated animate__fadeInDown w-10/12"
-                        (click)="openVideo()"><i class="fa-solid fa-camera"></i>
-                        {{'Watch_Video'| translate }}
-                    </button>
+            <p class="text-darkslategray mb-2 justify-center text-center font-bold">
+                {{'Management_of_complaints_and_suggestions_for_improvement'| translate }}</p>
+            <p class="text-darkslategray mb-2 justify-center text-center font-bold">1500€</p>
+            <div class="p-2 bg-white flex flex-col items-center">
+                <p class="text-darkslategray mb-2 font-bold">{{'Video_Certificate_OSD'| translate }}</p>
+                <button
+                    class="p-2 rounded-xl bg-darkslategray text-white font-medium animate__animated animate__fadeInDown w-10/12"
+                    (click)="openVideo()"><i class="fa-solid fa-camera"></i>
+                    {{'Watch_Video'| translate }}
+                </button>
+            </div>
+            <div class="p-2 bg-white flex flex-col items-center">
+                <p class="text-darkslategray mb-2 font-bold">{{'Payment_TPV'| translate }}</p>
+                <button
+                    class="p-2 bg-darkslategray rounded-xl text-white font-medium animate__animated animate__fadeInDown w-10/12"
+                    (click)="makeAPurchase()"><i class="fa-solid fa-money-bill"></i>
+                    {{'Paid_link'| translate }}
+                </button>
+            </div>
+
+            <h2 class="text-darkslategray font-bold justify-center text-center text-xl md:text-2xl">
+                {{'Solutions_OSD'| translate }}</h2>
+            <div class="p-2 bg-white flex flex-col items-center">
+                <div class="flex flex-col">
+                    <p class="text-darkslategray mb-2">- {{'Query_Simple_95€'| translate }}</p>
+                    <p class="text-darkslategray mb-2">- {{'Sustainability_report_450€'| translate }}</p>
+                    <p class="text-darkslategray mb-2">- {{'Mediation_Arbitration_750€'| translate }}</p>
                 </div>
-                <div class="p-2 bg-white flex flex-col items-center">
-                    <p class="text-darkslategray mb-2 font-bold">{{'Payment_TPV'| translate }}</p>
-                    <button
-                        class="p-2 bg-darkslategray rounded-xl text-white font-medium animate__animated animate__fadeInDown w-10/12"
-                        (click)="makeAPurchase()"><i class="fa-solid fa-money-bill"></i>
-                        {{'Paid_link'| translate }}
-                    </button>
-                </div>
-            
-                <h2 class="text-darkslategray font-bold justify-center text-center text-xl md:text-2xl">
-                    {{'Solutions_OSD'| translate }}</h2>
-                <div class="p-2 bg-white flex flex-col items-center">
-                    <div class="flex flex-col">
-                        <p class="text-darkslategray mb-2">- {{'Query_Simple_95€'| translate }}</p>
-                        <p class="text-darkslategray mb-2">- {{'Sustainability_report_450€'| translate }}</p>
-                        <p class="text-darkslategray mb-2">- {{'Mediation_Arbitration_750€'| translate }}</p>
-                    </div>
-                    <button
-                        class="p-2 rounded-xl bg-darkslategray text-white font-medium animate__animated animate__fadeInDown w-10/12"
-                        (click)="openVideoSolutionsOsd()"><i class="fa-solid fa-camera"></i>
-                        {{'Watch_Video'| translate }}
-                    </button>
-                </div>
-                <div class="p-2 bg-white flex flex-col items-center">
-                    <p class="text-darkslategray mb-2 font-bold">{{'Payment_TPV'| translate }}</p>
-                    <button
-                        class="p-2 rounded-xl bg-darkslategray text-white font-medium animate__animated animate__fadeInDown w-10/12"
-                        (click)="makeAPurchaseSolutionsOsd()"><i class="fa-solid fa-money-bill"></i>
-                        {{'Paid_link'| translate }}
-                    </button>
-                </div>
+                <button
+                    class="p-2 rounded-xl bg-darkslategray text-white font-medium animate__animated animate__fadeInDown w-10/12"
+                    (click)="openVideoSolutionsOsd()"><i class="fa-solid fa-camera"></i>
+                    {{'Watch_Video'| translate }}
+                </button>
+            </div>
+            <div class="p-2 bg-white flex flex-col items-center">
+                <p class="text-darkslategray mb-2 font-bold">{{'Payment_TPV'| translate }}</p>
+                <button
+                    class="p-2 rounded-xl bg-darkslategray text-white font-medium animate__animated animate__fadeInDown w-10/12"
+                    (click)="makeAPurchaseSolutionsOsd()"><i class="fa-solid fa-money-bill"></i>
+                    {{'Paid_link'| translate }}
+                </button>
             </div>
         </div>
     </div>
+</div>
 <div class="flex flex-wrap justify-end items-center space-x-3 p-2 w-full">
     <button routerLink="/onboarding/onboarding-register"
         class="p-2 bg-line text-darkslategray font-medium animate__animated animate__fadeInDown rounded-xl">
@@ -164,4 +168,33 @@
         class="p-2 bg-darkslategray text-white font-medium animate__animated animate__fadeInDown rounded-xl">
         {{'registrarse' | translate}}
     </button>
+</div>
+
+<div *ngIf="showModal" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
+    <div class="bg-opacity-75 bg-black absolute inset-0 "></div>
+    <div class="relative z-50 bg-white shadow-md space-y-1 rounded-xl p-3">
+        <div class="justify-center">
+            <div class="p-3 flex flex-col items-center">
+                <div class="flex flex-col space-y-3">
+                    <h1>Ingresa el codigo del Professional Libre:</h1>
+                    <input (input)="verifiedProfessionalFree($event)"
+                        class="text-black block border-solid border w-full p-2 pr-3 focus:outline-none focus:border-blue-950"
+                        type="text">
+                    <div *ngIf="freeProfessionalExists" class="text-center text-green-500">
+                        <span>El professional Libre si existe</span>
+                    </div>
+                </div>
+                <div class=" font-medium p-3 rounded-xl cursor-pointer space-x-3">
+                    <a (click)="eliminatedProfessionalFree()"
+                        class="items-center text-darkslategray bg-line rounded-xl p-2">
+                        {{ 'cancelar' | translate }}
+                    </a>
+                    <a *ngIf="freeProfessionalExists" (click)="closeModal()"
+                        class="items-center text-line bg-darkslategray rounded-xl p-2">
+                        {{ 'confirm' | translate }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

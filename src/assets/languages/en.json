@@ -293,5 +293,7 @@
   "Registrar Resumen": "Register Summary",
   "El nombre es requerido.": "Name is required.",
   "ErrorMessage":"Error Message",
-  "FreeprofessionaltypeName" : "Free professional type"
+  "FreeprofessionaltypeName" : "Free professional type",
+  "Assign_client_to_Trainer" : "Assign Client to Trainer",
+  "Assigned_performance" : "Assigned performances" 
 }

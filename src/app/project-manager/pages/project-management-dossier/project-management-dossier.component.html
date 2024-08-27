@@ -1,5 +1,5 @@
-<div class="flex justify-center flex-col">
-    <div class="text-darkslategray text-start py-3 text-xl font-medium animate__animated animate__fadeInLeft">
+<div class="h-full flex justify-end items-end flex-col">
+    <div class="w-full text-darkslategray text-start py-3 text-xl font-medium animate__animated animate__fadeInLeft">
         <span class="pl-8 pr-3 py-1 bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden">
             {{'transparent_project' | translate}} <i class="fa-solid fa-project-diagram"></i></span>
     </div>
@@ -12,7 +12,7 @@
 
 
     <div *ngIf="!openSideBar"
-        class=" h-screen py-10 px-2 shadow-lg fixed left-0 left-sidebar open border-r-2 bg-white overflow-y-auto max-h-screen animate__animated animate__fadeInLeft w-72">
+        class="h-screen py-10 px-2 shadow-lg fixed left-0 left-sidebar open border-r-2 bg-white overflow-y-auto max-h-screen animate__animated animate__fadeInLeft w-72">
         <div class="text-end text-darkslategray text-xl">
             <i (click)="toggleSideBar()" class="cursor-pointer animate-pulse fa-solid fa-xmark"></i>
         </div>
@@ -39,14 +39,30 @@
             label="{{'supplier_purchasing_expenses' | translate}}:" inputType="text" [formGroup]="formProjectManager"
             [bgColor]="'bg-white-lightbone'"></shared-input-field>
     </div>
-    <div class="flex-1 space-y-3 flex justify-center flex-col">
-        <div class="flex flex-col items-center">
-            <label for="objectivesDropdown">{{"Objective" | translate}}</label>
-            <select class=" p-2 w-64" (change)="selectProject($event)">
-                <option *ngFor="let project of (Projects$ | async)" [value]="project.Id">
-                    {{ project.Objective }}
-                </option>
-            </select>
+    <div class="w-full flex-1 space-y-3 flex justify-center flex-col">
+        <div class="flex flex-col p-3 items-center justify-center space-y-3">
+            <div class="flex flex-col items-center">
+                <label for="objectivesDropdown">{{"Objective" | translate}}</label>
+                <select class="border rounded-xl bg-white text-line p-2 w-64">
+                    <option value="" disabled selected hidden>{{ 'Filtrar por Área de trabajo' | translate }}
+                    </option>
+                    <option *ngFor="let project of (Projects$ | async)" (click)="selectProject($event)"
+                        [value]="project.Id">
+                        {{ project.Objective }}
+                    </option>
+                </select>
+            </div>
+            <div *ngIf="isAdmin" class="flex flex-row items-center justify-center font-medium">
+                <button class="text-darkslategray p-2 rounded-xl hover:underline"
+                    routerLink="/project-manager/create-project"> {{'RegisterProject' | translate}}</button>
+                <button class="text-darkslategray p-2 rounded-xl hover:underline" (click)="openModal()">
+                    {{'Registrar resumen de actuación' | translate}}
+                </button>
+            </div>
+            <button *ngIf="!isUser" class="bg-darkslategray p-2 rounded-lg text-line text-sm"
+                routerLink="/project-manager/assigned-performance">
+                {{'Ver mis actuaciones Asignadas' | translate}}
+            </button>
         </div>
 
         <div class="w-full p-10 flex flex-col justify-center space-y-3">
@@ -62,7 +78,7 @@
                 <span class="m-1 cursor-pointer border-b" (click)="sortDateLowestHighest(false)">
                     {{ 'date_major_to_minor' | translate }}
                 </span>
-                <div class="flex items-center justify-end space-x-3" *ngIf="isUser">
+                <div class="flex items-center justify-end space-x-3" *ngIf="isAdmin">
                     <div *ngIf="showOptions" class="animate__animated animate__fadeInRight flex flex-row space-x-3">
                         <i (click)="cleanPerformance()" routerLink="/project-manager/performance-buy"
                             class="cursor-pointer px-2 py-1 fa-solid fa-cart-shopping text-xl bg-line text-darkslategray rounded-full"></i>
@@ -74,10 +90,6 @@
                         <i class="fas animate-pulse pr-3 "
                             [ngClass]="{'fa-chevron-right' : showOptions, 'fa-chevron-left':!showOptions}"></i>
                         {{'CreatePerformance' | translate}}
-                    </button>
-                    <button class="flex items-center bg-darkslategray p-2 rounded-lg text-line text-sm"
-                        (click)="openModal()">
-                        {{'Registrar Resumen' | translate}}
                     </button>
                 </div>
             </div>
@@ -97,11 +109,13 @@
                     <tr class="font-light text-center" *ngFor="let performance of displayedItems; let i = index">
                         <td routerLink="/project-manager/performance-buy"
                             class="text-darkslategray font-medium text-s border-y px-2 py-2 hover:underline cursor-pointer"
-                            (click)="selectPerformance(performance.Id)" *ngIf="performance.Type === '-'"><i class="fa-solid fa-eye"></i></td>
+                            (click)="selectPerformance(performance.Id)" *ngIf="performance.Type === '-'"><i
+                                class="fa-solid fa-eye"></i></td>
                         <td routerLink="/project-manager/performance-free-professional"
                             class="text-darkslategray font-medium  text-s border-y px-2 py-2 hover:underline cursor-pointer"
-                            (click)="chargePerformanceFP(performance.Id)" *ngIf="performance.Type !== '-'"><i class="fa-solid fa-eye"></i></td>
-                            <td class="border-y px-2 py-2">GETP/{{1}}/A/{{i+1}}/2024</td>
+                            (click)="chargePerformanceFP(performance.Id)" *ngIf="performance.Type !== '-'"><i
+                                class="fa-solid fa-eye"></i></td>
+                        <td class="border-y px-2 py-2">GETP/{{1}}/A/{{i+1}}/2024</td>
                         <td class="border-y px-2 py-2">{{performance.Type}}</td>
                         <td class="border-y px-2 py-2">{{performance.Summary}}</td>
                         <td class="border-y px-3 py-2">{{ performance.Date | date:'dd-MM-yyyy' }}</td>
@@ -113,18 +127,12 @@
         </div>
 
         <mat-paginator [length]="allPerformances.length" [pageSize]="10" (page)="onPageChange($event)"></mat-paginator>
-
-        <div class="flex flex-row space-x-3 justify-end py-3 px-3">
-            <button [routerLink]="isUser ? '/home' : '/reports'"
-                class="bg-line font-medium p-2 rounded-xl flex items-center text-darkslategray">
-                {{'regresar' | translate}}
-            </button>
-
-            <div *ngIf="isUser" class="flex justify-end">
-                <button class="bg-darkslategray text-line p-2 rounded-xl"
-                    routerLink="/project-manager/create-project">{{'RegisterProject' | translate}}</button>
-            </div>
-        </div>
+    </div>
+    <div class="flex flex-row space-x-3 justify-end py-3 px-3">
+        <button [routerLink]="isUser ? '/home' : '/reports'"
+            class="bg-line font-medium p-2 rounded-xl flex items-center text-darkslategray">
+            {{'regresar' | translate}}
+        </button>
     </div>
 </div>
 

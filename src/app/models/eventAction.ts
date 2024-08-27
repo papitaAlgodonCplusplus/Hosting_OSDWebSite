@@ -25,14 +25,17 @@ export class EventAction {
   public static GET_TRANSPARENCY_FREE_PROFESSIONALS: string = "GetTransparencyFreeProfessionals";
   public static CREATE_PROJECT: string = "CreateProject";
   public static GET_PROJECTS : string = "GetProjects";
-  public static UPDATE_EVALUATION : string = "UpdateEvaluation"
+  public static UPDATE_EVALUATION : string = "UpdateEvaluation";
 
   public static ADD_SUMMARY_TYPE : string = "AddSummaryType";
-  public static GET_SUMMARY_TYPES : string = "GetSummaryTypes"
+  public static GET_SUMMARY_TYPES : string = "GetSummaryTypes";
+  public static GET_UNASSIGNED_SUBSCRIBERS : string = "GetUnassignedSubscribers";
+  public static GET_PROFRESSIONALFREE_TRAINERS : string = "GetProfessionalFreeTrainers";
+  
 
   //Response
   
-  public static ADD_SUMMARY_TYPE_RESPONSE : string = "AddSummaryTypeResponse"
+  public static ADD_SUMMARY_TYPE_RESPONSE : string = "AddSummaryTypeResponse";
   public static HANDLE_AUTHENTICATION_RESPONSE: string = "HandleAuthenticationResponse";
   public static HANDLE_REGISTER_USER_RESPONSE: string = "HandleRegisterResponse";
   public static HANDLE_VERIFY_EMAIL_RESPONSE: string = "HandleVerifyEmailResponse";

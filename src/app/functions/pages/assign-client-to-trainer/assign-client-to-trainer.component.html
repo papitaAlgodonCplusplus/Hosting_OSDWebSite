@@ -1,0 +1,91 @@
+<div class="flex flex-col items-end justify-end h-full">
+    <div
+        class="w-full text-darkslategray text-start py-3 text-xl font-medium space-x-3 animate__animated animate__fadeInLeft">
+        <span class="pl-5 pr-3 py-1 bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden">
+            {{'Assign_client_to_Trainer' | translate}}<i class="pl-3 fa-regular fa-hand-pointer"></i></span>
+    </div>
+    <div class="w-full h-full p-5">
+        <table class="w-full rtl:text-right text-slate-950 text-center">
+            <thead class="font-medium text-darkslategray">
+                <tr>
+                    <th scope="col" class="px-6 py-3">
+                        {{'SubscriberCustomer' | translate}}
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        {{'type_client' | translate}}
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="border-y border-gray-700" *ngFor="let sub of subscribers; let i = index">
+                    <th class="text-center border-y px-4 py-2">
+                        {{sub.companyName}}
+                    </th>
+                    <th class="text-center border-y px-4 py-2">
+                        {{sub.clientType}}
+                    </th>
+                    <td class="text-center border-y px-4 py-2">
+                        <button (click)="selectSubscriber(sub.id)" class="rounded-xl p-2 bg-darkslategray text-line">
+                            {{ 'Select' | translate }}
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <mat-paginator [length]="subscribers.length" [pageSize]="10" (page)="onPageChange($event)"></mat-paginator>
+    </div>
+
+    <div class=" font-medium p-3 rounded-xl text-end">
+        <a [routerLink]="'/home'" class="items-center text-darkslategray bg-line rounded-xl p-2">
+            {{ 'regresar' | translate }}
+        </a>
+    </div>
+</div>
+
+<div *ngIf="showModal" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
+    <div class="bg-opacity-75 bg-black absolute inset-0 "></div>
+    <div class="relative z-50 bg-white shadow-md space-y-1 rounded-xl p-3">
+        <div class="justify-center">
+            <div class="p-3 flex flex-col items-center">
+                <table class="w-full rtl:text-right text-slate-950 text-center">
+                    <thead class="font-medium text-darkslategray">
+                        <tr>
+                            <th scope="col" class="px-6 py-3">
+                                {{'FreeProfessional' | translate}}
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                {{'DNI' | translate}}
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                {{ 'Select' | translate }}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-y border-gray-700" *ngFor="let fp of subscribers; let i = index">
+                            <th class="text-center border-y px-4 py-2">
+                                {{fp.companyName}}
+                            </th>
+                            <th class="text-center border-y px-4 py-2">
+                                {{fp.clientType}}
+                            </th>
+                            <td class="text-center border-y px-4 py-2">
+                                <button (click)="selectTrainer(fp.id)" class="rounded-xl p-2">
+                                    <i class="fas fa-check-circle text-xl animate-bounce text-green-500"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <mat-paginator [length]="subscribers.length" [pageSize]="5" (page)="onPageChange($event)"></mat-paginator>
+                <div class=" font-medium p-3 rounded-xl cursor-pointer">
+                    <a (click)="closeModal()" class="items-center text-darkslategray bg-line rounded-xl p-2">
+                        {{ 'cancelar' | translate }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

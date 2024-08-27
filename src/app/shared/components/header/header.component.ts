@@ -1,11 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { AuthSelectors } from 'src/app/store/selectors';
 import { Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { UserInfo } from 'src/app/models/userInfo';
 import { UiActions } from 'src/app/store/actions';
+import { AuthService } from 'src/app/auth/services/auth.service';
 
 @Component({
   selector: 'shared-header',
@@ -15,17 +16,25 @@ import { UiActions } from 'src/app/store/actions';
 export class HeaderComponent implements OnInit {
   imgProfile = "/./assets/img/profile.png";
   open = false;
-  userInfo: UserInfo | null = null;
+  isUser: boolean = false;
+  userInfo!: UserInfo;
+  isUserSignIn$: Observable<boolean> = this.store.select(AuthSelectors.authenticationToken);
   constructor(private router: Router, private store: Store,
-    private authService: AuthenticationService
+    private authService: AuthService,
+    private authLogic: AuthenticationService
   ) {
   }
 
   ngOnInit(): void {
     setTimeout(() => {
-      this.userInfo = this.authService.userInfo;
-      console.log(this.userInfo)
-    }, 0)
+      this.isUserSignIn$.subscribe(state => {
+        this.isUser = state
+      })
+
+      if (this.isUser && this.authLogic.userInfo) {
+        this.userInfo = this.authLogic.userInfo
+      }
+    }, 0);
   }
 
   toggleDropdown() {
@@ -34,6 +43,7 @@ export class HeaderComponent implements OnInit {
 
   onClick() {
     this.router.navigateByUrl('auth/login');
-    this.authService.endSession();
+    this.authLogic.endSession();
+    this.isUser = false
   }
 }

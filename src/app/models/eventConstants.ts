@@ -93,6 +93,7 @@ export class EventConstants {
   public static PERFORMANCE_BUY_LIST: string = "PerformanceBuyList"
   public static PERFORMANCE_CLAIM_LIST: string = "PerformanceClaimList"
   public static CLAIM_ID: string = "ClaimId";
+  
   public static FREE_PROFESSIONAL_ID: string = "FreeProfessionalId";
   public static FREE_PROFESSIONAL_TYPE_ID: string = "FreeProfessionalTypeId";
   public static PROJECT_MANAGER_ID: string = 'ProjectManagerId';
@@ -101,11 +102,14 @@ export class EventConstants {
   public static FREE_PROFESSIONAL_TRAVEL_HOURS: string = 'FP_TravelTime';
   public static FREE_PROFESSIONAL_TRAVEL_EXPENSES: string = 'FP_TravelExpenses';
   public static FREE_PROFESSIONAL_REMUNERATION: string = 'FP_Remuneration';
+  public static TOTAL_FREE_PROFESSIONAL: string = 'Total_FP';
+  public static DOCUMENT_INCREASE_WORKING_HOURS: string = 'DocumentIncreaseWorkingHours';
   public static TECHNICAL_DIRECTOR_DATE: string = 'TD_Date';
   public static TECHNICAL_DIRECTOR_WORK_HOURS: string = 'TD_WorkHours';
   public static TECHNICAL_DIRECTOR_TRAVEL_HOURS: string = 'TD_TravelTime';
   public static TECHNICAL_DIRECTOR_TRAVEL_EXPENSES: string = 'TD_TravelExpenses';
   public static TECHNICAL_DIRECTOR_REMUNERATION: string = 'TD_Remuneration';
+  public static ACCEPT_INCREASE_IN_HOURS: string = 'AcceptIncreaseInHours';
   public static PERFORMANCE_FREE_PROFESSIONAL: string = 'PerformanceFreeProfessional';
   public static PERFORMANCE_FREE_PROFESSIONAL_MESSAGE: string = 'PerformanceFreeProfessionalMessage';
 
@@ -158,6 +162,7 @@ export class EventConstants {
   public static EXPECTED_HOURS: string = "ExpectedHours"
   public static ECONOMIC_BUDGET: string = "EconomicBudget"
   public static START_DATE: string = "StartDate"
+  public static END_DATE: string = "EndDate"
 
   public static VALUATION_SUBSCRIBER: string = "ValuationSubscriber"
   public static VALUATION_CLAIMANT: string = "ValuationClaimant"
@@ -166,6 +171,9 @@ export class EventConstants {
   public static ACTION_OSD_RESULT_MESSAGE: string = "ActionOSDResultMessage"
 
   public static SUMMARY_TYPES_PERFORMANCE_FREEPROFESSIONAL_LIST: string = "SummaryTypesPerformanceFreeProfessionalList"
+  public static UNASSIGNED_SUBSCRIBERS_LIST: string = "UnassignedSubscribersList"
+
+  public static PROFESSIONAL_FREE_TRAINERS_LIST: string = "ProfessionalFreeTrainersList"
   //#endregion
   constructor() {
 

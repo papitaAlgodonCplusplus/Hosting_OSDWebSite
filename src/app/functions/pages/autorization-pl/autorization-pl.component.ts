@@ -17,27 +17,27 @@ import { FreeProfessional } from '../../models/FreeProfessional';
 export class AutorizationPlComponent implements OnDestroy {
   items: any[] = [];
   displayedItems: any;
-  showModalConfirm: boolean = false; 
+  showModalConfirm: boolean = false;
   user!: UserInfo;
   message: string = "";
   showAuthorizatedModal: boolean = false;
   freeProfessional!: FreeProfessional;
-  userSelected : string = ""
-  isAuthorized! : boolean
+  userSelected: string = ""
+  isAuthorized!: boolean
 
   constructor(private store: Store,
-              private osdEventService : OSDService,
-            private translate : TranslateService) {
+    private osdEventService: OSDService,
+    private translate: TranslateService) {
   }
 
   ngOnInit(): void {
     this.osdEventService.getFreeProfessionalsList().then(freeProfessionals => {
       freeProfessionals.forEach(item => {
         if (item.Isadmin === false) {
-           this.items.push(item)
+          this.items.push(item)
         }
       });
-     
+
       this.updateDisplayedItems();
     });
 
@@ -49,11 +49,10 @@ export class AutorizationPlComponent implements OnDestroy {
   }
 
   selectUser(user: FreeProfessional) {
-    console.log(user)
-    if(user.Isauthorized){
+    if (user.Isauthorized) {
       this.isAuthorized = true
     }
-    else{
+    else {
       this.isAuthorized = false
     }
     const userDTO: UserInfo = {} as UserInfo;
@@ -85,13 +84,16 @@ export class AutorizationPlComponent implements OnDestroy {
   }
 
   onConfirmHandler() {
-    console.log(this.userSelected)
     this.osdEventService.changingUsdUserAutorizationStatusEvent(this.userSelected)
-    this.items.forEach(item => {
+    const newItems = this.items.map(item => {
       if (item.Id === this.userSelected) {
-        item.Isauthorized = true; 
+        return { ...item, Isauthorized: "true" };
       }
+      return item;
     });
+    this.items = newItems;
+    this.updateDisplayedItems()
+    this.showAuthorizatedModal = false;
   }
 
   onCancelHandler() {

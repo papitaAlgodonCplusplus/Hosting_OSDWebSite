@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable, firstValueFrom } from 'rxjs';
@@ -9,9 +9,9 @@ import { PerformanceActions, UiActions } from 'src/app/store/actions';
 import { AuthSelectors } from 'src/app/store/selectors';
 import { PerformanceBuy } from '../../Models/performanceBuy';
 import { TranslateService } from '@ngx-translate/core';
-import { DatePipe } from '@angular/common';
-import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
 import { Project } from '../../Models/project';
+import { AuthenticationService } from 'src/app/services/authentication.service';
+import { UserInfo } from 'src/app/models/userInfo';
 
 @Component({
   selector: 'app-project-management-dossier',
@@ -28,6 +28,7 @@ export class ProjectManagementDossierComponent implements OnDestroy {
   performancesBuys: any[] = [];
   isAuthenticated$: Observable<boolean> = this.store.select(AuthSelectors.authenticationToken)
   isUser: boolean = true;
+  isAdmin: boolean = false;
   emptyPerformance!: PerformanceBuy
   allPerformances: any[] = [];
   displayedItems: any[] = [];
@@ -36,12 +37,11 @@ export class ProjectManagementDossierComponent implements OnDestroy {
   Projects$: Observable<Project[]> = this.osdDataService.ProjectsList$;
   selectedProject!: Project | undefined;
   allProjects!: Project[];
-  loadProjectManager : boolean = true
+  loadProjectManager: boolean = true
 
   constructor(private router: Router, private store: Store, private formBuilder: FormBuilder,
     private osdDataService: OSDDataService, private osdEventService: OSDService,
-    private translate: TranslateService,
-    private datePipe: DatePipe) {
+    private translate: TranslateService, private authService: AuthenticationService) {
     this.formProjectManager = this.createForm();
   }
 
@@ -51,11 +51,14 @@ export class ProjectManagementDossierComponent implements OnDestroy {
       this.store.dispatch(UiActions.hideFooter())
       this.osdEventService.getPerformanceList();
       this.osdEventService.GetProjects();
-      this.isAuthenticated$.subscribe((isAuthenticated: boolean) => {
-        if (isAuthenticated === false) {
-          this.isUser = false
+
+      var user = this.authService.userInfo;
+      if (user) {
+        this.isUser = false
+        if (user.Isadmin) {
+          this.isAdmin = true;
         }
-      });
+      }
 
       this.osdDataService.performanceFreeProfessionalList$.subscribe(performancesFP => {
         this.performancesFreeProfesional = performancesFP;
@@ -106,7 +109,7 @@ export class ProjectManagementDossierComponent implements OnDestroy {
 
       });
       this.allPerformances = [...normalizedFreeProfesional, ...normalizedBuys];
-      
+
       this.updateDisplayedItems();
       this.loadProjectManager = false;
       this.sortDateLowestHighest(true);
@@ -185,7 +188,6 @@ export class ProjectManagementDossierComponent implements OnDestroy {
 
   updateDisplayedItems(startIndex: number = 0, endIndex: number = 10) {
     this.displayedItems = this.allPerformances.slice(startIndex, endIndex);
-    console.log(this.displayedItems)
   }
 
   toggleSideBar() {
@@ -195,21 +197,19 @@ export class ProjectManagementDossierComponent implements OnDestroy {
   selectProject(event: Event): void {
     const id = (event.target as HTMLSelectElement).value;
     this.allProjects.forEach(element => {
-        if (element.Id === id) {
-            this.selectedProject = element;
-            this.formProjectManager = this.createForm();
-            this.openSideBar = true
-        }
+      if (element.Id === id) {
+        this.selectedProject = element;
+        this.formProjectManager = this.createForm();
+        this.openSideBar = true
+      }
     });
-}
+  }
 
   async loadProjects(): Promise<void> {
     try {
-        this.allProjects = await firstValueFrom(this.Projects$);
-        this.selectedProject = this.allProjects[0];
-        this.formProjectManager = this.createForm();
+      this.allProjects = await firstValueFrom(this.Projects$);
     } catch (error) {
-        console.error('Error loading projects:', error);
+      console.error('Error loading projects:', error);
     }
   }
 

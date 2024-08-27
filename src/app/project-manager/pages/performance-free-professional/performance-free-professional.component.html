@@ -1,28 +1,31 @@
 <div class="flex flex-col justify-center">
-
-    <div class="bg-darkslategray text-white py-2">
-        <img src="../../../../../assets/img/OSD_2.png" alt="Logo OSD" class="w-32">
-
+    <div
+        class="w-full text-darkslategray text-start py-3 text-xl font-medium space-x-3 animate__animated animate__fadeInLeft">
+        <span class="pl-5 pr-3 py-1 bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden">
+            {{'TitlePerformance' | translate}}</span>
     </div>
     <form [formGroup]="performanceForm" (ngSubmit)="onSubmit()" autocomplete="off" class="px-10 py-2">
 
-        <div class="text-darkslategray text-center">
-            <h1 class="text-3xl py-2">{{'TitlePerformance'|translate}}</h1>
-        </div>
-
         <div class="flex flex-wrap items-center">
+            <shared-input-field class="w-full md:w-1/2" fieldName="start_date" label="{{'start_date'|translate}}"
+                inputType="date" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-            <shared-input-field class="w-full md:w-1/2" fieldName="Date" label="{{'Date'|translate}}" inputType="date"
-                [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+            <shared-input-field class="w-full md:w-1/2" fieldName="end_date" label="{{'end_date'|translate}}"
+                inputType="date" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-            <shared-simple-dropdown class="w-full md:w-1/2" fieldName="Type" label="{{'TypePerformance'|translate}}"
-                [formGroup]="performanceForm" [dropdownItems]="type" [selectedItem]="selectedType">
-            </shared-simple-dropdown>
+            <shared-input-field (click)="openModal()" class="w-full md:w-1/2" fieldName="freeProfessionalCode"
+                label="{{'Asignar Profesional Libre'|translate}}" [formGroup]="performanceForm">
+            </shared-input-field>
+
+            <shared-input-field *ngIf="false" class="w-full md:w-1/2" fieldName="freeProfessionalId"
+                [formGroup]="performanceForm">
+            </shared-input-field>
 
             <shared-simple-dropdown class="w-full md:w-1/2" fieldName="Summary" label="{{'Summary'|translate}}"
-                inputType="text" [formGroup]="performanceForm" [selectedItem]="selectedSummaryType" [dropdownItems]="summaryTypes" [bgColor]="'bg-white-lightbone'"></shared-simple-dropdown>
+                inputType="text" [formGroup]="performanceForm" [selectedItem]="selectedSummaryType"
+                [dropdownItems]="summaryTypes" [bgColor]="'bg-white-lightbone'"></shared-simple-dropdown>
 
-            <div class="flex flex-wrap items-center space-x-2 w-full md:w-1/2">
+            <div class="flex flex-col items-center justify-center space-x-2 w-full">
                 <input type="file" id="JustifyingDocument" formControlName="JustifyingDocument" class="hidden"
                     (change)="displayFileName()" [disabled]="!editOtherInformation">
                 <label for="JustifyingDocument" class="block text-gray-700 mb-1 cursor-pointer">
@@ -38,37 +41,38 @@
             </div>
 
         </div>
-        <div class="text-darkslategray  text-xl mt-3 bg-gray-100 text-center p-2">
+        <div class="text-darkslategray border-b mt-3 text-start p-2">
             <h1>
                 {{'ForecastData' | translate}}
             </h1>
         </div>
         <div class="flex flex-wrap">
             <shared-input-field class="w-full md:w-1/3" fieldName="ForecastWorkHours"
-                label="{{'ForecastWorkHours'|translate}}" inputType="number" [formGroup]="performanceForm"
+                label="{{'ForecastWorkHours'|translate}}" inputType="text" [formGroup]="performanceForm"
                 [bgColor]="'bg-white-lightbone'" (change)="verifiedFormat('forecast')">
             </shared-input-field>
 
             <shared-input-field class="w-full md:w-1/3" fieldName="ForecastTravelTime"
-                label="{{'ForecastTravelTime'|translate}}" inputType="number" [formGroup]="performanceForm"
+                label="{{'ForecastTravelTime'|translate}}" inputType="text" [formGroup]="performanceForm"
                 [bgColor]="'bg-white-lightbone'" (change)="verifiedFormat('forecast')">
             </shared-input-field>
 
             <shared-input-field class="w-full md:w-1/3" fieldName="ForecastTravelExpenses"
-                label="{{'ForecastTravelExpenses'|translate}}" inputType="text" [formGroup]="performanceForm"
+                label="{{'ForecastTravelExpenses'|translate}}" inputType="number" [formGroup]="performanceForm"
+                [bgColor]="'bg-white-lightbone'" [readOnly]="false"></shared-input-field>
+
+            <shared-input-field class="w-full md:w-1/3" fieldName="Totalforecastdata"
+                label="{{'Total de datos previstos'|translate}}" inputType="text" [formGroup]="performanceForm"
                 [bgColor]="'bg-white-lightbone'" [readOnly]="true"></shared-input-field>
 
-            <shared-input-field class="w-full" fieldName="JustifyChangeEstimatedWorkHours"
-                label="{{'JustifyIncreaseinHours'|translate}}" inputType="text" [formGroup]="performanceForm"
-                [bgColor]="'bg-white-lightbone'"></shared-input-field>
         </div>
-        <div class="text-darkslategray  text-xl mt-3 bg-gray-100 text-center p-2">
+        <div class="text-darkslategray border-b mt-3 text-start p-2">
             <h1>
-                {{'profesional_libre' | translate}}
+                {{'FreeProfessional' | translate}}
             </h1>
         </div>
 
-        <div *ngIf="isDropdownOpenPL" class="flex flex-wrap">
+        <div class="flex flex-wrap">
             <shared-input-field class="w-full md:w-1/2" fieldName="FP_WorkHours" label="{{'WorkHours'|translate}}"
                 inputType="number" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"
                 (change)="verifiedFormat('freeProfessional')"></shared-input-field>
@@ -77,54 +81,135 @@
                 inputType="number" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"
                 (change)="verifiedFormat('freeProfessional')"></shared-input-field>
 
-            <shared-input-field class="w-full md:w-1/2" fieldName="FP_Remuneration" label="{{'Remuneration'|translate}}"
-                inputType="text" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"
-                [readOnly]="true"></shared-input-field>
-
             <shared-input-field class="w-full md:w-1/2" fieldName="FP_TravelExpenses" inputType="text"
                 label="{{'TravelExpenses'|translate}}" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"
                 [readOnly]="true"></shared-input-field>
 
+            <shared-input-field class="w-full md:w-1/2" fieldName="FP_total" inputType="text"
+                label="{{'TravelExpenses'|translate}}" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"
+                [readOnly]="true"></shared-input-field>
+
+            <div class="flex flex-wrap items-center justify-center w-full">
+                <shared-input-field class="w-full md:w-1/2" fieldName="JustifyChangeEstimatedWorkHours"
+                    label="{{'JustifyIncreaseinHours'|translate}}" inputType="text" [formGroup]="performanceForm"
+                    [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+                <div class="flex flex-wrap items-center justify-center space-x-2 w-full md:w-1/2">
+                    <input type="file" id="DocumentIncreaseWorkingHours" formControlName="DocumentIncreaseWorkingHours" class="hidden"
+                        (change)="displayFileName()" [disabled]="!editOtherInformation">
+                    <label for="DocumentIncreaseWorkingHours" class="block text-gray-700 mb-1 cursor-pointer">
+                        {{'justifyingDocument' | translate}}
+                    </label>
+                    <div class=" flex flex-col">
+                        <label for="DocumentIncreaseWorkingHours"
+                            class="cursor-pointer py-2 px-4 border hover:bg-gray-100 focus:outline-none focus:ring focus:border-blue-300">
+                            {{'seleccionar_archivo' | translate}}
+                        </label>
+                    </div>
+                    <span class="ml-2 text-darkslategray">{{this.documentName}}</span>
+                </div>
+            </div>
         </div>
 
-        <div class="text-xl text-darkslategray mt-3 bg-gray-100 text-center p-2">
+        <div class="text-darkslategray border-b mt-3 text-start p-2">
             <h1>
                 {{'TechnicalDirector' | translate}}
             </h1>
         </div>
 
-        <div *ngIf="isDropdownOpenDT" class="flex flex-wrap justify-center">
-            <shared-input-field class="w-full" fieldName="TD_Date" label="{{'Date'|translate}}" inputType="date"
-                [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+        <div class="flex flex-wrap justify-center">
+            <shared-input-field class="w-full md:w-1/2" fieldName="TD_Date" label="{{'Date'|translate}}"
+                inputType="date" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
             <shared-input-field class="w-full md:w-1/2" fieldName="TD_WorkHours" label="{{'WorkHours'|translate}}"
                 inputType="number" (change)="verifiedFormat('technicalDirector')" [formGroup]="performanceForm"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-            <shared-input-field class="w-full md:w-1/2" (change)="verifiedFormat('technicalDirector')"
-                fieldName="TD_TravelTime" label="{{'TravelTime'|translate}}" inputType="number"
-                [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+            <div class="flex flex-row-reverse items-center space-x-3">
+                <input type="checkbox" id="AcceptIncreaseInHours" formControlName="AcceptIncreaseInHours">
+                <label class="pr-3" for="AcceptIncreaseInHours"> {{'Aceptar aumento de horas' | translate}}</label>
+            </div>
 
-            <shared-input-field class="w-full md:w-1/2" fieldName="TD_Remuneration" label="{{'Remuneration'|translate}}"
-                inputType="text" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"
-                [readOnly]="true"></shared-input-field>
-
-            <shared-input-field class="w-full md:w-1/2" fieldName="TD_TravelExpenses"
-                label="{{'TravelExpenses'|translate}}" inputType="text" [formGroup]="performanceForm"
-                [bgColor]="'bg-white-lightbone'" [readOnly]="true"></shared-input-field>
         </div>
 
-        <div class="flex flex-row justify-end space-x-2 pb-3">
-            <button routerLink="/project-manager"
-                class="p-2 bg-line text-darkslategray font-normal  animate__animated animate__fadeInDown">
+        <div class="flex flex-row justify-end space-x-2 py-3 font-medium">
+            <button routerLink="/project-manager" class="p-2 bg-line text-darkslategray rounded-xl">
                 {{'regresar' | translate}}
             </button>
             <div *ngIf="!performanceFP">
-                <button type="submit" *ngIf="editOtherInformation"
-                    class="p-2 bg-darkslategray text-white font-normal  animate__animated animate__fadeInDown">
+                <button type="submit" *ngIf="editOtherInformation" class="p-2 bg-darkslategray text-line rounded-xl">
                     {{'CreatePerformance'|translate}}
                 </button>
-            </div>            
+            </div>
         </div>
     </form>
+</div>
+
+<div *ngIf="showModal" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
+    <div class="bg-opacity-75 bg-black absolute inset-0"></div>
+    <div class="relative z-50 bg-white shadow-md space-y-1 rounded-xl p-3">
+        <div class="justify-center">
+            <div class="p-3 flex flex-col items-center">
+                <div class="w-full flex justify-end">
+                    <select [(ngModel)]="selectedType" class="mb-3 p-2 border bg-white rounded-lg"
+                        (change)="applyFilter()">
+                        <option value="" disabled selected hidden>{{ 'Filtrar por Área de trabajo' | translate }}
+                        </option>
+                        <option value="">{{ 'Mostrar todos' | translate }}</option>
+                        <option *ngFor="let type of professionalTypes" [value]="type.name">
+                            {{ type.name | translate }}
+                        </option>
+                    </select>
+                </div>
+
+                <table class="w-full rtl:text-right text-slate-950 text-center">
+                    <thead class="font-medium text-darkslategray">
+                        <tr>
+                            <th scope="col" class="px-6 py-3">
+                                {{'FreeProfessional' | translate}}
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                {{'Code' | translate}}
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                {{ 'Workspace' | translate }}
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                {{ 'Select' | translate }}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-y border-gray-700"
+                            *ngFor="let fp of filteredProfessionalsFree; let i = index">
+                            <th class="text-center border-y px-4 py-2">
+                                {{fp.Name}}
+                            </th>
+                            <th class="text-center border-y px-4 py-2">
+                                {{fp.Code}}
+                            </th>
+                            <th class="text-center border-y px-4 py-2">
+                                {{fp.FreeprofessionaltypeName | translate}}
+                            </th>
+                            <td class="text-center border-y px-4 py-2">
+                                <button (click)="selectProfessionalFree(fp)" class="rounded-xl p-2">
+                                    <i class="fas fa-check-circle text-xl animate-bounce text-green-500"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <mat-paginator [length]="filteredProfessionalsFree.length" [pageSize]="10"
+                    (page)="onPageChange($event)"></mat-paginator>
+
+                <div class="font-medium p-3 rounded-xl cursor-pointer text-end w-full">
+                    <a (click)="closeModal()" class="items-center text-darkslategray bg-line rounded-xl p-2">
+                        {{ 'cancelar' | translate }}
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
 </div>

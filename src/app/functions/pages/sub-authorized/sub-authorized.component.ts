@@ -23,7 +23,8 @@ export class SubAuthorizedComponent implements OnDestroy {
   subscribers: any[] = [];
   subscriber: any;
   userId!: string;
-
+  isAuthorized! : boolean
+  
   constructor(private store: Store, private osdDataService: OSDDataService,
     private translate: TranslateService,
     private osdEventService: OSDService
@@ -63,11 +64,18 @@ export class SubAuthorizedComponent implements OnDestroy {
   }
 
   selectUser(userId: string) {
-    var foundUser = this.displayedItems.find(item => item.Id === userId);
+    const foundUser : UserInfo = this.displayedItems.find(item => item.Id === userId);
+    if(foundUser.Isauthorized){
+      this.isAuthorized = true
+    }
+    else{
+      this.isAuthorized = false
+    }
     this.userId = foundUser.Id;
     const userDTO: UserInfo = {} as UserInfo;
+    userDTO.Code = foundUser.Country.toUpperCase().trim() + '/' + foundUser.Code
     userDTO.Identity = foundUser.Identity;
-    userDTO.Name = foundUser.Name;
+    userDTO.Name = foundUser.Name.trim();
     userDTO.Email = foundUser.Email;
     this.user = userDTO;
 
@@ -75,7 +83,7 @@ export class SubAuthorizedComponent implements OnDestroy {
     const subscriberDTO: Subscriber = {} as Subscriber;
     subscriberDTO.clientType = subscriber.clientType
     this.subscriber = subscriberDTO;
-
+ 
     this.showAuthorizatedModal = true;
   }
 
