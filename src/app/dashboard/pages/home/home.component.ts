@@ -20,6 +20,7 @@ export class HomeComponent implements OnDestroy {
   user!: UserInfo;
   showModal: boolean = false
   message!: string
+
   constructor(
     public eventFactoryService: EventFactoryService,
     private authenticationService: AuthenticationService,
@@ -31,12 +32,21 @@ export class HomeComponent implements OnDestroy {
   }
 
   ngOnInit(): void {
-    setTimeout(() => {
-      this.store.dispatch(UiActions.showAll());
-    }, 0);
-    if (this.authenticationService.userInfo) {
-      this.user = this.authenticationService.userInfo;
-      console.log(this.user)
+    this.store.dispatch(UiActions.showAll());
+    this.loadUserInfo().then(() => {
+      this.setupMenu();
+    });
+  }
+
+  async loadUserInfo() {
+    var userInfo = this.authenticationService.userInfo;
+    if (userInfo) {
+      this.user = userInfo;
+    }
+  }
+
+  setupMenu() {
+    if (this.user) {
       if (this.user.AccountType === "ApprovedTrainingCenter") {
         this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuService.getMenuOptionCFH() }));
       } else if (this.user.AccountType === "Claimant") {
@@ -45,26 +55,33 @@ export class HomeComponent implements OnDestroy {
         this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuService.getMenuOptionSubscriber() }));
       } else {
         this.osdEventService.GetFreeProfessionalsDataEvent();
-        this.osdEventService.getFreeProfessionalsList().then(freeProfessionals => {
-          freeProfessionals.forEach(item => {
-            var freeProfessional: FreeProfessional = item;
-            console.log(freeProfessional)
-            if (freeProfessional.Userid == this.user.Id) {
-              if (freeProfessional.FreeprofessionaltypeAcronym == "TR") {
-                this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuService.getMenuOptionFreeProfessionalProcessor() }));
-              }
-              if (freeProfessional.FreeprofessionaltypeAcronym == "INFIT") {
-                this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuService.getMenuOptionAdmin() }));
-              }
-              if (freeProfessional.FreeprofessionaltypeAcronym == "DT") {
-                this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuService.getMenuOptionAdmin() }));
-              }
-              if (freeProfessional.FreeprofessionaltypeAcronym == "FC") {
-                this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuService.getMenuOptionFreeProfessionalTrainer() }));
-              }
+        this.osdEventService.getFreeProfessionalsList()
+          .then(freeProfessionals => {
+            if (Array.isArray(freeProfessionals)) {
+              freeProfessionals.forEach(item => {
+                var freeProfessional: FreeProfessional = item;
+                if (freeProfessional.Userid == this.user.Id) {
+                  if (freeProfessional.FreeprofessionaltypeAcronym == "TR") {
+                    this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuService.getMenuOptionFreeProfessionalProcessor() }));
+                  }
+                  if (freeProfessional.FreeprofessionaltypeAcronym == "INFIT") {
+                    this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuService.getMenuOptionAdmin() }));
+                  }
+                  if (freeProfessional.FreeprofessionaltypeAcronym == "DT") {
+                    this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuService.getMenuOptionAdmin() }));
+                  }
+                  if (freeProfessional.FreeprofessionaltypeAcronym == "FC") {
+                    this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuService.getMenuOptionFreeProfessionalTrainer() }));
+                  }
+                }
+              });
+            } else {
+              console.error('freeProfessionals is not an array:', freeProfessionals);
             }
+          })
+          .catch(error => {
+            console.error('Error fetching free professionals:', error);
           });
-        });
       }
 
       if (this.user.AccountType === EventConstants.SUBSCRIBER_CUSTOMER || this.user.AccountType === EventConstants.FREE_PROFESSIONAL) {

@@ -22,6 +22,7 @@ import { CreateClaimValuationEvent } from '../functions/Interface/ClaimValuation
 import { SummaryTypes } from '../project-manager/Models/summaryTypes';
 import { FreeProfessional } from '../functions/models/FreeProfessional';
 import { Subscriber } from '../functions/models/Subscriber';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -45,7 +46,8 @@ export class OSDService {
     private eventFactoryService: EventFactoryService,
     public authenticationService: AuthenticationService,
     public notificationService: NotificationService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private route: Router
   ) {
 
   }
@@ -129,6 +131,7 @@ export class OSDService {
 
   public addPerformanceFreeProfessional(performanceFP: PerformanceFreeProfessional) {
     const event: WebBaseEvent = this.eventFactoryService.CreateAddPerformanceFreeProfessionalEvent(performanceFP);
+    console.log(event)
     this.restApiService.SendOSDEvent(event).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
@@ -231,12 +234,12 @@ export class OSDService {
     });
   }
 
-  public getPerformanceList() {
-    const performanceBuyEvent: WebBaseEvent = this.eventFactoryService.CreateGetPerformancesList();
-    this.restApiService.SendOSDEvent(performanceBuyEvent).subscribe({
+  public getPerformancesProjectManagerById(projectManagerId: string) {
+    const GetPerformancesProjectManagerByIdEvent: WebBaseEvent = this.eventFactoryService.CreateGetPerformancesProjectManagerById(projectManagerId);
+    this.restApiService.SendOSDEvent(GetPerformancesProjectManagerByIdEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
-        this.HandleGetPerformancesResponse(osdEvent);
+        this.HandleGetPerformancesProjectManagerByIdResponse(osdEvent);
       },
       error: (error) => {
         //TODO: Pending implementation
@@ -282,7 +285,7 @@ export class OSDService {
     });
   }
 
-  public UpdateValuation(ClaimValuationForm : CreateClaimValuationEvent) {
+  public UpdateValuation(ClaimValuationForm: CreateClaimValuationEvent) {
     const UpdateValuationEvent: WebBaseEvent = this.eventFactoryService.CreateUpdateValuationEvent(ClaimValuationForm);
     this.restApiService.SendOSDEvent(UpdateValuationEvent).subscribe({
       next: (response) => {
@@ -493,11 +496,11 @@ export class OSDService {
     try {
       var actionGetOsdUsersSusbscriberResultMessage = webBaseEvent.getBodyProperty(EventConstants.ACTION_OSD_RESULT_MESSAGE);
       if (actionGetOsdUsersSusbscriberResultMessage != null) {
-        
-        if(this.translate.currentLang == "en"){
+
+        if (this.translate.currentLang == "en") {
           this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: actionGetOsdUsersSusbscriberResultMessage }));
-        }else{
-          if(actionGetOsdUsersSusbscriberResultMessage == "Was Successfully Created"){
+        } else {
+          if (actionGetOsdUsersSusbscriberResultMessage == "Was Successfully Created") {
             actionGetOsdUsersSusbscriberResultMessage = "Actuacion creada correctamente"
             this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: actionGetOsdUsersSusbscriberResultMessage }));
           }
@@ -530,23 +533,18 @@ export class OSDService {
     }
   }
 
-  public HandleGetPerformancesResponse(webBaseEvent: WebBaseEvent) {
+  public HandleGetPerformancesProjectManagerByIdResponse(webBaseEvent: WebBaseEvent) {
     try {
       var performancesFreeProfessionals = webBaseEvent.getBodyProperty(EventConstants.PERFORMANCE_FREE_PROFESSIONAL_LIST);
-
-      var performancesClaims = webBaseEvent.getBodyProperty(EventConstants.PERFORMANCE_CLAIM_LIST);
-
-      if (performancesFreeProfessionals != null) {
-        var performancesBuy = webBaseEvent.getBodyProperty(EventConstants.PERFORMANCE_BUY_LIST);
+      var performancesBuy = webBaseEvent.getBodyProperty(EventConstants.PERFORMANCE_BUY_LIST);
+      console.log(webBaseEvent)
+      if (performancesFreeProfessionals != null && performancesBuy != null) {
         const performancesFreeProfessionalsModels = performancesFreeProfessionals;
         const performancesBuyModels = performancesBuy;
-        const performancesClaimModels = performancesClaims;
 
         this.osdDataService.emitPerformanceFreeProfessionalList(performancesFreeProfessionalsModels);
         this.osdDataService.emitPerformanceBuyList(performancesBuyModels);
-        this.osdDataService.emitPerformanceClaimList(performancesClaimModels);
       }
-
     }
     catch (err) {
       //TODO: create exception event and send to local file or core
@@ -696,10 +694,10 @@ export class OSDService {
     try {
       message = webBaseEvent.getBodyProperty(EventConstants.PERFORMANCE_FREE_PROFESSIONAL_MESSAGE);
 
-      if(this.translate.currentLang == "en"){
+      if (this.translate.currentLang == "en") {
         this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
-      }else{
-        if(message == "Was Successfully Created"){
+      } else {
+        if (message == "Was Successfully Created") {
           message = "Actuacion creada correctamente"
           this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
         }
@@ -758,13 +756,11 @@ export class OSDService {
       registerSuccess = JSON.parse(webBaseEvent.getBodyProperty(EventConstants.REGISTER_USER_SUCCESS));
       registerResultMessage = webBaseEvent.getBodyProperty(EventConstants.REGISTER_USER_RESULT_MESSAGE);
 
-      this.securityDataService.emitActionRegisterSuccess(registerSuccess);
-
       if (registerSuccess) {
+        this.securityDataService.emitActionRegisterSuccess(registerSuccess);
+
         userInfo = webBaseEvent.getBodyProperty(EventConstants.USER_INFO);
-        this.authenticationService.userInfo = userInfo;
-        this.securityDataService.emitUserAuthenticationSuccess("/home");
-        this.store.dispatch(AuthenticationActions.signIn());
+        //this.authenticationService.userInfo = userInfo;
 
         if (registerResultMessage == 'Your account has been created.') {
           this.store.dispatch(ModalActions.changeAlertType({ alertType: 'success' }));
@@ -781,9 +777,9 @@ export class OSDService {
         } else {
           this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: registerResultMessage }));
         }
-        this.securityDataService.emitUserAuthenticationSuccess("/auth");
         this.store.dispatch(ModalActions.toggleErrorModal());
       }
+      this.securityDataService.emitUserAuthenticationSuccess("/auth");
     }
     catch (err) {
       //TODO: create exception event and send to local file or core
@@ -797,9 +793,9 @@ export class OSDService {
       this.store.dispatch(ModalActions.changeAlertType({ alertType: 'success' }));
       this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
       this.store.dispatch(ModalActions.openAlert())
-      
+
       this.securityDataService.emitUserAuthenticationSuccess("/project-manager");
-    
+
     } catch {
 
     }
@@ -813,9 +809,7 @@ export class OSDService {
         this.osdDataService.emitGetSummaryTypesListSuccess(summaryTypesList)
       }
       else {
-        this.store.dispatch(ModalActions.changeAlertType({ alertType: 'warning' }));
-        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Error" }));
-        this.store.dispatch(ModalActions.openAlert())
+        //TODO: NO SUMMARY TYPES FOUND
       }
     } catch {
 
@@ -843,16 +837,16 @@ export class OSDService {
     let message: string;
     try {
       message = webBaseEvent.getBodyProperty(EventConstants.ACTION_OSD_RESULT_MESSAGE);
-      if(this.translate.currentLang == "en"){
+      if (this.translate.currentLang == "en") {
         this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
       }
-      else{
-         this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Éxito en la valuación" }));
+      else {
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Éxito en la valuación" }));
       }
       this.store.dispatch(ModalActions.changeAlertType({ alertType: 'success' }));
-      
+
       this.store.dispatch(ModalActions.openAlert())
-     
+
     } catch {
 
     }
@@ -862,17 +856,17 @@ export class OSDService {
     let message: string;
     try {
       message = webBaseEvent.getBodyProperty(EventConstants.ACTION_OSD_RESULT_MESSAGE);
-      if(this.translate.currentLang == "en"){
+      if (this.translate.currentLang == "en") {
         this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
       }
-      else{
-         this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Se ha cambiado la contraseña correctamente" }));
+      else {
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Se ha cambiado la contraseña correctamente" }));
       }
       this.store.dispatch(ModalActions.changeAlertType({ alertType: 'success' }));
-      
+
       this.store.dispatch(ModalActions.openAlert())
       this.securityDataService.emitUserAuthenticationSuccess("/home");
-     
+
     } catch {
 
     }

@@ -48,7 +48,7 @@ export class FileManagerComponent implements OnDestroy {
   }
 
   ngOnInit() {
-    this.osdEventService.getPerformanceList();
+    //this.osdEventService.getPerformanceList();
     this.assignValuation()
     setTimeout(() => {
       this.store.dispatch(UiActions.hideFooter());

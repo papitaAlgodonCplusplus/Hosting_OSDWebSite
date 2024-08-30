@@ -1,4 +1,4 @@
-<div *ngIf="(alertType$ | async) === 'success'" class="fixed bg-white border  p-3 flex justify-center items-center gap-6 text-black rounded-lg top-5 left-5 z-50"
+<div class="fixed bg-line border p-3 flex justify-center items-center gap-6 text-darkslategray rounded-lg top-5 left-5 z-50"
   [ngClass]="{'animate__animated animate__fadeInLeft': alertOpen$ | async, 'animate__animated animate__fadeInRight': !(alertOpen$ | async)}"
 >
   <div class="flex justify-center items-center gap-1">

@@ -186,6 +186,7 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
     const inputValue = inputElement.value.trim(); 
   
     this.professionalsFree.forEach(pft => {
+      console.log(pft)
       const code = pft.Code.trim(); 
       if(code === inputValue) {
       this.freeProfessionalExists = true

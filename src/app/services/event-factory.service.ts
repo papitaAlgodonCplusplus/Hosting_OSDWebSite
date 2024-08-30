@@ -109,7 +109,7 @@ export class EventFactoryService {
 
   public CreateAddPerformanceFreeProfessionalEvent(performanceFP: PerformanceFreeProfessional): WebBaseEvent {
     let event: WebBaseEvent;
-
+    console.log(performanceFP)
     event = new WebBaseEvent();
     event.SessionKey = this.authenticationService.sessionKey;
     event.SecurityToken = "3746736473";
@@ -118,28 +118,18 @@ export class EventFactoryService {
     event.Action = EventAction.ADD_PERFORMANCE_FREE_PROFESSIONAL;
     event.Date = new Date().toUTCString();
     event.ApplicationIdentifier = 'WebClient';
-    event.setBodyProperty(EventConstants.PROJECT_MANAGER_ID, performanceFP.proyectManagerId);
-    event.setBodyProperty(EventConstants.START_DATE, performanceFP.start_date);
-    event.setBodyProperty(EventConstants.END_DATE, performanceFP.end_date);
+    event.setBodyProperty(EventConstants.PROJECT_MANAGER_ID, performanceFP.ProjectManagerId);
+    event.setBodyProperty(EventConstants.START_DATE, performanceFP.Start_Date);
+    event.setBodyProperty(EventConstants.END_DATE, performanceFP.End_Date);
     event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_ID, this.authenticationService.userInfo?.Id);
-    event.setBodyProperty(EventConstants.SUMMARY, performanceFP.summary);
-    event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, performanceFP.justifyingDocument);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_ASSIGNED_ID, performanceFP.FreeProfessionalAssignedId);
+    event.setBodyProperty(EventConstants.SUMMARY_ID, performanceFP.SummaryId);
+    event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, performanceFP.JustifyingDocument);
 
-    event.setBodyProperty(EventConstants.ESTIMATED_TRANSPORT_EXPENSES, performanceFP.estimatedTransportExpenses);
-    event.setBodyProperty(EventConstants.ESTIMATED_TRANSPORT_HOURS, performanceFP.estimatedTransportHours);
-    event.setBodyProperty(EventConstants.ESTIMATED_WORK_HOURS, performanceFP.estimatedWorkHours);  
-    
-    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_WORK_HOURS, performanceFP.freeProfessionalWorkHours);
-    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_TRAVEL_HOURS, performanceFP.freeProfessionalTravelHours);
-    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_TRAVEL_EXPENSES, performanceFP.freeProfessionalTravelExpenses);
-    event.setBodyProperty(EventConstants.TOTAL_FREE_PROFESSIONAL, performanceFP.totalfreeProfessional);
-    event.setBodyProperty(EventConstants.JUSTIFY_CHANGE_ESTIMATED_WORK_HOURS, performanceFP.justifyChangeEstimatedWorkHours);
-    event.setBodyProperty(EventConstants.DOCUMENT_INCREASE_WORKING_HOURS, performanceFP.documentIncreaseWorkingHours);
-
-    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_DATE, performanceFP.technicalDirectorDate);
-    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_WORK_HOURS, performanceFP.technicalDirectorWorkHours);
-    event.setBodyProperty(EventConstants.ACCEPT_INCREASE_IN_HOURS, performanceFP.AcceptIncreaseInHours);
-
+    event.setBodyProperty(EventConstants.FORECAST_TRAVEL_EXPENSES, performanceFP.ForecastTravelExpenses);
+    event.setBodyProperty(EventConstants.FORECAST_TRAVEL_TIME, performanceFP.ForecastTravelTime);
+    event.setBodyProperty(EventConstants.FORECAST_WORK_HOURS, performanceFP.ForecastWorkHours);  
+    event.setBodyProperty(EventConstants.TOTAL_FORECAST_DATA, performanceFP.TotalForecastData);  
     return event;
   }
 
@@ -191,17 +181,18 @@ export class EventFactoryService {
 
     return event;
   }
-  public CreateGetPerformancesList(): WebBaseEvent {
+  public CreateGetPerformancesProjectManagerById(projectManagerId : string): WebBaseEvent {
     let event: WebBaseEvent;
     event = new WebBaseEvent();
     event.SessionKey = this.authenticationService.sessionKey;
     event.SecurityToken = "3746736473";
     event.TraceIdentifier = Guid.create().toString();
     event.Type = EventType.OSD;
-    event.Action = EventAction.GET_PERFORMANCES;
+    event.Action = EventAction.GET_PERFORMANCES_PROJECT_MANAGER_BY_ID;
     event.Date = new Date().toUTCString();
     event.ApplicationIdentifier = 'WebClient'; //TODO: change to use an application identifier
 
+    event.setBodyProperty(EventConstants.PROJECT_MANAGER_ID, projectManagerId);
     return event;
   }
 

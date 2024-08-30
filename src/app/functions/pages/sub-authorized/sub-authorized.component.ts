@@ -38,6 +38,7 @@ export class SubAuthorizedComponent implements OnDestroy {
     }, 0);
 
     this.osdDataService.getOsdUsersSubscribersSuccess$.subscribe(osdUsersSubscribers => {
+      console.log(osdUsersSubscribers)
       this.items = osdUsersSubscribers;
       this.updateDisplayedItems();
     });
@@ -88,9 +89,6 @@ export class SubAuthorizedComponent implements OnDestroy {
   }
 
   onConfirmHandler() {
-    this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: this.translate.instant('UserAuthorized') }))
-    this.store.dispatch(ModalActions.openAlert());
-
     this.osdEventService.changingUsdUserAutorizationStatusEvent(this.userId);
     const newItems = this.items.map(item => {
       if (item.Id === this.userId) {

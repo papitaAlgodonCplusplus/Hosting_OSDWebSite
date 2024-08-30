@@ -2,9 +2,10 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ProjectManagementDossierComponent } from './pages/project-management-dossier/project-management-dossier.component';
 import { PerformanceBuyComponent } from './pages/performance-buy/performance-buy.component';
-import { PerformanceFreeProfessionalComponent } from './pages/performance-free-professional/performance-free-professional.component';
+import { PerformanceFreeProfessionalComponent } from './pages/create-performance/performance-free-professional.component';
 import { CreateProjectComponent } from './pages/create-project/create-project.component';
 import { AssignedPerformancesComponent } from './pages/assigned-performances/assigned-performances.component';
+import { ResponseToPerformanceComponent } from './pages/response-to-performance/response-to-performance.component';
 
 const routes: Routes = [
   {
@@ -26,6 +27,10 @@ const routes: Routes = [
   {
     path: 'assigned-performance',
     component: AssignedPerformancesComponent
+  },
+  {
+    path: 'response-to-performance',
+    component: ResponseToPerformanceComponent
   }
 ];
 

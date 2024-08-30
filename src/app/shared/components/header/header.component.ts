@@ -26,6 +26,7 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.store.dispatch(UiActions.showAll())
     setTimeout(() => {
       this.isUserSignIn$.subscribe(state => {
         this.isUser = state

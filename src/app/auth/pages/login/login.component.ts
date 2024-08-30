@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
-import { AuthenticationActions, UiActions } from 'src/app/store/actions';
+import { AuthenticationActions, ModalActions, UiActions } from 'src/app/store/actions';
 import { EventFactoryService } from 'src/app/services/event-factory.service';
 import { ValidationsService } from '../../../services/validations.service';
 import { MenuOptionsSelectors, ModalSelectors } from 'src/app/store/selectors';
@@ -25,7 +25,7 @@ export class LoginComponent implements OnDestroy {
 
   errorModalOpen$: Observable<boolean> = this.store.select(ModalSelectors.errorModalOpen);
   errorMessage$: Observable<string> = this.store.select(ModalSelectors.errorMessage);
-  
+
   constructor(
     private formBuilder: FormBuilder,
     private store: Store,

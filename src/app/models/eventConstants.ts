@@ -95,9 +95,11 @@ export class EventConstants {
   public static CLAIM_ID: string = "ClaimId";
   
   public static FREE_PROFESSIONAL_ID: string = "FreeProfessionalId";
+  public static FREE_PROFESSIONAL_ASSIGNED_ID: string = "FreeProfessionalAssignedId"
   public static FREE_PROFESSIONAL_TYPE_ID: string = "FreeProfessionalTypeId";
   public static PROJECT_MANAGER_ID: string = 'ProjectManagerId';
   public static JUSTIFYING_DOCUMENT: string = 'JustifyingDocument';
+  public static SUMMARY_ID: string = "SummaryId";
   public static FREE_PROFESSIONAL_WORK_HOURS: string = 'FP_WorkHours';
   public static FREE_PROFESSIONAL_TRAVEL_HOURS: string = 'FP_TravelTime';
   public static FREE_PROFESSIONAL_TRAVEL_EXPENSES: string = 'FP_TravelExpenses';
@@ -113,9 +115,10 @@ export class EventConstants {
   public static PERFORMANCE_FREE_PROFESSIONAL: string = 'PerformanceFreeProfessional';
   public static PERFORMANCE_FREE_PROFESSIONAL_MESSAGE: string = 'PerformanceFreeProfessionalMessage';
 
-  public static ESTIMATED_WORK_HOURS: string = "EstimatedWorkHours";
-  public static ESTIMATED_TRANSPORT_HOURS: string = "EstimatedTransportHours";
-  public static ESTIMATED_TRANSPORT_EXPENSES: string = "EstimatedTransportExpenses";
+  public static FORECAST_WORK_HOURS: string = "ForecastWorkHours";
+  public static FORECAST_TRAVEL_TIME: string = "ForecastTravelTime";
+  public static FORECAST_TRAVEL_EXPENSES: string = "ForecastTravelExpenses";
+  public static TOTAL_FORECAST_DATA: string = "TotalForecasData";
   public static JUSTIFY_CHANGE_ESTIMATED_WORK_HOURS: string = "JustifyChangeEstimatedWorkHours";
 
   public static PERFORMANCE_BUY: string = "PerformanceBuy"

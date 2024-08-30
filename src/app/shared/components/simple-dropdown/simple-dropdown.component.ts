@@ -2,6 +2,7 @@ import { Component, Input, ViewChild, ElementRef,ChangeDetectorRef  } from '@ang
 import { FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface'; 
+import { ValidationsService } from 'src/app/services/validations.service';
 
 @Component({
   selector: 'shared-simple-dropdown',
@@ -24,7 +25,7 @@ export class SimpleDropdownComponent {
   private previousDropdownItems: DropDownItem[] = [];
 
   constructor(private changeDetectorRef: ChangeDetectorRef,
-              private translate : TranslateService) { }
+              private validationsService: ValidationsService) { }
 
   ngDoCheck() {
     if (this.dropdownItems !== this.previousDropdownItems) {
@@ -59,7 +60,7 @@ export class SimpleDropdownComponent {
     });
 
   }
-
+  
   private setDropdownPosition() {
     if (this.isDropdownOpen && this.myElementRef) {
       const dropdownRect = this.myElementRef.nativeElement.getBoundingClientRect();
@@ -72,5 +73,14 @@ export class SimpleDropdownComponent {
       }
     }
   }
+
+  isValidField(field: string): boolean | null {
+    return this.validationsService.isValidField(this.formGroup, field);
+  }
+
+  getFieldError(field: string): string | null {
+    return this.validationsService.getFieldError(this.formGroup, field);
+  }
+
 
 }

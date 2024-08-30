@@ -3,7 +3,7 @@
         <div>
             <label for="" class="text-darkgray">{{ label }}</label>
         </div>
-        <button type="button" 
+        <button type="button"
             class="placeholder:text-darkgray text-black block border-solid border w-full p-2  pr-3  focus:outline-none focus:border-blue-950"
             [ngClass]="[bgColor, isDropdownOpen ? 'border-ligthgray' : '']" [id]="fieldName" (click)="toggleDropdown()">
             {{ selectedItem }}
@@ -20,17 +20,19 @@
         class="visible-element absolute right-0 z-10 mt-2 w-56 origin-top-right  bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
         role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
         <div class="py-1" role="none">
-            <a *ngFor="let item of dropdownItems; let i = index" class="cursor-pointer text-gray-700 block px-4 py-2 text-md"
-                role="menuitem" tabindex="-1" [id]="'menu-item-' + i" (click)="toggleDropdown(item)">{{ item.value }}</a>
+            <a *ngFor="let item of dropdownItems; let i = index"
+                class="cursor-pointer text-gray-700 block px-4 py-2 text-md" role="menuitem" tabindex="-1"
+                [id]="'menu-item-' + i" (click)="toggleDropdown(item)">{{ item.value }}</a>
 
         </div>
     </div>
 
-    <p class="mt-1 text-sm text-red-700" *ngIf="dropdownError && !isDropdownOpen">
-      {{label}}  {{'es_requerido' | translate}}
+    <p class="mt-1 text-sm text-red-500"
+        *ngIf="dropdownError && !isDropdownOpen || isValidField(fieldName); else hidden">
+        {{ getFieldError(fieldName) }}
     </p>
-     <p class="mt-1 text-sm text-red-700" *ngIf="!dropdownError || isDropdownOpen">
-        &nbsp; 
-    </p>
+    <ng-template #hidden>
+        <p class="text-sm">&nbsp;</p>
+    </ng-template>
 
 </div>
