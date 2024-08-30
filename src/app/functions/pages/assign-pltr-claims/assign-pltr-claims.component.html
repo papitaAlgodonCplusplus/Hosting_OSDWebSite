@@ -28,6 +28,7 @@
             <table class="table-auto w-full">
                 <thead>
                     <tr class="text-darkslategray">
+                        <th class="px-4 py-2">{{'Code' | translate}}</th>
                         <th class="px-4 py-2">{{'reclamacion' | translate}}</th>
                         <th class="px-4 py-2">{{'hechos' | translate}} </th>
                         <th class="px-4 py-2">{{'Date' | translate}} </th>
@@ -36,6 +37,7 @@
                 </thead>
                 <tbody>
                     <tr *ngFor="let claim of claims" class="text-center">
+                        <td class="text-center border-y px-4 py-2">{{ claim.Code}}</td>
                         <td class="text-center border-y px-4 py-2">{{ claim.Claimtype | translate }}</td>
                         <td class="text-center border-y px-4 py-2">{{ claim.Facts }}</td>
                         <td class="border-y px-3 py-2">{{ showDate(claim.Date) }}</td>

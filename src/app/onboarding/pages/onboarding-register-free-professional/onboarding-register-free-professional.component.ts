@@ -7,6 +7,7 @@ import { OSDService } from 'src/app/services/osd-event.services';
 import { ValidationsService } from 'src/app/services/validations.service';
 import { ModalActions, UiActions } from 'src/app/store/actions';
 import { EventConstants } from 'src/app/models/eventConstants';
+import { OSDDataService } from 'src/app/services/osd-data.service';
 
 @Component({
   selector: 'app-register-free-professional',
@@ -17,9 +18,12 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   accountForm: FormGroup;
   personalForm: FormGroup;
   selectedWorkspace: string | undefined;
+  selectedSubscriberCustomer: string | undefined;
   isDropdownOpen = true;
   documentName: string = '';
   showDocument!: boolean;
+  osdUserSubscriberCustomers: DropDownItem[] = [];
+  subscriberCustomers: any[] = [];
 
   workspace: DropDownItem[] = [
     { value: this.translate.instant('DT'), key: '87db7d48-ee2a-4494-8627-9cb9e377de21' },
@@ -47,7 +51,8 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     private formBuilder: FormBuilder,
     private validationsService: ValidationsService,
     private osdEventService: OSDService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private osdDataService: OSDDataService
   ) {
     this.accountForm = this.createAccountForm();
     this.personalForm = this.createPersonalForm();
@@ -58,7 +63,22 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   }
 
   ngOnInit(): void {
+    
+    this.osdDataService.getOsdUsersSubscribersSuccess$.subscribe(osdUsersSubscribers => {
+      this.osdUserSubscriberCustomers = osdUsersSubscribers.map(item =>{
+        return{
+          value: item.Name,
+          key: item.Id,
+        }
+      })
+    });
+
+    this.osdDataService.getSubscribersSuccess$.subscribe(osdUsersSubscribers => {
+      this.subscriberCustomers = osdUsersSubscribers;
+    });
+
     setTimeout(() => {
+      this.osdEventService.GetSubscribers();
       if (this.translate.currentLang == "en") {
         this.showDocument = true
       }
@@ -106,6 +126,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   private createPersonalForm(): FormGroup {
     const personalForm = this.formBuilder.group({
       identity: ['', [Validators.required]],
+      subscriberCustomer: ['',],
       name: ['', [Validators.required]],
       companyName: ['',],
       firstSurname: ['', [Validators.required]],
@@ -157,13 +178,6 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   displayFileName(event: any, index: number): void {
     let file = event.target.files[0];
     if (file) {
-      let allowedExtensions = /(\.pdf)$/i;
-      if (!allowedExtensions.exec(file.name)) {
-        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Debe Insertar Solo archivos PDF" }))
-        this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }))
-        this.store.dispatch(ModalActions.openAlert())
-        return
-      }
       if (index === 0) {
         this.documentNames[0] = file.name;
       } else if (index === 1) {
@@ -171,6 +185,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
       }
     }
   }
+  
 
   onSubmit(): void {
     if (this.accountForm.invalid || this.personalForm.invalid) {

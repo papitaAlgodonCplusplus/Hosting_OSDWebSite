@@ -138,7 +138,7 @@ export class PerformanceFreeProfessionalComponent {
       freeProfessionalId: ['', [Validators.required]],
       freeProfessionalCode: ['', [Validators.required]],
       Summary: ['', [Validators.required]],
-      JustifyingDocument: ['', [Validators.required]],
+      JustifyingDocument: [''],
       ForecastTravelExpenses: [''],
       ForecastTravelTime: [''],
       ForecastWorkHours: [''],
@@ -267,7 +267,7 @@ export class PerformanceFreeProfessionalComponent {
 
   chargeTravelExpenses(formValues: any) {
     const hours = formValues.FP_TravelTime;
-    const remuneration = hours * 60;
+    const remuneration = hours * 30;
 
     this.performanceForm.patchValue({
       FP_TravelExpenses: remuneration
@@ -285,7 +285,7 @@ export class PerformanceFreeProfessionalComponent {
 
   chargeTravelExpensesTD(formValues: any) {
     const hours = formValues.TD_TravelTime;
-    const remuneration = hours * 60;
+    const remuneration = hours * 30;
 
     this.performanceForm.patchValue({
       TD_TravelExpenses: remuneration
@@ -294,7 +294,7 @@ export class PerformanceFreeProfessionalComponent {
 
   chargeEstimatedTravelExpenses(formValues: any) {
     const hours = formValues.ForecastTravelTime;
-    const remuneration = hours * 60;
+    const remuneration = hours * 30;
 
     this.performanceForm.patchValue({
       ForecastTravelExpenses: remuneration

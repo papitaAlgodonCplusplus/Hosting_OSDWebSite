@@ -237,7 +237,7 @@
   "economicBudget": "Economic Budget",
   "expectedTimes": "Expected Hours",
   "JustifyIncreaseinHours": "Justificar Aumento de Horas",
-  "Assign_Processor_to_Claim": "Assign Processor to Claim",
+  "Assign_Processor_to_Claim": "Assign claim to processor",
   "Hours": "Hours",
   "Amount": "Amount",
   "FormatHoursIncorrect": "Error make sure both fields are between 0 and 24",
@@ -295,5 +295,11 @@
   "ErrorMessage":"Error Message",
   "FreeprofessionaltypeName" : "Free professional type",
   "Assign_client_to_Trainer" : "Assign Client to Trainer",
-  "Assigned_performance" : "Assigned performances" 
+  "Assigned_performance" : "Assigned performances",
+  "Associated": "Associated",
+  "SubscriberCustomerInfo": "Subscriber Customer Information" ,
+  "Identification": "Identification",
+  "There_are_no_associated_subscribers": "There are no associated subscribers",
+  "Code_claim": "Claim code"
+
 }

@@ -11,6 +11,7 @@ const initialState: ClaimState = {
     claims: [],
     claim: {
         Id: '',
+        Code: '',
         Claimtype: '',
         Status: '',
         Facts: '',

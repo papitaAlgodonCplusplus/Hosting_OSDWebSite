@@ -183,7 +183,7 @@
     "LastPage": "Última página",
     "UserAuthorized": "Se autorizó el usuario",
     "MessageModalAuthorizedCostumer": "Datos Suscriptor/Cliente",
-    "Assign_Processor_to_Claim": "Asignar Tramitador a Reclamación",
+    "Assign_Processor_to_Claim": "Asignar reclamacion a tramitador",
     "Finished": "Realizado",
     "assignedTRClaim": "Se asignó un Tramitador al reclamo correspondiente.",
     "Close": "Cerrar",
@@ -296,5 +296,10 @@
     "ErrorMessage":"Mensaje de error",
     "FreeprofessionaltypeName" : "Tipo de professional libre",
     "Assign_client_to_Trainer" : "Asignar Cliente a Formador", 
-    "Assigned_performance" : "Actuaciones asignadas" 
+    "Assigned_performance" : "Actuaciones asignadas",
+    "Associated": "Asociado",
+    "SubscriberCustomerInfo": "Informacion subscriptor cliente",
+    "Identification": "Identificacion",
+    "There_are_no_associated_subscribers": "No hay subscriptores asociados",
+    "Code_claim": "Codigo de reclamacion"
 }

@@ -8,6 +8,7 @@ import { UserInfo } from 'src/app/models/userInfo';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscriber } from '../../models/Subscriber';
 import { FreeProfessional } from '../../models/FreeProfessional';
+import { OSDDataService } from 'src/app/services/osd-data.service';
 
 @Component({
   selector: 'app-autorization-pl',
@@ -16,18 +17,23 @@ import { FreeProfessional } from '../../models/FreeProfessional';
 })
 export class AutorizationPlComponent implements OnDestroy {
   items: any[] = [];
+  subscriberCustomers: any[] = [];
+  osdUserSubscriberCustomers: any[] = [];
   displayedItems: any;
   showModalConfirm: boolean = false;
   user!: UserInfo;
   message: string = "";
   showAuthorizatedModal: boolean = false;
+  showSubscriberCustomerAssociatedModal: boolean = false;
   freeProfessional!: FreeProfessional;
   userSelected: string = ""
   isAuthorized!: boolean
+  selectedOsdSubscriber: any;
 
   constructor(private store: Store,
     private osdEventService: OSDService,
-    private translate: TranslateService) {
+    private translate: TranslateService,
+    private osdDataService: OSDDataService) {
   }
 
   ngOnInit(): void {
@@ -37,12 +43,22 @@ export class AutorizationPlComponent implements OnDestroy {
           this.items.push(item)
         }
       });
-
       this.updateDisplayedItems();
+    });
+
+    this.osdDataService.getOsdUsersSubscribersSuccess$.subscribe(osdUsersSubscribers => {
+      console.log("Lista usuarios subscriptores clientes: ",osdUsersSubscribers )
+      this.osdUserSubscriberCustomers = osdUsersSubscribers;
+    });
+
+    this.osdDataService.getSubscribersSuccess$.subscribe(UsersSubscribers => {
+      console.log("Lista subscriptores clientes: ",UsersSubscribers )
+      this.subscriberCustomers = UsersSubscribers;
     });
 
     setTimeout(() => {
       this.osdEventService.GetFreeProfessionalsDataEvent();
+      this.osdEventService.GetSubscribers();
       this.store.dispatch(UiActions.hideLeftSidebar())
       this.store.dispatch(UiActions.hideFooter())
     }, 0);
@@ -64,6 +80,30 @@ export class AutorizationPlComponent implements OnDestroy {
     FreeProfessionalDTO.FreeprofessionaltypeName = user.FreeprofessionaltypeName;
     this.freeProfessional = FreeProfessionalDTO;
     this.showAuthorizatedModal = true;
+  }
+
+  selectSubscriberCustomer(user: FreeProfessional) {
+    this.showSubscriberCustomerAssociatedModal = true;
+    this.subscriberCustomers.forEach(item => {
+      if(item != undefined){
+        if(user.Id == item.PlCodeId){
+          this.selectedOsdSubscriber.Id = item.UserId;
+        }
+      }
+    });
+
+    this.osdUserSubscriberCustomers.forEach(item => {
+      if(item != undefined){
+        if(user.Id == this.selectedOsdSubscriber.Id){
+          this.selectedOsdSubscriber.Identity = item.Identity;
+          this.selectedOsdSubscriber.CompanyName = item.CompanyName;
+        }
+      }
+    });
+  }
+
+  closeSubscriberModal(){
+    this.showSubscriberCustomerAssociatedModal = false;
   }
 
   onPageChange(event: any) {
