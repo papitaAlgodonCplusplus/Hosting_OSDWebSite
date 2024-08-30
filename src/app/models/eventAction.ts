@@ -17,7 +17,7 @@ export class EventAction {
   public static GET_SUBSCRIBERS: string = "GetSubscribers";
   public static ADD_PERFORMANCE_FREE_PROFESSIONAL: string = "AddPerformanceFreeProfessional";
   public static CREATE_PERFORMANCE_BUY: string = "CreatePerformanceBuy";
-  public static GET_PERFORMANCES: string = "GetPerformances";
+  public static GET_PERFORMANCES_PROJECT_MANAGER_BY_ID: string = "GetPerformancesProjectManagerById";
   public static CREATE_CLAIM: string = "CreateClaim";
   public static HANDLE_CREATE_CLAIM_RESPONSE: string = "HandleCreateClaimResponse";
   public static GET_TRANSPARENCY_REPORTS_SUBSCRIBER_CLIENTES: string = "GetTransparencyReportsSubscriberClients";

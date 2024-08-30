@@ -16,7 +16,7 @@ export class AlertComponent {
   alertType$: Observable<string> = this.store.select(ModalSelectors.alertType);
   alertPosition$: Observable<string> = this.store.select(ModalSelectors.alertPosition);
 
-  constructor(private store: Store) {}
+  constructor(private store: Store) { }
 
   ngOnInit() {
     setTimeout(() => {
@@ -26,9 +26,9 @@ export class AlertComponent {
 
   toggleSuccessAlert(): void {
     this.store.dispatch(ModalActions.closeAlert());
-    this.store.dispatch(ModalActions.addAlertMessage({alertMessage: ''}));
-    this.store.dispatch(ModalActions.changeAlertType({alertType: 'success'}));
-    this.store.dispatch(ModalActions.changeAlertPosition({alertPosition: 'left'}));
+    this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: '' }));
+    this.store.dispatch(ModalActions.changeAlertType({ alertType: 'success' }));
+    this.store.dispatch(ModalActions.changeAlertPosition({ alertPosition: 'left' }));
   }
 
 }

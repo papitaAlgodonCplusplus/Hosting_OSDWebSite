@@ -43,7 +43,7 @@
         <div class="flex flex-col p-3 items-center justify-center space-y-3">
             <div class="flex flex-col items-center">
                 <label for="objectivesDropdown">{{"Objective" | translate}}</label>
-                <select class="border rounded-xl bg-white text-line p-2 w-64">
+                <select class="border rounded-xl bg-white text-black p-2 w-64">
                     <option value="" disabled selected hidden>{{ 'Filtrar por Área de trabajo' | translate }}
                     </option>
                     <option *ngFor="let project of (Projects$ | async)" (click)="selectProject($event)"
@@ -59,7 +59,7 @@
                     {{'Registrar resumen de actuación' | translate}}
                 </button>
             </div>
-            <button *ngIf="!isUser" class="bg-darkslategray p-2 rounded-lg text-line text-sm"
+            <button *ngIf="isUser" class="bg-darkslategray p-2 rounded-lg text-line text-sm"
                 routerLink="/project-manager/assigned-performance">
                 {{'Ver mis actuaciones Asignadas' | translate}}
             </button>

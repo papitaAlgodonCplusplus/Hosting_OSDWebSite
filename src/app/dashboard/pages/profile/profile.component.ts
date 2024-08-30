@@ -10,7 +10,7 @@ import { UiActions } from 'src/app/store/actions';
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
-  userInfo?: UserInfo
+  userInfo!: UserInfo
 
   constructor(private store: Store,
     private authService: AuthenticationService

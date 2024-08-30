@@ -49,7 +49,7 @@ export class ProjectManagementDossierComponent implements OnDestroy {
     setTimeout(() => {
       this.store.dispatch(UiActions.hideLeftSidebar())
       this.store.dispatch(UiActions.hideFooter())
-      this.osdEventService.getPerformanceList();
+
       this.osdEventService.GetProjects();
 
       var user = this.authService.userInfo;
@@ -59,14 +59,6 @@ export class ProjectManagementDossierComponent implements OnDestroy {
           this.isAdmin = true;
         }
       }
-
-      this.osdDataService.performanceFreeProfessionalList$.subscribe(performancesFP => {
-        this.performancesFreeProfesional = performancesFP;
-      });
-
-      this.osdDataService.performanceBuyList$.subscribe(performancesBuy => {
-        this.performancesBuys = performancesBuy;
-      });
     }, 0);
 
     setTimeout(() => {
@@ -195,14 +187,15 @@ export class ProjectManagementDossierComponent implements OnDestroy {
   }
 
   selectProject(event: Event): void {
+    this.loadProjectManager = true;
     const id = (event.target as HTMLSelectElement).value;
+    console.log(id)
     this.allProjects.forEach(element => {
       if (element.Id === id) {
-        this.selectedProject = element;
-        this.formProjectManager = this.createForm();
-        this.openSideBar = true
+       this.osdEventService.getPerformancesProjectManagerById(id)
       }
     });
+    this.loadProjectManager = false;
   }
 
   async loadProjects(): Promise<void> {
