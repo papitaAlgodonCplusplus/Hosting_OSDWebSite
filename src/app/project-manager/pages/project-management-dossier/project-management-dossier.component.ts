@@ -11,7 +11,10 @@ import { PerformanceBuy } from '../../Models/performanceBuy';
 import { TranslateService } from '@ngx-translate/core';
 import { Project } from '../../Models/project';
 import { AuthenticationService } from 'src/app/services/authentication.service';
-import { UserInfo } from 'src/app/models/userInfo';
+import { DatePipe } from '@angular/common';
+import { ResponseToPerformanceFreeProfessional } from '../../Models/responseToperformanceFreeProfessional';
+import { showPerformance } from '../../Models/showPerformance';
+import { PerformanceFreeProfessional } from '../../Models/performanceFreeProfessional';
 
 @Component({
   selector: 'app-project-management-dossier',
@@ -24,10 +27,11 @@ export class ProjectManagementDossierComponent implements OnDestroy {
   readOnly: boolean = true;
   formProjectManager: FormGroup
   showOptions: boolean = false;
-  performancesFreeProfesional: any[] = [];
-  performancesBuys: any[] = [];
+  performancesFreeProfessional: PerformanceFreeProfessional[] = [];
+  performancesBuy: PerformanceBuy[] = [];
+  performances: showPerformance[] = [];
   isAuthenticated$: Observable<boolean> = this.store.select(AuthSelectors.authenticationToken)
-  isUser: boolean = true;
+  isUser: boolean = false;
   isAdmin: boolean = false;
   emptyPerformance!: PerformanceBuy
   allPerformances: any[] = [];
@@ -38,11 +42,14 @@ export class ProjectManagementDossierComponent implements OnDestroy {
   selectedProject!: Project | undefined;
   allProjects!: Project[];
   loadProjectManager: boolean = true
+  showModalSubPerformance: boolean = false;
+  subPerformance!: ResponseToPerformanceFreeProfessional[];
 
   constructor(private router: Router, private store: Store, private formBuilder: FormBuilder,
     private osdDataService: OSDDataService, private osdEventService: OSDService,
-    private translate: TranslateService, private authService: AuthenticationService) {
-    this.formProjectManager = this.createForm();
+    private translate: TranslateService, private authService: AuthenticationService,
+    private datePipe: DatePipe) {
+    this.formProjectManager = this.createForm({} as Project);
   }
 
   async ngOnInit() {
@@ -51,62 +58,14 @@ export class ProjectManagementDossierComponent implements OnDestroy {
       this.store.dispatch(UiActions.hideFooter())
 
       this.osdEventService.GetProjects();
-
       var user = this.authService.userInfo;
       if (user) {
-        this.isUser = false
+        this.isUser = true
         if (user.Isadmin) {
           this.isAdmin = true;
         }
       }
     }, 0);
-
-    setTimeout(() => {
-      let normalizedBuys = this.performancesBuys.map(buy => ({
-        Id: buy.Id,
-        Code: 'GET/A/1/2024',
-        Date: buy.Date,
-        JustifyingDocument: buy.JustifyingDocument,
-        Summary: buy.Summary,
-        Hours: "-",
-        Amount: "-",
-        Type: "-"
-      }));
-
-      let normalizedFreeProfesional = this.performancesFreeProfesional.map(freeProfessional => {
-        const hours = {
-          FreeProfessionalTravelHours: freeProfessional.FreeProfessionalTravelHours,
-          FreeProfessionalWorkHours: freeProfessional.FreeProfessionalWorkHours,
-          TechnicalDirectorTravelHours: freeProfessional.TechnicalDirectorTravelHours,
-          TechnicalDirectorWorkHours: freeProfessional.TechnicalDirectorWorkHours,
-          EstimatedWorkHours: freeProfessional.EstimatedWorkHours,
-          EstimatedTransportHours: freeProfessional.EstimatedTransportHours
-        };
-        const totalHours = this.sumHours(hours);
-
-        var amountProject = 0;
-        amountProject = freeProfessional.EstimatedTransportExpenses + freeProfessional.FreeProfessionalRemuneration + freeProfessional.FreeProfessionalTravelExpenses + freeProfessional.TechnicalDirectorRemuneration + freeProfessional.TechnicalDirectorTravelExpenses
-        this.amountProject = amountProject + this.amountProject
-        console.log(freeProfessional)
-        return {
-          Id: freeProfessional.Id,
-          Code: 'GET/A/1/2024',
-          Date: freeProfessional.Date,
-          Type: freeProfessional.Type,
-          JustifyingDocument: freeProfessional.JustifyingDocument,
-          Summary: freeProfessional.SummaryName,
-          Hours: totalHours,
-          Amount: "€ " + amountProject
-        };
-
-      });
-      this.allPerformances = [...normalizedFreeProfesional, ...normalizedBuys];
-
-      this.updateDisplayedItems();
-      this.loadProjectManager = false;
-      this.sortDateLowestHighest(true);
-      this.formProjectManager = this.createForm();
-    }, 3000);
 
     await this.loadProjects();
   }
@@ -126,15 +85,15 @@ export class ProjectManagementDossierComponent implements OnDestroy {
     }, 0);
   }
 
-  private createForm(): FormGroup {
+  private createForm(project: Project): FormGroup {
     const form = this.formBuilder.group({
-      startDate: (this.selectedProject?.StartDate ?? 0),
+      startDate: (project.StartDate ?? 0),
       endDate: '',
       projectAmount: '€ ' + this.amountProject,
       expensesEmployeesVolunteers: '€ 0',
       supplierExpensesPurchases: '€ 0',
-      economicBudget: '€' + (this.selectedProject?.EconomicBudget ?? 0),
-      expectedTimes: (this.selectedProject?.ExpectedHours ?? 0) + ' ' + this.translate.instant('Hours')
+      economicBudget: '€' + (project.EconomicBudget ?? 0),
+      expectedTimes: (project.ExpectedHours ?? 0) + ' ' + this.translate.instant('Hours')
     });
     return form;
   }
@@ -162,15 +121,15 @@ export class ProjectManagementDossierComponent implements OnDestroy {
     this.store.dispatch(PerformanceActions.setPerformanceBuy({ performanceBuy: this.emptyPerformance }))
   }
 
-  chargePerformanceFP(performanceId: any) {
-    var performance = this.performancesFreeProfesional.find(item => item.Id === performanceId);
-    this.osdDataService.setPerformance(performance)
-  }
+  // chargePerformanceFP(performanceId: any) {
+  //   var performance = this.performancesFreeProfesional.find(item => item.Id === performanceId);
+  //   this.osdDataService.setPerformance(performance)
+  // }
 
-  selectPerformance(id: string) {
-    var performance = this.performancesBuys.find(item => item.Id === id);
-    this.store.dispatch(PerformanceActions.setPerformanceBuy({ performanceBuy: performance }))
-  }
+  // selectPerformance(id: string) {
+  //   var performance = this.performancesBuys.find(item => item.Id === id);
+  //   this.store.dispatch(PerformanceActions.setPerformanceBuy({ performanceBuy: performance }))
+  // }
 
   onPageChange(event: any) {
     const startIndex = event.pageIndex * event.pageSize;
@@ -179,7 +138,7 @@ export class ProjectManagementDossierComponent implements OnDestroy {
   }
 
   updateDisplayedItems(startIndex: number = 0, endIndex: number = 10) {
-    this.displayedItems = this.allPerformances.slice(startIndex, endIndex);
+    this.performances.slice(startIndex, endIndex);
   }
 
   toggleSideBar() {
@@ -189,24 +148,80 @@ export class ProjectManagementDossierComponent implements OnDestroy {
   selectProject(event: Event): void {
     this.loadProjectManager = true;
     const id = (event.target as HTMLSelectElement).value;
-    console.log(id)
-    this.allProjects.forEach(element => {
-      if (element.Id === id) {
-       this.osdEventService.getPerformancesProjectManagerById(id)
-      }
-    });
-    this.loadProjectManager = false;
+    setTimeout(() => {
+      this.allProjects.forEach(element => {
+        if (element.Id === id) {
+          this.formProjectManager = this.createForm(element);
+          this.store.dispatch(PerformanceActions.setProjecTManagerId({ projectManagerId: element.Id }))
+          this.osdEventService.getPerformancesProjectManagerById(id)
+          this.loadPerformance();
+        }
+      });
+    }, 0);
   }
 
   async loadProjects(): Promise<void> {
+    this.loadProjectManager = false;
     try {
       this.allProjects = await firstValueFrom(this.Projects$);
+      this.loadProjectManager = false;
     } catch (error) {
       console.error('Error loading projects:', error);
     }
   }
 
+  loadPerformance() {
+    this.loadProjectManager = true;
+    setTimeout(() => {
+      this.osdDataService.performanceFreeProfessionalList$.subscribe(performance => {
+        this.performances = performance;
+        this.performances.forEach(pf =>{
+          pf.Type = "Performance Free Professional"
+        })
+        this.performancesFreeProfessional = performance;
+      })
+      this.osdDataService.performanceBuyList$.subscribe(performance => {
+        this.performancesBuy = performance;
+      });
+
+      this.loadProjectManager = false;
+      this.updateDisplayedItems()
+    }, 0);
+  }
+
   openModal() {
     this.isModalOpen = true;
   }
+
+  viewSubPerformances(performanceId: string) {
+    setTimeout(() => {
+      this.showModalSubPerformance = true
+      this.osdEventService.GetSubPerformanceById(performanceId)
+    }, 0);
+
+    this.osdDataService.SubPerformanceByIdList$.subscribe(subPerformances => {
+      this.subPerformance = subPerformances;
+    });
+  }
+
+  closeModal() {
+    this.showModalSubPerformance = false
+  }
+
+  filterPerformance(type: string) {
+    console.log(type);
+    if (type === 'buy') { 
+      this.performances = this.performancesBuy;
+      this.performances.forEach(pf =>{
+        pf.Type = "Performance Buy"
+      })
+    } else {
+      console.log(this.performancesFreeProfessional);
+      this.performances = this.performancesFreeProfessional;
+      this.performances.forEach(pf =>{
+        pf.Type = "Performance Free Professional"
+      })
+    }
+  }
+  
 }

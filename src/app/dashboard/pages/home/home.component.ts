@@ -64,14 +64,17 @@ export class HomeComponent implements OnDestroy {
                   if (freeProfessional.FreeprofessionaltypeAcronym == "TR") {
                     this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuService.getMenuOptionFreeProfessionalProcessor() }));
                   }
-                  if (freeProfessional.FreeprofessionaltypeAcronym == "INFIT") {
+                  else if (freeProfessional.FreeprofessionaltypeAcronym == "INFIT") {
                     this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuService.getMenuOptionAdmin() }));
                   }
-                  if (freeProfessional.FreeprofessionaltypeAcronym == "DT") {
+                  else if (freeProfessional.FreeprofessionaltypeAcronym == "DT") {
                     this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuService.getMenuOptionAdmin() }));
                   }
-                  if (freeProfessional.FreeprofessionaltypeAcronym == "FC") {
+                  else if (freeProfessional.FreeprofessionaltypeAcronym == "FC") {
                     this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuService.getMenuOptionFreeProfessionalTrainer() }));
+                  }
+                  else{
+                    this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuService.getMenuOptionAllFreeProfessional() }));
                   }
                 }
               });

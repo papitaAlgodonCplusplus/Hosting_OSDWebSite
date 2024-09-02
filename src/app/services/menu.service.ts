@@ -18,14 +18,22 @@ export class MenuService implements OnInit {
         }, 0);
     }
 
+    getMenuOptionAllFreeProfessional(): MenuOption[] {
+        return [
+            { name: 'transparent_project', path: '/project-manager', icon: 'fa-project-diagram' },
+        ];
+    }
+
     getMenuOptionFreeProfessionalProcessor(): MenuOption[] {
         return [
+            { name: 'transparent_project', path: '/project-manager', icon: 'fa-project-diagram' },
             { name: 'file_claim', path: '/functions/claims-file', icon: 'fa-file' },
         ];
     }
 
     getMenuOptionFreeProfessionalTrainer(): MenuOption[] {
         return [
+            { name: 'transparent_project', path: '/project-manager', icon: 'fa-project-diagram' },
             { name: 'file_claim', path: '/functions/claims-file', icon: 'fa-file' },
             { name: 'Assign_Processor_to_Claim', path: '/functions/assign-pltr-claims', icon: 'fa-user' }
         ];

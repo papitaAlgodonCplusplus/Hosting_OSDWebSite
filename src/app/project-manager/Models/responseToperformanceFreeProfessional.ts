@@ -1,5 +1,6 @@
-export class PerformanceFreeProfessional {
+export class ResponseToPerformanceFreeProfessional {
   id: string = "";
+  Code: string = "";
   performanceId: string = "";
   freeProfessionalId: string = "";
   freeProfessionalWorkHours: string = "";

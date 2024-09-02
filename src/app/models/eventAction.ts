@@ -35,6 +35,11 @@ export class EventAction {
   public static GET_PROFRESSIONALFREE_TRAINERS : string = "GetProfessionalFreeTrainers";
   public static GET_PERFORMANCES_CLAIM_BY_ID : string = "GetPerformancesClaimById";
   public static GET_PERFORMANCES_CLAIM_BY_ID_RESPONSE : string = "GetPerformancesClaimByIdResponse";
+  public static GET_PERFORMANCES_ASSIGNED_BY_ID : string = "GetPerformanceAssignedById";
+
+  public static ADD_RESPONSE_TO_PERFORMANCE_ASSIGNED : string = "AddResponseToPerformanceAssigned";
+
+  public static GET_SUB_PERFORMANCE_BY_ID : string = "GetSubPerformanceById";
   //Response
   
   public static ADD_SUMMARY_TYPE_RESPONSE : string = "AddSummaryTypeResponse";

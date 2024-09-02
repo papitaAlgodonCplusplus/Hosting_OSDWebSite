@@ -17,3 +17,13 @@ export const fileCode = createSelector(
     performanceState,
     (performanceState) => performanceState.fileCode
 );
+
+export const projectPerformance = createSelector(
+    performanceState,
+    (performanceState) => performanceState.projectPerformance
+);
+
+export const projectManagerId = createSelector(
+    performanceState,
+    (performanceState) => performanceState.projectManagerId
+);

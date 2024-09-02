@@ -23,6 +23,8 @@ import { SummaryTypes } from '../project-manager/Models/summaryTypes';
 import { FreeProfessional } from '../functions/models/FreeProfessional';
 import { Subscriber } from '../functions/models/Subscriber';
 import { Router } from '@angular/router';
+import { ResponseToPerformanceAssignedEvent } from '../project-manager/Interface/responseToPerformanceAssignedEvent.interface';
+import { ResponseToPerformanceFreeProfessional } from '../project-manager/Models/responseToperformanceFreeProfessional';
 
 @Injectable({
   providedIn: 'root'
@@ -129,8 +131,8 @@ export class OSDService {
     });
   }
 
-  public addPerformanceFreeProfessional(performanceFP: PerformanceFreeProfessional) {
-    const event: WebBaseEvent = this.eventFactoryService.CreateAddPerformanceFreeProfessionalEvent(performanceFP);
+  public addPerformanceFreeProfessional(performanceFP: PerformanceFreeProfessional, projectManagerSelectedId : string) {
+    const event: WebBaseEvent = this.eventFactoryService.CreateAddPerformanceFreeProfessionalEvent(performanceFP,projectManagerSelectedId);
     console.log(event)
     this.restApiService.SendOSDEvent(event).subscribe({
       next: (response) => {
@@ -221,8 +223,9 @@ export class OSDService {
     });
   }
 
-  public performanceBuy(performanceForm: PerformanceBuy) {
-    const performanceBuyEvent: WebBaseEvent = this.eventFactoryService.CreatePerformanceBuyEvent(performanceForm);
+  public performanceBuy(performanceForm: PerformanceBuy, projectManagerId: string) {
+    const performanceBuyEvent: WebBaseEvent = this.eventFactoryService.CreatePerformanceBuyEvent(performanceForm,projectManagerId);
+    console.log(performanceBuyEvent)
     this.restApiService.SendOSDEvent(performanceBuyEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
@@ -322,7 +325,46 @@ export class OSDService {
         //TODO: Pending implementation
       }
     });
-  }  
+  }
+
+  public getPerformancesAssignedById(userId: string) {
+    const CreateGetPerformancesAssignedByIdEvent: WebBaseEvent = this.eventFactoryService.CreateGetPerformancesAssignedById(userId);
+    this.restApiService.SendOSDEvent(CreateGetPerformancesAssignedByIdEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleCreateGetPerformanceAssignedByIdResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+
+  public addResponseToPerformanceAssigned(performance: ResponseToPerformanceAssignedEvent, performanceAssignedId: string) {
+    const CreateAddResponseToPerformancesAssignedEvent: WebBaseEvent = this.eventFactoryService.CreateAddResponseToPerformancesAssigned(performance, performanceAssignedId);
+    this.restApiService.SendOSDEvent(CreateAddResponseToPerformancesAssignedEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleAddResponseToPerformanceAssignedResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+
+  public GetSubPerformanceById(performanceId: string) {
+    const CreateGetSubPerformanceByIdEvent: WebBaseEvent = this.eventFactoryService.CreateGetSubPerformanceById(performanceId);
+    this.restApiService.SendOSDEvent(CreateGetSubPerformanceByIdEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleGetSubPerformanceByIdResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
 
   public HandleGettingFreeProfessionalsListResponse(webBaseEvent: WebBaseEvent) {
     try {
@@ -543,11 +585,11 @@ export class OSDService {
           this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: actionGetOsdUsersSusbscriberResultMessage }));
         } else {
           if (actionGetOsdUsersSusbscriberResultMessage == "Was Successfully Created") {
-            actionGetOsdUsersSusbscriberResultMessage = "Actuacion creada correctamente"
+            actionGetOsdUsersSusbscriberResultMessage = "Actuación creada correctamente"
             this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: actionGetOsdUsersSusbscriberResultMessage }));
           }
         }
-
+        this.securityDataService.emitUserAuthenticationSuccess("/project-manager");
         this.store.dispatch(ModalActions.openAlert())
       }
 
@@ -579,11 +621,11 @@ export class OSDService {
     try {
       var performancesFreeProfessionals = webBaseEvent.getBodyProperty(EventConstants.PERFORMANCE_FREE_PROFESSIONAL_LIST);
       var performancesBuy = webBaseEvent.getBodyProperty(EventConstants.PERFORMANCE_BUY_LIST);
-      console.log(webBaseEvent)
       if (performancesFreeProfessionals != null && performancesBuy != null) {
         const performancesFreeProfessionalsModels = performancesFreeProfessionals;
         const performancesBuyModels = performancesBuy;
 
+        console.log(performancesBuyModels)
         this.osdDataService.emitPerformanceFreeProfessionalList(performancesFreeProfessionalsModels);
         this.osdDataService.emitPerformanceBuyList(performancesBuyModels);
       }
@@ -768,11 +810,11 @@ export class OSDService {
         this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
       } else {
         if (message == "Was Successfully Created") {
-          message = "Actuacion creada correctamente"
+          message = "Actuación creada correctamente"
           this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
+          this.securityDataService.emitUserAuthenticationSuccess("/project-manager");
         }
       }
-      this.securityDataService.emitUserAuthenticationSuccess("/project-manager");
       this.store.dispatch(ModalActions.openAlert())
     } catch {
 
@@ -872,11 +914,19 @@ export class OSDService {
   }
 
   public HandleCreateGetSummaryTypesResponse(webBaseEvent: WebBaseEvent) {
-    var summaryTypesList: SummaryTypes[];
+    var summaryTypesPerformanceFreeProfessionalList: SummaryTypes[];
+    var summaryTypesPerformanceBuyList: SummaryTypes[];
+
     try {
-      summaryTypesList = webBaseEvent.getBodyProperty(EventConstants.SUMMARY_TYPES_PERFORMANCE_FREEPROFESSIONAL_LIST);
-      if (summaryTypesList.length > 0) {
-        this.osdDataService.emitGetSummaryTypesListSuccess(summaryTypesList)
+      summaryTypesPerformanceFreeProfessionalList = webBaseEvent.getBodyProperty(EventConstants.SUMMARY_TYPES_PERFORMANCE_FREEPROFESSIONAL_LIST);
+      summaryTypesPerformanceBuyList = webBaseEvent.getBodyProperty(EventConstants.SUMMARY_TYPES_PERFORMANCE_BUY_LIST);
+    
+      if (summaryTypesPerformanceFreeProfessionalList.length > 0) {
+        this.osdDataService.emitGetSummaryTypesPerformanceFreeProfessionalListSuccess(summaryTypesPerformanceFreeProfessionalList)
+      }
+
+      if (summaryTypesPerformanceBuyList.length > 0) {
+        this.osdDataService.emitGetSummaryTypesPerformanceBuyListSuccess(summaryTypesPerformanceBuyList)
       }
       else {
         //TODO: NO SUMMARY TYPES FOUND
@@ -973,4 +1023,56 @@ export class OSDService {
 
     }
   }
+
+  public HandleCreateGetPerformanceAssignedByIdResponse(webBaseEvent: WebBaseEvent) {
+    var performanceAssigned: PerformanceFreeProfessional[];
+    console.log(webBaseEvent)
+    try {
+      performanceAssigned = webBaseEvent.getBodyProperty(EventConstants.PERFORMANCE_ASSIGNED_BY_ID_LIST);
+      if (performanceAssigned.length > 0) {
+        this.osdDataService.emitPerformanceAssignedListSuccess(performanceAssigned)
+      }
+      else {
+        //TODO: NOT EXISTS PROFESSIONALS FREE BUT IS NECESSARY CATCH ERRORS
+      }
+    } catch {
+
+    }
+  }
+
+  public HandleAddResponseToPerformanceAssignedResponse(webBaseEvent: WebBaseEvent) {
+    let message: string;
+    try {
+      message = webBaseEvent.getBodyProperty(EventConstants.ACTION_OSD_RESULT_MESSAGE);
+      if (this.translate.currentLang == "en") {
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
+      }
+      else {
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Respuesta exitosa a la actuación asignada" }));
+      }
+
+      this.store.dispatch(ModalActions.openAlert())
+      this.securityDataService.emitUserAuthenticationSuccess("/project-manager/assigned-performance");
+
+    } catch {
+
+    }
+  }
+
+  public HandleGetSubPerformanceByIdResponse(webBaseEvent: WebBaseEvent) {
+    var subPerformance: ResponseToPerformanceFreeProfessional[];
+    try {
+      subPerformance = webBaseEvent.getBodyProperty(EventConstants.SUB_PERFORMANCE_LIST);
+      if (subPerformance) {
+        console.log(subPerformance)
+        this.osdDataService.emitSubPerformanceByIdListSuccess(subPerformance)
+      }
+      else {
+          //TODO: NOT EXISTS PROFESSIONALS FREE BUT IS NECESSARY CATCH ERRORS
+      }
+    } catch {
+
+    }
+  }
+
 }

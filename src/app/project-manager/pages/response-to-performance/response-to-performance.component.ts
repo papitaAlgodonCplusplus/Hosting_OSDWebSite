@@ -5,6 +5,10 @@ import { UserInfo } from 'src/app/models/userInfo';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { UiActions } from 'src/app/store/actions';
+import { PerformanceFreeProfessional } from '../../Models/performanceFreeProfessional';
+import { PerformanceSelectors } from 'src/app/store/selectors';
+import { Observable } from 'rxjs';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-response-to-performance',
@@ -17,12 +21,15 @@ export class ResponseToPerformanceComponent implements OnDestroy {
   DocumentIncreaseWorkingHours!: string;
   justifyingDocument!: string;
   isTechnicalDirector: boolean = true
-  userInfo! : UserInfo
+  userInfo!: UserInfo
+  performanceAssigned$: Observable<PerformanceFreeProfessional> = this.store.select(PerformanceSelectors.projectPerformance);
+  isWorkMore: boolean = false;
 
   constructor(private store: Store,
-              private formBuilder: FormBuilder,
-              private authenticationService : AuthenticationService,
-              private osdEventService : OSDService) {
+    private formBuilder: FormBuilder,
+    private authenticationService: AuthenticationService,
+    private osdEventService: OSDService,
+    private datePipe: DatePipe) {
     this.responsePerformanceForm = this.createForm()
     this.showPerformanceAssignedForm = this.ShowForm()
   }
@@ -45,28 +52,41 @@ export class ResponseToPerformanceComponent implements OnDestroy {
       FP_WorkHours: ['', [Validators.required]],
       FP_TravelTime: ['', [Validators.required]],
       FP_TravelExpenses: ['', [Validators.required]],
-      FP_total: ['', [Validators.required]],
+      Total_FP: ['', [Validators.required]],
       JustifyChangeEstimatedWorkHours: [''],
       DocumentIncreaseWorkingHours: [''],
       TD_Date: [''],
       TD_WorkHours: [''],
-      AcceptIncreaseInHours: [{ value: '',disabled: this.isTechnicalDirector}]
+      AcceptIncreaseInHours: [{ value: '', disabled: this.isTechnicalDirector }]
     });
     return form;
   }
 
   private ShowForm(): FormGroup {
+    var fillForm = {} as PerformanceFreeProfessional;
+    this.performanceAssigned$.subscribe(performance => {
+      fillForm = performance
+    })
+
+    this.justifyingDocument = fillForm.JustifyingDocument
+
+    let originalStartDate = fillForm.Start_Date;
+    let formatedStartDate = this.datePipe.transform(originalStartDate, 'yyyy-MM-dd');
+
+    let originalEndDate = fillForm.End_Date;
+    let formatedEndDate = this.datePipe.transform(originalEndDate, 'yyyy-MM-dd');
+
     const form = this.formBuilder.group({
-      start_date: [''],
-      end_date: [''],
-      freeProfessionalId: [''],
-      freeProfessionalCode: [''],
-      Summary: [''],
-      JustifyingDocument: [''],
-      ForecastTravelExpenses: [''],
-      ForecastTravelTime: [''],
-      ForecastWorkHours: [''],
-      Totalforecastdata: ['']
+      start_date: formatedStartDate,
+      end_date: formatedEndDate,
+      freeProfessionalId: fillForm.FreeProfessionalId,
+      freeProfessionalCode: fillForm.FreeProfessionalAssignedCode,
+      Summary: fillForm.SummaryTypeName,
+      JustifyingDocument: fillForm.JustifyingDocument,
+      ForecastTravelExpenses: fillForm.ForecastTravelExpenses,
+      ForecastTravelTime: fillForm.ForecastTravelTime,
+      ForecastWorkHours: fillForm.ForecastWorkHours,
+      Totalforecastdata: fillForm.TotalForecastData
     });
     return form;
   }
@@ -76,6 +96,11 @@ export class ResponseToPerformanceComponent implements OnDestroy {
       this.responsePerformanceForm.markAllAsTouched();
       return;
     }
+    var performanceAssigned = {} as PerformanceFreeProfessional;
+    this.performanceAssigned$.subscribe(performance => {
+      performanceAssigned = performance
+    })
+    this.osdEventService.addResponseToPerformanceAssigned(this.responsePerformanceForm.value, performanceAssigned.Id)
   }
 
   verifiedFormat(data: string) {
@@ -104,7 +129,7 @@ export class ResponseToPerformanceComponent implements OnDestroy {
       }
     } else {
       if (professionalFreeTransportExpenses != '') {
-        this.responsePerformanceForm.patchValue({ FP_total: '' });
+        this.responsePerformanceForm.patchValue({ Total_FP: '' });
       }
     }
   }
@@ -133,7 +158,7 @@ export class ResponseToPerformanceComponent implements OnDestroy {
     const total: number = (totalWorkHours + totalTransportHours) + FreeProfessionalExpenses;
 
     this.responsePerformanceForm.patchValue({
-      FP_total: total
+      Total_FP: total
     });
   }
 
@@ -144,4 +169,43 @@ export class ResponseToPerformanceComponent implements OnDestroy {
       this.DocumentIncreaseWorkingHours = DocumentIncreaseWorkingHours.value;
     }
   }
+
+  checkWorkHours() {
+    var form = this.responsePerformanceForm.value;
+    var isHourValid = this.validarHora(form.FP_WorkHours);
+
+    if (isHourValid) {
+      var formPerformanceAssigned = this.showPerformanceAssignedForm.value;
+      var totalMinutesFreeProfessional = this.convertTimeToMinutes(form.FP_WorkHours) / 60;
+      var totalMinutesForecastWorkHours = this.convertTimeToMinutes(formPerformanceAssigned.ForecastWorkHours) / 60;
+
+      if (totalMinutesFreeProfessional > totalMinutesForecastWorkHours) {
+        this.isWorkMore = true;
+
+        this.responsePerformanceForm.get('JustifyChangeEstimatedWorkHours')?.setValidators(Validators.required);
+        this.responsePerformanceForm.get('DocumentIncreaseWorkingHours')?.setValidators(Validators.required);
+
+        this.responsePerformanceForm.get('JustifyChangeEstimatedWorkHours')?.updateValueAndValidity();
+        this.responsePerformanceForm.get('DocumentIncreaseWorkingHours')?.updateValueAndValidity();
+      } else {
+        this.isWorkMore = false;
+
+        this.responsePerformanceForm.get('JustifyChangeEstimatedWorkHours')?.clearValidators();
+        this.responsePerformanceForm.get('DocumentIncreaseWorkingHours')?.clearValidators();
+
+        this.responsePerformanceForm.get('JustifyChangeEstimatedWorkHours')?.updateValueAndValidity();
+        this.responsePerformanceForm.get('DocumentIncreaseWorkingHours')?.updateValueAndValidity();
+      }
+    }
+    else {
+      this.isWorkMore = false;
+      this.responsePerformanceForm.get('JustifyChangeEstimatedWorkHours')?.clearValidators();
+      this.responsePerformanceForm.get('DocumentIncreaseWorkingHours')?.clearValidators();
+
+      this.responsePerformanceForm.get('JustifyChangeEstimatedWorkHours')?.updateValueAndValidity();
+      this.responsePerformanceForm.get('DocumentIncreaseWorkingHours')?.updateValueAndValidity();
+    }
+  }
+
+
 }

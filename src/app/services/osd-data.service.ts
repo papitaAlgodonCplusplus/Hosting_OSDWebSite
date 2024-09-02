@@ -9,6 +9,7 @@ import { Subscriber } from '../functions/models/Subscriber';
 import { Project } from '../project-manager/Models/project';
 import { SummaryTypes } from '../project-manager/Models/summaryTypes';
 import { FreeProfessional } from '../functions/models/FreeProfessional';
+import { ResponseToPerformanceFreeProfessional } from '../project-manager/Models/responseToperformanceFreeProfessional';
 
 @Injectable({
   providedIn: 'root'
@@ -55,11 +56,16 @@ export class OSDDataService {
 
   private projectsList = new Subject<Project[]>();
 
-  private summaryTypesList = new Subject<SummaryTypes[]>();
+  private summaryTypesPerformanceFreeProfessionalList = new Subject<SummaryTypes[]>();
+  private summaryTypesPerformanceBuyList = new Subject<SummaryTypes[]>();
 
   private unassignedSubscribersList = new Subject<Subscriber[]>();
 
   private professioanlFreeTrainersList = new Subject<FreeProfessional[]>();
+
+  private performanceAssignedList = new Subject<PerformanceFreeProfessional[]>();
+
+  private SubPerformanceByIdList = new Subject<ResponseToPerformanceFreeProfessional[]>();
 
   actionRegisterSuccess$ = this.actionRegisterSuccessSubject.asObservable();
   userRegisterSuccess$ = this.userRegisterSuccessSubject.asObservable();
@@ -103,12 +109,17 @@ export class OSDDataService {
 
   ProjectsList$ = this.projectsList.asObservable();
 
-  SummaryTypesList$ = this.summaryTypesList.asObservable();
+  SummaryTypesPerformanceFreeProfessionalList$ = this.summaryTypesPerformanceFreeProfessionalList.asObservable();
+  SummaryTypesPerformanceBuyList$ = this.summaryTypesPerformanceBuyList.asObservable();
 
   UnassignedSubscribersList$ = this.unassignedSubscribersList.asObservable();
 
   ProfessionalFreeTrainerList$ = this.professioanlFreeTrainersList.asObservable();
 
+  PerformanceAssignedList$ = this.performanceAssignedList.asObservable();
+
+  SubPerformanceByIdList$ = this.SubPerformanceByIdList.asObservable();
+  
   constructor() {
   }
 
@@ -142,6 +153,7 @@ export class OSDDataService {
     this.performanceFreeProfessionalList.next(data);
   }
   emitPerformanceBuyList(data: PerformanceBuy[]) {
+    console.log(data)
     this.performanceBuyList.next(data);
   }
   emitFreeProfessionalId(data: string) {
@@ -224,8 +236,12 @@ export class OSDDataService {
     this.projectsList.next(data);
   }
 
-  emitGetSummaryTypesListSuccess(data: SummaryTypes[]) {
-    this.summaryTypesList.next(data);
+  emitGetSummaryTypesPerformanceFreeProfessionalListSuccess(data: SummaryTypes[]) {
+    this.summaryTypesPerformanceFreeProfessionalList.next(data);
+  }
+
+  emitGetSummaryTypesPerformanceBuyListSuccess(data: SummaryTypes[]) {
+    this.summaryTypesPerformanceBuyList.next(data);
   }
 
   emitUnassignedSubscribersListSuccess(data: Subscriber[]) {
@@ -238,5 +254,13 @@ export class OSDDataService {
 
   emitPerformancesClaimById(data: PerformanceClaim[]) {
     this.performanceClaimList.next(data);
+    
+  }
+  emitPerformanceAssignedListSuccess(data: PerformanceFreeProfessional[]) {
+    this.performanceAssignedList.next(data);
+  }
+
+  emitSubPerformanceByIdListSuccess(data: ResponseToPerformanceFreeProfessional[]) {
+    this.SubPerformanceByIdList.next(data);
   }
 }

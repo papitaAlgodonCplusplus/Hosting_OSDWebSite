@@ -21,10 +21,6 @@
                 [formGroup]="performanceForm">
             </shared-input-field>
 
-            <shared-input-field *ngIf="false" class="w-full md:w-1/2" fieldName="ProjectManagerId"
-                [formGroup]="performanceForm">
-            </shared-input-field>
-
             <shared-simple-dropdown class="w-full md:w-1/2" fieldName="SummaryId" label="{{'Summary'|translate}}"
                 inputType="text" [formGroup]="performanceForm" [selectedItem]="selectedSummaryType"
                 [dropdownItems]="summaryTypes" [bgColor]="'bg-white-lightbone'"></shared-simple-dropdown>

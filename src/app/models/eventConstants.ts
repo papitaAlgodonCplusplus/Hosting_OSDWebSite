@@ -93,7 +93,7 @@ export class EventConstants {
   public static PERFORMANCE_BUY_LIST: string = "PerformanceBuyList"
   public static PERFORMANCE_CLAIM_LIST: string = "PerformanceClaimList"
   public static CLAIM_ID: string = "ClaimId";
-  
+
   public static FREE_PROFESSIONAL_ID: string = "FreeProfessionalId";
   public static FREE_PROFESSIONAL_ASSIGNED_ID: string = "FreeProfessionalAssignedId"
   public static FREE_PROFESSIONAL_TYPE_ID: string = "FreeProfessionalTypeId";
@@ -176,10 +176,20 @@ export class EventConstants {
   public static MODIFIED_RESULT_MESSAGE: string = "ModifiedResultMessage"
 
   public static SUMMARY_TYPES_PERFORMANCE_FREEPROFESSIONAL_LIST: string = "SummaryTypesPerformanceFreeProfessionalList"
+  public static SUMMARY_TYPES_PERFORMANCE_BUY_LIST: string = "SummaryTypesPerformanceBuyList"
+
   public static UNASSIGNED_SUBSCRIBERS_LIST: string = "UnassignedSubscribersList"
 
   public static PROFESSIONAL_FREE_TRAINERS_LIST: string = "ProfessionalFreeTrainersList"
   public static PERFORMANCES_CLAIM_LIST: string = "PerformancesClaimList"
+  public static PERFORMANCE_ASSIGNED_BY_ID_LIST: string = "PerformanceAssignedByIdList"
+
+  public static PERFORMANCE_ASSIGNED_ID: string = "PerformanceAssignedId"
+
+  public static PERFORMANCE_ID: string = "PerformanceId"
+
+  public static SUB_PERFORMANCE_LIST: string = "SubPerformanceList"
+
   //#endregion
   constructor() {
 

@@ -1,7 +1,7 @@
-<div class="flex flex-col min-h-screen">
+<shared-alert  *ngIf="(alertOpen$ | async)"></shared-alert>
+<div class="flex flex-col min-h-screen space-y-16">
   <shared-header *ngIf="!(hideHeader$ | async)"></shared-header>
-  <shared-alert class="absolute top-4 left-4 z-50" *ngIf="(alertOpen$ | async)"></shared-alert>
-  <div class="flex flex-grow h-full">
+  <div class="flex flex-grow">
     <shared-left-sidebar *ngIf="!(hideLeftSidebar$ | async)"></shared-left-sidebar>
     <div [ngClass]="{'mx-0 my-0': (hideLeftSidebar$ | async), 'mx-12 my-6': !(hideLeftSidebar$ | async)}"
       class="flex-grow">

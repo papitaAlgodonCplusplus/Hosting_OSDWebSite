@@ -16,6 +16,7 @@ import { PerformanceBuy } from '../project-manager/Models/performanceBuy';
 import { PerformanceClaim } from '../functions/models/PerformanceClaims';
 import { CreateProjectEvent } from '../project-manager/Interface/project.interface';
 import { CreateClaimValuationEvent } from '../functions/Interface/ClaimValuation.interface';
+import { ResponseToPerformanceAssignedEvent } from '../project-manager/Interface/responseToPerformanceAssignedEvent.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -107,7 +108,7 @@ export class EventFactoryService {
     return event;
   }
 
-  public CreateAddPerformanceFreeProfessionalEvent(performanceFP: PerformanceFreeProfessional): WebBaseEvent {
+  public CreateAddPerformanceFreeProfessionalEvent(performanceFP: PerformanceFreeProfessional, projectManagerSelectedId : string): WebBaseEvent {
     let event: WebBaseEvent;
     console.log(performanceFP)
     event = new WebBaseEvent();
@@ -118,7 +119,7 @@ export class EventFactoryService {
     event.Action = EventAction.ADD_PERFORMANCE_FREE_PROFESSIONAL;
     event.Date = new Date().toUTCString();
     event.ApplicationIdentifier = 'WebClient';
-    event.setBodyProperty(EventConstants.PROJECT_MANAGER_ID, performanceFP.ProjectManagerId);
+    event.setBodyProperty(EventConstants.PROJECT_MANAGER_ID, projectManagerSelectedId);
     event.setBodyProperty(EventConstants.START_DATE, performanceFP.Start_Date);
     event.setBodyProperty(EventConstants.END_DATE, performanceFP.End_Date);
     event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_ID, this.authenticationService.userInfo?.Id);
@@ -293,7 +294,7 @@ export class EventFactoryService {
     return event;
   }
 
-  public CreatePerformanceBuyEvent(performanceForm: PerformanceBuy): WebBaseEvent {
+  public CreatePerformanceBuyEvent(performanceForm: PerformanceBuy, projectManagerId: string): WebBaseEvent {
     let event: WebBaseEvent;
     event = new WebBaseEvent();
     event.SessionKey = this.authenticationService.sessionKey;
@@ -303,15 +304,16 @@ export class EventFactoryService {
     event.Action = EventAction.CREATE_PERFORMANCE_BUY;
     event.Date = new Date().toUTCString();
     event.ApplicationIdentifier = 'WebClient'; //TODO: change to use an application identifier
-    event.setBodyProperty(EventConstants.DATE_PERFORMANCE, performanceForm.date);
-    event.setBodyProperty(EventConstants.PROJECT_MANAGER_ID, "065d461a-cc09-4162-b4e9-f121c11d3348");
-    event.setBodyProperty(EventConstants.PRODUCT_SERVICE_ID, performanceForm.productServiceId);
-    event.setBodyProperty(EventConstants.MINIMUN_UNITS, performanceForm.minimumUnits);
-    event.setBodyProperty(EventConstants.MAXIMUM_UNITS, performanceForm.maximumUnits);
-    event.setBodyProperty(EventConstants.UNITARY_COST, performanceForm.unitaryCost);
-    event.setBodyProperty(EventConstants.SHELF_LIFE, performanceForm.shelfLife);
-    event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, performanceForm.justifyingDocument);
-    event.setBodyProperty(EventConstants.SUMMARY, performanceForm.summary);
+    event.setBodyProperty(EventConstants.DATE_PERFORMANCE, performanceForm.Date);
+    event.setBodyProperty(EventConstants.USER_ID, this.authenticationService.userInfo?.Id);
+    event.setBodyProperty(EventConstants.PROJECT_MANAGER_ID, projectManagerId);
+    event.setBodyProperty(EventConstants.PRODUCT_SERVICE_ID, performanceForm.ProductServiceId);
+    event.setBodyProperty(EventConstants.MINIMUN_UNITS, performanceForm.MinimumUnits);
+    event.setBodyProperty(EventConstants.MAXIMUM_UNITS, performanceForm.MaximumUnits);
+    event.setBodyProperty(EventConstants.UNITARY_COST, performanceForm.UnitaryCost);
+    event.setBodyProperty(EventConstants.SHELF_LIFE, performanceForm.ShelfLife);
+    event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, performanceForm.JustifyingDocument);
+    event.setBodyProperty(EventConstants.SUMMARY_ID, performanceForm.SummaryId);
     return event;
   }
 
@@ -606,6 +608,61 @@ export class EventFactoryService {
     event.Type = EventType.OSD;
     event.Date = (new Date()).toUTCString();
     event.ApplicationIdentifier = "WebClient";
+
+    return event;
+  }
+
+  public CreateGetPerformancesAssignedById(userId : string): WebBaseEvent {
+    let event: WebBaseEvent;
+
+    event = new WebBaseEvent();
+    event.Action = EventAction.GET_PERFORMANCES_ASSIGNED_BY_ID;
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Date = (new Date()).toUTCString();
+    event.ApplicationIdentifier = "WebClient";
+    event.setBodyProperty(EventConstants.USER_ID, userId);
+
+    return event;
+  }
+
+  public CreateAddResponseToPerformancesAssigned(performance : ResponseToPerformanceAssignedEvent, performanceAssignedId : string): WebBaseEvent {
+    let event: WebBaseEvent;
+
+    event = new WebBaseEvent();
+    event.Action = EventAction.ADD_RESPONSE_TO_PERFORMANCE_ASSIGNED;
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Date = (new Date()).toUTCString();
+    event.ApplicationIdentifier = "WebClient";
+    event.setBodyProperty(EventConstants.PERFORMANCE_ASSIGNED_ID, performanceAssignedId);
+    event.setBodyProperty(EventConstants.USER_ID, this.authenticationService.userInfo?.Id);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_WORK_HOURS, performance.FP_WorkHours);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_TRAVEL_HOURS, performance.FP_TravelTime);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_TRAVEL_EXPENSES, performance.FP_TravelExpenses);
+    event.setBodyProperty(EventConstants.TOTAL_FREE_PROFESSIONAL, performance.Total_FP);
+    event.setBodyProperty(EventConstants.JUSTIFY_CHANGE_ESTIMATED_WORK_HOURS, performance.JustifyChangeEstimatedWorkHours);
+    event.setBodyProperty(EventConstants.DOCUMENT_INCREASE_WORKING_HOURS, performance.DocumentIncreaseWorkingHours);
+
+    return event;
+  }
+
+  public CreateGetSubPerformanceById(performanceId : string): WebBaseEvent {
+    let event: WebBaseEvent;
+
+    event = new WebBaseEvent();
+    event.Action = EventAction.GET_SUB_PERFORMANCE_BY_ID;
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Date = (new Date()).toUTCString();
+    event.ApplicationIdentifier = "WebClient";
+    event.setBodyProperty(EventConstants.PERFORMANCE_ID, performanceId);
 
     return event;
   }

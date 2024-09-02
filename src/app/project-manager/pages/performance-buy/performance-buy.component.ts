@@ -10,6 +10,7 @@ import { AuthSelectors, PerformanceSelectors } from 'src/app/store/selectors';
 import { PerformanceBuy } from '../../Models/performanceBuy';
 import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
+import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
 
 @Component({
   selector: 'app-performance-buy',
@@ -25,12 +26,18 @@ export class PerformanceBuyComponent implements OnDestroy {
   isView: boolean = false;
   isAuthenticated$: Observable<boolean> = this.store.select(AuthSelectors.authenticationToken)
   showButtons: boolean = true;
+  selectedSummaryType: string | undefined;
+  summaryTypes: DropDownItem[] = [];
+  projectManagerSelectedObservable$: Observable<string> = this.store.select(PerformanceSelectors.projectManagerId)
+  projectManagerSelected: string = "";
 
   constructor(private store: Store,
     private osdEventService: OSDService,
     private formBuilder: FormBuilder,
     private datePipe: DatePipe,
-    private router: Router
+    private router: Router,
+    private OSDEventService : OSDService,
+    private OSDDataService: OSDDataService
   ) {
     this.performanceForm = this.createForm()
   }
@@ -39,11 +46,19 @@ export class PerformanceBuyComponent implements OnDestroy {
     setTimeout(() => {
       this.store.dispatch(UiActions.hideLeftSidebar());
       this.store.dispatch(UiActions.hideFooter());
+      this.OSDEventService.GetSummaryTypes(); 
       this.performance$.subscribe(performance => {
         this.performance = performance
       })
 
-      if (this.performance) {
+      this.OSDDataService.SummaryTypesPerformanceBuyList$.subscribe(summaryTypes => {
+        summaryTypes.forEach(items => {
+          var entityDropDownItem: DropDownItem = { value: items.Summary, key: items.Id };
+          this.summaryTypes.push(entityDropDownItem);
+        });
+      });
+
+      if (this.performance != null) {
         this.performanceForm = this.fillForm()
       }
 
@@ -52,6 +67,10 @@ export class PerformanceBuyComponent implements OnDestroy {
           this.showButtons = false
         }
       });
+
+      this.projectManagerSelectedObservable$.subscribe(id=>{
+        this.projectManagerSelected = id;
+      })
     }, 0);
   }
 
@@ -72,21 +91,22 @@ export class PerformanceBuyComponent implements OnDestroy {
       maximumUnits: this.performance.MaximumUnits,
       unitaryCost: this.performance.UnitaryCost,
       shelfLife: this.performance.ShelfLife,
-      summary: this.performance.Summary 
+      SummaryId: this.performance.Summary,
+      JustifyingDocument: ['', [Validators.required]]
     });
     return form;
   }
 
   private createForm(): FormGroup {
     const form = this.formBuilder.group({
-      date: ['', [Validators.required]],
-      productServiceId: ['', []],
-      minimumUnits: ['', [Validators.required]],
-      maximumUnits: ['', [Validators.required]],
-      unitaryCost: ['', [Validators.required]],
-      shelfLife: ['', [Validators.required]],
-      justifyingDocument: ['', [Validators.required]],
-      summary: ['', [Validators.required]]
+      Date: ['', [Validators.required]],
+      ProductServiceId: ['', []],
+      MinimumUnits: ['', [Validators.required]],
+      MaximumUnits: ['', [Validators.required]],
+      UnitaryCost: ['', [Validators.required]],
+      ShelfLife: ['', [Validators.required]],
+      JustifyingDocument: ['', [Validators.required]],
+      SummaryId: ['', [Validators.required]]
     });
     return form;
   }
@@ -99,12 +119,12 @@ export class PerformanceBuyComponent implements OnDestroy {
       this.performanceForm.markAllAsTouched();
       return;
     }
-    this.osdEventService.performanceBuy(this.performanceForm.value);
-    this.router.navigate(['/project-manager']);
+    
+   this.osdEventService.performanceBuy(this.performanceForm.value,this.projectManagerSelected);
   }
 
   displayFileName(): void {
-    const fileNameDocument1 = document.getElementById('justifyingDocument') as HTMLInputElement;
+    const fileNameDocument1 = document.getElementById('JustifyingDocument') as HTMLInputElement;
     if (fileNameDocument1.value !== null) {
       this.documentName = fileNameDocument1.value;
     }
