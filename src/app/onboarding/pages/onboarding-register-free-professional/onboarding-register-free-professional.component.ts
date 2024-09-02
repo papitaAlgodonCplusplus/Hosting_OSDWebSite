@@ -63,6 +63,9 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   }
 
   ngOnInit(): void {
+    this.accountForm.get('workspace')?.valueChanges.subscribe((newWorkspace: string) => {
+      this.selectedWorkspace = newWorkspace;
+    });
     
     this.osdDataService.getOsdUsersSubscribersSuccess$.subscribe(osdUsersSubscribers => {
       this.osdUserSubscriberCustomers = osdUsersSubscribers.map(item =>{

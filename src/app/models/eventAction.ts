@@ -13,6 +13,8 @@ export class EventAction {
   public static GENERATE_MAIL_PASSWORD_RESET_TOKEN: string = "GenerateMailPasswordResetToken";
   public static CHANGE_PASSWORD: string = "ChangePassword";
   public static CREATE_PERFORMANCE: string = "CreatePerformance";
+  public static MODIFIED_PERFORMANCE_CLAIM: string = "ModifiedPerformanceClaim";
+  public static HANDLE_MODIFIED_PERFORMANCE_CLAIM_RESPONSE: string = "HandleModifiedPerformanceClaimResponse";
   public static GET_CLAIMS: string = "GetClaims";
   public static GET_SUBSCRIBERS: string = "GetSubscribers";
   public static ADD_PERFORMANCE_FREE_PROFESSIONAL: string = "AddPerformanceFreeProfessional";
@@ -31,8 +33,8 @@ export class EventAction {
   public static GET_SUMMARY_TYPES : string = "GetSummaryTypes";
   public static GET_UNASSIGNED_SUBSCRIBERS : string = "GetUnassignedSubscribers";
   public static GET_PROFRESSIONALFREE_TRAINERS : string = "GetProfessionalFreeTrainers";
-  
-
+  public static GET_PERFORMANCES_CLAIM_BY_ID : string = "GetPerformancesClaimById";
+  public static GET_PERFORMANCES_CLAIM_BY_ID_RESPONSE : string = "GetPerformancesClaimByIdResponse";
   //Response
   
   public static ADD_SUMMARY_TYPE_RESPONSE : string = "AddSummaryTypeResponse";

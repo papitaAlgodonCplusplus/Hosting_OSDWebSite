@@ -114,6 +114,7 @@ export class EventConstants {
   public static ACCEPT_INCREASE_IN_HOURS: string = 'AcceptIncreaseInHours';
   public static PERFORMANCE_FREE_PROFESSIONAL: string = 'PerformanceFreeProfessional';
   public static PERFORMANCE_FREE_PROFESSIONAL_MESSAGE: string = 'PerformanceFreeProfessionalMessage';
+  public static PERFORMANCE_CLAIM_ID: string = 'PerformanceClaimId';
 
   public static FORECAST_WORK_HOURS: string = "ForecastWorkHours";
   public static FORECAST_TRAVEL_TIME: string = "ForecastTravelTime";
@@ -172,11 +173,13 @@ export class EventConstants {
   public static VALUATION_FREE_PROFESSIONAL: string = "ValuationFreeProfessional"
 
   public static ACTION_OSD_RESULT_MESSAGE: string = "ActionOSDResultMessage"
+  public static MODIFIED_RESULT_MESSAGE: string = "ModifiedResultMessage"
 
   public static SUMMARY_TYPES_PERFORMANCE_FREEPROFESSIONAL_LIST: string = "SummaryTypesPerformanceFreeProfessionalList"
   public static UNASSIGNED_SUBSCRIBERS_LIST: string = "UnassignedSubscribersList"
 
   public static PROFESSIONAL_FREE_TRAINERS_LIST: string = "ProfessionalFreeTrainersList"
+  public static PERFORMANCES_CLAIM_LIST: string = "PerformancesClaimList"
   //#endregion
   constructor() {
 

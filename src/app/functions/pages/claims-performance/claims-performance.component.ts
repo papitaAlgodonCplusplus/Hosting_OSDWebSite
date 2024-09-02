@@ -172,6 +172,32 @@ export class ClaimsPerformanceComponent {
     } 
   }
 
+  modifiedPerformances(): void{
+    if (this.performanceForm.invalid) {
+      this.performanceForm.markAllAsTouched();
+      return;
+    }
+
+    let formValues = this.performanceForm.value;
+    this.performanceData.Date = formValues.Date;
+    this.performanceData.Type = formValues.Type;
+    this.performanceData.JustifyingDocument = formValues.JustifyingDocument;
+    this.performanceData.FreeProfessionalWorkHours = formValues.FP_WorkHours;
+    this.performanceData.FreeProfessionalTravelHours = formValues.FP_TravelTime;
+    this.performanceData.FreeProfessionalTravelExpenses = formValues.FP_TravelExpenses;
+    this.performanceData.FreeProfessionalRemuneration = formValues.FP_Remuneration;
+    this.performanceData.TechnicalDirectorDate = formValues.TD_Date;
+    this.performanceData.TechnicalDirectorWorkHours = formValues.TD_WorkHours;
+    this.performanceData.TechnicalDirectorTravelHours = formValues.TD_TravelTime;
+    this.performanceData.TechnicalDirectorTravelExpenses = formValues.TD_TravelExpenses;
+    this.performanceData.TechnicalDirectorRemuneration = formValues.TD_Remuneration;
+    this.performanceData.Summary = formValues.Summary;
+
+    if(this.claimId && this.performanceFP.Id){
+      this.OSDEventService.modifiedPerformanceClaim(this.performanceData, this.claimId, this.performanceFP.Id);
+    } 
+  }
+
   verifiedFormat(data: string) {
     const formValues = this.performanceForm.value;
     let travelTime, workHours, errorMessage;

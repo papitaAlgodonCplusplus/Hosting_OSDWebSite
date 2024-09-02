@@ -303,13 +303,26 @@ export class OSDService {
     this.restApiService.SendOSDEvent(ChangePasswordEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
-        this.HandleChangePasswordResponse(osdEvent);
+        this.GetTransparencyReportsSubscriberClientsResponse(osdEvent);
       },
       error: (error) => {
         //TODO: Pending implementation
       }
     });
   }
+
+  public GetPerformancesClaimById(id: string) {
+    const GetPerformancesClaim: WebBaseEvent = this.eventFactoryService.GetPerformancesClaimById(id);
+    this.restApiService.SendOSDEvent(GetPerformancesClaim).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.GetPerformancesClaimByIdResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }  
 
   public HandleGettingFreeProfessionalsListResponse(webBaseEvent: WebBaseEvent) {
     try {
@@ -324,6 +337,22 @@ export class OSDService {
       this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Error inesperado' }));
     }
   }
+
+  public GetPerformancesClaimByIdResponse(webBaseEvent: WebBaseEvent) {
+    try {
+      var performancesClaimList = webBaseEvent.getBodyProperty(EventConstants.PERFORMANCES_CLAIM_LIST);
+
+      if (performancesClaimList) {
+        this.osdDataService.emitPerformancesClaimById(performancesClaimList);
+      }
+
+    }
+    catch (err) {
+      //TODO: create exception event and send to local file or core
+    }
+  }
+
+
 
   public HandleChangingOsdUserAutorizationResponse(webBaseEvent: WebBaseEvent) {
     try {
@@ -420,6 +449,19 @@ export class OSDService {
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
         this.HandleCreatePerformanceResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+
+  public modifiedPerformanceClaim(performance: PerformanceClaim, claimId: string, performanceClaimId: string) {
+    const modifiedPerformanceClaimEvent: WebBaseEvent = this.eventFactoryService.modifiedPerformanceClaimEvent(performance, claimId, performanceClaimId);
+    this.restApiService.SendOSDEvent(modifiedPerformanceClaimEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleModifiedPerformanceClaimResponse(osdEvent);
       },
       error: (error) => {
         //TODO: Pending implementation
@@ -652,6 +694,34 @@ export class OSDService {
         this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: createPerformanceResultMessage }));
         this.store.dispatch(ModalActions.openAlert());
         this.securityDataService.emitUserAuthenticationSuccess("/functions/file-manager")
+      }
+    }
+    catch (err) {
+      //TODO: create exception event and send to local file or core
+    }
+  }
+
+  public HandleModifiedPerformanceClaimResponse(webBaseEvent: WebBaseEvent) {
+    let modifiedPerformanceResultMessage: string;
+
+    try {
+      modifiedPerformanceResultMessage = webBaseEvent.getBodyProperty(EventConstants.MODIFIED_RESULT_MESSAGE);
+      
+
+      if (this.translate.currentLang == "en") {
+        if (modifiedPerformanceResultMessage) {
+
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: modifiedPerformanceResultMessage }));
+          this.store.dispatch(ModalActions.openAlert());
+          this.securityDataService.emitUserAuthenticationSuccess("/functions/file-manager")
+        }
+      } else {
+        if (modifiedPerformanceResultMessage) {
+          modifiedPerformanceResultMessage = "Actuacion modificada correctamente";
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: modifiedPerformanceResultMessage }));
+          this.store.dispatch(ModalActions.openAlert());
+          this.securityDataService.emitUserAuthenticationSuccess("/functions/file-manager")
+        }
       }
     }
     catch (err) {

@@ -48,7 +48,6 @@ export class FileManagerComponent implements OnDestroy {
   }
 
   ngOnInit() {
-    //this.osdEventService.getPerformanceList();
     this.assignValuation()
     setTimeout(() => {
       this.store.dispatch(UiActions.hideFooter());
@@ -56,13 +55,12 @@ export class FileManagerComponent implements OnDestroy {
       this.claim$.subscribe(claim => {
         this.fileManager = this.fillForm(claim);
         this.claimId = claim.Id;
+        this.osdEventService.GetPerformancesClaimById(this.claimId);
       })
 
       this.osdDataService.performanceClaimList$.subscribe(performanceClaim => {
         this.performancesClaims = performanceClaim;
       })
-
-      this.store.dispatch(PerformanceActions.setPerformanceClaim({performanceClaim: {} as PerformanceClaim}))
     }, 0);
   }
 

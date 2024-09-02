@@ -144,9 +144,6 @@ export class OSDDataService {
   emitPerformanceBuyList(data: PerformanceBuy[]) {
     this.performanceBuyList.next(data);
   }
-  emitPerformanceClaimList(data: PerformanceClaim[]) {
-    this.performanceClaimList.next(data);
-  }
   emitFreeProfessionalId(data: string) {
     this.freeProfessionalId.next(data);
   }
@@ -237,5 +234,9 @@ export class OSDDataService {
 
   emitProfessionalFreeTrainersListSuccess(data: FreeProfessional[]) {
     this.professioanlFreeTrainersList.next(data);
+  }
+
+  emitPerformancesClaimById(data: PerformanceClaim[]) {
+    this.performanceClaimList.next(data);
   }
 }

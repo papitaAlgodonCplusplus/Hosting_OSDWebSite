@@ -84,7 +84,7 @@
                     inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
             </div>
 
-            <shared-simple-dropdown class="w-full md:w-1/2" fieldName="subscriberCustomer"
+            <shared-simple-dropdown *ngIf="selectedWorkspace=== '2fc2a66a-69ca-4832-a90e-1ff590b80d24'" class="w-full md:w-1/2" fieldName="subscriberCustomer"
                     label="{{'SubscriberCustomer' | translate}}" [formGroup]="personalForm" [dropdownItems]="osdUserSubscriberCustomers"
                     [selectedItem]="selectedSubscriberCustomer">
             </shared-simple-dropdown>

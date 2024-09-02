@@ -264,6 +264,35 @@ export class EventFactoryService {
     return event;
   }
 
+  public modifiedPerformanceClaimEvent(performance: PerformanceClaim, claimId: string, performanceClaimId: string): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.MODIFIED_PERFORMANCE_CLAIM;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient'; //TODO: change to use an application identifier
+
+    event.setBodyProperty(EventConstants.DATE_PERFORMANCE, performance.Date);
+    event.setBodyProperty(EventConstants.TYPE_PERFORMANCE, performance.Type);
+    event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, performance.JustifyingDocument);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_WORK_HOURS, performance.FreeProfessionalWorkHours);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_TRAVEL_HOURS, performance.FreeProfessionalTravelHours);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_TRAVEL_EXPENSES, performance.FreeProfessionalTravelExpenses);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_REMUNERATION, performance.FreeProfessionalRemuneration);
+    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_DATE, performance.TechnicalDirectorDate);
+    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_WORK_HOURS, performance.TechnicalDirectorWorkHours);
+    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_TRAVEL_HOURS, performance.TechnicalDirectorTravelHours);
+    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_TRAVEL_EXPENSES, performance.TechnicalDirectorTravelExpenses);
+    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_REMUNERATION, performance.TechnicalDirectorRemuneration);
+    event.setBodyProperty(EventConstants.SUMMARY, performance.Summary);
+    event.setBodyProperty(EventConstants.CLAIM_ID, claimId);
+    event.setBodyProperty(EventConstants.PERFORMANCE_CLAIM_ID, performanceClaimId);
+    return event;
+  }
+
   public CreatePerformanceBuyEvent(performanceForm: PerformanceBuy): WebBaseEvent {
     let event: WebBaseEvent;
     event = new WebBaseEvent();
@@ -516,6 +545,22 @@ export class EventFactoryService {
 
     event.setBodyProperty(EventConstants.PASSWORD, password);
     event.setBodyProperty(EventConstants.USER_ID, this.authenticationService.userInfo?.Id);
+
+    return event;
+  }
+
+  public GetPerformancesClaimById(id: string): WebBaseEvent {
+    let event: WebBaseEvent;
+
+    event = new WebBaseEvent();
+    event.Action = EventAction.GET_PERFORMANCES_CLAIM_BY_ID;
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Date = (new Date()).toUTCString();
+    event.ApplicationIdentifier = "WebClient";
+    event.setBodyProperty(EventConstants.ID, id);
 
     return event;
   }
