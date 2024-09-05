@@ -82,7 +82,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
               if (country.name?.common && country.cca2) {
                 return {
                   value: country.name.common, 
-                  key: country.cca2          
+                  key: country.name.common          
                 } as DropDownItem;
               }
               return undefined;
@@ -96,7 +96,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
               if (country.translations?.spa?.common && country.cca2) {
                 return {
                   value: country.translations.spa.common, 
-                  key: country.cca2                    
+                  key: country.name.common                    
                 } as DropDownItem;
               }
               return undefined;
