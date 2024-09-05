@@ -8,6 +8,10 @@ import { ValidationsService } from 'src/app/services/validations.service';
 import { ModalActions, UiActions } from 'src/app/store/actions';
 import { EventConstants } from 'src/app/models/eventConstants';
 import { OSDDataService } from 'src/app/services/osd-data.service';
+import { Observable } from 'rxjs';
+import { Subscriber } from 'src/app/functions/models/Subscriber';
+import { UserInfo } from 'src/app/models/userInfo';
+import { CountryService } from 'src/app/services/country.service';
 
 @Component({
   selector: 'app-register-free-professional',
@@ -17,13 +21,14 @@ import { OSDDataService } from 'src/app/services/osd-data.service';
 export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   accountForm: FormGroup;
   personalForm: FormGroup;
-  selectedWorkspace: string | undefined;
   selectedSubscriberCustomer: string | undefined;
   isDropdownOpen = true;
   documentName: string = '';
   showDocument!: boolean;
-  osdUserSubscriberCustomers: DropDownItem[] = [];
-  subscriberCustomers: any[] = [];
+  subscriberCustomers: DropDownItem[] = [];
+  osdUsersSubscribersObservable$: Observable<UserInfo[]> = this.osdDataService.getOsdUsersSubscribersSuccess$
+  subscribersObservable$: Observable<Subscriber[]> = this.osdDataService.getSubscribersSuccess$
+  subscribers: Subscriber[] = [];
 
   workspace: DropDownItem[] = [
     { value: this.translate.instant('DT'), key: '87db7d48-ee2a-4494-8627-9cb9e377de21' },
@@ -34,6 +39,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     { value: this.translate.instant('TS'), key: 'afdc95b1-271e-4788-a00a-d40081d7314f' },
     { value: this.translate.instant('OSDSystemsEngineer'), key: '4e1477bf-e13c-084b-3bff-1149f3ab3f3b' },
   ];
+  selectedWorkspace: string | undefined;
   selectedpayTPV: string | undefined;
   payTPV: DropDownItem[] = [
     { value: 'PL Code 1', key: 'KeyplCode1' }
@@ -46,13 +52,17 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   subcribersList: DropDownItem[] = [];
   documentNames: string[] = new Array(2);
   isAcceptConditions!: boolean;
+  isProcessor: boolean = false;
+  countries: DropDownItem[] = [];
+  selectedCountries: string | undefined;
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
     private validationsService: ValidationsService,
     private osdEventService: OSDService,
     private translate: TranslateService,
-    private osdDataService: OSDDataService
+    private osdDataService: OSDDataService,
+    private countryService: CountryService
   ) {
     this.accountForm = this.createAccountForm();
     this.personalForm = this.createPersonalForm();
@@ -63,34 +73,56 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   }
 
   ngOnInit(): void {
-    this.accountForm.get('workspace')?.valueChanges.subscribe((newWorkspace: string) => {
-      this.selectedWorkspace = newWorkspace;
-    });
-    
-    this.osdDataService.getOsdUsersSubscribersSuccess$.subscribe(osdUsersSubscribers => {
-      this.osdUserSubscriberCustomers = osdUsersSubscribers.map(item =>{
-        return{
-          value: item.Name,
-          key: item.Id,
-        }
-      })
-    });
-
-    this.osdDataService.getSubscribersSuccess$.subscribe(osdUsersSubscribers => {
-      this.subscriberCustomers = osdUsersSubscribers;
-    });
-
     setTimeout(() => {
+      this.countryService.getCountries().subscribe((data: any[]) => {
+        let countriesList;
+        if (this.translate.currentLang === "en") {
+          countriesList = data
+            .map(country => {
+              if (country.name?.common && country.cca2) {
+                return {
+                  value: country.name.common, 
+                  key: country.cca2          
+                } as DropDownItem;
+              }
+              return undefined;
+            })
+            .filter(country => country !== undefined); 
+        }
+        else if (this.translate.currentLang === "es") {
+          countriesList = data
+            .filter(country => country.translations?.spa)
+            .map(country => {
+              if (country.translations?.spa?.common && country.cca2) {
+                return {
+                  value: country.translations.spa.common, 
+                  key: country.cca2                    
+                } as DropDownItem;
+              }
+              return undefined;
+            })
+            .filter(country => country !== undefined); 
+        }
+        this.countries = countriesList as DropDownItem[];
+      });
+
       this.osdEventService.GetSubscribers();
-      if (this.translate.currentLang == "en") {
-        this.showDocument = true
-      }
-      else {
-        this.showDocument = false
-      }
+      this.showDocument = this.translate.currentLang === "en"
       this.store.dispatch(UiActions.hideFooter());
       this.store.dispatch(UiActions.hideLeftSidebar());
     }, 0);
+
+    this.osdUsersSubscribersObservable$.subscribe(osdUsersSubscribers => {
+      this.subscribersObservable$.subscribe(subscribers => {
+        osdUsersSubscribers.forEach(userSub => {
+          var subscriberFound = subscribers.find(sub => sub.userId == userSub.Id)
+          if (subscriberFound) {
+            var dropDownItem: DropDownItem = { value: subscriberFound.companyName, key: subscriberFound.id }
+            this.subscriberCustomers.push(dropDownItem)
+          }
+        })
+      });
+    });
   }
 
   ngOnDestroy(): void {
@@ -119,9 +151,11 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     const accountForm = this.formBuilder.group({
       workspace: ['', [Validators.required]],
       otherWorspace: [''],
-      collegiateCardArchive: [null,[Validators.required]],
-      lastReceiptCLI: [null],
+      identificationDocument: ['', [Validators.required]],
+      collegiateCardArchive: ['', [Validators.required]],
+      lastReceiptCLI: [''],
       servicerates: [''],
+      SubscriberId: ['']
     });
     return accountForm;
   }
@@ -129,15 +163,14 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   private createPersonalForm(): FormGroup {
     const personalForm = this.formBuilder.group({
       identity: ['', [Validators.required]],
-      subscriberCustomer: ['',],
       name: ['', [Validators.required]],
-      companyName: ['',],
+      companyName: [''],
       firstSurname: ['', [Validators.required]],
       middleSurname: ['', [Validators.required]],
       address: ['', [Validators.required]],
-      zipCode: [''],
-      city: [''],
-      country: [''],
+      zipCode: ['', [Validators.required]],
+      city: ['', [Validators.required]],
+      country: ['', [Validators.required]],
       landline: [''],
       mobilePhone: ['', [Validators.required]],
       email: ['', [Validators.required, this.validationsService.isValidEmail]],
@@ -149,13 +182,6 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     return personalForm;
   }
 
-  selectServiceRates(index: number) {
-    const serviceratesControl = this.accountForm.get('servicerates');
-    if (serviceratesControl) {
-      this.selectedservicerates = this.servicerates[index].value;
-      serviceratesControl.setValue(this.selectedservicerates);
-    }
-  }
 
   displayFileContract(event: any): void {
     const fileInput = event.target as HTMLInputElement;
@@ -186,21 +212,23 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
       } else if (index === 1) {
         this.documentNames[1] = file.name;
       }
+      else {
+        this.documentNames[2] = file.name;
+      }
     }
   }
-  
+
 
   onSubmit(): void {
+    console.log(this.accountForm.value)
     if (this.accountForm.invalid || this.personalForm.invalid) {
       this.accountForm.markAllAsTouched();
       this.personalForm.markAllAsTouched();
       if (this.translate.currentLang == "en") {
         this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "There are missing fields to fill out" }));
-        this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
         this.store.dispatch(ModalActions.openAlert());
       } else {
         this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Faltan campos por llenar" }));
-        this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
         this.store.dispatch(ModalActions.openAlert());
       }
       return;
@@ -215,4 +243,19 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     localStorage.setItem('userEmail', userEmail);
     this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.FREE_PROFESSIONAL);
   }
+
+  CheckIfIsTr() {
+    this.selectedWorkspace = this.accountForm.value.workspace;
+    if (this.selectedWorkspace === "2fc2a66a-69ca-4832-a90e-1ff590b80d24") {
+      this.accountForm.get('SubscriberId')?.setValidators(Validators.required);
+      this.accountForm.get('SubscriberId')?.updateValueAndValidity();
+      this.isProcessor = false
+
+    } else {
+      this.accountForm.get('SubscriberId')?.clearValidators();
+      this.accountForm.get('SubscriberId')?.updateValueAndValidity();
+      this.isProcessor = true
+    }
+  }
+
 }

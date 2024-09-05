@@ -190,6 +190,8 @@ export class EventConstants {
 
   public static SUB_PERFORMANCE_LIST: string = "SubPerformanceList"
 
+  public static SUBSCRIBER_ID: string = "SubscriberId"
+
   //#endregion
   constructor() {
 

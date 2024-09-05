@@ -131,8 +131,8 @@ export class OSDService {
     });
   }
 
-  public addPerformanceFreeProfessional(performanceFP: PerformanceFreeProfessional, projectManagerSelectedId : string) {
-    const event: WebBaseEvent = this.eventFactoryService.CreateAddPerformanceFreeProfessionalEvent(performanceFP,projectManagerSelectedId);
+  public addPerformanceFreeProfessional(performanceFP: PerformanceFreeProfessional, projectManagerSelectedId: string) {
+    const event: WebBaseEvent = this.eventFactoryService.CreateAddPerformanceFreeProfessionalEvent(performanceFP, projectManagerSelectedId);
     console.log(event)
     this.restApiService.SendOSDEvent(event).subscribe({
       next: (response) => {
@@ -224,7 +224,7 @@ export class OSDService {
   }
 
   public performanceBuy(performanceForm: PerformanceBuy, projectManagerId: string) {
-    const performanceBuyEvent: WebBaseEvent = this.eventFactoryService.CreatePerformanceBuyEvent(performanceForm,projectManagerId);
+    const performanceBuyEvent: WebBaseEvent = this.eventFactoryService.CreatePerformanceBuyEvent(performanceForm, projectManagerId);
     console.log(performanceBuyEvent)
     this.restApiService.SendOSDEvent(performanceBuyEvent).subscribe({
       next: (response) => {
@@ -420,6 +420,7 @@ export class OSDService {
       } else {
         this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'No hay mensaje' }));
       }
+      this.store.dispatch(ModalActions.openAlert());
     }
     catch (err) {
       this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Error inesperado' }));
@@ -576,6 +577,19 @@ export class OSDService {
     });
   }
 
+  public assignTrainerToSubscriber(subscriberId: string, trainerId: string) {
+    const CreateAssignTrainerToSubscriberEvent: WebBaseEvent = this.eventFactoryService.CreateAssignTrainerToSubscriber(subscriberId, trainerId);
+    this.restApiService.SendOSDEvent(CreateAssignTrainerToSubscriberEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleAssignTrainerToSubscriberResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+
   public HandleAddPerformanceBuyResponse(webBaseEvent: WebBaseEvent) {
     try {
       var actionGetOsdUsersSusbscriberResultMessage = webBaseEvent.getBodyProperty(EventConstants.ACTION_OSD_RESULT_MESSAGE);
@@ -602,7 +616,6 @@ export class OSDService {
   public HandleGetSubscriberResponse(webBaseEvent: WebBaseEvent) {
     try {
       var actionGetOsdUsersSusbscriberResultMessage = webBaseEvent.getBodyProperty(EventConstants.LIST_OSD_USERS_SUBSCRIBERS);
-
       if (actionGetOsdUsersSusbscriberResultMessage != null) {
         var actionGetSusbscribersResultMessage = webBaseEvent.getBodyProperty(EventConstants.LIST_SUBSCRIBERS);
         const osdUsersSubscribersModels = actionGetOsdUsersSusbscriberResultMessage;
@@ -748,7 +761,7 @@ export class OSDService {
 
     try {
       modifiedPerformanceResultMessage = webBaseEvent.getBodyProperty(EventConstants.MODIFIED_RESULT_MESSAGE);
-      
+
 
       if (this.translate.currentLang == "en") {
         if (modifiedPerformanceResultMessage) {
@@ -920,7 +933,7 @@ export class OSDService {
     try {
       summaryTypesPerformanceFreeProfessionalList = webBaseEvent.getBodyProperty(EventConstants.SUMMARY_TYPES_PERFORMANCE_FREEPROFESSIONAL_LIST);
       summaryTypesPerformanceBuyList = webBaseEvent.getBodyProperty(EventConstants.SUMMARY_TYPES_PERFORMANCE_BUY_LIST);
-    
+
       if (summaryTypesPerformanceFreeProfessionalList.length > 0) {
         this.osdDataService.emitGetSummaryTypesPerformanceFreeProfessionalListSuccess(summaryTypesPerformanceFreeProfessionalList)
       }
@@ -1000,8 +1013,12 @@ export class OSDService {
         this.osdDataService.emitUnassignedSubscribersListSuccess(unassignedSubscribersList)
       }
       else {
-        this.store.dispatch(ModalActions.changeAlertType({ alertType: 'warning' }));
-        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Error" }));
+        if (this.translate.currentLang == "en") {
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "No subscribers to show" }));
+        }
+        else {
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "No hay subscriptores para mostrar" }));
+        }
         this.store.dispatch(ModalActions.openAlert())
       }
     } catch {
@@ -1015,6 +1032,7 @@ export class OSDService {
       professionalFreeTrainers = webBaseEvent.getBodyProperty(EventConstants.PROFESSIONAL_FREE_TRAINERS_LIST);
       if (professionalFreeTrainers.length > 0) {
         this.osdDataService.emitProfessionalFreeTrainersListSuccess(professionalFreeTrainers)
+        console.log(professionalFreeTrainers)
       }
       else {
         //TODO: NOT EXISTS PROFESSIONALS FREE BUT IS NECESSARY CATCH ERRORS
@@ -1068,8 +1086,27 @@ export class OSDService {
         this.osdDataService.emitSubPerformanceByIdListSuccess(subPerformance)
       }
       else {
-          //TODO: NOT EXISTS PROFESSIONALS FREE BUT IS NECESSARY CATCH ERRORS
+        //TODO: NOT EXISTS PROFESSIONALS FREE BUT IS NECESSARY CATCH ERRORS
       }
+    } catch {
+
+    }
+  }
+
+  public HandleAssignTrainerToSubscriberResponse(webBaseEvent: WebBaseEvent) {
+    let message: string;
+    try {
+      message = webBaseEvent.getBodyProperty(EventConstants.ACTION_OSD_RESULT_MESSAGE);
+      if (this.translate.currentLang == "en") {
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
+      }
+      else {
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Se asigno correctamente" }));
+      }
+
+      this.store.dispatch(ModalActions.openAlert())
+      this.securityDataService.emitUserAuthenticationSuccess("/functions/assign-client-to-Trainer");
+
     } catch {
 
     }

@@ -40,6 +40,8 @@ export class EventAction {
   public static ADD_RESPONSE_TO_PERFORMANCE_ASSIGNED : string = "AddResponseToPerformanceAssigned";
 
   public static GET_SUB_PERFORMANCE_BY_ID : string = "GetSubPerformanceById";
+
+  public static ASSIGN_TRAINER_TO_SUBSCRIBER : string = "AssignTrainerToSubscriber";
   //Response
   
   public static ADD_SUMMARY_TYPE_RESPONSE : string = "AddSummaryTypeResponse";

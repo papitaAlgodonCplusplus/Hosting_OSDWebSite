@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
 import { EventConstants } from 'src/app/models/eventConstants';
+import { CountryService } from 'src/app/services/country.service';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { ValidationsService } from 'src/app/services/validations.service';
 import { ModalActions, UiActions } from 'src/app/store/actions';
@@ -30,12 +31,15 @@ export class OnboardingRegisterCfhComponent {
     { value: 'PL Code 1', key: 'KeyplCode1' }
   ];
   isAcceptConditions!: boolean;
+  countries: DropDownItem[] = [];
+  selectedCountries: string | undefined;
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
     private validationsService: ValidationsService,
     private OSDEventService: OSDService,
-    private translate : TranslateService
+    private translate : TranslateService,
+    private countryService: CountryService
   ) {
     this.personalForm = this.createPersonalForm();
     this.accountForm = this.createAccountForm();
@@ -43,6 +47,38 @@ export class OnboardingRegisterCfhComponent {
 
   ngOnInit(): void {
     setTimeout(() => {
+      this.countryService.getCountries().subscribe((data: any[]) => {
+        let countriesList;
+        if (this.translate.currentLang === "en") {
+          countriesList = data
+            .map(country => {
+              if (country.name?.common && country.cca2) {
+                return {
+                  value: country.name.common,
+                  key: country.cca2
+                } as DropDownItem;
+              }
+              return undefined;
+            })
+            .filter(country => country !== undefined);
+        }
+        else if (this.translate.currentLang === "es") {
+          countriesList = data
+            .filter(country => country.translations?.spa)
+            .map(country => {
+              if (country.translations?.spa?.common && country.cca2) {
+                return {
+                  value: country.translations.spa.common,
+                  key: country.cca2
+                } as DropDownItem;
+              }
+              return undefined;
+            })
+            .filter(country => country !== undefined);
+        }
+        this.countries = countriesList as DropDownItem[];
+      });
+
       if(this.translate.currentLang == "en"){
         this.showDocument = true
       }

@@ -3,7 +3,7 @@
         <span class="pl-5 pr-3 py-1 bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden">
             {{'authorizeCustomers' | translate}} </span>
     </div>
-    
+
     <shared-authorized-modal [isAuthorized]="isAuthorized" [personalDataObject]="user" [message]="''"
         [accountDataObject]="subscriber" [showModal]="showAuthorizatedModal" (confirm)="onConfirmHandler()"
         (cancel)="onCancelHandler()">
@@ -14,6 +14,7 @@
             <table class="table-auto w-full">
                 <thead>
                     <tr class="text-darkslategray">
+                        <th class="px-2 py-2" style="width: 30%;">{{'Formador asignado' | translate}}</th>
                         <th class="px-2 py-2" style="width: 30%;">{{'Identity' | translate}}</th>
                         <th class="px-2 py-2" style="width: 30%;">{{'SubscriberCustomer' | translate}} </th>
                         <th class="px-2" style="width: 30%;">{{'actions' | translate}}</th>
@@ -22,8 +23,9 @@
                 </thead>
                 <tbody>
                     <tr *ngFor="let item of displayedItems">
-                        <!-- <td class="text-center border-y px-2  py-2">{{ item.id }}</td>
-                        <td class="text-center border-y px-2 py-2">{{ item.name }}</td> -->
+                        <td class="text-center border-y px-2 py-2">
+                            {{ item.trainerAssigned ? item.trainerAssigned : 'Sin asignar' }}
+                        </td>
                         <td class="text-center border-y px-2  py-2">{{ item.Identity }}</td>
                         <td class="text-center border-y px-2 py-2">{{ item.CompanyName }}</td>
                         <td class="text-center space-x-2 border-y py-2">

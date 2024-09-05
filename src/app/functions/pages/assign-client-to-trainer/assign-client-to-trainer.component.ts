@@ -13,23 +13,26 @@ import { flush } from '@angular/core/testing';
   templateUrl: './assign-client-to-trainer.component.html',
   styleUrls: ['./assign-client-to-trainer.component.css']
 })
-export class AssignClientToTrainerComponent implements OnDestroy{
-  subscribers!: Subscriber[];
+export class AssignClientToTrainerComponent implements OnDestroy {
+  subscribers: Subscriber[] = [];
   unassignedSubscribers$: Observable<Subscriber[]> = this.osdDataService.UnassignedSubscribersList$;
   showModal: boolean = false;
-  
+  freeProfessionalsTrainersObservable$: Observable<FreeProfessional[]> = this.osdDataService.ProfessionalFreeTrainerList$
+  freeProfessionalsTrainers: FreeProfessional[] =[];
+  subscribersSelected : string = "";
+
   constructor(
     private store: Store,
-    private osdEventService : OSDService,
-    private osdDataService : OSDDataService
-  ){}
-  ngOnInit() : void{
+    private osdEventService: OSDService,
+    private osdDataService: OSDDataService
+  ) { }
+  ngOnInit(): void {
     setTimeout(() => {
       this.osdEventService.GetUnassignedSubscribers();
       this.store.dispatch(UiActions.hideLeftSidebar())
-        this.store.dispatch(UiActions.hideFooter())
+      this.store.dispatch(UiActions.hideFooter())
     }, 0);
-    this.unassignedSubscribers$.subscribe(subs =>{
+    this.unassignedSubscribers$.subscribe(subs => {
       this.subscribers = subs
     })
   }
@@ -46,20 +49,24 @@ export class AssignClientToTrainerComponent implements OnDestroy{
     this.subscribers.slice(startIndex, endIndex);
   }
 
-  selectSubscriber(subscriberId : string){
-    this.showModal = !this.showModal
-    console.log(subscriberId)
-  }
-
-  selectTrainer(subscriberId : string){
+  selectSubscriber(subscriberId: string) {
+    this.subscribersSelected = subscriberId;
     setTimeout(() => {
       this.osdEventService.GetProfessionalFreeTrainers()
     }, 0);
+    this.freeProfessionalsTrainersObservable$.subscribe(freeProfessionalsTrainers => {
+      this.freeProfessionalsTrainers = freeProfessionalsTrainers;
+    })
     this.showModal = !this.showModal
     console.log(subscriberId)
   }
 
-  closeModal(){
+  selectTrainer(freeProfessionalId: string) {
+    this.showModal = !this.showModal
+    this.osdEventService.assignTrainerToSubscriber(this.subscribersSelected,freeProfessionalId)
+  }
+
+  closeModal() {
     this.showModal = false;
   }
 }

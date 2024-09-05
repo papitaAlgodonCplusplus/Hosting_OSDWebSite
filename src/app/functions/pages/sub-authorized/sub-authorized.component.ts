@@ -23,8 +23,8 @@ export class SubAuthorizedComponent implements OnDestroy {
   subscribers: any[] = [];
   subscriber: any;
   userId!: string;
-  isAuthorized! : boolean
-  
+  isAuthorized!: boolean
+
   constructor(private store: Store, private osdDataService: OSDDataService,
     private translate: TranslateService,
     private osdEventService: OSDService
@@ -38,13 +38,23 @@ export class SubAuthorizedComponent implements OnDestroy {
     }, 0);
 
     this.osdDataService.getOsdUsersSubscribersSuccess$.subscribe(osdUsersSubscribers => {
-      console.log(osdUsersSubscribers)
       this.items = osdUsersSubscribers;
-      this.updateDisplayedItems();
-    });
 
-    this.osdDataService.getSubscribersSuccess$.subscribe(osdUsersSubscribers => {
-      this.subscribers = osdUsersSubscribers;
+      this.osdDataService.getSubscribersSuccess$.subscribe(subscribers => {
+        this.subscribers = subscribers;
+
+        this.items.forEach(item => {
+          const matchingSubscriber = this.subscribers.find(sub => sub.userId === item.Id);
+          if (matchingSubscriber) {
+           
+            item.trainerAssigned = matchingSubscriber.trainerAssigned;
+          } else {
+
+          }
+        });
+
+        this.updateDisplayedItems();
+      });
     });
   }
 
@@ -65,11 +75,11 @@ export class SubAuthorizedComponent implements OnDestroy {
   }
 
   selectUser(userId: string) {
-    const foundUser : UserInfo = this.displayedItems.find(item => item.Id === userId);
-    if(foundUser.Isauthorized){
+    const foundUser: UserInfo = this.displayedItems.find(item => item.Id === userId);
+    if (foundUser.Isauthorized) {
       this.isAuthorized = true
     }
-    else{
+    else {
       this.isAuthorized = false
     }
     this.userId = foundUser.Id;
@@ -84,7 +94,7 @@ export class SubAuthorizedComponent implements OnDestroy {
     const subscriberDTO: Subscriber = {} as Subscriber;
     subscriberDTO.clientType = subscriber.clientType
     this.subscriber = subscriberDTO;
- 
+
     this.showAuthorizatedModal = true;
   }
 

@@ -16,6 +16,7 @@ export class SimpleDropdownComponent {
   @Input() bgColor: string = 'bg-white';
   @Input() label!: string;
   @Input() selectedItem: string | undefined;
+  @Input() readOnly: boolean = false;
   isDropdownOpen = false;
   dropdownError = false;
   @ViewChild('myElement', { static: false })

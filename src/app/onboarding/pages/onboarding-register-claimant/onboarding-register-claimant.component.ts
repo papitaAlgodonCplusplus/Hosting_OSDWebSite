@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
 import { EventConstants } from 'src/app/models/eventConstants';
 import { AuthenticationService } from 'src/app/services/authentication.service';
+import { CountryService } from 'src/app/services/country.service';
 import { OSDDataService } from 'src/app/services/osd-data.service';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { ValidationsService } from 'src/app/services/validations.service';
@@ -43,6 +44,8 @@ export class OnboardingRegisterClaimantComponent {
   filteredSubscribers: any[] = [];
   filterCountry = '';
   filterCompanyName = '';
+  countries: DropDownItem[] = [];
+  selectedCountries: string | undefined;
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
@@ -51,7 +54,8 @@ export class OnboardingRegisterClaimantComponent {
     private osdEventService: OSDService,
     private osdDataService: OSDDataService,
     private authenticationService: AuthenticationService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private countryService: CountryService
   ) {
     this.personalForm = this.createPersonalForm();
     this.accountForm = this.createAccountForm();
@@ -60,11 +64,43 @@ export class OnboardingRegisterClaimantComponent {
   ngOnInit(): void {
     this.osdEventService.GetSubscribers();
     this.selectorRegistry = this.route.snapshot.params['selectorRegistry'] === 'true';
-
+   
     setTimeout(() => {
       this.store.dispatch(UiActions.hideFooter());
       this.store.dispatch(UiActions.hideLeftSidebar());
 
+      this.countryService.getCountries().subscribe((data: any[]) => {
+        let countriesList;
+        if (this.translate.currentLang === "en") {
+          countriesList = data
+            .map(country => {
+              if (country.name?.common && country.cca2) {
+                return {
+                  value: country.name.common,
+                  key: country.cca2
+                } as DropDownItem;
+              }
+              return undefined;
+            })
+            .filter(country => country !== undefined);
+        }
+        else if (this.translate.currentLang === "es") {
+          countriesList = data
+            .filter(country => country.translations?.spa)
+            .map(country => {
+              if (country.translations?.spa?.common && country.cca2) {
+                return {
+                  value: country.translations.spa.common,
+                  key: country.cca2
+                } as DropDownItem;
+              }
+              return undefined;
+            })
+            .filter(country => country !== undefined);
+        }
+        this.countries = countriesList as DropDownItem[];
+      });
+      
       if (this.selectorRegistry === true) {
         this.showPersonalInfo = true;
       }
@@ -147,37 +183,37 @@ export class OnboardingRegisterClaimantComponent {
 
   onSubmit(): void {
     if (this.accountForm.invalid && this.personalForm.invalid && this.selectorRegistry === true) {
-        this.accountForm.markAllAsTouched();
-        this.personalForm.markAllAsTouched();
-        this.store.dispatch(ModalActions.openAlert());
-        return;
+      this.accountForm.markAllAsTouched();
+      this.personalForm.markAllAsTouched();
+      this.store.dispatch(ModalActions.openAlert());
+      return;
     } else if (this.accountForm.invalid && this.selectorRegistry === false) {
-        this.accountForm.markAllAsTouched();
-        this.store.dispatch(ModalActions.openAlert());
-        return;
+      this.accountForm.markAllAsTouched();
+      this.store.dispatch(ModalActions.openAlert());
+      return;
     }
 
     const subscriberName = this.accountForm.get('subscriberClaimed')?.value;
     this.accountForm.patchValue({
-        subscriberClaimed: this.selectedSubscribers 
+      subscriberClaimed: this.selectedSubscribers
     });
 
     if (this.selectorRegistry === true) {
-        if (!this.personalForm.value.acceptConditions) {
-            this.isAcceptConditions = true;
-            return;
-        }
-        this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, "Claimant");
+      if (!this.personalForm.value.acceptConditions) {
+        this.isAcceptConditions = true;
+        return;
+      }
+      this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, "Claimant");
     } else {
-        if (this.authenticationService.userInfo?.Id) {
-            const claimantIdControl = new FormControl(this.authenticationService.userInfo.Id);
-            this.accountForm.addControl(EventConstants.CLAIMANT_ID, claimantIdControl);
-        }
-        this.osdEventService.addClaim(this.accountForm.value);
+      if (this.authenticationService.userInfo?.Id) {
+        const claimantIdControl = new FormControl(this.authenticationService.userInfo.Id);
+        this.accountForm.addControl(EventConstants.CLAIMANT_ID, claimantIdControl);
+      }
+      this.osdEventService.addClaim(this.accountForm.value);
     }
 
     this.accountForm.patchValue({
-        subscriberClaimed: subscriberName 
+      subscriberClaimed: subscriberName
     });
   }
 
@@ -198,9 +234,9 @@ export class OnboardingRegisterClaimantComponent {
 
   selectSubscriber(id: string, name: string) {
     this.accountForm.patchValue({
-        subscriberClaimed: name 
+      subscriberClaimed: name
     });
-    
+
     this.selectedSubscribers = id;
     this.openModal = false;
   }

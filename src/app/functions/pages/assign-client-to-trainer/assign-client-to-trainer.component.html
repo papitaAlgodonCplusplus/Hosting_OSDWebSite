@@ -36,7 +36,6 @@
         </table>
         <mat-paginator [length]="subscribers.length" [pageSize]="10" (page)="onPageChange($event)"></mat-paginator>
     </div>
-
     <div class=" font-medium p-3 rounded-xl text-end">
         <a [routerLink]="'/home'" class="items-center text-darkslategray bg-line rounded-xl p-2">
             {{ 'regresar' | translate }}
@@ -53,10 +52,10 @@
                     <thead class="font-medium text-darkslategray">
                         <tr>
                             <th scope="col" class="px-6 py-3">
-                                {{'FreeProfessional' | translate}}
+                                {{'Code' | translate}}
                             </th>
                             <th scope="col" class="px-6 py-3">
-                                {{'DNI' | translate}}
+                                {{'Name' | translate}}
                             </th>
                             <th scope="col" class="px-6 py-3">
                                 {{ 'Select' | translate }}
@@ -64,15 +63,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="border-y border-gray-700" *ngFor="let fp of subscribers; let i = index">
+                        <tr class="border-y border-gray-700" *ngFor="let fp of freeProfessionalsTrainers; let i = index">
                             <th class="text-center border-y px-4 py-2">
-                                {{fp.companyName}}
+                                {{fp.Code}}
                             </th>
                             <th class="text-center border-y px-4 py-2">
-                                {{fp.clientType}}
+                                {{fp.Name}}
                             </th>
                             <td class="text-center border-y px-4 py-2">
-                                <button (click)="selectTrainer(fp.id)" class="rounded-xl p-2">
+                                <button (click)="selectTrainer(fp.Id)" class="rounded-xl p-2">
                                     <i class="fas fa-check-circle text-xl animate-bounce text-green-500"></i>
                                 </button>
                             </td>

@@ -666,4 +666,22 @@ export class EventFactoryService {
 
     return event;
   }
+
+  public CreateAssignTrainerToSubscriber(subscriberId : string, trainerId : string): WebBaseEvent {
+    let event: WebBaseEvent;
+
+    event = new WebBaseEvent();
+    event.Action = EventAction.ASSIGN_TRAINER_TO_SUBSCRIBER;
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Date = (new Date()).toUTCString();
+    event.ApplicationIdentifier = "WebClient";
+    event.setBodyProperty(EventConstants.SUBSCRIBER_ID, subscriberId);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_ID, trainerId);
+
+
+    return event;
+  }
 }

@@ -2,8 +2,8 @@
   [ngClass]="{'animate__animated animate__fadeInLeft': alertOpen$ | async, 'animate__animated animate__fadeInRight': !(alertOpen$ | async)}"
 >
   <div class="flex justify-center items-center gap-1">
-    <p class="font-semibold">Exito!</p>
-    <p class="">{{ message$ | async }}</p>
+    <p class="font-semibold"></p>
+    <p class="font-semibold">{{ message$ | async }}</p>
   </div>
   <button (click)="toggleSuccessAlert()">
     <i class="fa-solid fa-xmark"></i>

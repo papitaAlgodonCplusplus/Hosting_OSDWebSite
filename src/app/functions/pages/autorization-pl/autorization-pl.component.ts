@@ -47,12 +47,10 @@ export class AutorizationPlComponent implements OnDestroy {
     });
 
     this.osdDataService.getOsdUsersSubscribersSuccess$.subscribe(osdUsersSubscribers => {
-      console.log("Lista usuarios subscriptores clientes: ",osdUsersSubscribers )
       this.osdUserSubscriberCustomers = osdUsersSubscribers;
     });
 
     this.osdDataService.getSubscribersSuccess$.subscribe(UsersSubscribers => {
-      console.log("Lista subscriptores clientes: ",UsersSubscribers )
       this.subscriberCustomers = UsersSubscribers;
     });
 
@@ -126,7 +124,7 @@ export class AutorizationPlComponent implements OnDestroy {
   onConfirmHandler() {
     this.osdEventService.changingUsdUserAutorizationStatusEvent(this.userSelected)
     const newItems = this.items.map(item => {
-      if (item.Id === this.userSelected) {
+      if (item.Userid === this.userSelected) {
         return { ...item, Isauthorized: "true" };
       }
       return item;
