@@ -84,7 +84,7 @@
                 inputType="text" [formGroup]="responsePerformanceForm" [bgColor]="'bg-white-lightbone'"
                 (change)="verifiedFormat('freeProfessional')"></shared-input-field>
 
-            <shared-input-field class="w-full md:w-1/2" fieldName="FP_TravelExpenses" inputType="number"
+            <shared-input-field class="w-full md:w-1/2" fieldName="FP_TravelExpenses" inputType="text"
                 label="{{'TravelExpenses'|translate}}" [formGroup]="responsePerformanceForm"
                 [bgColor]="'bg-white-lightbone'" [readOnly]="false"
                 (change)="verifiedFormat('freeProfessional')"></shared-input-field>
@@ -144,10 +144,13 @@
         <button routerLink="/project-manager/assigned-performance" class="p-2 bg-line text-darkslategray rounded-xl">
             {{'regresar' | translate}}
         </button>
-        <div *ngIf="true">
+        <div *ngIf="visualizePerformanceFP == null && modifiedPerformanceFP == null">
             <button  (click)="onSubmit()" type="submit" class="p-2 bg-darkslategray text-line rounded-xl">
                 {{'CreatePerformance'|translate}}
             </button>
         </div>
+        <button *ngIf=" modifiedPerformanceFP != null " (click)="modifySubPerformance()" type="submit" class="p-2 bg-darkslategray text-line rounded-xl">
+            {{'Modified'|translate}}
+        </button>
     </div>
 </div>

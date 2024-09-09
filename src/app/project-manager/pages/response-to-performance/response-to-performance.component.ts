@@ -4,11 +4,13 @@ import { Store } from '@ngrx/store';
 import { UserInfo } from 'src/app/models/userInfo';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { OSDService } from 'src/app/services/osd-event.services';
-import { UiActions } from 'src/app/store/actions';
+import { PerformanceActions, UiActions } from 'src/app/store/actions';
 import { PerformanceFreeProfessional } from '../../Models/performanceFreeProfessional';
 import { PerformanceSelectors } from 'src/app/store/selectors';
 import { Observable } from 'rxjs';
 import { DatePipe } from '@angular/common';
+import { ResponseToPerformanceFreeProfessional } from '../../Models/responseToperformanceFreeProfessional';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-response-to-performance',
@@ -17,30 +19,42 @@ import { DatePipe } from '@angular/common';
 })
 export class ResponseToPerformanceComponent implements OnDestroy {
   showPerformanceAssignedForm!: FormGroup;
+  showPerformanceResponseForm!: FormGroup;
   responsePerformanceForm!: FormGroup;
   DocumentIncreaseWorkingHours!: string;
   justifyingDocument!: string;
   isTechnicalDirector: boolean = true
   userInfo!: UserInfo
+  modifiedPerformanceFP: any;
+  visualizePerformanceFP: any;
   performanceAssigned$: Observable<PerformanceFreeProfessional> = this.store.select(PerformanceSelectors.projectPerformance);
+  subPerformance$: Observable<ResponseToPerformanceFreeProfessional> = this.store.select(PerformanceSelectors.projectSubPerformance);
   isWorkMore: boolean = false;
-
+  
   constructor(private store: Store,
     private formBuilder: FormBuilder,
     private authenticationService: AuthenticationService,
     private osdEventService: OSDService,
-    private datePipe: DatePipe) {
-    this.responsePerformanceForm = this.createForm()
+    private datePipe: DatePipe,
+    private route: ActivatedRoute,) {
     this.showPerformanceAssignedForm = this.ShowForm()
+    this.responsePerformanceForm = this.ShowResponseForm()
   }
 
   ngOnDestroy(): void {
     setTimeout(() => {
       this.store.dispatch(UiActions.showAll())
+      this.store.dispatch(PerformanceActions.setSubPerformance({subPerformance: {} as ResponseToPerformanceFreeProfessional}));
     }, 0);
   }
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      this.modifiedPerformanceFP = params['modified'];
+    });
+    this.route.queryParams.subscribe(params => {
+      this.visualizePerformanceFP = params['visualize'];
+    });
     setTimeout(() => {
       this.store.dispatch(UiActions.hideFooter())
       this.store.dispatch(UiActions.hideLeftSidebar())
@@ -91,6 +105,32 @@ export class ResponseToPerformanceComponent implements OnDestroy {
     return form;
   }
 
+  private ShowResponseForm(): FormGroup {
+    var fillForm = {} as ResponseToPerformanceFreeProfessional;
+    if(fillForm != null ){
+      this.subPerformance$.subscribe(performance => {
+        fillForm = performance
+      })
+  
+      this.showPerformanceResponseForm = this.formBuilder.group({
+        FP_WorkHours: fillForm.FP_WorkHours,
+        FP_TravelTime: fillForm.FP_TravelTime,
+        FP_TravelExpenses: fillForm.FP_TravelExpenses,
+        Total_FP: fillForm.Total_FP,
+        JustifyChangeEstimatedWorkHours: fillForm.JustifyChangeEstimatedWorkHours,
+        DocumentIncreaseWorkingHours: fillForm.DocumentIncreaseWorkingHours,
+        TD_Date: fillForm.TD_Date,
+        TD_WorkHours: fillForm.TD_WorkHours,
+        AcceptIncreaseInHours: [{ value: '', disabled: this.isTechnicalDirector }]
+      });
+
+    }else{
+      this.showPerformanceResponseForm = this.createForm()
+    }
+    
+    return this.showPerformanceResponseForm;
+  }
+
   onSubmit(): void {
     if (this.responsePerformanceForm.invalid) {
       this.responsePerformanceForm.markAllAsTouched();
@@ -101,6 +141,22 @@ export class ResponseToPerformanceComponent implements OnDestroy {
       performanceAssigned = performance
     })
     this.osdEventService.addResponseToPerformanceAssigned(this.responsePerformanceForm.value, performanceAssigned.Id)
+  }
+
+  modifySubPerformance(): void {
+    if (this.responsePerformanceForm.invalid) {
+      this.responsePerformanceForm.markAllAsTouched();
+      return;
+    }
+    var fillForm = {} as ResponseToPerformanceFreeProfessional;
+    this.subPerformance$.subscribe(performance => {
+      fillForm = performance
+    })
+    var performanceAssigned = {} as PerformanceFreeProfessional;
+    this.performanceAssigned$.subscribe(performance => {
+      performanceAssigned = performance
+    })
+    this.osdEventService.modifyResponseToPerformanceAssigned(fillForm.Id ,this.responsePerformanceForm.value, performanceAssigned.Id);
   }
 
   verifiedFormat(data: string) {

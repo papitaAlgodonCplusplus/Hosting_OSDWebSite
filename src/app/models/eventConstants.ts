@@ -192,6 +192,7 @@ export class EventConstants {
   public static PERFORMANCE_ASSIGNED_ID: string = "PerformanceAssignedId"
 
   public static PERFORMANCE_ID: string = "PerformanceId"
+  public static SUBPERFORMANCE_ID: string = "SubPerformanceId"
 
   public static SUB_PERFORMANCE_LIST: string = "SubPerformanceList"
 

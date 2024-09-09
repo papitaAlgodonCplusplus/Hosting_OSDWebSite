@@ -91,6 +91,25 @@ export class ProjectManagementDossierComponent implements OnDestroy {
     
   }
 
+  viewSubPerformance(subPerformance: any) {
+        if(subPerformance != undefined){
+          this.store.dispatch(PerformanceActions.setSubPerformance({subPerformance: subPerformance}))
+          this.router.navigate(['/project-manager/response-to-performance'], {
+            queryParams: { visualize: 'valid' }
+          });
+        }
+  }
+
+  modifySubPerformance(subPerformance: any) {
+    if(subPerformance != undefined){
+      this.store.dispatch(PerformanceActions.setSubPerformance({subPerformance: subPerformance}))
+      this.router.navigate(['/project-manager/response-to-performance'], {
+        queryParams: { modified: 'valid' }
+      });
+    }
+}
+
+
   modifiedPerformance(performance: any) {
     this.performancesFreeProfessional.forEach(performanceFP => {
       if(performanceFP.Id === performance.Id){

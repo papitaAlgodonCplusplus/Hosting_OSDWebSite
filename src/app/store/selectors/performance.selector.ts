@@ -28,6 +28,11 @@ export const projectPerformance = createSelector(
     (performanceState) => performanceState.projectPerformance
 );
 
+export const projectSubPerformance = createSelector(
+    performanceState,
+    (performanceState) => performanceState.responseToPerformanceFreeProfessional
+);
+
 export const projectManagerId = createSelector(
     performanceState,
     (performanceState) => performanceState.projectManagerId
