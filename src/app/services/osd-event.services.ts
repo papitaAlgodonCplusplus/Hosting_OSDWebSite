@@ -381,6 +381,19 @@ export class OSDService {
     });
   }
 
+  public modifyResponseToPerformanceAssigned(subPerformanceId: string,performance: ResponseToPerformanceAssignedEvent, performanceAssignedId: string) {
+    const CreateModifyResponseToPerformancesAssignedEvent: WebBaseEvent = this.eventFactoryService.CreateModifyResponseToPerformancesAssigned(subPerformanceId, performance, performanceAssignedId);
+    this.restApiService.SendOSDEvent(CreateModifyResponseToPerformancesAssignedEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleModifyResponseToPerformanceAssignedResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+
   public GetSubPerformanceById(performanceId: string) {
     const CreateGetSubPerformanceByIdEvent: WebBaseEvent = this.eventFactoryService.CreateGetSubPerformanceById(performanceId);
     this.restApiService.SendOSDEvent(CreateGetSubPerformanceByIdEvent).subscribe({
@@ -1143,6 +1156,25 @@ export class OSDService {
 
       this.store.dispatch(ModalActions.openAlert())
       this.securityDataService.emitUserAuthenticationSuccess("/project-manager/assigned-performance");
+
+    } catch {
+
+    }
+  }
+
+  public HandleModifyResponseToPerformanceAssignedResponse(webBaseEvent: WebBaseEvent) {
+    let message: string;
+    try {
+      message = webBaseEvent.getBodyProperty(EventConstants.MESSAGE);
+      if (this.translate.currentLang == "en") {
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
+      }
+      else {
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Subactuacion modificada correctamente" }));
+      }
+
+      this.store.dispatch(ModalActions.openAlert())
+      this.securityDataService.emitUserAuthenticationSuccess("/project-manager");
 
     } catch {
 

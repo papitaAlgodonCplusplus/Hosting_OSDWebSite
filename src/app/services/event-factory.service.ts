@@ -701,6 +701,30 @@ export class EventFactoryService {
     return event;
   }
 
+  public CreateModifyResponseToPerformancesAssigned(subPerformanceId: string, performance : ResponseToPerformanceAssignedEvent, performanceAssignedId : string): WebBaseEvent {
+    let event: WebBaseEvent;
+
+    event = new WebBaseEvent();
+    event.Action = EventAction.MODIFY_RESPONSE_TO_PERFORMANCE_ASSIGNED;
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Date = (new Date()).toUTCString();
+    event.ApplicationIdentifier = "WebClient";
+    event.setBodyProperty(EventConstants.PERFORMANCE_ASSIGNED_ID, performanceAssignedId);
+    event.setBodyProperty(EventConstants.SUBPERFORMANCE_ID, subPerformanceId);
+    event.setBodyProperty(EventConstants.USER_ID, this.authenticationService.userInfo?.Id);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_WORK_HOURS, performance.FP_WorkHours);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_TRAVEL_HOURS, performance.FP_TravelTime);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_TRAVEL_EXPENSES, performance.FP_TravelExpenses);
+    event.setBodyProperty(EventConstants.TOTAL_FREE_PROFESSIONAL, performance.Total_FP);
+    event.setBodyProperty(EventConstants.JUSTIFY_CHANGE_ESTIMATED_WORK_HOURS, performance.JustifyChangeEstimatedWorkHours);
+    event.setBodyProperty(EventConstants.DOCUMENT_INCREASE_WORKING_HOURS, performance.DocumentIncreaseWorkingHours);
+
+    return event;
+  }
+
   public CreateGetSubPerformanceById(performanceId : string): WebBaseEvent {
     let event: WebBaseEvent;
 
