@@ -9,20 +9,7 @@ export interface ClaimState {
 
 const initialState: ClaimState = {
     claims: [],
-    claim: {
-        Id: '',
-        Code: '',
-        Claimtype: '',
-        Status: '',
-        Facts: '',
-        FreeprofessionalId: '',
-        Serviceprovided: '',
-        Amountclaimed: '',
-        Date: '',
-        Valuationclaimant: '',
-        Valuationfreeprofessionals: '',
-        Valuationsubscriber: ''
-    },
+    claim : {} as Claim    
 }
 
 export const claimReducers = createReducer(initialState,

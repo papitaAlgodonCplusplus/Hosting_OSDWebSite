@@ -6,6 +6,9 @@ import { OSDService } from 'src/app/services/osd-event.services';
 import { OSDDataService } from 'src/app/services/osd-data.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Claim } from 'src/app/models/claim';
+import { UserInfo } from 'src/app/models/userInfo';
+import { AuthenticationService } from 'src/app/services/authentication.service';
+import { FreeProfessional } from '../../models/FreeProfessional';
 
 @Component({
   selector: 'app-assign-pltr-claims',
@@ -14,43 +17,34 @@ import { Claim } from 'src/app/models/claim';
 })
 export class AssignPLTRClaimsComponent implements OnDestroy {
   claims: Claim[] = [];
-  freeProfessionalsTr: any[] = [];
-  users: any[] = [];
+  freeProfessionalsTr: FreeProfessional[] = [];
+  users: UserInfo[] = [];
   idTRSelected: string = '';
   idClaim: string = '';
   userName: string = '';
-
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  user!: UserInfo;
+  showModal: boolean = false;
   displayedItems: any;
-  showModalConfirm!: boolean;
   messageModal!: string;
-  modalState: boolean = false;
-  showDialogState: boolean = false;
   claim: any = null;
-
 
   constructor(private store: Store,
     private osdEventService: OSDService,
     private osdDataService: OSDDataService,
-    private translate: TranslateService) {
+    private translate: TranslateService,
+    private authenticationService: AuthenticationService) {
   }
 
-  showModal() {
-    this.showModalConfirm = true;
-    this.messageModal = "Confirmar Autorizacion!"
-  }
-
-  onConfirmHandler() {
-    this.showModalConfirm = false;
-  }
-  onCancelHandler() {
-    this.showModalConfirm = false;
-  }
-
-  onPageChange(event: any) {
+  onPageChangeClaims(event: any) {
     const startIndex = event.pageIndex * event.pageSize;
     const endIndex = startIndex + event.pageSize;
-    this.displayedItems = this.claims.slice(startIndex, endIndex);
+    this.claims.slice(startIndex, endIndex);
+  }
+
+  onPageChangeUsers(event: any) {
+    const startIndex = event.pageIndex * event.pageSize;
+    const endIndex = startIndex + event.pageSize;
+    this.users.slice(startIndex, endIndex);
   }
 
   ngOnDestroy(): void {
@@ -64,13 +58,14 @@ export class AssignPLTRClaimsComponent implements OnDestroy {
     setTimeout(() => {
       this.store.dispatch(UiActions.hideLeftSidebar())
       this.store.dispatch(UiActions.hideFooter())
-      this.osdEventService.gettingClaimsData("", "");
-      this.osdEventService.gettingFreeProfessionalsTRData();
+      if (this.authenticationService.userInfo) {
+        this.user = this.authenticationService.userInfo
+        this.osdEventService.gettingClaimsData(this.user.Id, this.user.AccountType)
+      }
     }, 0);
 
     this.osdEventService.getClaimList().then(claims => {
       this.claims = claims
-      console.log(claims);
     },)
 
     this.osdDataService.freeProfessionalTR$.subscribe(item => {
@@ -78,6 +73,7 @@ export class AssignPLTRClaimsComponent implements OnDestroy {
     })
 
     this.osdDataService.usersFreeProfessionalTR$.subscribe(item => {
+      console.log(item)
       this.users = item;
     })
 
@@ -97,40 +93,22 @@ export class AssignPLTRClaimsComponent implements OnDestroy {
   }
 
   assignFreeProfessionalToClaim(idClaim: string, idTR: string) {
-    this.showDialog()
     this.osdEventService.cleanClaimList();
-    this.osdEventService.assignFreeProfessionalsTRToClaim(idClaim, idTR);
-    this.closeModal()
-    this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: 'Se asigno el Tramitador' }));
+    var freeProfessional = this.freeProfessionalsTr.find(fp => fp.Userid == idTR)
+    if (freeProfessional) {
+      this.osdEventService.assignFreeProfessionalsTRToClaim(idClaim, freeProfessional.Id);
+    }
+    this.showModal = false;
   }
 
-  openModal(claim: any): void {
+  openModal(claim: Claim): void {
+    this.osdEventService.gettingFreeProfessionalsTRData(claim.SubscriberclaimedId);
     this.claim = claim
-    this.modalState = true
+    this.showModal = true
   }
 
   closeModal(): void {
-    this.modalState = false
-  }
-
-  actualSegment = 0;
-  freeProfessionalsTRPerPage = 5;
-  totalSegments = 0;
-
-  setPage(page: number) {
-    if (this.totalSegments) {
-      if (page < 1 || page > this.totalSegments) {
-        return;
-      }
-      this.actualSegment = page;
-    }
-  }
-
-  closeDialog() {
-    this.showDialogState = false;
-  }
-  showDialog() {
-    this.showDialogState = true;
+    this.showModal = false
   }
 
   showDate(dateAndHour: string): string {

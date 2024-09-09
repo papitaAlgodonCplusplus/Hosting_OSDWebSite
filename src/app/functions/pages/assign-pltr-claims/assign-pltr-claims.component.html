@@ -1,104 +1,108 @@
-<div class="flex justify-center flex-col space-y-2 ">
-    <div class="text-darkslategray text-start py-3 text-xl font-medium animate__animated animate__fadeInLeft">
+<div class="flex justify-end items-end h-full flex-col space-y-2 ">
+    <div class="w-full text-darkslategray text-start py-3 text-xl font-medium animate__animated animate__fadeInLeft">
         <span class="pl-5 pr-3 py-1 bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden">
             {{'Assign_Processor_to_Claim' | translate}}<i class="fa-regular fa-hand-pointer"></i></span>
     </div>
-    <shared-confirmation-modal [showModal]="showModalConfirm" [message]="messageModal" (confirm)="onConfirmHandler()"
-        (cancel)="onCancelHandler()">
-    </shared-confirmation-modal>
-    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity duration-300 ease-in-out z-50"
-        *ngIf="showDialogState">
-        <div class="flex items-center justify-center min-h-screen px-4 py-8">
-            <div class="bg-white rounded-lg shadow-md max-w-md overflow-hidden">
-                <div class="px-4 py-5 sm:p-6">
-                    <h1 class="text-xl font-medium text-center">{{ 'Finished' | translate }}</h1>
-                    <p class="text-gray-700 text-base mt-3">{{ 'assignedTRClaim' | translate }}</p>
-                </div>
-                <div class="flex justify-center items-center space-x-4 p-4">
-                    <button class="bg-darkslategray text-line p-2 rounded-xl" (click)="closeDialog()">
-                        {{ 'Close' | translate }}
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="flex mt-0 flex-col p-3" *ngIf="claims.length > 0">
+    <div class="flex mt-0 flex-col p-3 w-full h-full">
         <div class="overflow-x-auto mt-0">
             <table class="table-auto w-full">
                 <thead>
                     <tr class="text-darkslategray">
+                        <th class="px-4 py-2">{{'SubscriberCustomer' | translate}}</th>
                         <th class="px-4 py-2">{{'Code' | translate}}</th>
                         <th class="px-4 py-2">{{'reclamacion' | translate}}</th>
                         <th class="px-4 py-2">{{'hechos' | translate}} </th>
                         <th class="px-4 py-2">{{'Date' | translate}} </th>
-                        <th class="px-4 py-2">{{'Assignation' | translate}} </th>
+                        <th class="px-4 py-2"> </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let claim of claims" class="text-center">
+                        <td class="text-center border-y px-4 py-2">{{ claim.NameCompanySubscriberclaimed}}</td>
                         <td class="text-center border-y px-4 py-2">{{ claim.Code}}</td>
                         <td class="text-center border-y px-4 py-2">{{ claim.Claimtype | translate }}</td>
                         <td class="text-center border-y px-4 py-2">{{ claim.Facts }}</td>
                         <td class="border-y px-3 py-2">{{ showDate(claim.Date) }}</td>
                         <td class="text-center border-y px-4 py-2">
-                            <button class="rounded-xl bg-line text-darkslategray p-2" (click)="openModal(claim)"
+                            <button *ngIf="claim.Status != 'Running'; else isAssigned"
+                                class="rounded-xl bg-line text-darkslategray p-2" (click)="openModal(claim)"
                                 data-modal-target="default-modal">
                                 {{'assignProcessor' | translate}}
                             </button>
-                        </td>
 
+                            <ng-template #isAssigned>
+                                {{'Running' | translate}}
+                            </ng-template>
+                        </td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        <mat-paginator [length]="claims.length" [pageSize]="10" (page)="onPageChange($event)"></mat-paginator>
-
+        <mat-paginator [length]="claims.length" [pageSize]="10" (page)="onPageChangeClaims($event)"></mat-paginator>
     </div>
-    <div class="modal mt-0 rounded-xl" [class.visible]="modalState">
-        <div class="modal-content">
-            <div class="text-end text-xl">
-                <i class="fa-solid fa-xmark cursor-pointer" (click)="closeModal()"></i>
-            </div>
-            <div class="" *ngIf="freeProfessionalsTr.length > 0">
-                <div class="relative overflow-x-auto">
-                    <table class="w-full text-sm  rtl:text-right text-slate-950 text-center">
-                        <thead class="text-xs text-slate-950 uppercase bg-slate-200">
-                            <tr>
-                                <th scope="col" class="px-6 py-3">
-                                    {{'Tramitador' | translate}}
+    <div class="font-medium rounded-xl w-full flex items-end justify-end p-3">
+        <button class="px-2 py-1 bg-line text-darkslategray rounded-lg" routerLink="/home">
+            {{'regresar' | translate}}
+        </button>
+    </div>
+</div>
+
+<div *ngIf="showModal" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
+    <div class="bg-opacity-75 bg-black absolute inset-0"></div>
+    <div class="relative z-50 bg-white shadow-md space-y-1 rounded-xl">
+        <div class="justify-center p-3">
+            <div class="flex flex-col items-center">
+                <div class="font-medium rounded-xl cursor-pointer text-end w-full">
+                    <a (click)="closeModal()" class="items-center text-darkslategray rounded-xl ">
+                        <i class="text-xl fa-solid fa-xmark"></i>
+                    </a>
+                </div>
+                <table class="table-auto w-full">
+                    <thead>
+                        <tr class="text-darkslategray">
+                            <th scope="col" class="px-6 py-3">
+                                {{'Code' | translate}}
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                {{'Tramitador' | translate}}
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                {{'Assignation' | translate}}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngIf="users.length > 0; else isLoading">
+                            <tr *ngFor="let user of users; let i = index">
+                                <th class="text-center font-normal border-y px-4 py-2">
+                                    {{ user.Code }}
                                 </th>
-                                <th scope="col" class="px-6 py-3">
+                                <th class="text-center font-normal border-y px-4 py-2">
+                                    {{ user.Name + " " + user.Firstname + " " + user.Middlesurname }}
                                 </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="bg-slate-50 dark:border-gray-700"
-                                *ngFor="let fp of freeProfessionalsTr; let i = index">
-                                <th scope="row" class="px-6 py-4 font-medium text-slate-950 whitespace-nowrap">
-                                    <ng-container *ngIf="users[i]">
-                                        {{users[i].Name}} {{ users[i].Firstname }} {{users[i].Middlesurname}}
-                                    </ng-container>
-                                </th>
-                                <!-- <th scope="row" class="px-6 py-4 font-medium text-slate-950 whitespace-nowrap">
-                                    {{ fp.Servicerates }}
-                                </th> -->
-                                <td class="px-6 py-4">
-                                    <button
-                                        (click)="assignFreeProfessionalToClaim(claim.Id, fp.Id)"
+                                <td class="text-center font-normal border-y px-4 py-2">
+                                    <button (click)="assignFreeProfessionalToClaim(claim.Id, user.Id)"
                                         class="rounded-xl p-2 bg-darkslategray text-line">
                                         {{ 'Select' | translate }}
                                     </button>
                                 </td>
                             </tr>
-                        </tbody>
-                    </table>
-                </div>        
+                        </ng-container>
+                        <ng-template #isLoading>
+                            <tr class="text-center">
+                                <th></th>
+                                <th>
+                                    <i class="text-darkslategray text-xl fa-solid fa-spinner animate-spin"></i>
+                                </th>
+                                <th></th>
+                            </tr>
+                        </ng-template>
+                    </tbody>
+                </table>
+                <mat-paginator [length]="users.length" [pageSize]="5"
+                    (page)="onPageChangeUsers($event)"></mat-paginator>
             </div>
         </div>
     </div>
-    <div class=" font-medium p-3 rounded-xl text-end">
-        <a [routerLink]="'/home'" class="items-center text-darkslategray bg-line rounded-xl p-2">
-            {{ 'regresar' | translate }}
-        </a>
-    </div>
+</div>

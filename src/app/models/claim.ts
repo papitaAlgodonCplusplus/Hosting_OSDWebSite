@@ -1,6 +1,8 @@
 export interface Claim {
     Id: string;
     Code: string;
+    SubscriberclaimedId: string;
+    NameCompanySubscriberclaimed: string;
     //Claimant: string;
     Claimtype: string;
     Status: string;

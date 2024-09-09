@@ -64,7 +64,7 @@ export class OnboardingRegisterClaimantComponent {
   ngOnInit(): void {
     this.osdEventService.GetSubscribers();
     this.selectorRegistry = this.route.snapshot.params['selectorRegistry'] === 'true';
-   
+
     setTimeout(() => {
       this.store.dispatch(UiActions.hideFooter());
       this.store.dispatch(UiActions.hideLeftSidebar());
@@ -100,7 +100,7 @@ export class OnboardingRegisterClaimantComponent {
         }
         this.countries = countriesList as DropDownItem[];
       });
-      
+
       if (this.selectorRegistry === true) {
         this.showPersonalInfo = true;
       }
@@ -162,7 +162,7 @@ export class OnboardingRegisterClaimantComponent {
       amountClaimed: ['', [Validators.required]],
       facts: ['', [Validators.required]],
       supportingDocument1: ['', [Validators.required]],
-      supportingDocument2: ['', [Validators.required]]
+      supportingDocument2: ['']
     });
     return form;
   }
@@ -182,6 +182,12 @@ export class OnboardingRegisterClaimantComponent {
   }
 
   onSubmit(): void {
+    if (this.translate.currentLang == "en") {
+      this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "There are missing fields to fill out" }));
+    } else {
+      this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Faltan campos por llenar" }));
+    }
+
     if (this.accountForm.invalid && this.personalForm.invalid && this.selectorRegistry === true) {
       this.accountForm.markAllAsTouched();
       this.personalForm.markAllAsTouched();

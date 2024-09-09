@@ -8,14 +8,16 @@
             <div class="font-bold flex flex-col justify-center items-center space-y-3 p-3">
                 <span class="rounded-xl p-2 bg-darkslategray text-line cursor-pointer"
                     (click)="openPerformanceClaimsModal()">{{'viewPerformance' | translate}} </span>
-                <button class="space-x-2 flex items-center hover:underline" routerLink="/functions/claims-performance">
+                <button *ngIf="isAssignedClaim" class="space-x-2 flex items-center hover:underline"
+                    routerLink="/functions/claims-performance">
                     <span>{{'newAction' | translate }}</span> <i
                         class="fa-solid fa-chevron-right text-base animate-pulse"></i>
                 </button>
             </div>
         </div>
     </div>
-    <div class="py-5 flex justify-center px-2 h-full">
+
+    <div class="py-5 flex flex-col justify-center px-2 h-full">
         <form [formGroup]="fileManager" (ngSubmit)="onSubmit()" autocomplete="off" class="flex flex-wrap items-center">
             <shared-input-field [readOnly]="true" class="w-full lg:w-1/2" fieldName="claimant"
                 label="{{'reclamacion' | translate}}" inputType="text" [formGroup]="fileManager"
@@ -33,92 +35,38 @@
 
             <shared-input-field [readOnly]="true" class="w-full lg:w-1/2" fieldName="amountClaimed"
                 label="{{'cuantia_reclamada' | translate}}" inputType="text" [formGroup]="fileManager"
-                [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                [bgColor]="'bg-white-lightbone'">
+            </shared-input-field>
+        </form>
 
-            <shared-input-field [readOnly]="true" class="w-full lg:w-1/2" fieldName="AAsavingsPP"
-                label="{{'amountPaidByOtherParty' | translate}}" inputType="text" [formGroup]="fileManager"
-                [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-            <shared-input-field [ReadOnly]="true" class="w-full lg:w-1/2" fieldName="AAsavingsPP"
-                label="{{'institutionalImprovementSavings' | translate}}" inputType="text" [formGroup]="fileManager"
-                [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-            <shared-input-field [readOnly]="true" class="w-full lg:w-1/2" fieldName="creditingDate"
-                label="{{'creditingDate' | translate}}" inputType="text" [formGroup]="fileManager"
-                [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-            <div class="w-full flex flex-col space-y-3 px-1 ">
-                <h1 class="text-center text-darkslategray font-medium">{{'Valoration' | translate}}</h1>
-                <div class="flex flex-col items-center space-x-0 lg:flex-row lg:space-x-3 md:flex-row md:space-x-3">
-
-                    <div class="flex flex-col w-full lg:w-1/2">
-                        <label for="valuationSubscriber">{{'institutionOsdValuation' | translate}}</label>
-                        <input [readonly]="isSubscriber" formControlName="valuationSubscriber" id="valuationSubscriber" class=" border p-2" type="number"
-                            max="5" min="0">
-                    </div>
-
-                    <div class="flex flex-col w-full lg:w-1/2">
-                        <label for="valuationClaimant">{{'institutionClaimantRating' | translate}}</label>
-                        <input [readonly]="isClaimant" formControlName="valuationClaimant" id="valuationClaimant" class="border p-2"
-                            type="number" max="5" min="0">
-                    </div>
-
-                    <div class="flex flex-col w-full lg:w-1/2">
-                        <label for="valuationFreeProfessionals">{{'institutionValuationFreeOsdProfessionals' |
-                            translate}}</label>
-                        <input [readonly]="isFreeProfessional" formControlName="valuationFreeProfessionals" id="valuationFreeProfessionals"
-                            class="border p-2" type="number" max="5" min="0">
-                    </div>
-                </div>
-                <div class="flex justify-center">
-                    <button (click)="updateValuation()"
-                        class="p-2 rounded-xl bg-darkslategray text-line font-medium animate__animated animate__fadeInDown">
-                        {{'MakeAreview' | translate}}
-                    </button>
-                </div>
+        <form [formGroup]="closeClaimfileForm" (ngSubmit)="closeClaimFile()" autocomplete="off"
+            class="flex flex-wrap items-center">
+            <div class="w-full border-b px-2">
+                <h1>{{'Processor' | translate}}</h1>
             </div>
+            <shared-input-field [readOnly]="false" class="w-full lg:w-1/2" fieldName="AAsavingsPP"
+                label="{{'amountPaidByOtherParty' | translate}}" inputType="text" [formGroup]="closeClaimfileForm"
+                [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+            <shared-input-field [readOnly]="false" class="w-full lg:w-1/2" fieldName="AmountPaid"
+                label="{{'institutionalImprovementSavings' | translate}}" inputType="text" [formGroup]="closeClaimfileForm"
+                [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+            <shared-input-field [readOnly]="false" class="w-full lg:w-1/2" fieldName="creditingDate"
+                label="{{'creditingDate' | translate}}" inputType="date" [formGroup]="closeClaimfileForm"
+                [bgColor]="'bg-white-lightbone'"></shared-input-field>
         </form>
     </div>
 </div>
 
-<div class="flex w-full justify-end p-2">
+<div class="flex w-full justify-end p-2 space-x-3">
     <button routerLink="/functions/claims-file"
         class="p-2 rounded-xl bg-line text-darkslategray font-medium animate__animated animate__fadeInDown">
         {{'regresar' | translate}}
     </button>
-</div>
-<!-- Modal -->
-<div id="performanceModal" class="modal-overlay">
-    <div class="modal-content">
-        <span class="close-button" (click)="closePerformanceModal()">&times;</span>
-        <h2 class="modal-title">{{ 'performances' | translate }}</h2>
-        <table class="table">
-            <thead>
-                <tr class="text-darkslategray">
-                    <th></th>
-                    <th>{{ 'Code' | translate }}</th>
-                    <th>{{ 'Date' | translate }}</th>
-                    <th>{{ 'Type' | translate }}</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="border-t text-center" *ngFor="let performance of performancesClaims; let i = index">
-                    <td class="p-3">
-                        <button routerLink="/functions/claims-performance" (click)="viewPerformance(performance)"
-                            class="bg-darkslategray text-line p-2 rounded-xl">
-                            {{'View' | translate}}
-                        </button>
-                    </td>
-                    <td class="p-3">{{ fileCode }}A/{{i+1}}/2024</td>
-                    <td class="p-3">{{ performance.Date | date:'dd-MM-yyyy'}}</td>
-                    <td class="p-3">{{ performance.Type }}</td>
-                </tr>
-            </tbody>
-        </table>
-        <div class="absolute bottom-0 right-0">
-            <mat-paginator [length]="performancesClaimsTheClaim.length" [pageSize]="5"
-                (page)="onPageChange($event)"></mat-paginator>
-        </div>
 
-    </div>
+    <button (click)="closeClaimFile()"
+        class="p-2 rounded-xl bg-darkslategray text-line font-medium animate__animated animate__fadeInDown">
+        {{'Finalizar expediente de reclamacion' | translate}}
+    </button>
 </div>

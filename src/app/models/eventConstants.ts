@@ -106,11 +106,16 @@ export class EventConstants {
   public static FREE_PROFESSIONAL_REMUNERATION: string = 'FP_Remuneration';
   public static TOTAL_FREE_PROFESSIONAL: string = 'Total_FP';
   public static DOCUMENT_INCREASE_WORKING_HOURS: string = 'DocumentIncreaseWorkingHours';
+
   public static TECHNICAL_DIRECTOR_DATE: string = 'TD_Date';
   public static TECHNICAL_DIRECTOR_WORK_HOURS: string = 'TD_WorkHours';
-  public static TECHNICAL_DIRECTOR_TRAVEL_HOURS: string = 'TD_TravelTime';
-  public static TECHNICAL_DIRECTOR_TRAVEL_EXPENSES: string = 'TD_TravelExpenses';
-  public static TECHNICAL_DIRECTOR_REMUNERATION: string = 'TD_Remuneration';
+
+  public static TRAINER_DATE: string = 'Trainer_Date';
+  public static TRAINER_WORK_HOURS: string = 'Trainer_WorkHours';
+  public static TRAINER_TRAVEL_HOURS: string = 'Trainer_TravelTime';
+  public static TRAINER_TRAVEL_EXPENSES: string = 'Trainer_TravelExpenses';
+  public static TRAINER_REMUNERATION: string = 'Trainer_Remuneration';
+  
   public static ACCEPT_INCREASE_IN_HOURS: string = 'AcceptIncreaseInHours';
   public static PERFORMANCE_FREE_PROFESSIONAL: string = 'PerformanceFreeProfessional';
   public static PERFORMANCE_FREE_PROFESSIONAL_MESSAGE: string = 'PerformanceFreeProfessionalMessage';
