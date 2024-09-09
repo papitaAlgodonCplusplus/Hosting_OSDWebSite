@@ -13,6 +13,11 @@ export const setPerformanceClaim = createAction(
   props<{ performanceClaim: PerformanceClaim }>()
 );
 
+export const setPerformanceFreeProfessional = createAction(
+  '[Performance Id] Add performance Id',
+  props<{ performanceFreeProfessional: PerformanceFreeProfessional }>()
+);
+
 export const setFileCode = createAction(
   '[file code] Add file Code',
   props<{ fileCode: string }>()

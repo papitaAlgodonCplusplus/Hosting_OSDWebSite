@@ -8,6 +8,11 @@ export const performanceBuy = createSelector(
     (performanceState) => performanceState.performanceBuy
 );
 
+export const performanceFreeProfessional = createSelector(
+    performanceState,
+    (performanceState) => performanceState.performanceFreeProfessional
+);
+
 export const performanceClaim = createSelector(
     performanceState,
     (performanceState) => performanceState.performanceClaim

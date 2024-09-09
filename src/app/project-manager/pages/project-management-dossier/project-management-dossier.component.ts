@@ -70,6 +70,53 @@ export class ProjectManagementDossierComponent implements OnDestroy {
     await this.loadProjects();
   }
 
+  viewPerformance(performance: any) {
+    this.performancesFreeProfessional.forEach(performanceFP => {
+      if(performanceFP.Id === performance.Id){
+        if(performance != undefined){
+          this.store.dispatch(PerformanceActions.setPerformanceFreeProfessional({performanceFreeProfessional: performance}))
+          this.router.navigate(['/project-manager/performance-free-professional']);
+        }
+      }
+    });
+
+    this.performancesBuy.forEach(performanceBuy => {
+      if(performanceBuy.Id === performance.Id){
+        if(performance != undefined){
+          this.store.dispatch(PerformanceActions.setPerformanceBuy({performanceBuy: performance}))
+          this.router.navigate(['/project-manager/performance-buy']);
+        }
+      }
+    });
+    
+  }
+
+  modifiedPerformance(performance: any) {
+    this.performancesFreeProfessional.forEach(performanceFP => {
+      if(performanceFP.Id === performance.Id){
+        if(performance != undefined){
+          this.store.dispatch(PerformanceActions.setPerformanceFreeProfessional({performanceFreeProfessional: performance}))
+          this.router.navigate(['/project-manager/performance-free-professional'], {
+            queryParams: { modified: 'valid' }
+          });
+          
+        }
+      }
+    });
+
+    this.performancesBuy.forEach(performanceBuy => {
+      if(performanceBuy.Id === performance.Id){
+        if(performance != undefined){
+          this.store.dispatch(PerformanceActions.setPerformanceBuy({performanceBuy: performance}))
+          this.router.navigate(['/project-manager/performance-buy'], {
+            queryParams: { modified: 'valid' }
+          });
+        }
+      }
+    });
+    
+  }
+
   sortDateLowestHighest(ascending: boolean = true) {
     this.allPerformances.sort((a, b) => {
       let dateA = new Date(a.Date);
@@ -148,6 +195,7 @@ export class ProjectManagementDossierComponent implements OnDestroy {
   selectProject(event: Event): void {
     this.loadProjectManager = true;
     const id = (event.target as HTMLSelectElement).value;
+    console.log("Id project manager in project management: ", id)
     setTimeout(() => {
       this.allProjects.forEach(element => {
         if (element.Id === id) {

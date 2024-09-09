@@ -43,10 +43,10 @@
         <div class="flex flex-col p-3 items-center justify-center space-y-3">
             <div class="flex flex-col items-center">
                 <label for="objectivesDropdown">{{"Objective" | translate}}</label>
-                <select class="border rounded-xl bg-white text-black p-2 w-64">
+                <select (change)="selectProject($event)" class="border rounded-xl bg-white text-black p-2 w-64">
                     <option disabled selected hidden>{{ 'Elegir proyecto..' | translate }}
                     </option>
-                    <option *ngFor="let project of (Projects$ | async)" (click)="selectProject($event)"
+                    <option *ngFor="let project of (Projects$ | async)" 
                         [value]="project.Id">
                         {{ project.Objective }}
                     </option>
@@ -105,8 +105,8 @@
                     <tr class="font-light text-center"
                         *ngFor="let pf of performances; let i = index">
                         <td class="border-y px-2 py-2 space-x-3 text-darkslategray"> 
-                            <i class="fa-solid fa-eye"></i>
-                            <i *ngIf="isAdmin" class="fa-solid fa-pen"></i>
+                            <i class="fa-solid fa-eye" (click)="viewPerformance(pf)"></i>
+                            <i *ngIf="isAdmin" class="fa-solid fa-pen" (click)="modifiedPerformance(pf)"></i>
                         </td>
                         <td class="border-y px-2 py-2">{{pf.Type | translate}}</td>
                         <td class="border-y px-2 py-2">{{pf.Code}}</td>

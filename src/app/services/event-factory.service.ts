@@ -110,7 +110,6 @@ export class EventFactoryService {
 
   public CreateAddPerformanceFreeProfessionalEvent(performanceFP: PerformanceFreeProfessional, projectManagerSelectedId : string): WebBaseEvent {
     let event: WebBaseEvent;
-    console.log(performanceFP)
     event = new WebBaseEvent();
     event.SessionKey = this.authenticationService.sessionKey;
     event.SecurityToken = "3746736473";
@@ -119,6 +118,32 @@ export class EventFactoryService {
     event.Action = EventAction.ADD_PERFORMANCE_FREE_PROFESSIONAL;
     event.Date = new Date().toUTCString();
     event.ApplicationIdentifier = 'WebClient';
+    event.setBodyProperty(EventConstants.PROJECT_MANAGER_ID, projectManagerSelectedId);
+    event.setBodyProperty(EventConstants.START_DATE, performanceFP.Start_Date);
+    event.setBodyProperty(EventConstants.END_DATE, performanceFP.End_Date);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_ID, this.authenticationService.userInfo?.Id);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_ASSIGNED_ID, performanceFP.FreeProfessionalAssignedId);
+    event.setBodyProperty(EventConstants.SUMMARY_ID, performanceFP.SummaryId);
+    event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, performanceFP.JustifyingDocument);
+
+    event.setBodyProperty(EventConstants.FORECAST_TRAVEL_EXPENSES, performanceFP.ForecastTravelExpenses);
+    event.setBodyProperty(EventConstants.FORECAST_TRAVEL_TIME, performanceFP.ForecastTravelTime);
+    event.setBodyProperty(EventConstants.FORECAST_WORK_HOURS, performanceFP.ForecastWorkHours);  
+    event.setBodyProperty(EventConstants.TOTAL_FORECAST_DATA, performanceFP.TotalForecastData);  
+    return event;
+  }
+
+  public CreateModifyPerformanceFreeProfessionalEvent(performanceFP: PerformanceFreeProfessional, projectManagerSelectedId : string, performanceId : string): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.MODIFY_PERFORMANCE_FREE_PROFESSIONAL;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    event.setBodyProperty(EventConstants.PERFORMANCE_ID, performanceId);
     event.setBodyProperty(EventConstants.PROJECT_MANAGER_ID, projectManagerSelectedId);
     event.setBodyProperty(EventConstants.START_DATE, performanceFP.Start_Date);
     event.setBodyProperty(EventConstants.END_DATE, performanceFP.End_Date);
@@ -183,6 +208,7 @@ export class EventFactoryService {
     return event;
   }
   public CreateGetPerformancesProjectManagerById(projectManagerId : string): WebBaseEvent {
+    console.log("CreateGetPerformancesProjectManagerById", projectManagerId)
     let event: WebBaseEvent;
     event = new WebBaseEvent();
     event.SessionKey = this.authenticationService.sessionKey;
@@ -313,7 +339,31 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.UNITARY_COST, performanceForm.UnitaryCost);
     event.setBodyProperty(EventConstants.SHELF_LIFE, performanceForm.ShelfLife);
     event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, performanceForm.JustifyingDocument);
-    event.setBodyProperty(EventConstants.SUMMARY_ID, performanceForm.SummaryId);
+    event.setBodyProperty(EventConstants.SUMMARY_ID, performanceForm.SummaryTypeId);
+    return event;
+  }
+
+  public CreateModifyPerformanceBuyEvent(performanceForm: PerformanceBuy, projectManagerId: string, performanceId: string): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.MODIFY_PERFORMANCE_BUY;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient'; //TODO: change to use an application identifier
+    event.setBodyProperty(EventConstants.PERFORMANCE_ID, performanceId);
+    event.setBodyProperty(EventConstants.DATE_PERFORMANCE, performanceForm.Date);
+    event.setBodyProperty(EventConstants.USER_ID, this.authenticationService.userInfo?.Id);
+    event.setBodyProperty(EventConstants.PROJECT_MANAGER_ID, projectManagerId);
+    event.setBodyProperty(EventConstants.PRODUCT_SERVICE_ID, performanceForm.ProductServiceId);
+    event.setBodyProperty(EventConstants.MINIMUN_UNITS, performanceForm.MinimumUnits);
+    event.setBodyProperty(EventConstants.MAXIMUM_UNITS, performanceForm.MaximumUnits);
+    event.setBodyProperty(EventConstants.UNITARY_COST, performanceForm.UnitaryCost);
+    event.setBodyProperty(EventConstants.SHELF_LIFE, performanceForm.ShelfLife);
+    event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, performanceForm.JustifyingDocument);
+    event.setBodyProperty(EventConstants.SUMMARY_ID, performanceForm.SummaryTypeId);
     return event;
   }
 

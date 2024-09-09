@@ -145,6 +145,20 @@ export class OSDService {
     });
   }
 
+  public modifyPerformanceFreeProfessional(performanceFP: PerformanceFreeProfessional, projectManagerSelectedId: string, performanceId: string) {
+    const event: WebBaseEvent = this.eventFactoryService.CreateModifyPerformanceFreeProfessionalEvent(performanceFP, projectManagerSelectedId, performanceId);
+    console.log(event)
+    this.restApiService.SendOSDEvent(event).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleModifyPerformanceFreeProfessionalResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+
   public gettingClaimsData(userId: string, accountType: string) {
     const gettingClaimsEvent: WebBaseEvent = this.eventFactoryService.CreateGettingClaimsDataEvent(userId, accountType);
     this.restApiService.SendOSDEvent(gettingClaimsEvent).subscribe({
@@ -230,6 +244,20 @@ export class OSDService {
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
         this.HandleAddPerformanceBuyResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+
+  public modifyPerformanceBuy(performanceForm: PerformanceBuy, projectManagerId: string, performanceId: string) {
+    const performanceBuyEvent: WebBaseEvent = this.eventFactoryService.CreateModifyPerformanceBuyEvent(performanceForm, projectManagerId, performanceId);
+    console.log(performanceBuyEvent)
+    this.restApiService.SendOSDEvent(performanceBuyEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleModifyPerformanceBuyResponse(osdEvent);
       },
       error: (error) => {
         //TODO: Pending implementation
@@ -613,6 +641,29 @@ export class OSDService {
     }
   }
 
+  public HandleModifyPerformanceBuyResponse(webBaseEvent: WebBaseEvent) {
+    try {
+      var actionGetOsdUsersSusbscriberResultMessage = webBaseEvent.getBodyProperty(EventConstants.ACTION_OSD_RESULT_MESSAGE);
+      if (actionGetOsdUsersSusbscriberResultMessage != null) {
+
+        if (this.translate.currentLang == "en") {
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: actionGetOsdUsersSusbscriberResultMessage }));
+        } else {
+          if (actionGetOsdUsersSusbscriberResultMessage == "Was Successfully Modified") {
+            actionGetOsdUsersSusbscriberResultMessage = "Actuación modificada correctamente"
+            this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: actionGetOsdUsersSusbscriberResultMessage }));
+          }
+        }
+        this.securityDataService.emitUserAuthenticationSuccess("/project-manager");
+        this.store.dispatch(ModalActions.openAlert())
+      }
+
+    }
+    catch (err) {
+      //TODO: create exception event and send to local file or core
+    }
+  }
+
   public HandleGetSubscriberResponse(webBaseEvent: WebBaseEvent) {
     try {
       var actionGetOsdUsersSusbscriberResultMessage = webBaseEvent.getBodyProperty(EventConstants.LIST_OSD_USERS_SUBSCRIBERS);
@@ -824,6 +875,27 @@ export class OSDService {
       } else {
         if (message == "Was Successfully Created") {
           message = "Actuación creada correctamente"
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
+          this.securityDataService.emitUserAuthenticationSuccess("/project-manager");
+        }
+      }
+      this.store.dispatch(ModalActions.openAlert())
+    } catch {
+
+    }
+  }
+
+  public HandleModifyPerformanceFreeProfessionalResponse(webBaseEvent: WebBaseEvent) {
+    let message: string;
+
+    try {
+      message = webBaseEvent.getBodyProperty(EventConstants.PERFORMANCE_FREE_PROFESSIONAL_MESSAGE);
+
+      if (this.translate.currentLang == "en") {
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
+      } else {
+        if (message == "Was Successfully Modified") {
+          message = "Actuación modificada correctamente"
           this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
           this.securityDataService.emitUserAuthenticationSuccess("/project-manager");
         }

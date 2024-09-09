@@ -12,6 +12,7 @@ import { DatePipe } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import { FreeProfessional } from 'src/app/functions/models/FreeProfessional';
 import { FreeProfessionalType } from '../../Models/freeprofessionalType';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-performance-free-professional',
@@ -20,6 +21,8 @@ import { FreeProfessionalType } from '../../Models/freeprofessionalType';
 })
 export class PerformanceFreeProfessionalComponent {
   isAuthenticated$: Observable<boolean> = this.store.select(AuthSelectors.authenticationToken)
+  performanceFreeProfessional$: Observable<PerformanceFreeProfessional> = this.store.select(PerformanceSelectors.performanceFreeProfessional);
+  modifiedPerformanceFP: any;
   performanceFP!: PerformanceFreeProfessional;
   editOtherInformation: boolean = true;
   performanceForm: FormGroup;
@@ -46,14 +49,19 @@ export class PerformanceFreeProfessionalComponent {
     private OSDEventService: OSDService,
     private OSDDataService: OSDDataService,
     private datePipe: DatePipe,
-    private translate: TranslateService) {
+    private translate: TranslateService,
+    private router: Router,
+    private route: ActivatedRoute,) {
     this.performanceForm = this.validatePerformanceOnDataService()
   }
 
   validatePerformanceOnDataService(): FormGroup {
-    this.performanceFP = this.OSDDataService.getPerformance()
+    this.performanceFreeProfessional$.subscribe(performance => {
+      this.performanceFP = performance;
+      console.log("Que tiene el performance: ",performance)
+    })
 
-    if (this.performanceFP) {
+    if (this.performanceFP != undefined) {
       this.justifyingDocument = this.performanceFP.JustifyingDocument;
 
       let originalDate = this.performanceFP.Start_Date;
@@ -63,16 +71,16 @@ export class PerformanceFreeProfessionalComponent {
       let formatedEndDate = this.datePipe.transform(originalDTDate, 'yyyy-MM-dd');
 
       const form = this.formBuilder.group({
-        start_date: formatedStartDate,
-        end_date: formatedEndDate,
+        Start_Date: formatedStartDate,
+        End_Date: formatedEndDate,
         JustifyingDocument: this.performanceFP.JustifyingDocument,
-        Summary: this.performanceFP.SummaryId,
+        FreeProfessionalCode: this.performanceFP.FreeProfessionalAssignedCode,
+        SummaryId: this.performanceFP.SummaryId,
         freeProfessionalId: this.performanceFP.FreeProfessionalId,
-        freeProfessionalCode: this.performanceFP.FreeProfessionalAssignedCode,
         ForecastTravelExpenses: this.performanceFP.ForecastTravelExpenses,
         ForecastTravelTime: this.performanceFP.ForecastTravelTime,
         ForecastWorkHours: this.performanceFP.ForecastWorkHours,
-        Totalforecastdata: this.performanceFP.TotalForecastData
+        TotalForecastData: this.performanceFP.TotalForecastData
       });
       return form;
     }
@@ -81,7 +89,10 @@ export class PerformanceFreeProfessionalComponent {
     }
   }
 
-  async ngOnInit() {
+  ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      this.modifiedPerformanceFP = params['modified'];
+    });
     setTimeout(() => {
       this.store.dispatch(UiActions.hideFooter());
       this.store.dispatch(UiActions.hideLeftSidebar());
@@ -111,7 +122,7 @@ export class PerformanceFreeProfessionalComponent {
       this.filteredProfessionalsFree = freeProfessionals;
     });
 
-    this.projectManagerSelectedObservable$.subscribe(id=>{
+    this.projectManagerSelectedObservable$.subscribe(id => {
       this.projectManagerSelected = id;
     })
   }
@@ -155,7 +166,15 @@ export class PerformanceFreeProfessionalComponent {
       this.performanceForm.markAllAsTouched();
       return;
     }
-    this.OSDEventService.addPerformanceFreeProfessional(this.performanceForm.value,this.projectManagerSelected);
+    this.OSDEventService.addPerformanceFreeProfessional(this.performanceForm.value, this.projectManagerSelected);
+  }
+
+  modifyPerformance(): void {
+    if (this.performanceForm.invalid) {
+      this.performanceForm.markAllAsTouched();
+      return;
+    }
+    this.OSDEventService.modifyPerformanceFreeProfessional(this.performanceForm.value, this.projectManagerSelected, this.performanceFP.Id);
   }
 
   verifiedFormat(data: string) {

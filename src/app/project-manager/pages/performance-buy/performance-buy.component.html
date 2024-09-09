@@ -4,11 +4,11 @@
         <span class="pl-5 pr-3 py-1 bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden">
             {{'compra' | translate}}</span>
     </div>
-    <form [formGroup]="performanceForm" (ngSubmit)="onSubmit()" autocomplete="off" class="flex flex-col p-3">
+    <form [formGroup]="performanceForm" autocomplete="off" class="flex flex-col p-3">
         <div class=" flex flex-wrap items-center">
             <shared-input-field class="w-full md:w-1/2" fieldName="Date" label="{{'Date' | translate}}" inputType="date"
                 [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-            <shared-simple-dropdown class="w-full md:w-1/2" fieldName="SummaryId" label="{{'Summary'|translate}}"
+            <shared-simple-dropdown class="w-full md:w-1/2" fieldName="SummaryTypeId" label="{{'Summary'|translate}}"
                 inputType="text" [formGroup]="performanceForm" [selectedItem]="selectedSummaryType"
                 [dropdownItems]="summaryTypes" [bgColor]="'bg-white-lightbone'"></shared-simple-dropdown>
         </div>
@@ -60,12 +60,19 @@
             <button routerLink="/project-manager" class="p-2 rounded-xl bg-line text-darkslategray" i18n="@@signin">
                 {{'regresar' | translate}}
             </button>
-            <div>
-                <button type="submit" class="p-2 rounded-xl bg-darkslategray text-line hover:bg-hover-darkblue"
+            <div *ngIf="!performance">
+                <button (click)="onSubmit()" class="p-2 rounded-xl bg-darkslategray text-line hover:bg-hover-darkblue"
                     i18n="@@signin">
                     {{'CreatePerformance' | translate}}
                 </button>
             </div>
+
+            <div *ngIf="performance && modifiedPerformanceBuy != null ">
+                <button (click)="modifyPerformance()" class="p-2 bg-darkslategray text-line rounded-xl">
+                    {{'Modified'|translate}}
+                </button>
+            </div>
+
         </div>
     </form>
 </div>

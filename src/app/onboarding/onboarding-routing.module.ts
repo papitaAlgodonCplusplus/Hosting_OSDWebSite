@@ -6,6 +6,7 @@ import { OnboardingRegisterSubClientComponent } from './pages/onboarding-registe
 import { OnboardingRegisterCfhComponent } from './pages/onboarding-register-cfh/onboarding-register-cfh.component';
 import { OnboardingRegisterFreeProfessionalComponent } from './pages/onboarding-register-free-professional/onboarding-register-free-professional.component';
 import { SelectorRegistryClaimantComponent } from './pages/selector-registry-claimant/selector-registry-claimant.component';
+
 const routes: Routes = [
   {
     path: 'onboarding-register',
@@ -41,6 +42,9 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
+   declarations: [
+   
+  ]
 })
 export class OnboardingRoutingModule { }

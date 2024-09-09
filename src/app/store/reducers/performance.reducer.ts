@@ -7,6 +7,7 @@ import { PerformanceFreeProfessional } from "src/app/project-manager/Models/perf
 export interface PerformanceState {  
     performanceBuy: PerformanceBuy,
     performanceClaim: PerformanceClaim,
+    performanceFreeProfessional: PerformanceFreeProfessional,
     fileCode: string,
     projectPerformance: PerformanceFreeProfessional,
     projectManagerId: string,
@@ -15,6 +16,7 @@ export interface PerformanceState {
 const initialState: PerformanceState = {   
     performanceBuy: {} as PerformanceBuy,
     performanceClaim: {} as PerformanceClaim,
+    performanceFreeProfessional: {} as PerformanceFreeProfessional,
     fileCode: "",
     projectPerformance: {} as PerformanceFreeProfessional,
     projectManagerId: ""
@@ -28,6 +30,10 @@ export const performanceReducers = createReducer(initialState,
     on(PerformanceActions.setPerformanceClaim, (currentState, { performanceClaim }) => ({
         ...currentState,
         performanceClaim: performanceClaim
+    })),
+    on(PerformanceActions.setPerformanceFreeProfessional, (currentState, { performanceFreeProfessional }) => ({
+        ...currentState,
+        performanceFreeProfessional: performanceFreeProfessional
     })),
     on(PerformanceActions.setFileCode, (currentState, { fileCode }) => ({
         ...currentState,

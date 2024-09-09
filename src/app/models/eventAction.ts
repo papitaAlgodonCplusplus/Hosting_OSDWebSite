@@ -18,7 +18,11 @@ export class EventAction {
   public static GET_CLAIMS: string = "GetClaims";
   public static GET_SUBSCRIBERS: string = "GetSubscribers";
   public static ADD_PERFORMANCE_FREE_PROFESSIONAL: string = "AddPerformanceFreeProfessional";
+  public static MODIFY_PERFORMANCE_FREE_PROFESSIONAL: string = "ModifyPerformanceFreeProfessional";
+  public static MODIFY_PERFORMANCE_FREE_PROFESSIONAL_RESPONSE: string = "ModifyPerformanceFreeProfessionalResponse";
   public static CREATE_PERFORMANCE_BUY: string = "CreatePerformanceBuy";
+  public static MODIFY_PERFORMANCE_BUY: string = "ModifyPerformanceBuy";
+  public static MODIFY_PERFORMANCE_BUY_RESPONSE: string = "ModifyPerformanceBuyResponse";
   public static GET_PERFORMANCES_PROJECT_MANAGER_BY_ID: string = "GetPerformancesProjectManagerById";
   public static CREATE_CLAIM: string = "CreateClaim";
   public static HANDLE_CREATE_CLAIM_RESPONSE: string = "HandleCreateClaimResponse";

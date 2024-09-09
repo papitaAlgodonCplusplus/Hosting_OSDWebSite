@@ -4,7 +4,7 @@
         <span class="pl-5 pr-3 py-1 bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden">
             {{'TitlePerformance' | translate}}</span>
     </div>
-    <form [formGroup]="performanceForm" (ngSubmit)="onSubmit()" autocomplete="off" class="px-10 py-2">
+    <form [formGroup]="performanceForm" autocomplete="off" class="px-10 py-2">
 
         <div class="flex flex-wrap items-center">
             <shared-input-field class="w-full md:w-1/2" fieldName="Start_Date" label="{{'start_date'|translate}}"
@@ -74,10 +74,17 @@
                 {{'regresar' | translate}}
             </button>
             <div *ngIf="!performanceFP">
-                <button type="submit" class="p-2 bg-darkslategray text-line rounded-xl">
+                <button (click)="onSubmit()" class="p-2 bg-darkslategray text-line rounded-xl">
                     {{'CreatePerformance'|translate}}
                 </button>
             </div>
+
+            <div *ngIf="performanceFP && modifiedPerformanceFP != null">
+                <button (click)="modifyPerformance()" class="p-2 bg-darkslategray text-line rounded-xl">
+                    {{'Modified'|translate}}
+                </button>
+            </div>
+            
         </div>
     </form>
 </div>
