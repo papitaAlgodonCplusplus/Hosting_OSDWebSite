@@ -4,13 +4,15 @@ import { Store } from '@ngrx/store';
 import { UserInfo } from 'src/app/models/userInfo';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { OSDService } from 'src/app/services/osd-event.services';
-import { PerformanceActions, UiActions } from 'src/app/store/actions';
+import { ModalActions, PerformanceActions, UiActions } from 'src/app/store/actions';
 import { PerformanceFreeProfessional } from '../../Models/performanceFreeProfessional';
 import { PerformanceSelectors } from 'src/app/store/selectors';
 import { Observable } from 'rxjs';
-import { DatePipe } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import { ResponseToPerformanceFreeProfessional } from '../../Models/responseToperformanceFreeProfessional';
 import { Router, ActivatedRoute } from '@angular/router';
+import { FreeProfessional } from 'src/app/functions/models/FreeProfessional';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-response-to-performance',
@@ -23,20 +25,22 @@ export class ResponseToPerformanceComponent implements OnDestroy {
   responsePerformanceForm!: FormGroup;
   DocumentIncreaseWorkingHours!: string;
   justifyingDocument!: string;
-  isTechnicalDirector: boolean = true
+  isTechnicalDirector: boolean = false
   userInfo!: UserInfo
   modifiedPerformanceFP: any;
   visualizePerformanceFP: any;
   performanceAssigned$: Observable<PerformanceFreeProfessional> = this.store.select(PerformanceSelectors.projectPerformance);
   subPerformance$: Observable<ResponseToPerformanceFreeProfessional> = this.store.select(PerformanceSelectors.projectSubPerformance);
   isWorkMore: boolean = false;
-  
+  responseToPerformanceFreeProfessional = {} as ResponseToPerformanceFreeProfessional;
+
   constructor(private store: Store,
     private formBuilder: FormBuilder,
     private authenticationService: AuthenticationService,
     private osdEventService: OSDService,
     private datePipe: DatePipe,
-    private route: ActivatedRoute,) {
+    private route: ActivatedRoute,
+    private translate: TranslateService,) {
     this.showPerformanceAssignedForm = this.ShowForm()
     this.responsePerformanceForm = this.ShowResponseForm()
   }
@@ -48,7 +52,48 @@ export class ResponseToPerformanceComponent implements OnDestroy {
     }, 0);
   }
 
+  validateAccount() {
+    if (this.userInfo) {
+      if (this.userInfo.AccountType === "FreeProfessional") {
+        this.osdEventService.GetFreeProfessionalsDataEvent();
+        this.osdEventService.getFreeProfessionalsList()
+          .then(freeProfessionals => {
+            if (Array.isArray(freeProfessionals)) {
+              freeProfessionals.forEach(item => {
+                var freeProfessional: FreeProfessional = item;
+                if (freeProfessional.Userid == this.userInfo.Id) {
+                  if (freeProfessional.FreeprofessionaltypeAcronym == "TR") {
+                    this.isTechnicalDirector = false;
+                    this.responsePerformanceForm.get('AcceptIncreaseInHours')?.disable();
+                  }
+                  else if (freeProfessional.FreeprofessionaltypeAcronym == "INFIT") {
+                    this.isTechnicalDirector = false;
+                    this.responsePerformanceForm.get('AcceptIncreaseInHours')?.disable();
+                  }
+                  else if (freeProfessional.FreeprofessionaltypeAcronym == "DT") {
+                    this.isTechnicalDirector = true;
+                    this.responsePerformanceForm.get('AcceptIncreaseInHours')?.enable();
+                  }
+                  else if (freeProfessional.FreeprofessionaltypeAcronym == "FC") {
+                    this.isTechnicalDirector = false;
+                    this.responsePerformanceForm.get('AcceptIncreaseInHours')?.disable();
+                  }
+                }
+              });
+            } else {
+              console.error('freeProfessionals is not an array:', freeProfessionals);
+            }
+      })}
+    }
+  }
+
   ngOnInit(): void {
+    var userInfo = this.authenticationService.userInfo;
+    if (userInfo) {
+      this.userInfo = userInfo;
+    }
+    this.validateAccount();
+
     this.route.queryParams.subscribe(params => {
       this.modifiedPerformanceFP = params['modified'];
     });
@@ -58,6 +103,17 @@ export class ResponseToPerformanceComponent implements OnDestroy {
     setTimeout(() => {
       this.store.dispatch(UiActions.hideFooter())
       this.store.dispatch(UiActions.hideLeftSidebar())
+
+      if(this.responseToPerformanceFreeProfessional.Revised == 'True'){
+        if (this.translate.currentLang == "en") {
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "The Subperformance has already been reviewed by the TD" }));
+        }
+        else {
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "La subactuacion ya se encuentra revisada por el DT" }));
+        }
+        this.store.dispatch(ModalActions.openAlert())
+      }
+    
     }, 0);
   }
 
@@ -106,22 +162,21 @@ export class ResponseToPerformanceComponent implements OnDestroy {
   }
 
   private ShowResponseForm(): FormGroup {
-    var fillForm = {} as ResponseToPerformanceFreeProfessional;
-    if(fillForm != null ){
+    if(this.responseToPerformanceFreeProfessional != null ){
       this.subPerformance$.subscribe(performance => {
-        fillForm = performance
+        this.responseToPerformanceFreeProfessional = performance
       })
   
       this.showPerformanceResponseForm = this.formBuilder.group({
-        FP_WorkHours: fillForm.FP_WorkHours,
-        FP_TravelTime: fillForm.FP_TravelTime,
-        FP_TravelExpenses: fillForm.FP_TravelExpenses,
-        Total_FP: fillForm.Total_FP,
-        JustifyChangeEstimatedWorkHours: fillForm.JustifyChangeEstimatedWorkHours,
-        DocumentIncreaseWorkingHours: fillForm.DocumentIncreaseWorkingHours,
-        TD_Date: fillForm.TD_Date,
-        TD_WorkHours: fillForm.TD_WorkHours,
-        AcceptIncreaseInHours: [{ value: '', disabled: this.isTechnicalDirector }]
+        FP_WorkHours: this.responseToPerformanceFreeProfessional.FP_WorkHours,
+        FP_TravelTime: this.responseToPerformanceFreeProfessional.FP_TravelTime,
+        FP_TravelExpenses: this.responseToPerformanceFreeProfessional.FP_TravelExpenses,
+        Total_FP: this.responseToPerformanceFreeProfessional.Total_FP,
+        JustifyChangeEstimatedWorkHours: this.responseToPerformanceFreeProfessional.JustifyChangeEstimatedWorkHours,
+        DocumentIncreaseWorkingHours: this.responseToPerformanceFreeProfessional.DocumentIncreaseWorkingHours,
+        TD_Date: this.responseToPerformanceFreeProfessional.TD_Date,
+        TD_WorkHours: this.responseToPerformanceFreeProfessional.TD_WorkHours,
+        AcceptIncreaseInHours: this.responseToPerformanceFreeProfessional.AcceptIncreaseInHours
       });
 
     }else{
@@ -159,8 +214,22 @@ export class ResponseToPerformanceComponent implements OnDestroy {
     this.osdEventService.modifyResponseToPerformanceAssigned(fillForm.Id ,this.responsePerformanceForm.value, performanceAssigned.Id);
   }
 
+  validateSubPerformance(): void {
+    if (this.responsePerformanceForm.invalid) {
+      this.responsePerformanceForm.markAllAsTouched();
+      return;
+    }
+    var fillForm = {} as ResponseToPerformanceFreeProfessional;
+    this.subPerformance$.subscribe(performance => {
+      fillForm = performance
+    })
+
+    this.osdEventService.validateResponseToPerformanceAssigned(fillForm.Id ,this.responsePerformanceForm.value);
+  }
+
   verifiedFormat(data: string) {
     const formValues = this.responsePerformanceForm.value;
+    console.log(this.responsePerformanceForm.value)
     let travelTime, workHours, professionalFreeTransportExpenses;
     switch (data) {
       case "freeProfessional":
@@ -180,12 +249,15 @@ export class ResponseToPerformanceComponent implements OnDestroy {
     const isWorkHoursValid = this.validarHora(workHours);
 
     if (isTravelTimeValid && isWorkHoursValid) {
-      if (professionalFreeTransportExpenses != '') {
+      if (professionalFreeTransportExpenses != '' && data == "freeProfessional") {
         this.totalExpensesOfFreeProfessional(formValues);
       }
     } else {
-      if (professionalFreeTransportExpenses != '') {
+      if (professionalFreeTransportExpenses != '' && data == "freeProfessional") {
+        console.log(professionalFreeTransportExpenses);
         this.responsePerformanceForm.patchValue({ Total_FP: '' });
+      }else{
+        this.responsePerformanceForm.patchValue({ TD_WorkHours: '' });
       }
     }
   }
@@ -207,7 +279,7 @@ export class ResponseToPerformanceComponent implements OnDestroy {
   totalExpensesOfFreeProfessional(formValues: any) {
     const FreeProfessionalWorkHours = this.convertTimeToMinutes(formValues.FP_WorkHours) / 60;
     const FreeProfessionalTransportHours = this.convertTimeToMinutes(formValues.FP_TravelTime) / 60;
-    const FreeProfessionalExpenses = Number(formValues.FP_TravelExpenses);
+    const FreeProfessionalExpenses = parseFloat(formValues.FP_TravelExpenses);
 
     const totalWorkHours = FreeProfessionalWorkHours * 60;
     const totalTransportHours = FreeProfessionalTransportHours * 30;

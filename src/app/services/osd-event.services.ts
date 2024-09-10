@@ -394,6 +394,19 @@ export class OSDService {
     });
   }
 
+  public validateResponseToPerformanceAssigned(subPerformanceId: string,performance: ResponseToPerformanceAssignedEvent) {
+    const CreateValidateResponseToPerformancesAssignedEvent: WebBaseEvent = this.eventFactoryService.CreateValidateResponseToPerformancesAssigned(subPerformanceId, performance);
+    this.restApiService.SendOSDEvent(CreateValidateResponseToPerformancesAssignedEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleValidateResponseToPerformanceAssignedResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+
   public GetSubPerformanceById(performanceId: string) {
     const CreateGetSubPerformanceByIdEvent: WebBaseEvent = this.eventFactoryService.CreateGetSubPerformanceById(performanceId);
     this.restApiService.SendOSDEvent(CreateGetSubPerformanceByIdEvent).subscribe({
@@ -1171,6 +1184,25 @@ export class OSDService {
       }
       else {
         this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Subactuacion modificada correctamente" }));
+      }
+
+      this.store.dispatch(ModalActions.openAlert())
+      this.securityDataService.emitUserAuthenticationSuccess("/project-manager");
+
+    } catch {
+
+    }
+  }
+
+  public HandleValidateResponseToPerformanceAssignedResponse(webBaseEvent: WebBaseEvent) {
+    let message: string;
+    try {
+      message = webBaseEvent.getBodyProperty(EventConstants.MESSAGE);
+      if (this.translate.currentLang == "en") {
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
+      }
+      else {
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Subactuacion revisada correctamente" }));
       }
 
       this.store.dispatch(ModalActions.openAlert())

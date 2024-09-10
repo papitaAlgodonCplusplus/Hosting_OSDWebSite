@@ -14,4 +14,5 @@ export class ResponseToPerformanceFreeProfessional {
   AcceptIncreaseInHours: string = "";
   TD_Date: string = "";
   TD_WorkHours: string = "";
+  Revised: string = "";
 }

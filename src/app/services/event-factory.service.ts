@@ -725,6 +725,26 @@ export class EventFactoryService {
     return event;
   }
 
+  public CreateValidateResponseToPerformancesAssigned(subPerformanceId: string, performance : ResponseToPerformanceAssignedEvent): WebBaseEvent {
+    let event: WebBaseEvent;
+
+    event = new WebBaseEvent();
+    event.Action = EventAction.VALIDATE_RESPONSE_TO_PERFORMANCE_ASSIGNED;
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Date = (new Date()).toUTCString();
+    event.ApplicationIdentifier = "WebClient";
+    event.setBodyProperty(EventConstants.SUBPERFORMANCE_ID, subPerformanceId);
+    event.setBodyProperty(EventConstants.USER_ID, this.authenticationService.userInfo?.Id);
+    event.setBodyProperty(EventConstants.TD_WORK_HOURS, performance.TD_WorkHours);
+    event.setBodyProperty(EventConstants.TD_DATE, performance.TD_Date);
+    event.setBodyProperty(EventConstants.ACCEPT_INCREASE_IN_HOURS, performance.AcceptIncreaseInHours);
+
+    return event;
+  }
+
   public CreateGetSubPerformanceById(performanceId : string): WebBaseEvent {
     let event: WebBaseEvent;
 

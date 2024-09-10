@@ -302,6 +302,7 @@
   "SubscriberCustomerInfo": "Subscriber Customer Information" ,
   "Identification": "Identification",
   "There_are_no_associated_subscribers": "There are no associated subscribers",
-  "Code_claim": "Claim code"
+  "Code_claim": "Claim code",
+  "Close subperformance": "Close subperformance"
 
 }

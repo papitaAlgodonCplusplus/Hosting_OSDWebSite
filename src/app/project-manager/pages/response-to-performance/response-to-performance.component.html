@@ -124,16 +124,17 @@
                 <span class="">(Formato de horas deber ser 0:00)</span>
             </div>
             <div class="flex flex-wrap justify-center">
-                <shared-input-field  [readOnly]="isTechnicalDirector" class="w-full md:w-1/2" fieldName="TD_Date" label="{{'Date'|translate}}"
+
+                <shared-input-field class="w-full md:w-1/2" [readOnly]="!isTechnicalDirector" fieldName="TD_Date" label="{{'Date'|translate}}"
                     inputType="date" [formGroup]="responsePerformanceForm"
                     [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-                <shared-input-field  [readOnly]="isTechnicalDirector" class="w-full md:w-1/2" fieldName="TD_WorkHours" label="{{'WorkHours'|translate}}"
+                <shared-input-field class="w-full md:w-1/2" [readOnly]="!isTechnicalDirector" fieldName="TD_WorkHours" label="{{'WorkHours'|translate}}"
                     inputType="text" (change)="verifiedFormat('technicalDirector')"
                     [formGroup]="responsePerformanceForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
                 <div class="flex flex-row-reverse items-center space-x-3">
-                    <input [disabled]="isTechnicalDirector" type="checkbox" id="AcceptIncreaseInHours" formControlName="AcceptIncreaseInHours">
+                    <input type="checkbox" id="AcceptIncreaseInHours" formControlName="AcceptIncreaseInHours">
                     <label class="pr-3" for="AcceptIncreaseInHours"> {{'Aceptar aumento de horas' | translate}}</label>
                 </div>
             </div>
@@ -149,8 +150,13 @@
                 {{'CreatePerformance'|translate}}
             </button>
         </div>
-        <button *ngIf=" modifiedPerformanceFP != null " (click)="modifySubPerformance()" type="submit" class="p-2 bg-darkslategray text-line rounded-xl">
+        <button *ngIf=" modifiedPerformanceFP != null && responseToPerformanceFreeProfessional.Revised != 'True'" (click)="modifySubPerformance()" type="submit" class="p-2 bg-darkslategray text-line rounded-xl">
             {{'Modified'|translate}}
         </button>
+
+        <button *ngIf=" modifiedPerformanceFP != null && isTechnicalDirector && responseToPerformanceFreeProfessional.Revised != 'True'" (click)="validateSubPerformance()" type="submit" class="p-2 bg-darkslategray text-line rounded-xl">
+            {{'Close subperformance'|translate}}
+        </button>
+
     </div>
 </div>

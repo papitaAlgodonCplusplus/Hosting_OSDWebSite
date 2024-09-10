@@ -102,6 +102,9 @@ export class EventConstants {
   public static SUMMARY_ID: string = "SummaryId";
   public static FREE_PROFESSIONAL_WORK_HOURS: string = 'FP_WorkHours';
   public static FREE_PROFESSIONAL_TRAVEL_HOURS: string = 'FP_TravelTime';
+  public static TD_WORK_HOURS: string = 'TD_work_hours';
+  public static TD_DATE: string = "TD_Date";
+
   public static FREE_PROFESSIONAL_TRAVEL_EXPENSES: string = 'FP_TravelExpenses';
   public static FREE_PROFESSIONAL_REMUNERATION: string = 'FP_Remuneration';
   public static TOTAL_FREE_PROFESSIONAL: string = 'Total_FP';

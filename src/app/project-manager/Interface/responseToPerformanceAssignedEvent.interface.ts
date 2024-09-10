@@ -6,4 +6,7 @@ export interface ResponseToPerformanceAssignedEvent {
     Total_FP: string;
     DocumentIncreaseWorkingHours: string;
     JustifyChangeEstimatedWorkHours: string;
+    TD_WorkHours: string;
+    TD_Date: string;
+    AcceptIncreaseInHours: boolean;
 }
