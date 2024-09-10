@@ -285,7 +285,7 @@
   "NewProject" : "New Project",
   "Objective" : "Objective",
   "RegisterProject" : "Register Project",
-  "Valoration" : "Valoration",
+  "Ratings" : "Ratings",
   "MakeAreview" : "Make a review",
   "Performance Buy" : "Performance Buy",
   "Performance Claim" : "Performance Claim",
@@ -303,6 +303,9 @@
   "Identification": "Identification",
   "There_are_no_associated_subscribers": "There are no associated subscribers",
   "Code_claim": "Claim code",
-  "Close subperformance": "Close subperformance"
+  "Close subperformance": "Close subperformance",
+  "Processor" : "Processor",
+  "Trainer" : "Trainer / Consultant"
+
 
 }

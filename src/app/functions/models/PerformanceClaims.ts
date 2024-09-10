@@ -5,13 +5,13 @@ export interface PerformanceClaim{
     Type: string ;
     Summary: string;
     JustifyingDocument: string;
-    FreeProfessionalWorkHours: string;
-    FreeProfessionalTravelHours: string;
-    FreeProfessionalTravelExpenses: string;
-    FreeProfessionalRemuneration: string;
-    TechnicalDirectorDate: string;
-    TechnicalDirectorWorkHours: string;
-    TechnicalDirectorTravelHours: string;
-    TechnicalDirectorTravelExpenses: string;
-    TechnicalDirectorRemuneration: string;
+    ProcessorWorkHours: string;
+    ProcessorTravelHours: string;
+    ProcessorTravelExpenses: string;
+    ProcessorRemuneration: string;
+    TrainerDate: string;
+    TrainerWorkHours: string;
+    TrainerTravelHours: string;
+    TrainerTravelExpenses: string;
+    TrainerRemuneration: string;
   }

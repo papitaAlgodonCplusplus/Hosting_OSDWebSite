@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
@@ -12,7 +12,7 @@ import { PerformanceClaim } from '../../models/PerformanceClaims';
 import { OSDDataService } from 'src/app/services/osd-data.service';
 import { isSubscription } from 'rxjs/internal/Subscription';
 import { CreateClaimValuationEvent } from '../../Interface/ClaimValuation.interface';
-import { Router, ActivatedRoute  } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { PerformAction } from '@ngrx/store-devtools/src/actions';
 
 @Component({
@@ -24,9 +24,10 @@ import { PerformAction } from '@ngrx/store-devtools/src/actions';
 export class FileManagerComponent implements OnDestroy {
 
   fileManager!: FormGroup;
+  closeClaimfileForm!: FormGroup;
   claim$: Observable<Claim> = this.store.select(ClaimSelectors.claim);
-  fileCode$ : Observable<string> = this.store.select(PerformanceSelectors.fileCode)
-  fileCode : string ="";
+  fileCode$: Observable<string> = this.store.select(PerformanceSelectors.fileCode)
+  fileCode: string = "";
   performancesClaims: PerformanceClaim[] = [];
   performancesClaimsTheClaim: PerformanceClaim[] = [];
   claimId!: string;
@@ -35,6 +36,8 @@ export class FileManagerComponent implements OnDestroy {
   isSubscriber: boolean = true;
   isClaimant: boolean = true;
   isFreeProfessional: boolean = true;
+  isAssignedClaim: boolean = false;
+  showModalRatings: boolean = false;
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
@@ -45,6 +48,7 @@ export class FileManagerComponent implements OnDestroy {
     private route: ActivatedRoute,
     private authenticationService: AuthenticationService) {
     this.fileManager = this.createForm();
+    this.closeClaimfileForm = this.createCloseClaimFileForm();
   }
 
   ngOnInit() {
@@ -55,10 +59,17 @@ export class FileManagerComponent implements OnDestroy {
       this.claim$.subscribe(claim => {
         this.fileManager = this.fillForm(claim);
         this.claimId = claim.Id;
-        this.osdEventService.GetPerformancesClaimById(this.claimId);
+        if (claim.Status == "Running") {
+          this.isAssignedClaim = true;
+        } else if (claim.Status == "Finished") {
+          this.isAssignedClaim = false;
+          this.showModalRatings = true;
+        }
+
       })
 
       this.osdDataService.performanceClaimList$.subscribe(performanceClaim => {
+        console.log(performanceClaim)
         this.performancesClaims = performanceClaim;
       })
     }, 0);
@@ -76,8 +87,6 @@ export class FileManagerComponent implements OnDestroy {
       state: [''],
       subscriber: [''],
       amountClaimed: [''],
-      AAsavingsPP: [''],
-      creditingDate: [''],
       freeProfessional: [''],
       valuationSubscriber: [],
       valuationClaimant: [],
@@ -91,14 +100,12 @@ export class FileManagerComponent implements OnDestroy {
     const form = this.formBuilder.group({
       claimant: [this.translate.instant(claim.Claimtype)],
       state: [this.translate.instant(claim.Status)],
-      subscriber: [this.authenticationService.userInfo?.CompanyName],
+      subscriber: [claim.NameCompanySubscriberclaimed],
       amountClaimed: [claim.Amountclaimed],
-      AAsavingsPP: [''],
-      creditingDate: [''],
       freeProfessional: [''],
       valuationSubscriber: [claim.Valuationsubscriber || 0],
-      valuationClaimant: [claim.Valuationclaimant  || 0],
-      valuationFreeProfessionals: [claim.Valuationfreeprofessionals  || 0],
+      valuationClaimant: [claim.Valuationclaimant || 0],
+      valuationFreeProfessionals: [claim.Valuationfreeprofessionals || 0],
     });
     return form;
   }
@@ -122,16 +129,7 @@ export class FileManagerComponent implements OnDestroy {
   }
 
   openPerformanceClaimsModal(): void {
-    this.performancesClaims.forEach(element => {
-      if (element.Claimid == this.claimId) {
-        this.performancesClaimsTheClaim.push(element);
-        this.updateDisplayedItems()
-      }
-    });
-    this.fileCode$.subscribe(code =>{
-        this.fileCode = code;
-    })
-
+    this.osdEventService.GetPerformancesClaimById(this.claimId);
     const modal = document.getElementById('performanceModal');
     if (modal) {
       modal.style.display = 'flex';
@@ -156,8 +154,8 @@ export class FileManagerComponent implements OnDestroy {
     this.displayedItems = this.performancesClaimsTheClaim.slice(startIndex, endIndex);
   }
 
-  viewPerformance(performance: PerformanceClaim) {    
-   this.store.dispatch(PerformanceActions.setPerformanceClaim({performanceClaim: performance}))
+  viewPerformance(performance: PerformanceClaim) {
+    this.store.dispatch(PerformanceActions.setPerformanceClaim({ performanceClaim: performance }))
   }
 
   assignValuation() {
@@ -175,11 +173,31 @@ export class FileManagerComponent implements OnDestroy {
 
   updateValuation() {
     var valuationForm: CreateClaimValuationEvent = {
-      ClaimId : this.claimId,
+      ClaimId: this.claimId,
       ValuationClaimant: this.fileManager.value.valuationClaimant,
       ValuationFreeProfessionals: this.fileManager.value.valuationFreeProfessionals,
       ValuationSubscriber: this.fileManager.value.valuationSubscriber
     }
-      this.osdEventService.UpdateValuation(valuationForm);
+    this.osdEventService.UpdateValuation(valuationForm);
+  }
+
+  private createCloseClaimFileForm(): FormGroup {
+    const form = this.formBuilder.group({
+      AAsavingsPP: ['', [Validators.required]],
+      creditingDate: ['', [Validators.required]],
+      AmountPaid: ['', [Validators.required]],
+    });
+    return form;
+  }
+
+  closeModalRatings() {
+    this.showModalRatings = false;
+  }
+
+  closeClaimFile() {
+    if (this.closeClaimfileForm.invalid) {
+      this.closeClaimfileForm.markAllAsTouched();
+      return;
+    }
   }
 }

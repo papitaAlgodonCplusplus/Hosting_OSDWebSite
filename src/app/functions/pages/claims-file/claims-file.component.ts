@@ -37,7 +37,6 @@ export class ClaimsFileComponent {
     setTimeout(() => {
       this.osdEventService.getClaimList().then(claims => {
         this.claims = claims
-        console.log(claims)
         this.updateDisplayedItems();
       },)
     }, 1000);
@@ -61,9 +60,8 @@ export class ClaimsFileComponent {
   }
 
 
-  selectClaim(claim: Claim, i: number) {
+  selectClaim(claim: Claim) {
     this.store.dispatch(ClaimActions.setClaim({ claim: claim }))
-    this.store.dispatch(PerformanceActions.setFileCode({fileCode : "RE/"+i+"/"}))
   }
 
   onPageChange(event: any) {
@@ -75,4 +73,5 @@ export class ClaimsFileComponent {
   updateDisplayedItems(startIndex: number = 0, endIndex: number = 5) {
     this.displayedItems = this.claims.slice(startIndex, endIndex);
   }
+  
 }

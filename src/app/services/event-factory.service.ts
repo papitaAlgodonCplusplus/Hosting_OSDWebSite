@@ -175,7 +175,7 @@ export class EventFactoryService {
 
     return event;
   }
-  public gettingFreeProfessionalsTRDataEvent(): WebBaseEvent {
+  public gettingFreeProfessionalsTRDataEvent(subscriberId : string): WebBaseEvent {
     let event: WebBaseEvent;
 
     event = new WebBaseEvent();
@@ -186,6 +186,8 @@ export class EventFactoryService {
     event.Date = new Date().toUTCString();
     event.ApplicationIdentifier = 'WebClient';
     event.SessionKey = this.authenticationService.sessionKey;
+
+    event.setBodyProperty(EventConstants.SUBSCRIBER_ID, subscriberId);
 
     return event;
   }
@@ -277,21 +279,21 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.DATE_PERFORMANCE, performance.Date);
     event.setBodyProperty(EventConstants.TYPE_PERFORMANCE, performance.Type);
     event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, performance.JustifyingDocument);
-    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_WORK_HOURS, performance.FreeProfessionalWorkHours);
-    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_TRAVEL_HOURS, performance.FreeProfessionalTravelHours);
-    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_TRAVEL_EXPENSES, performance.FreeProfessionalTravelExpenses);
-    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_REMUNERATION, performance.FreeProfessionalRemuneration);
-    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_DATE, performance.TechnicalDirectorDate);
-    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_WORK_HOURS, performance.TechnicalDirectorWorkHours);
-    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_TRAVEL_HOURS, performance.TechnicalDirectorTravelHours);
-    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_TRAVEL_EXPENSES, performance.TechnicalDirectorTravelExpenses);
-    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_REMUNERATION, performance.TechnicalDirectorRemuneration);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_WORK_HOURS, performance.ProcessorWorkHours);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_TRAVEL_HOURS, performance.ProcessorTravelHours);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_TRAVEL_EXPENSES, performance.ProcessorTravelExpenses);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_REMUNERATION, performance.ProcessorRemuneration);
+    event.setBodyProperty(EventConstants.TRAINER_DATE, performance.TrainerDate);
+    event.setBodyProperty(EventConstants.TRAINER_WORK_HOURS, performance.TrainerWorkHours);
+    event.setBodyProperty(EventConstants.TRAINER_TRAVEL_HOURS, performance.TrainerTravelHours);
+    event.setBodyProperty(EventConstants.TRAINER_TRAVEL_EXPENSES, performance.TrainerTravelExpenses);
+    event.setBodyProperty(EventConstants.TRAINER_REMUNERATION, performance.TrainerRemuneration);
     event.setBodyProperty(EventConstants.SUMMARY, performance.Summary);
     event.setBodyProperty(EventConstants.CLAIM_ID, claimId);
     return event;
   }
 
-  public modifiedPerformanceClaimEvent(performance: PerformanceClaim, claimId: string, performanceClaimId: string): WebBaseEvent {
+  public modifiedPerformanceClaimEvent(performance: PerformanceClaim, claimId: string): WebBaseEvent {
     let event: WebBaseEvent;
     event = new WebBaseEvent();
     event.SessionKey = this.authenticationService.sessionKey;
@@ -305,18 +307,18 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.DATE_PERFORMANCE, performance.Date);
     event.setBodyProperty(EventConstants.TYPE_PERFORMANCE, performance.Type);
     event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, performance.JustifyingDocument);
-    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_WORK_HOURS, performance.FreeProfessionalWorkHours);
-    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_TRAVEL_HOURS, performance.FreeProfessionalTravelHours);
-    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_TRAVEL_EXPENSES, performance.FreeProfessionalTravelExpenses);
-    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_REMUNERATION, performance.FreeProfessionalRemuneration);
-    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_DATE, performance.TechnicalDirectorDate);
-    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_WORK_HOURS, performance.TechnicalDirectorWorkHours);
-    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_TRAVEL_HOURS, performance.TechnicalDirectorTravelHours);
-    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_TRAVEL_EXPENSES, performance.TechnicalDirectorTravelExpenses);
-    event.setBodyProperty(EventConstants.TECHNICAL_DIRECTOR_REMUNERATION, performance.TechnicalDirectorRemuneration);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_WORK_HOURS, performance.ProcessorWorkHours);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_TRAVEL_HOURS, performance.ProcessorTravelHours);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_TRAVEL_EXPENSES, performance.ProcessorTravelExpenses);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_REMUNERATION, performance.ProcessorRemuneration);
+    event.setBodyProperty(EventConstants.TRAINER_DATE, performance.TrainerDate);
+    event.setBodyProperty(EventConstants.TRAINER_WORK_HOURS, performance.TrainerWorkHours);
+    event.setBodyProperty(EventConstants.TRAINER_TRAVEL_HOURS, performance.TrainerTravelHours);
+    event.setBodyProperty(EventConstants.TRAINER_TRAVEL_EXPENSES, performance.TrainerTravelExpenses);
+    event.setBodyProperty(EventConstants.TRAINER_REMUNERATION, performance.TrainerRemuneration);
     event.setBodyProperty(EventConstants.SUMMARY, performance.Summary);
     event.setBodyProperty(EventConstants.CLAIM_ID, claimId);
-    event.setBodyProperty(EventConstants.PERFORMANCE_CLAIM_ID, performanceClaimId);
+   // event.setBodyProperty(EventConstants.PERFORMANCE_CLAIM_ID, performanceClaimId);
     return event;
   }
 

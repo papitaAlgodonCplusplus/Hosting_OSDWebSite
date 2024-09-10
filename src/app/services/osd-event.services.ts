@@ -172,8 +172,8 @@ export class OSDService {
     });
   }
 
-  public gettingFreeProfessionalsTRData() {
-    const gettingFPTREvent: WebBaseEvent = this.eventFactoryService.gettingFreeProfessionalsTRDataEvent();
+  public gettingFreeProfessionalsTRData(subscriberId: string) {
+    const gettingFPTREvent: WebBaseEvent = this.eventFactoryService.gettingFreeProfessionalsTRDataEvent(subscriberId);
     this.restApiService.SendOSDEvent(gettingFPTREvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
@@ -500,11 +500,16 @@ export class OSDService {
       if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['FreeProfessionalList']) {
         var usersFreeProfessionalsTR = webBaseEvent.Body['OsdUserList'];
         var freeProfessionalsTR = webBaseEvent.Body['FreeProfessionalList'];
-        this.freeProfessionalsTRResponse = true;
-        this.osdDataService.emitFreeProfessionalTR(freeProfessionalsTR)
-        this.osdDataService.emitUsersFreeProfessionalTR(usersFreeProfessionalsTR)
-      } else {
-        this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'No hay reclamaciones existentes' }));
+        console.log(usersFreeProfessionalsTR)
+        if (usersFreeProfessionalsTR.length > 0) {
+          this.freeProfessionalsTRResponse = true;
+          this.osdDataService.emitFreeProfessionalTR(freeProfessionalsTR)
+          this.osdDataService.emitUsersFreeProfessionalTR(usersFreeProfessionalsTR)
+        }
+        else{
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: 'No hay tramitdores autorizados' }));
+          this.store.dispatch(ModalActions.openAlert());
+        }
       }
     }
     catch (err) {
@@ -516,9 +521,14 @@ export class OSDService {
     try {
       if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['AssignationClaimToFreeProfessionalId']) {
         let message = webBaseEvent.Body['AssignationClaimToFreeProfessionalId'];
-        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
-      } else {
-        this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'No hay reclamaciones existentes' }));
+
+        if (this.translate.currentLang == "en") {
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
+        } else {
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Se asigno correctamente a la reclamación" }));
+        }
+        this.store.dispatch(ModalActions.openAlert());
+        this.securityDataService.emitUserAuthenticationSuccess("/functions/assign-pltr-claims")
       }
     }
     catch (err) {
@@ -542,6 +552,7 @@ export class OSDService {
 
   public createPerformanceClaim(performance: PerformanceClaim, claimId: string) {
     const createPerformanceClaimEvent: WebBaseEvent = this.eventFactoryService.CreatePerformanceClaimEvent(performance, claimId);
+    console.log(createPerformanceClaimEvent)
     this.restApiService.SendOSDEvent(createPerformanceClaimEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
@@ -553,8 +564,8 @@ export class OSDService {
     });
   }
 
-  public modifiedPerformanceClaim(performance: PerformanceClaim, claimId: string, performanceClaimId: string) {
-    const modifiedPerformanceClaimEvent: WebBaseEvent = this.eventFactoryService.modifiedPerformanceClaimEvent(performance, claimId, performanceClaimId);
+  public modifiedPerformanceClaim(performance: PerformanceClaim, claimId: string) {
+    const modifiedPerformanceClaimEvent: WebBaseEvent = this.eventFactoryService.modifiedPerformanceClaimEvent(performance, claimId);
     this.restApiService.SendOSDEvent(modifiedPerformanceClaimEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
