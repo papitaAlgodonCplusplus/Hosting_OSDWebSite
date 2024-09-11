@@ -304,7 +304,15 @@
     "Identification": "Identificacion",
     "There_are_no_associated_subscribers": "No hay subscriptores asociados",
     "Code_claim": "Codigo de reclamacion",
-    "Close subperformance": "Cerrar subactuacion",
+    "Close subperformance": "Cerrar subactuación",
     "Processor": "Tramitador",
-    "Trainer": "Formador / Consultor"
+    "Trainer": "Formador / Consultor",
+    "Additional Information": "Información Adicional",
+    "Complaint": "Queja",
+    "Response: Allegations": "Respuesta: Alegaciones",
+    "Suggestion for Solution": "Sugerencia de Solución",
+    "Verification of Facts and Evidence": "Verificación de Hechos y Pruebas",
+    "Request for Additional Information": "Solicitud de Ampliación de Información",
+    "Complaint Resolution": "Solución de la Queja",
+    "Problem Solution": "Solución al Problema"
 }

@@ -14,6 +14,7 @@ import { isSubscription } from 'rxjs/internal/Subscription';
 import { CreateClaimValuationEvent } from '../../Interface/ClaimValuation.interface';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PerformAction } from '@ngrx/store-devtools/src/actions';
+import { UserInfo } from 'src/app/models/userInfo';
 
 @Component({
   selector: 'app-file-manager',
@@ -29,7 +30,6 @@ export class FileManagerComponent implements OnDestroy {
   fileCode$: Observable<string> = this.store.select(PerformanceSelectors.fileCode)
   fileCode: string = "";
   performancesClaims: PerformanceClaim[] = [];
-  performancesClaimsTheClaim: PerformanceClaim[] = [];
   claimId!: string;
   claimIdUrl!: string;
   displayedItems: any[] = [];
@@ -38,6 +38,8 @@ export class FileManagerComponent implements OnDestroy {
   isFreeProfessional: boolean = true;
   isAssignedClaim: boolean = false;
   showModalRatings: boolean = false;
+  showModalPerformances: boolean = false;
+  user! : UserInfo
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
@@ -69,9 +71,13 @@ export class FileManagerComponent implements OnDestroy {
       })
 
       this.osdDataService.performanceClaimList$.subscribe(performanceClaim => {
-        console.log(performanceClaim)
         this.performancesClaims = performanceClaim;
-      })
+        this.updateDisplayedItems(0, 5);
+      });
+      
+      if(this.authenticationService.userInfo){
+      this.user = this.authenticationService.userInfo
+      }
     }, 0);
   }
 
@@ -102,7 +108,7 @@ export class FileManagerComponent implements OnDestroy {
       state: [this.translate.instant(claim.Status)],
       subscriber: [claim.NameCompanySubscriberclaimed],
       amountClaimed: [claim.Amountclaimed],
-      freeProfessional: [''],
+      //freeProfessional: [''],
       valuationSubscriber: [claim.Valuationsubscriber || 0],
       valuationClaimant: [claim.Valuationclaimant || 0],
       valuationFreeProfessionals: [claim.Valuationfreeprofessionals || 0],
@@ -129,6 +135,7 @@ export class FileManagerComponent implements OnDestroy {
   }
 
   openPerformanceClaimsModal(): void {
+    this.showModalPerformances = true;
     this.osdEventService.GetPerformancesClaimById(this.claimId);
     const modal = document.getElementById('performanceModal');
     if (modal) {
@@ -137,12 +144,9 @@ export class FileManagerComponent implements OnDestroy {
   }
 
   closePerformanceModal(): void {
-    this.performancesClaimsTheClaim = [];
-    const modal = document.getElementById('performanceModal');
-    if (modal) {
-      modal.style.display = 'none';
-    }
+    this.showModalPerformances = false;
   }
+  
 
   onPageChange(event: any) {
     const startIndex = event.pageIndex * event.pageSize;
@@ -150,8 +154,8 @@ export class FileManagerComponent implements OnDestroy {
     this.updateDisplayedItems(startIndex, endIndex);
   }
 
-  updateDisplayedItems(startIndex: number = 0, endIndex: number = 5) {
-    this.displayedItems = this.performancesClaimsTheClaim.slice(startIndex, endIndex);
+  private updateDisplayedItems(startIndex: number, endIndex: number) {
+    this.displayedItems = this.performancesClaims.slice(startIndex, endIndex);
   }
 
   viewPerformance(performance: PerformanceClaim) {

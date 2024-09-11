@@ -106,12 +106,16 @@ export class EventConstants {
   public static TD_DATE: string = "TD_Date";
 
   public static FREE_PROFESSIONAL_TRAVEL_EXPENSES: string = 'FP_TravelExpenses';
-  public static FREE_PROFESSIONAL_REMUNERATION: string = 'FP_Remuneration';
   public static TOTAL_FREE_PROFESSIONAL: string = 'Total_FP';
   public static DOCUMENT_INCREASE_WORKING_HOURS: string = 'DocumentIncreaseWorkingHours';
 
   public static TECHNICAL_DIRECTOR_DATE: string = 'TD_Date';
   public static TECHNICAL_DIRECTOR_WORK_HOURS: string = 'TD_WorkHours';
+
+  public static PROCESSOR_WORK_HOURS: string = 'Processor_WorkHours';
+  public static PROCESSOR_TRAVEL_HOURS: string = 'Processor_TravelTime';
+  public static PROCESSOR_TRAVEL_EXPENSES: string = 'Processor_TravelExpenses';
+  public static PROCESSOR_REMUNERATION: string = 'Processor_Remuneration';
 
   public static TRAINER_DATE: string = 'Trainer_Date';
   public static TRAINER_WORK_HOURS: string = 'Trainer_WorkHours';

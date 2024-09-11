@@ -1,6 +1,7 @@
 export interface PerformanceClaim{
     Id: string;
     Claimid: string;
+    Code: string;
     Date: string ;
     Type: string ;
     Summary: string;

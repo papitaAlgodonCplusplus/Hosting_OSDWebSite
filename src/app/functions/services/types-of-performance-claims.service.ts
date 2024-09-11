@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
 
 @Injectable({
@@ -6,27 +7,34 @@ import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
 })
 export class TypesOfPerformanceClaimsService {
 
-  constructor() { }
+  constructor(private translate : TranslateService) { }
 
   getTypesClaimant(): DropDownItem[] {
-    var typesClaimant: DropDownItem[] = [{ value: 'INFORMACION ADICIONAL', key: 'INFORMACION ADICIONAL' }, 
-                                         { value: 'QUEJA', key: 'QUEJA' }];
+    var typesClaimant: DropDownItem[] = [
+      { value: this.translate.instant('Additional Information'), key: 'Additional Information' }, 
+      { value: this.translate.instant('Complaint'), key: 'Complaint' }
+    ];
     return typesClaimant;
   }
-
+  
   getTypesSubscriber(): DropDownItem[] {
-    var typesClaimant: DropDownItem[] = [{ value: 'RESPUESTA: ALEGACIONES', key: 'RESPUESTA: ALEGACIONES' }, 
-                                         { value: 'INFORMACION ADICIONAL', key: 'INFORMACION ADICIONAL' },
-                                         { value: 'SUGERENCIA SOLUCION', key: 'SUGERENCIA SOLUCION' },
-                                         { value: 'QUEJA', key: 'QUEJA' }];
-    return typesClaimant;
+    var typesSubscriber: DropDownItem[] = [
+      { value: this.translate.instant('Response: Allegations'), key: 'Response: Allegations' }, 
+      { value: this.translate.instant('Additional Information'), key: 'Additional Information' },
+      { value: this.translate.instant('Suggestion for Solution'), key: 'Suggestion for Solution' },
+      { value: this.translate.instant('Complaint'), key: 'Complaint' }
+    ];
+    return typesSubscriber;
   }
-
+  
   getTypesProcessor(): DropDownItem[] {
-    var typesClaimant: DropDownItem[] = [{ value: 'VERIFICACION HECHOS y PRUEBAS', key: 'VERIFICACION HECHOS y PRUEBAS' }, 
-                                         { value: 'SOLICITUD AMPLIACION INFORMACION', key: 'QUEJA' },
-                                         { value: 'SOLUCION QUEJA', key: 'QUEJA' },
-                                         { value: 'SOLUCION AL PROBLEMA', key: 'QUEJA' }];
-    return typesClaimant;
+    var typesProcessor: DropDownItem[] = [
+      { value: this.translate.instant('Verification of Facts and Evidence'), key: 'Verification of Facts and Evidence' }, 
+      { value: this.translate.instant('Request for Additional Information'), key: 'Request for Additional Information' },
+      { value: this.translate.instant('Complaint Resolution'), key: 'Complaint Resolution' },
+      { value: this.translate.instant('Problem Solution'), key: 'Problem Solution' }
+    ];
+    return typesProcessor;
   }
+  
 }

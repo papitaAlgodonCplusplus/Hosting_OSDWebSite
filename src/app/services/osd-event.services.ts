@@ -564,8 +564,8 @@ export class OSDService {
     });
   }
 
-  public modifiedPerformanceClaim(performance: PerformanceClaim, claimId: string) {
-    const modifiedPerformanceClaimEvent: WebBaseEvent = this.eventFactoryService.modifiedPerformanceClaimEvent(performance, claimId);
+  public modifiedPerformanceClaim(performance: PerformanceClaim, performanceId: string) {
+    const modifiedPerformanceClaimEvent: WebBaseEvent = this.eventFactoryService.modifiedPerformanceClaimEvent(performance, performanceId);
     this.restApiService.SendOSDEvent(modifiedPerformanceClaimEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);

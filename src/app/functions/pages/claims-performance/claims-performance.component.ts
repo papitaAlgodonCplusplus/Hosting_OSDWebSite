@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
@@ -7,13 +7,12 @@ import { OSDService } from 'src/app/services/osd-event.services';
 import { OSDDataService } from 'src/app/services/osd-data.service';
 import { AuthSelectors, ClaimSelectors, PerformanceSelectors } from 'src/app/store/selectors';
 import { DatePipe } from '@angular/common';
-import { TranslateService } from '@ngx-translate/core';
 import { Claim } from 'src/app/models/claim';
 import { PerformanceClaim } from '../../models/PerformanceClaims';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { EventConstants } from 'src/app/models/eventConstants';
 import { TypesOfPerformanceClaimsService } from '../../services/types-of-performance-claims.service';
-import { UiActions } from 'src/app/store/actions';
+import { PerformanceActions, UiActions } from 'src/app/store/actions';
 import { UserInfo } from 'src/app/models/userInfo';
 import { FreeProfessional } from '../../models/FreeProfessional';
 
@@ -30,15 +29,17 @@ export class ClaimsPerformanceComponent {
   selectedType: string | undefined;
   user!: UserInfo;
   viewAll: boolean = false;
-  type: DropDownItem[] = [];
-  PL_FreeProfessional: string | undefined;
-  FreeProfessional: DropDownItem[] = [];
+  type!: DropDownItem[];
   documentName!: string;
   freeProfessionalId!: string;
   incorrectFormat: boolean = false;
-  performanceData!: PerformanceClaim;
+  performanceData: PerformanceClaim = {} as PerformanceClaim;
   claimId!: string;
   freeProfessionalData!: FreeProfessional;
+  isModified: boolean = false;
+  isViewTrainerPerformance: boolean = true;
+  isViewProcessorPerformance: boolean = true;
+  performanceId!: string;
 
   constructor(
     private store: Store,
@@ -47,17 +48,39 @@ export class ClaimsPerformanceComponent {
     private OSDDataService: OSDDataService,
     private datePipe: DatePipe,
     private authenticationService: AuthenticationService,
-    private translate: TranslateService,
     private typesOfPerformanceClaimsService: TypesOfPerformanceClaimsService
   ) {
     this.performanceForm = this.createRegisterForm();
-    this.performanceData = {} as PerformanceClaim;
   }
 
   ngOnInit() {
     setTimeout(() => {
       this.store.dispatch(UiActions.hideFooter());
       this.store.dispatch(UiActions.hideLeftSidebar());
+
+      this.performanceClaim$.subscribe(performanceClaim => {
+        if (Object.keys(performanceClaim).length > 0) {
+          console.log("hola")
+          this.performanceId = performanceClaim.Id;
+          this.performanceForm = this.fillForm(performanceClaim);
+          this.isModified = true;
+          if (performanceClaim.ProcessorWorkHours != "") {
+            this.isViewProcessorPerformance = false;
+          }
+          else if (performanceClaim.TrainerWorkHours != ""){
+            this.isViewTrainerPerformance = false;
+          }
+          else{
+            this.isViewTrainerPerformance = true;
+            this.isViewProcessorPerformance = true;
+          }
+        }
+      });
+
+      if (this.isModified == false) {
+        this.isViewTrainerPerformance = false;
+        this.isViewProcessorPerformance = false;
+      }
 
       if (this.authenticationService.userInfo) {
         this.user = this.authenticationService.userInfo;
@@ -69,18 +92,46 @@ export class ClaimsPerformanceComponent {
           this.type = this.typesOfPerformanceClaimsService.getTypesProcessor();
           this.OSDEventService.GetFreeProfessionalsDataEvent();
           this.OSDEventService.getFreeProfessionalsList().then(freeProfessionals => {
-            var freeProfessionalFound = freeProfessionals.find(fp => fp.Userid == this.authenticationService.userInfo?.Id);
+            var freeProfessionalFound = freeProfessionals.find(Processor => Processor.Userid == this.authenticationService.userInfo?.Id);
             if (freeProfessionalFound) {
               this.freeProfessionalData = freeProfessionalFound;
+              if (this.freeProfessionalData.FreeprofessionaltypeName == 'Trainer') {
+                if (this.isModified == false) {
+                  this.performanceForm.get('Trainer_Date')?.setValidators(Validators.required);
+                  this.performanceForm.get('Trainer_WorkHours')?.setValidators(Validators.required);
+                  this.performanceForm.get('Trainer_TravelTime')?.setValidators(Validators.required);
+                  this.performanceForm.get('Trainer_TravelExpenses')?.setValidators(Validators.required);
+                  this.performanceForm.get('Trainer_Remuneration')?.setValidators(Validators.required);
+                  this.performanceForm.get('Trainer_Date')?.updateValueAndValidity();
+                  this.performanceForm.get('Trainer_WorkHours')?.updateValueAndValidity();
+                  this.performanceForm.get('Trainer_TravelTime')?.updateValueAndValidity();
+                  this.performanceForm.get('Trainer_TravelExpenses')?.updateValueAndValidity();
+                  this.performanceForm.get('Trainer_Remuneration')?.updateValueAndValidity();
+                }
+              }
+              else {
+                if (this.isModified == false) {
+                  this.performanceForm.get('Processor_WorkHours')?.setValidators(Validators.required);
+                  this.performanceForm.get('Processor_TravelTime')?.setValidators(Validators.required);
+                  this.performanceForm.get('Processor_TravelExpenses')?.setValidators(Validators.required);
+                  this.performanceForm.get('Processor_Remuneration')?.setValidators(Validators.required);
+                  this.performanceForm.get('Processor_WorkHours')?.updateValueAndValidity();
+                  this.performanceForm.get('Processor_TravelTime')?.updateValueAndValidity();
+                  this.performanceForm.get('Processor_TravelExpenses')?.updateValueAndValidity();
+                  this.performanceForm.get('Processor_Remuneration')?.updateValueAndValidity();
+                }
+              }
             }
           });
         }
+        this.freeProfessionalData = {} as FreeProfessional;
       }
     }, 0);
 
     this.claim$.subscribe(claim => {
       this.claimId = claim.Id;
     });
+
     this.OSDDataService.freeProfessionalId$.subscribe(id => {
       this.freeProfessionalId = id;
     });
@@ -89,6 +140,7 @@ export class ClaimsPerformanceComponent {
   ngOnDestroy() {
     setTimeout(() => {
       this.store.dispatch(UiActions.showAll());
+      this.store.dispatch(PerformanceActions.setPerformanceClaim({ performanceClaim: {} as PerformanceClaim }))
     }, 0);
   }
 
@@ -103,45 +155,76 @@ export class ClaimsPerformanceComponent {
     const form = this.formBuilder.group({
       Date: ['', [Validators.required]],
       Type: ['', [Validators.required]],
-      JustifyingDocument: [''],
-      FP_WorkHours: [''],
-      FP_TravelTime: [''],
-      FP_TravelExpenses: [],
-      FP_Remuneration: [],
-      TD_Date: [''],
-      TD_WorkHours: [''],
-      TD_TravelTime: [''],
-      TD_TravelExpenses: [''],
-      TD_Remuneration: [''],
-      Summary: [''],
+      JustifyingDocument: ['', [Validators.required]],
+      Summary: ['', [Validators.required]],
+      Processor_WorkHours: [''],
+      Processor_TravelTime: [''],
+      Processor_TravelExpenses: [''],
+      Processor_Remuneration: [''],
+      Trainer_Date: [''],
+      Trainer_WorkHours: [''],
+      Trainer_TravelTime: [''],
+      Trainer_TravelExpenses: [''],
+      Trainer_Remuneration: ['']
+    });
+    return form;
+  }
+
+  private fillForm(performance: PerformanceClaim): FormGroup {
+    this.documentName = performance.JustifyingDocument
+
+    let originalDate = performance.Date;
+    let formatedDate = this.datePipe.transform(originalDate, 'yyyy-MM-dd');
+
+    let originalTrainerDate = performance.TrainerDate;
+    let formatedTrainerDate = this.datePipe.transform(originalTrainerDate, 'yyyy-MM-dd');
+
+    if (formatedTrainerDate == "0001-01-01") {
+      formatedTrainerDate = ""
+    }
+
+    const form = this.formBuilder.group({
+      Date: [formatedDate],
+      Type: [performance.Type],
+      JustifyingDocument: [performance.JustifyingDocument],
+      Summary: [performance.Summary],
+      Processor_WorkHours: [performance.ProcessorWorkHours],
+      Processor_TravelTime: [performance.ProcessorTravelHours],
+      Processor_TravelExpenses: [performance.ProcessorTravelExpenses],
+      Processor_Remuneration: [performance.ProcessorRemuneration],
+      Trainer_Date: [formatedTrainerDate],
+      Trainer_WorkHours: [performance.TrainerWorkHours],
+      Trainer_TravelTime: [performance.TrainerTravelHours],
+      Trainer_TravelExpenses: [performance.TrainerTravelExpenses],
+      Trainer_Remuneration: [performance.TrainerRemuneration]
     });
     return form;
   }
 
   onSubmit(): void {
-    // if (this.performanceForm.invalid) {
-    //   this.performanceForm.markAllAsTouched();
-    //   return;
-    // }
+    if (this.performanceForm.invalid) {
+      this.performanceForm.markAllAsTouched();
+      return;
+    }
 
     let formValues = this.performanceForm.value;
     this.performanceData.Date = formValues.Date;
     this.performanceData.Type = formValues.Type;
     this.performanceData.JustifyingDocument = formValues.JustifyingDocument;
-    this.performanceData.ProcessorWorkHours = formValues.FP_WorkHours;
-    this.performanceData.ProcessorTravelHours = formValues.FP_TravelTime;
-    this.performanceData.ProcessorTravelExpenses = formValues.FP_TravelExpenses;
-    this.performanceData.ProcessorRemuneration = formValues.FP_Remuneration;
-    this.performanceData.TrainerDate = formValues.TD_Date;
-    this.performanceData.TrainerWorkHours = formValues.TD_WorkHours;
-    this.performanceData.TrainerTravelHours = formValues.TD_TravelTime;
-    this.performanceData.TrainerTravelExpenses = formValues.TD_TravelExpenses;
-    this.performanceData.TrainerRemuneration = formValues.TD_Remuneration;
+    this.performanceData.ProcessorWorkHours = formValues.Processor_WorkHours;
+    this.performanceData.ProcessorTravelHours = formValues.Processor_TravelTime;
+    this.performanceData.ProcessorTravelExpenses = formValues.Processor_TravelExpenses;
+    this.performanceData.ProcessorRemuneration = formValues.Processor_Remuneration;
+    this.performanceData.TrainerDate = formValues.Trainer_Date;
+    this.performanceData.TrainerWorkHours = formValues.Trainer_WorkHours;
+    this.performanceData.TrainerTravelHours = formValues.Trainer_TravelTime;
+    this.performanceData.TrainerTravelExpenses = formValues.Trainer_TravelExpenses;
+    this.performanceData.TrainerRemuneration = formValues.Trainer_Remuneration;
     this.performanceData.Summary = formValues.Summary;
 
-    // if (this.claimId) {
-     this.OSDEventService.createPerformanceClaim(this.performanceData, this.claimId);
-    // }
+    if (this.claimId) {
+      this.OSDEventService.createPerformanceClaim(this.performanceData, this.claimId);
+    }
   }
 
   modifiedPerformances(): void {
@@ -153,45 +236,47 @@ export class ClaimsPerformanceComponent {
     let formValues = this.performanceForm.value;
     this.performanceData.Date = formValues.Date;
     this.performanceData.Type = formValues.Type;
-    this.performanceData.JustifyingDocument = formValues.JustifyingDocument;
-    this.performanceData.ProcessorWorkHours = formValues.FP_WorkHours;
-    this.performanceData.ProcessorTravelHours = formValues.FP_TravelTime;
-    this.performanceData.ProcessorTravelExpenses = formValues.FP_TravelExpenses;
-    this.performanceData.ProcessorRemuneration = formValues.FP_Remuneration;
-    this.performanceData.TrainerDate = formValues.TD_Date;
-    this.performanceData.TrainerWorkHours = formValues.TD_WorkHours;
-    this.performanceData.TrainerTravelHours = formValues.TD_TravelTime;
-    this.performanceData.TrainerTravelExpenses = formValues.TD_TravelExpenses;
-    this.performanceData.TrainerRemuneration = formValues.TD_Remuneration;
+    this.performanceData.JustifyingDocument = this.documentName
+    this.performanceData.ProcessorWorkHours = formValues.Processor_WorkHours;
+    this.performanceData.ProcessorTravelHours = formValues.Processor_TravelTime;
+    this.performanceData.ProcessorTravelExpenses = formValues.Processor_TravelExpenses;
+    this.performanceData.ProcessorRemuneration = formValues.Processor_Remuneration;
+    this.performanceData.TrainerDate = formValues.Trainer_Date;
+    this.performanceData.TrainerWorkHours = formValues.Trainer_WorkHours;
+    this.performanceData.TrainerTravelHours = formValues.Trainer_TravelTime;
+    this.performanceData.TrainerTravelExpenses = formValues.Trainer_TravelExpenses;
+    this.performanceData.TrainerRemuneration = formValues.Trainer_Remuneration;
     this.performanceData.Summary = formValues.Summary;
 
     if (this.claimId) {
-      this.OSDEventService.modifiedPerformanceClaim(this.performanceData, this.claimId);
+      this.OSDEventService.modifiedPerformanceClaim(this.performanceData, this.performanceId);
     }
   }
 
   verifiedFormat(data: string) {
     const formValues = this.performanceForm.value;
     let travelTime, workHours, expenses;
+
     switch (data) {
-      case "freeProfessional":
-        travelTime = formValues.FP_TravelTime;
-        workHours = formValues.FP_WorkHours;
-        expenses = formValues.FP_TravelExpenses;
+      case "processor":
+        travelTime = formValues.Processor_TravelTime;
+        workHours = formValues.Processor_WorkHours;
+        expenses = formValues.Processor_TravelExpenses;
         break;
       case "trainer":
-        travelTime = formValues.TD_TravelTime;
-        workHours = formValues.TD_WorkHours;
-        expenses = formValues.TD_TravelExpenses;
+        travelTime = formValues.Trainer_TravelTime;
+        workHours = formValues.Trainer_WorkHours;
+        expenses = formValues.Trainer_TravelExpenses;
         break;
       default:
         return;
     }
 
-    const isTravelTimeValid = this.validarHora(travelTime);
-    const isWorkHoursValid = this.validarHora(workHours);
+    const isTravelTimeValid = this.validateTravelTime(travelTime);
+    const isWorkHoursValid = this.validateWorkHours(workHours);
+
     if (isTravelTimeValid && isWorkHoursValid && expenses >= 0) {
-      if (data === "freeProfessional") {
+      if (data === "processor") {
         this.chargeRemuneration(formValues);
       } else if (data === "trainer") {
         this.chargeRemunerationTD(formValues);
@@ -199,15 +284,15 @@ export class ClaimsPerformanceComponent {
       this.incorrectFormat = false;
     } else {
       this.incorrectFormat = true;
-      if (data === "freeProfessional") {
-        this.performanceForm.patchValue({ FP_Remuneration: '' });
+      if (data === "processor") {
+        this.performanceForm.patchValue({ Processor_Remuneration: '' });
       } else if (data === "trainer") {
-        this.performanceForm.patchValue({ TD_Remuneration: '' });
+        this.performanceForm.patchValue({ Trainer_Remuneration: '' });
       }
     }
   }
 
-  validarHora(horaStr: string): boolean {
+  validateTravelTime(horaStr: string): boolean {
     const regex = /^([0-9]|[01][0-9]|2[0-3]):[0-5][0-9]$/;
     if (!regex.test(horaStr)) {
       return false;
@@ -216,36 +301,44 @@ export class ClaimsPerformanceComponent {
     return hora >= 0 && hora < 24 && minutos >= 0 && minutos < 60;
   }
 
+  validateWorkHours(horaStr: string): boolean {
+    const regex = /^([0-9]|[01][0-9]|2[0-3]):[0-5][0-9]$/;
+    if (!regex.test(horaStr)) {
+      return false;
+    }
+    const [hora, minutos] = horaStr.split(':').map(Number);
+    return hora > 0 && hora < 24 && minutos >= 0 && minutos < 60;
+  }
+
   private convertTimeToMinutes(timeStr: string): number {
     const [hours, minutes] = timeStr.split(':').map(Number);
     return (hours * 60) + minutes;
   }
 
   chargeRemuneration(formValues: any) {
-    const freeProfessionalWorkHours = this.convertTimeToMinutes(formValues.FP_WorkHours) / 60;
-    const freeProfessionalTransportHours = this.convertTimeToMinutes(formValues.FP_TravelTime) / 60;
-    const freeProfessionalTransportExpenses = Number(formValues.FP_TravelExpenses);
+    const ProcessorWorkHours = this.convertTimeToMinutes(formValues.Processor_WorkHours) / 60;
+    const ProcessorTransportHours = this.convertTimeToMinutes(formValues.Processor_TravelTime) / 60;
+    const ProcessorTransportExpenses = Number(formValues.Processor_TravelExpenses);
 
-    const totalWorkHours = freeProfessionalWorkHours * 60;
-    const totalTransportHours = freeProfessionalTransportHours * 30;
-    const total: number = (totalWorkHours + totalTransportHours) + freeProfessionalTransportExpenses;
+    const totalWorkHours = ProcessorWorkHours * 60;
+    const totalTransportHours = ProcessorTransportHours * 30;
+    const total: number = (totalWorkHours + totalTransportHours) + ProcessorTransportExpenses;
     this.performanceForm.patchValue({
-      FP_Remuneration: total
+      Processor_Remuneration: total
     });
   }
 
   chargeRemunerationTD(formValues: any) {
-    const trainerWorkHours = this.convertTimeToMinutes(formValues.TD_WorkHours) / 60;
-    const trainerTransportHours = this.convertTimeToMinutes(formValues.TD_TravelTime) / 60;
-    const trainerTransportExpenses = Number(formValues.TD_TravelExpenses);
+    const trainerWorkHours = this.convertTimeToMinutes(formValues.Trainer_WorkHours) / 60;
+    const trainerTransportHours = this.convertTimeToMinutes(formValues.Trainer_TravelTime) / 60;
+    const trainerTransportExpenses = Number(formValues.Trainer_TravelExpenses);
 
     const totalWorkHours = trainerWorkHours * 60;
     const totalTransportHours = trainerTransportHours * 30;
     const total: number = (totalWorkHours + totalTransportHours) + trainerTransportExpenses;
 
     this.performanceForm.patchValue({
-      TD_Remuneration: total
+      Trainer_Remuneration: total
     });
   }
-
 }

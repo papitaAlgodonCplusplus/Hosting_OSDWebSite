@@ -1,9 +1,9 @@
 <div class="flex flex-col lg:flex-col ">
     <div class="flex-1 bg-line flex justify-center border-gray-400 text-darkslategray py-3">
         <div class="flex flex-col">
-            <shared-input-field [readOnly]="true" class="w-full" label="{{'freeProfessionalsIntervention' | translate}}"
+            <!-- <shared-input-field [readOnly]="true" class="w-full" label="{{'freeProfessionalsIntervention' | translate}}"
                 fieldName="freeProfessional" [formGroup]="fileManager">
-            </shared-input-field>
+            </shared-input-field> -->
 
             <div class="font-bold flex flex-col justify-center items-center space-y-3 p-3">
                 <span class="rounded-xl p-2 bg-darkslategray text-line cursor-pointer"
@@ -44,15 +44,15 @@
             <div class="w-full border-b px-2">
                 <h1>{{'Processor' | translate}}</h1>
             </div>
-            <shared-input-field [readOnly]="false" class="w-full lg:w-1/2" fieldName="AAsavingsPP"
+            <shared-input-field [readOnly]="user.AccountType != 'FreeProfessional'" class="w-full lg:w-1/2" fieldName="AAsavingsPP"
                 label="{{'amountPaidByOtherParty' | translate}}" inputType="text" [formGroup]="closeClaimfileForm"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-            <shared-input-field [readOnly]="false" class="w-full lg:w-1/2" fieldName="AmountPaid"
-                label="{{'institutionalImprovementSavings' | translate}}" inputType="text" [formGroup]="closeClaimfileForm"
-                [bgColor]="'bg-white-lightbone'"></shared-input-field>
+            <shared-input-field [readOnly]="user.AccountType != 'FreeProfessional'" class="w-full lg:w-1/2" fieldName="AmountPaid"
+                label="{{'institutionalImprovementSavings' | translate}}" inputType="text"
+                [formGroup]="closeClaimfileForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-            <shared-input-field [readOnly]="false" class="w-full lg:w-1/2" fieldName="creditingDate"
+            <shared-input-field [readOnly]="user.AccountType != 'FreeProfessional'" class="w-full lg:w-1/2" fieldName="creditingDate"
                 label="{{'creditingDate' | translate}}" inputType="date" [formGroup]="closeClaimfileForm"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>
         </form>
@@ -65,8 +65,53 @@
         {{'regresar' | translate}}
     </button>
 
-    <button (click)="closeClaimFile()"
+    <button *ngIf="user.AccountType == 'FreeProfessional'" (click)="closeClaimFile()"
         class="p-2 rounded-xl bg-darkslategray text-line font-medium animate__animated animate__fadeInDown">
         {{'Finalizar expediente de reclamacion' | translate}}
     </button>
+</div>
+
+<div *ngIf="showModalPerformances" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
+    <div class="bg-opacity-75 bg-black absolute inset-0"></div>
+    <div class="relative z-50 bg-white shadow-md space-y-1 rounded-xl p-3">
+        <div class="justify-center">
+            <div class="p-3 flex flex-col items-center">
+                <div class="w-full flex-col flex justify-end">
+                    <table class="table">
+                        <thead>
+                            <tr class="text-darkslategray">
+                                <th></th>
+                                <th>{{ 'Code' | translate }}</th>
+                                <th>{{ 'Date' | translate }}</th>
+                                <th>{{ 'Type' | translate }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-t text-center" *ngFor="let performance of displayedItems; let i = index">
+                                <td class="p-3">
+                                    <button routerLink="/functions/claims-performance"
+                                        (click)="viewPerformance(performance)"
+                                        class="text-darkslategray p-2 rounded-xl">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button>
+                                </td>
+                                <td class="p-3">{{ performance.Code }}</td>
+                                <td class="p-3">{{ performance.Date | date:'dd-MM-yyyy' }}</td>
+                                <td class="p-3">{{ performance.Type }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                        <mat-paginator [length]="performancesClaims.length" [pageSize]="5"
+                            (page)="onPageChange($event)"></mat-paginator>
+                        
+                    <div class="flex items-end justify-end">
+                        <button (click)="closePerformanceModal()"
+                            class="p-2 rounded-xl bg-line text-darkslategray font-medium animate__animated animate__fadeInDown">
+                            {{'regresar' | translate}}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

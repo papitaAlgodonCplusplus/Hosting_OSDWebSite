@@ -279,10 +279,10 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.DATE_PERFORMANCE, performance.Date);
     event.setBodyProperty(EventConstants.TYPE_PERFORMANCE, performance.Type);
     event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, performance.JustifyingDocument);
-    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_WORK_HOURS, performance.ProcessorWorkHours);
-    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_TRAVEL_HOURS, performance.ProcessorTravelHours);
-    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_TRAVEL_EXPENSES, performance.ProcessorTravelExpenses);
-    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_REMUNERATION, performance.ProcessorRemuneration);
+    event.setBodyProperty(EventConstants.PROCESSOR_WORK_HOURS, performance.ProcessorWorkHours);
+    event.setBodyProperty(EventConstants.PROCESSOR_TRAVEL_HOURS, performance.ProcessorTravelHours);
+    event.setBodyProperty(EventConstants.PROCESSOR_TRAVEL_EXPENSES, performance.ProcessorTravelExpenses);
+    event.setBodyProperty(EventConstants.PROCESSOR_REMUNERATION, performance.ProcessorRemuneration);
     event.setBodyProperty(EventConstants.TRAINER_DATE, performance.TrainerDate);
     event.setBodyProperty(EventConstants.TRAINER_WORK_HOURS, performance.TrainerWorkHours);
     event.setBodyProperty(EventConstants.TRAINER_TRAVEL_HOURS, performance.TrainerTravelHours);
@@ -293,7 +293,7 @@ export class EventFactoryService {
     return event;
   }
 
-  public modifiedPerformanceClaimEvent(performance: PerformanceClaim, claimId: string): WebBaseEvent {
+  public modifiedPerformanceClaimEvent(performance: PerformanceClaim, performanceId: string): WebBaseEvent {
     let event: WebBaseEvent;
     event = new WebBaseEvent();
     event.SessionKey = this.authenticationService.sessionKey;
@@ -307,18 +307,18 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.DATE_PERFORMANCE, performance.Date);
     event.setBodyProperty(EventConstants.TYPE_PERFORMANCE, performance.Type);
     event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, performance.JustifyingDocument);
-    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_WORK_HOURS, performance.ProcessorWorkHours);
-    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_TRAVEL_HOURS, performance.ProcessorTravelHours);
-    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_TRAVEL_EXPENSES, performance.ProcessorTravelExpenses);
-    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_REMUNERATION, performance.ProcessorRemuneration);
+    event.setBodyProperty(EventConstants.PROCESSOR_WORK_HOURS, performance.ProcessorWorkHours);
+    event.setBodyProperty(EventConstants.PROCESSOR_TRAVEL_HOURS, performance.ProcessorTravelHours);
+    event.setBodyProperty(EventConstants.PROCESSOR_TRAVEL_EXPENSES, performance.ProcessorTravelExpenses);
+    event.setBodyProperty(EventConstants.PROCESSOR_REMUNERATION, performance.ProcessorRemuneration);
     event.setBodyProperty(EventConstants.TRAINER_DATE, performance.TrainerDate);
     event.setBodyProperty(EventConstants.TRAINER_WORK_HOURS, performance.TrainerWorkHours);
     event.setBodyProperty(EventConstants.TRAINER_TRAVEL_HOURS, performance.TrainerTravelHours);
     event.setBodyProperty(EventConstants.TRAINER_TRAVEL_EXPENSES, performance.TrainerTravelExpenses);
     event.setBodyProperty(EventConstants.TRAINER_REMUNERATION, performance.TrainerRemuneration);
     event.setBodyProperty(EventConstants.SUMMARY, performance.Summary);
-    event.setBodyProperty(EventConstants.CLAIM_ID, claimId);
-   // event.setBodyProperty(EventConstants.PERFORMANCE_CLAIM_ID, performanceClaimId);
+    event.setBodyProperty(EventConstants.PERFORMANCE_CLAIM_ID, performanceId);
+ 
     return event;
   }
 
