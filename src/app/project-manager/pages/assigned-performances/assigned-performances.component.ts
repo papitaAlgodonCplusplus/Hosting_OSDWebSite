@@ -66,7 +66,7 @@ export class AssignedPerformancesComponent implements OnDestroy {
     const today = new Date(); 
     today.setHours(0, 0, 0, 0); 
 
-    if (dateToCheck > today) {
+    if (dateToCheck >= today) {
       return true;
     }
     return false; 

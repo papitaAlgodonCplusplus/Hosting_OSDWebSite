@@ -125,11 +125,11 @@
             </div>
             <div class="flex flex-wrap justify-center">
 
-                <shared-input-field class="w-full md:w-1/2" [readOnly]="!isTechnicalDirector" fieldName="TD_Date" label="{{'Date'|translate}}"
+                <shared-input-field class="w-full md:w-1/2" [readOnly]="!isTechnicalDirector && validatePerformanceFP != null" fieldName="TD_Date" label="{{'Date'|translate}}"
                     inputType="date" [formGroup]="responsePerformanceForm"
                     [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-                <shared-input-field class="w-full md:w-1/2" [readOnly]="!isTechnicalDirector" fieldName="TD_WorkHours" label="{{'WorkHours'|translate}}"
+                <shared-input-field class="w-full md:w-1/2" [readOnly]="!isTechnicalDirector && validatePerformanceFP != null" fieldName="TD_WorkHours" label="{{'WorkHours'|translate}}"
                     inputType="text" (change)="verifiedFormat('technicalDirector')"
                     [formGroup]="responsePerformanceForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
@@ -145,17 +145,18 @@
         <button routerLink="/project-manager/assigned-performance" class="p-2 bg-line text-darkslategray rounded-xl">
             {{'regresar' | translate}}
         </button>
-        <div *ngIf="visualizePerformanceFP == null && modifiedPerformanceFP == null">
+        <div *ngIf="visualizePerformanceFP == null && modifiedPerformanceFP == null && validatePerformanceFP == null">
             <button  (click)="onSubmit()" type="submit" class="p-2 bg-darkslategray text-line rounded-xl">
                 {{'CreatePerformance'|translate}}
             </button>
         </div>
+
         <button *ngIf=" modifiedPerformanceFP != null && responseToPerformanceFreeProfessional.Revised != 'True'" (click)="modifySubPerformance()" type="submit" class="p-2 bg-darkslategray text-line rounded-xl">
             {{'Modified'|translate}}
         </button>
 
-        <button *ngIf=" modifiedPerformanceFP != null && isTechnicalDirector && responseToPerformanceFreeProfessional.Revised != 'True'" (click)="validateSubPerformance()" type="submit" class="p-2 bg-darkslategray text-line rounded-xl">
-            {{'Close subperformance'|translate}}
+        <button *ngIf=" validatePerformanceFP != null && isTechnicalDirector && responseToPerformanceFreeProfessional.Revised != 'True'" (click)="validateSubPerformance()" type="submit" class="p-2 bg-darkslategray text-line rounded-xl">
+            {{'Review subperformance'|translate}}
         </button>
 
     </div>

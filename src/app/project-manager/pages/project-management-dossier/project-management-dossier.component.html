@@ -154,8 +154,11 @@
                     </thead>
                     <tbody>
                         <tr class="font-light text-center" *ngFor="let subPerformance of subPerformance; let i = index">
-                            <td class="border-y px-2 py-2"> <i class="text-darkslategray fa-solid fa-eye" (click)="viewSubPerformance(subPerformance)"></i></td>
-                            <i class="fa-solid fa-pen" (click)="modifySubPerformance(subPerformance)"></i>
+                            <td class="border-y px-2 py-2"> 
+                                <i class="text-darkslategray fa-solid fa-eye mr-2" (click)="viewSubPerformance(subPerformance)"></i>
+                                <i *ngIf="isAdmin" class="text-darkslategray fa-solid fa-pen mr-2" (click)="modifySubPerformance(subPerformance)"></i>
+                                <i *ngIf="isAdmin" class="text-darkslategray fa-solid fa-check" (click)="validateSubPerformance(subPerformance)"></i>
+                            </td>
                             <td class="border-y px-2 py-2">{{subPerformance.Code}}</td>
                         </tr>
                     </tbody>

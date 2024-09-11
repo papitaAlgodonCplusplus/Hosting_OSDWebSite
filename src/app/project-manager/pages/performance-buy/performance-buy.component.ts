@@ -48,7 +48,6 @@ export class PerformanceBuyComponent implements OnDestroy {
   validatePerformanceOnDataService(): FormGroup {
     this.performance$.subscribe(performance => {
       this.performanceBuy = performance;
-      console.log("Que tiene el performanceBuy: ", performance)
     })
     
     if (this.performanceBuy != undefined) {
@@ -141,7 +140,7 @@ export class PerformanceBuyComponent implements OnDestroy {
       UnitaryCost: ['', [Validators.required]],
       ShelfLife: ['', [Validators.required]],
       JustifyingDocument: ['', [Validators.required]],
-      SummaryId: ['', [Validators.required]]
+      SummaryTypeId: ['', [Validators.required]]
     });
     return form;
   }

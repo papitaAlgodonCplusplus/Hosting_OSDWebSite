@@ -107,7 +107,16 @@ export class ProjectManagementDossierComponent implements OnDestroy {
         queryParams: { modified: 'valid' }
       });
     }
-}
+  }
+
+  validateSubPerformance(subPerformance: any) {
+    if(subPerformance != undefined){
+      this.store.dispatch(PerformanceActions.setSubPerformance({subPerformance: subPerformance}))
+      this.router.navigate(['/project-manager/response-to-performance'], {
+        queryParams: { validate: 'valid' }
+      });
+    }
+  }
 
 
   modifiedPerformance(performance: any) {

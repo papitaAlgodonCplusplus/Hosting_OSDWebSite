@@ -304,7 +304,7 @@
     "Identification": "Identificacion",
     "There_are_no_associated_subscribers": "No hay subscriptores asociados",
     "Code_claim": "Codigo de reclamacion",
-    "Close subperformance": "Cerrar subactuación",
+    "Review subperformance": "Revisar subactuación",
     "Processor": "Tramitador",
     "Trainer": "Formador / Consultor",
     "Additional Information": "Información Adicional",
@@ -314,5 +314,6 @@
     "Verification of Facts and Evidence": "Verificación de Hechos y Pruebas",
     "Request for Additional Information": "Solicitud de Ampliación de Información",
     "Complaint Resolution": "Solución de la Queja",
-    "Problem Solution": "Solución al Problema"
+    "Problem Solution": "Solución al Problema",
+    "Close Performance": "Actuacion cerrada"
 }

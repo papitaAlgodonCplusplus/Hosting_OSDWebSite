@@ -303,7 +303,7 @@
   "Identification": "Identification",
   "There_are_no_associated_subscribers": "There are no associated subscribers",
   "Code_claim": "Claim code",
-  "Close subperformance": "Close subperformance",
+  "Review subperformance": "Review subperformance",
   "Additional Information": "Additional Information",
   "Complaint": "Complaint",
   "Response: Allegations": "Response: Allegations",
@@ -311,5 +311,6 @@
   "Verification of Facts and Evidence": "Verification of Facts and Evidence",
   "Request for Additional Information": "Request for Additional Information",
   "Complaint Resolution": "Complaint Resolution",
-  "Problem Solution": "Problem Solution"
+  "Problem Solution": "Problem Solution",
+  "Close Performance": "Close Performance"
 }

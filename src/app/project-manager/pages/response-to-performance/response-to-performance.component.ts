@@ -29,6 +29,7 @@ export class ResponseToPerformanceComponent implements OnDestroy {
   userInfo!: UserInfo
   modifiedPerformanceFP: any;
   visualizePerformanceFP: any;
+  validatePerformanceFP: any;
   performanceAssigned$: Observable<PerformanceFreeProfessional> = this.store.select(PerformanceSelectors.projectPerformance);
   subPerformance$: Observable<ResponseToPerformanceFreeProfessional> = this.store.select(PerformanceSelectors.projectSubPerformance);
   isWorkMore: boolean = false;
@@ -100,6 +101,9 @@ export class ResponseToPerformanceComponent implements OnDestroy {
     this.route.queryParams.subscribe(params => {
       this.visualizePerformanceFP = params['visualize'];
     });
+    this.route.queryParams.subscribe(params => {
+      this.validatePerformanceFP = params['validate'];
+    });
     setTimeout(() => {
       this.store.dispatch(UiActions.hideFooter())
       this.store.dispatch(UiActions.hideLeftSidebar())
@@ -166,6 +170,12 @@ export class ResponseToPerformanceComponent implements OnDestroy {
       this.subPerformance$.subscribe(performance => {
         this.responseToPerformanceFreeProfessional = performance
       })
+
+      let TD_Date = this.responseToPerformanceFreeProfessional.TD_Date;
+      let [day, month, year] = TD_Date.split('/');
+      let formattedDate = new Date(`${year}-${month}-${day}`);
+      let formattedDateString = formattedDate.toISOString().split('T')[0];
+      console.log("Fecha Formateada: ", formattedDateString);
   
       this.showPerformanceResponseForm = this.formBuilder.group({
         FP_WorkHours: this.responseToPerformanceFreeProfessional.FP_WorkHours,
@@ -174,7 +184,7 @@ export class ResponseToPerformanceComponent implements OnDestroy {
         Total_FP: this.responseToPerformanceFreeProfessional.Total_FP,
         JustifyChangeEstimatedWorkHours: this.responseToPerformanceFreeProfessional.JustifyChangeEstimatedWorkHours,
         DocumentIncreaseWorkingHours: this.responseToPerformanceFreeProfessional.DocumentIncreaseWorkingHours,
-        TD_Date: this.responseToPerformanceFreeProfessional.TD_Date,
+        TD_Date: formattedDateString,
         TD_WorkHours: this.responseToPerformanceFreeProfessional.TD_WorkHours,
         AcceptIncreaseInHours: this.responseToPerformanceFreeProfessional.AcceptIncreaseInHours
       });
