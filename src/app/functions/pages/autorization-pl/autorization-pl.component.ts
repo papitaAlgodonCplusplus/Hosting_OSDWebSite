@@ -38,8 +38,9 @@ export class AutorizationPlComponent implements OnDestroy {
 
   ngOnInit(): void {
     this.osdEventService.getFreeProfessionalsList().then(freeProfessionals => {
+
       freeProfessionals.forEach(item => {
-        if (item.Isadmin === false) {
+        if (item.Name != 'Admin') {
           this.items.push(item)
         }
       });
@@ -56,7 +57,7 @@ export class AutorizationPlComponent implements OnDestroy {
 
     setTimeout(() => {
       this.osdEventService.GetFreeProfessionalsDataEvent();
-      this.osdEventService.GetSubscribers();
+      //this.osdEventService.GetSubscribers();
       this.store.dispatch(UiActions.hideLeftSidebar())
       this.store.dispatch(UiActions.hideFooter())
     }, 0);
