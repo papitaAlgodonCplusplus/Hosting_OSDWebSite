@@ -15,7 +15,7 @@ import { UserInfo } from '../models/userInfo';
 import { PerformanceFreeProfessional } from '../project-manager/Models/performanceFreeProfessional';
 import { PerformanceBuy } from '../project-manager/Models/performanceBuy';
 import { TranslateService } from '@ngx-translate/core';
-import { PerformanceClaim } from '../functions/models/PerformanceClaims';
+import { ClaimantAndClaimsCustomerPerformance } from '../functions/models/ClaimantAndClaimsCustomerPerformance';
 import { CreateProjectEvent } from '../project-manager/Interface/project.interface';
 import { Project } from '../project-manager/Models/project';
 import { CreateClaimValuationEvent } from '../functions/Interface/ClaimValuation.interface';
@@ -550,10 +550,10 @@ export class OSDService {
     // this.websocketService.sendOSDEvent(createPerformanceEvent);
   }
 
-  public createPerformanceClaim(performance: PerformanceClaim, claimId: string) {
-    const createPerformanceClaimEvent: WebBaseEvent = this.eventFactoryService.CreatePerformanceClaimEvent(performance, claimId);
-    console.log(createPerformanceClaimEvent)
-    this.restApiService.SendOSDEvent(createPerformanceClaimEvent).subscribe({
+  public createClaimantAndClaimsCustomerPerformance(performance: ClaimantAndClaimsCustomerPerformance, claimId: string) {
+    const createClaimantAndClaimsCustomerPerformanceEvent: WebBaseEvent = this.eventFactoryService.CreateClaimantAndClaimsCustomerPerformanceEvent(performance, claimId);
+    console.log(createClaimantAndClaimsCustomerPerformanceEvent)
+    this.restApiService.SendOSDEvent(createClaimantAndClaimsCustomerPerformanceEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
         this.HandleCreatePerformanceResponse(osdEvent);
@@ -564,12 +564,12 @@ export class OSDService {
     });
   }
 
-  public modifiedPerformanceClaim(performance: PerformanceClaim, performanceId: string) {
-    const modifiedPerformanceClaimEvent: WebBaseEvent = this.eventFactoryService.modifiedPerformanceClaimEvent(performance, performanceId);
+  public modifiedClaimantAndClaimsCustomerPerformance(performance: ClaimantAndClaimsCustomerPerformance, performanceId: string) {
+    const modifiedPerformanceClaimEvent: WebBaseEvent = this.eventFactoryService.modifiedClaimantAndClaimsCustomerPerformanceEvent(performance, performanceId);
     this.restApiService.SendOSDEvent(modifiedPerformanceClaimEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
-        this.HandleModifiedPerformanceClaimResponse(osdEvent);
+         this.HandleModifiedPerformanceClaimResponse(osdEvent);
       },
       error: (error) => {
         //TODO: Pending implementation

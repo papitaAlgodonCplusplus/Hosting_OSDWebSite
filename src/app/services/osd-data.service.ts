@@ -4,7 +4,7 @@ import { Claim } from '../models/claim';
 import { UserInfo } from '../models/userInfo';
 import { PerformanceFreeProfessional } from '../project-manager/Models/performanceFreeProfessional';
 import { PerformanceBuy } from '../project-manager/Models/performanceBuy';
-import { PerformanceClaim } from '../functions/models/PerformanceClaims';
+import { PerformanceClaim } from '../functions/models/ClaimantAndClaimsCustomerPerformance';
 import { Subscriber } from '../functions/models/Subscriber';
 import { Project } from '../project-manager/Models/project';
 import { SummaryTypes } from '../project-manager/Models/summaryTypes';

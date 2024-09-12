@@ -12,8 +12,8 @@ export class EventAction {
   public static RESEND_EMAIL_VERIFICATION_CODE: string = "ResendEmailVerificationCode";
   public static GENERATE_MAIL_PASSWORD_RESET_TOKEN: string = "GenerateMailPasswordResetToken";
   public static CHANGE_PASSWORD: string = "ChangePassword";
-  public static CREATE_PERFORMANCE: string = "CreatePerformance";
-  public static MODIFIED_PERFORMANCE_CLAIM: string = "ModifiedPerformanceClaim";
+  public static CREATE_CLAIMANT_AND_CLAIMS_CUSTOMER_PERFORMANCE: string = "CreateClaimantAndClaimsCustomerPerformance";
+  public static MODIFIED_CLAIMANT_AND_CLAIMS_CUSTOMER_PERFORMANCE: string = "ModifiedClaimantAndClaimsCustomerPerformance";
   public static HANDLE_MODIFIED_PERFORMANCE_CLAIM_RESPONSE: string = "HandleModifiedPerformanceClaimResponse";
   public static GET_CLAIMS: string = "GetClaims";
   public static GET_SUBSCRIBERS: string = "GetSubscribers";

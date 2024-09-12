@@ -11,10 +11,12 @@ import { MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginato
 import { CustomPaginator } from '../services/custom-paginator.service';
 import { ClaimsFileComponent } from './pages/claims-file/claims-file.component';
 import { FileManagerComponent } from './pages/file-manager/file-manager.component';
-import { ClaimsPerformanceComponent } from './pages/claims-performance/claims-performance.component';
 import { RestoreHistoryComponent } from './pages/restore-history/restore-history.component';
 import { AuthorizedModalComponent } from './components/authorized-modal/authorized-modal.component';
 import { AssignClientToTrainerComponent } from './pages/assign-client-to-trainer/assign-client-to-trainer.component';
+import { ClaimantAndClaimsCustomerPerformanceComponent } from './pages/claimant-and-claims-customer-performance/claimant-and-claims-customer-performance.component';
+import { ClaimsTrainerPerformanceComponent } from './pages/claims-trainer-performance/claims-trainer-performance.component';
+import { ClaimsProcessorPerformanceComponent } from './pages/claims-processor-performance/claims-processor-performance.component';
 
 @NgModule({
   declarations: [
@@ -23,10 +25,12 @@ import { AssignClientToTrainerComponent } from './pages/assign-client-to-trainer
     SubAuthorizedComponent,
     ClaimsFileComponent,
     FileManagerComponent,
-    ClaimsPerformanceComponent,
     RestoreHistoryComponent,
     AuthorizedModalComponent,
-    AssignClientToTrainerComponent
+    AssignClientToTrainerComponent,
+    ClaimantAndClaimsCustomerPerformanceComponent,
+    ClaimsTrainerPerformanceComponent,
+    ClaimsProcessorPerformanceComponent
     ],
   imports: [
     CommonModule,

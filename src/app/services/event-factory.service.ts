@@ -13,7 +13,7 @@ import { EmailVerificationCodeResendEvent } from '../auth/interfaces/resend-emai
 import { Form } from '@angular/forms';
 import { PerformanceFreeProfessional } from '../project-manager/Models/performanceFreeProfessional';
 import { PerformanceBuy } from '../project-manager/Models/performanceBuy';
-import { PerformanceClaim } from '../functions/models/PerformanceClaims';
+import { ClaimantAndClaimsCustomerPerformance } from '../functions/models/ClaimantAndClaimsCustomerPerformance';
 import { CreateProjectEvent } from '../project-manager/Interface/project.interface';
 import { CreateClaimValuationEvent } from '../functions/Interface/ClaimValuation.interface';
 import { ResponseToPerformanceAssignedEvent } from '../project-manager/Interface/responseToPerformanceAssignedEvent.interface';
@@ -265,24 +265,20 @@ export class EventFactoryService {
     return event;
   }
 
-  public CreatePerformanceClaimEvent(performance: PerformanceClaim, claimId: string): WebBaseEvent {
+  public CreateClaimantAndClaimsCustomerPerformanceEvent(performance: ClaimantAndClaimsCustomerPerformance, claimId: string): WebBaseEvent {
     let event: WebBaseEvent;
     event = new WebBaseEvent();
     event.SessionKey = this.authenticationService.sessionKey;
     event.SecurityToken = "3746736473";
     event.TraceIdentifier = Guid.create().toString();
     event.Type = EventType.OSD;
-    event.Action = EventAction.CREATE_PERFORMANCE;
+    event.Action = EventAction.CREATE_CLAIMANT_AND_CLAIMS_CUSTOMER_PERFORMANCE;
     event.Date = new Date().toUTCString();
     event.ApplicationIdentifier = 'WebClient'; //TODO: change to use an application identifier
 
     event.setBodyProperty(EventConstants.DATE_PERFORMANCE, performance.Date);
     event.setBodyProperty(EventConstants.TYPE_PERFORMANCE, performance.Type);
     event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, performance.JustifyingDocument);
-    event.setBodyProperty(EventConstants.PROCESSOR_WORK_HOURS, performance.ProcessorWorkHours);
-    event.setBodyProperty(EventConstants.PROCESSOR_TRAVEL_HOURS, performance.ProcessorTravelHours);
-    event.setBodyProperty(EventConstants.PROCESSOR_TRAVEL_EXPENSES, performance.ProcessorTravelExpenses);
-    event.setBodyProperty(EventConstants.PROCESSOR_REMUNERATION, performance.ProcessorRemuneration);
     event.setBodyProperty(EventConstants.TRAINER_DATE, performance.TrainerDate);
     event.setBodyProperty(EventConstants.TRAINER_WORK_HOURS, performance.TrainerWorkHours);
     event.setBodyProperty(EventConstants.TRAINER_TRAVEL_HOURS, performance.TrainerTravelHours);
@@ -293,24 +289,20 @@ export class EventFactoryService {
     return event;
   }
 
-  public modifiedPerformanceClaimEvent(performance: PerformanceClaim, performanceId: string): WebBaseEvent {
+  public modifiedClaimantAndClaimsCustomerPerformanceEvent(performance: ClaimantAndClaimsCustomerPerformance, performanceId: string): WebBaseEvent {
     let event: WebBaseEvent;
     event = new WebBaseEvent();
     event.SessionKey = this.authenticationService.sessionKey;
     event.SecurityToken = "3746736473";
     event.TraceIdentifier = Guid.create().toString();
     event.Type = EventType.OSD;
-    event.Action = EventAction.MODIFIED_PERFORMANCE_CLAIM;
+    event.Action = EventAction.MODIFIED_CLAIMANT_AND_CLAIMS_CUSTOMER_PERFORMANCE;
     event.Date = new Date().toUTCString();
     event.ApplicationIdentifier = 'WebClient'; //TODO: change to use an application identifier
 
     event.setBodyProperty(EventConstants.DATE_PERFORMANCE, performance.Date);
     event.setBodyProperty(EventConstants.TYPE_PERFORMANCE, performance.Type);
     event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, performance.JustifyingDocument);
-    event.setBodyProperty(EventConstants.PROCESSOR_WORK_HOURS, performance.ProcessorWorkHours);
-    event.setBodyProperty(EventConstants.PROCESSOR_TRAVEL_HOURS, performance.ProcessorTravelHours);
-    event.setBodyProperty(EventConstants.PROCESSOR_TRAVEL_EXPENSES, performance.ProcessorTravelExpenses);
-    event.setBodyProperty(EventConstants.PROCESSOR_REMUNERATION, performance.ProcessorRemuneration);
     event.setBodyProperty(EventConstants.TRAINER_DATE, performance.TrainerDate);
     event.setBodyProperty(EventConstants.TRAINER_WORK_HOURS, performance.TrainerWorkHours);
     event.setBodyProperty(EventConstants.TRAINER_TRAVEL_HOURS, performance.TrainerTravelHours);

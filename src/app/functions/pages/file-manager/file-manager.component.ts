@@ -8,7 +8,7 @@ import { AuthenticationService } from 'src/app/services/authentication.service';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { PerformanceActions, UiActions } from 'src/app/store/actions';
 import { ClaimSelectors, PerformanceSelectors } from 'src/app/store/selectors';
-import { PerformanceClaim } from '../../models/PerformanceClaims';
+import { PerformanceClaim } from '../../models/ClaimantAndClaimsCustomerPerformance';
 import { OSDDataService } from 'src/app/services/osd-data.service';
 import { isSubscription } from 'rxjs/internal/Subscription';
 import { CreateClaimValuationEvent } from '../../Interface/ClaimValuation.interface';
