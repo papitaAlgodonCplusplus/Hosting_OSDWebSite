@@ -4,12 +4,12 @@ import { Claim } from '../models/claim';
 import { UserInfo } from '../models/userInfo';
 import { PerformanceFreeProfessional } from '../project-manager/Models/performanceFreeProfessional';
 import { PerformanceBuy } from '../project-manager/Models/performanceBuy';
-import { PerformanceClaim } from '../functions/models/ClaimantAndClaimsCustomerPerformance';
 import { Subscriber } from '../functions/models/Subscriber';
 import { Project } from '../project-manager/Models/project';
 import { SummaryTypes } from '../project-manager/Models/summaryTypes';
 import { FreeProfessional } from '../functions/models/FreeProfessional';
 import { ResponseToPerformanceFreeProfessional } from '../project-manager/Models/responseToperformanceFreeProfessional';
+import { ClaimantAndClaimsCustomerPerformance } from '../functions/models/ClaimantAndClaimsCustomerPerformance';
 
 @Injectable({
   providedIn: 'root'
@@ -52,7 +52,7 @@ export class OSDDataService {
 
   private performanceFreeProfessionalList = new Subject<PerformanceFreeProfessional[]>();
   private performanceBuyList = new Subject<PerformanceBuy[]>();
-  private performanceClaimList = new Subject<PerformanceClaim[]>();
+  private performanceClaimList = new Subject<ClaimantAndClaimsCustomerPerformance[]>();
 
   private projectsList = new Subject<Project[]>();
 
@@ -252,7 +252,7 @@ export class OSDDataService {
     this.professioanlFreeTrainersList.next(data);
   }
 
-  emitPerformancesClaimById(data: PerformanceClaim[]) {
+  emitPerformancesClaimById(data: ClaimantAndClaimsCustomerPerformance[]) {
     this.performanceClaimList.next(data);
     
   }

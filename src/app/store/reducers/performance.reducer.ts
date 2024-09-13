@@ -1,13 +1,14 @@
 import { createReducer, on } from "@ngrx/store";
 import { PerformanceActions } from "../actions";
 import { PerformanceBuy } from "src/app/project-manager/Models/performanceBuy";
-import { PerformanceClaim} from "src/app/functions/models/PerformanceClaims";
+
 import { PerformanceFreeProfessional } from "src/app/project-manager/Models/performanceFreeProfessional";
 import { ResponseToPerformanceFreeProfessional } from "src/app/project-manager/Models/responseToperformanceFreeProfessional";
+import { ClaimantAndClaimsCustomerPerformance } from "src/app/functions/models/ClaimantAndClaimsCustomerPerformance";
 
 export interface PerformanceState {  
     performanceBuy: PerformanceBuy,
-    performanceClaim: PerformanceClaim,
+    performanceClaim: ClaimantAndClaimsCustomerPerformance,
     performanceFreeProfessional: PerformanceFreeProfessional,
     responseToPerformanceFreeProfessional: ResponseToPerformanceFreeProfessional,
     fileCode: string,
@@ -17,7 +18,7 @@ export interface PerformanceState {
 
 const initialState: PerformanceState = {   
     performanceBuy: {} as PerformanceBuy,
-    performanceClaim: {} as PerformanceClaim,
+    performanceClaim: {} as ClaimantAndClaimsCustomerPerformance,
     performanceFreeProfessional: {} as PerformanceFreeProfessional,
     responseToPerformanceFreeProfessional: {} as ResponseToPerformanceFreeProfessional,
     fileCode: "",

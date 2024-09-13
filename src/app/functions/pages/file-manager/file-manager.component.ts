@@ -8,13 +8,11 @@ import { AuthenticationService } from 'src/app/services/authentication.service';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { PerformanceActions, UiActions } from 'src/app/store/actions';
 import { ClaimSelectors, PerformanceSelectors } from 'src/app/store/selectors';
-import { PerformanceClaim } from '../../models/ClaimantAndClaimsCustomerPerformance';
 import { OSDDataService } from 'src/app/services/osd-data.service';
-import { isSubscription } from 'rxjs/internal/Subscription';
 import { CreateClaimValuationEvent } from '../../Interface/ClaimValuation.interface';
 import { Router, ActivatedRoute } from '@angular/router';
-import { PerformAction } from '@ngrx/store-devtools/src/actions';
 import { UserInfo } from 'src/app/models/userInfo';
+import { ClaimantAndClaimsCustomerPerformance } from '../../models/ClaimantAndClaimsCustomerPerformance';
 
 @Component({
   selector: 'app-file-manager',
@@ -29,7 +27,7 @@ export class FileManagerComponent implements OnDestroy {
   claim$: Observable<Claim> = this.store.select(ClaimSelectors.claim);
   fileCode$: Observable<string> = this.store.select(PerformanceSelectors.fileCode)
   fileCode: string = "";
-  performancesClaims: PerformanceClaim[] = [];
+  performancesClaims: ClaimantAndClaimsCustomerPerformance[] = [];
   claimId!: string;
   claimIdUrl!: string;
   displayedItems: any[] = [];
@@ -158,7 +156,7 @@ export class FileManagerComponent implements OnDestroy {
     this.displayedItems = this.performancesClaims.slice(startIndex, endIndex);
   }
 
-  viewPerformance(performance: PerformanceClaim) {
+  viewPerformance(performance: ClaimantAndClaimsCustomerPerformance) {
     this.store.dispatch(PerformanceActions.setPerformanceClaim({ performanceClaim: performance }))
   }
 

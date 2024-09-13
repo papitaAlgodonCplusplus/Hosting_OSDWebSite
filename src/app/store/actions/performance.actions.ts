@@ -1,5 +1,5 @@
 import { createAction, props } from "@ngrx/store";
-import { PerformanceClaim } from "src/app/functions/models/PerformanceClaims";
+import { ClaimantAndClaimsCustomerPerformance } from "src/app/functions/models/ClaimantAndClaimsCustomerPerformance";
 import { PerformanceBuy } from "src/app/project-manager/Models/performanceBuy";
 import { PerformanceFreeProfessional } from "src/app/project-manager/Models/performanceFreeProfessional";
 import { ResponseToPerformanceFreeProfessional } from "src/app/project-manager/Models/responseToperformanceFreeProfessional";
@@ -11,7 +11,7 @@ export const setPerformanceBuy = createAction(
 
 export const setPerformanceClaim = createAction(
   '[Performance Id] Add performance Id',
-  props<{ performanceClaim: PerformanceClaim }>()
+  props<{ performanceClaim: ClaimantAndClaimsCustomerPerformance }>()
 );
 
 export const setPerformanceFreeProfessional = createAction(
