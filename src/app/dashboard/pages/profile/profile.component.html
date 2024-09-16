@@ -21,9 +21,70 @@
                 <p class="text-lg">{{userInfo.AccountType | translate}}</p>
             </div>
         </div>
+
+        <button class="bg-line font-medium p-2 rounded-xl flex justify-center items-center text-darkslategray" (click)="openModal()">
+            {{'Modify information' | translate}}
+          </button>          
+
     </div>
 </div>
 
 <div class="w-full flex justify-end p-3 border">
-    <button class="bg-line font-medium p-2 rounded-xl flex items-center text-darkslategray" routerLink="/home" >Regresar</button>
+    <button class="bg-line font-medium p-2 rounded-xl flex text-center items-center text-darkslategray" routerLink="/home" >Regresar</button>
 </div>
+
+
+
+<div *ngIf="showModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+        <h2 class="text-lg font-bold mb-4 text-center text-darkslategray">{{'Modify information' | translate}}</h2>
+        <form [formGroup]="formModifyInformation" (ngSubmit)="onSubmit()">
+            <shared-input-field 
+                class="w-full"
+                fieldName="Name"
+                label="{{'Name' | translate}}"
+                inputType="text"
+                [formGroup]="formModifyInformation"
+                [bgColor]="'bg-white-lightbone'">
+            </shared-input-field>
+
+            <shared-input-field 
+                class="w-full"
+                fieldName="Firstname"
+                label="{{'primer_apellido' | translate}}"
+                inputType="text"
+                [formGroup]="formModifyInformation"
+                [bgColor]="'bg-white-lightbone'">
+            </shared-input-field>
+
+            <shared-input-field 
+                class="w-full"
+                fieldName="Middlesurname"
+                label="{{'segundo_apellido' | translate}}"
+                inputType="text"
+                [formGroup]="formModifyInformation"
+                [bgColor]="'bg-white-lightbone'">
+            </shared-input-field>
+
+            <shared-simple-dropdown class="w-full md:w-1/2" fieldName="Country"
+                label="{{'pais' | translate}}" [formGroup]="formModifyInformation"
+                [dropdownItems]="countries" [selectedItem]="selectedCountries">
+            </shared-simple-dropdown>
+
+            <shared-input-field 
+                class="w-full"
+                fieldName="Email"
+                label="{{'email' | translate}}"
+                inputType="email"
+                [formGroup]="formModifyInformation"
+                [bgColor]="'bg-white-lightbone'">
+            </shared-input-field>
+
+            <div class="flex justify-end">
+                <button type="button" (click)="closeModal()" class="bg-gray-300 text-gray-700 p-2 rounded-lg mr-2">Cancelar</button>
+                <button type="submit" class="bg-blue-500 text-white p-2 rounded-lg">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+

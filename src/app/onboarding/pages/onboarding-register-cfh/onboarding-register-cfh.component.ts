@@ -54,13 +54,14 @@ export class OnboardingRegisterCfhComponent {
             .map(country => {
               if (country.name?.common && country.cca2) {
                 return {
-                  value: country.name.common,
-                  key: country.name.common
+                  value: country.name.common, 
+                  key: country.name.common          
                 } as DropDownItem;
               }
               return undefined;
             })
-            .filter(country => country !== undefined);
+            .filter(country => country !== undefined) 
+            .sort((a, b) => (a && b) ? a.value.localeCompare(b.value) : 0);
         }
         else if (this.translate.currentLang === "es") {
           countriesList = data
@@ -68,13 +69,14 @@ export class OnboardingRegisterCfhComponent {
             .map(country => {
               if (country.translations?.spa?.common && country.cca2) {
                 return {
-                  value: country.translations.spa.common,
-                  key: country.name.common
+                  value: country.translations.spa.common, 
+                  key: country.name.common                    
                 } as DropDownItem;
               }
               return undefined;
             })
-            .filter(country => country !== undefined);
+            .filter(country => country !== undefined)
+            .sort((a, b) => (a && b) ? a.value.localeCompare(b.value) : 0);
         }
         this.countries = countriesList as DropDownItem[];
       });

@@ -211,9 +211,19 @@ export class PerformanceFreeProfessionalComponent {
     const estimatedTransportHours = this.convertTimeToMinutes(formValues.ForecastTravelTime) / 60;
     const estimatedTransportExpenses = Number(formValues.ForecastTravelExpenses);
 
-    const totalWorkHours = estimatedWorkHours * 60;
-    const totalTransportHours = estimatedTransportHours * 30;
-    const total: number = (totalWorkHours + totalTransportHours) + estimatedTransportExpenses;
+    let totalWorkHours = 0;
+    let totalTransportHours = 0;
+    let total: number = 0;
+
+    if(estimatedTransportExpenses != 0 ){
+      totalWorkHours = estimatedWorkHours * 60;
+      totalTransportHours = estimatedTransportHours * 30;
+      total = (totalWorkHours + totalTransportHours) + estimatedTransportExpenses;
+    }else{
+      totalWorkHours = estimatedWorkHours * 60;
+      totalTransportHours = estimatedTransportHours * 30;
+      total = (totalWorkHours + totalTransportHours);
+    }
 
     this.performanceForm.patchValue({
       TotalForecastData: total

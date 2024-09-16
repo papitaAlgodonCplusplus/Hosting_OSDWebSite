@@ -25,6 +25,7 @@ import { PerformanceFreeProfessional } from '../../Models/performanceFreeProfess
 export class ProjectManagementDossierComponent implements OnDestroy {
   isModalOpen = false;
   readOnly: boolean = true;
+  user: any;
   formProjectManager: FormGroup
   showOptions: boolean = false;
   performancesFreeProfessional: PerformanceFreeProfessional[] = [];
@@ -44,6 +45,7 @@ export class ProjectManagementDossierComponent implements OnDestroy {
   loadProjectManager: boolean = true
   showModalSubPerformance: boolean = false;
   subPerformance!: ResponseToPerformanceFreeProfessional[];
+  validateCreatePerformance: boolean = false
 
   constructor(private router: Router, private store: Store, private formBuilder: FormBuilder,
     private osdDataService: OSDDataService, private osdEventService: OSDService,
@@ -58,10 +60,14 @@ export class ProjectManagementDossierComponent implements OnDestroy {
       this.store.dispatch(UiActions.hideFooter())
 
       this.osdEventService.GetProjects();
-      var user = this.authService.userInfo;
-      if (user) {
+      this.user = this.authService.userInfo;
+      if(this.user.AccountType == 'FreeProfessional'){
+        this.validateCreatePerformance = true;
+      }
+      console.log("Tipo de cuenta: ",this.user)
+      if (this.user) {
         this.isUser = true
-        if (user.Isadmin) {
+        if (this.user.Isadmin) {
           this.isAdmin = true;
         }
       }

@@ -76,7 +76,7 @@
                     <span class="underline cursor-pointer" (click)="filterPerformance('buy')"> Mostrar actuaciones de compra</span>
                     <span class="underline cursor-pointer" (click)="filterPerformance('freeProfessional')"> Mostrar actuaciones de Gestor de proyecto</span>
                 </div>
-                <div class="flex-1 flex items-center justify-end space-x-3" *ngIf="isAdmin">
+                <div class="flex-1 flex items-center justify-end space-x-3" *ngIf="isAdmin || validateCreatePerformance ">
                     <div *ngIf="showOptions" class="animate__animated animate__fadeInRight flex flex-row space-x-3">
                         <i (click)="cleanPerformance()" routerLink="/project-manager/performance-buy"
                             class="cursor-pointer px-2 py-1 fa-solid fa-cart-shopping text-xl bg-line text-darkslategray rounded-full"></i>

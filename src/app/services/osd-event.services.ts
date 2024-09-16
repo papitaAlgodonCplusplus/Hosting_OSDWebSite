@@ -342,6 +342,19 @@ export class OSDService {
     });
   }
 
+  public ModifyUserInformation(osdUser: UserInfo) {
+    const ModifyUserInformationEvent: WebBaseEvent = this.eventFactoryService.ModifyUserInformation(osdUser);
+    this.restApiService.SendOSDEvent(ModifyUserInformationEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleModifyUserInformationResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+
   public GetPerformancesClaimById(id: string) {
     const GetPerformancesClaim: WebBaseEvent = this.eventFactoryService.GetPerformancesClaimById(id);
     this.restApiService.SendOSDEvent(GetPerformancesClaim).subscribe({
@@ -762,6 +775,26 @@ export class OSDService {
       //TODO: create exception event and send to local file or core
     }
   }
+
+  public HandleModifyUserInformationResponse(webBaseEvent: WebBaseEvent) {
+    try {
+      var Message = webBaseEvent.getBodyProperty(EventConstants.MESSAGE);
+      if (Message != null) {
+        if (this.translate.currentLang == "en") {
+            Message = "The user information was successfully modified (Please log in again to view the changes)";
+            this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: Message }));
+        } else {
+          Message = "Se modifico correctamente la informacion del usuario (Vuelve a iniciar session para visualizar los cambios)";
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: Message }));
+      }
+      }
+      this.store.dispatch(ModalActions.openAlert());
+    }
+    catch (err) {
+      //TODO: create exception event and send to local file or core
+    }
+  }
+  
   public GetTransparencyReportsIncomeExpensesResponse(webBaseEvent: WebBaseEvent) {
     try {
       var totalOsdExpenses = webBaseEvent.getBodyProperty(EventConstants.TOTAL_OSD_EXPENSES);

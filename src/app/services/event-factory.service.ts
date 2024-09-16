@@ -17,6 +17,7 @@ import { ClaimantAndClaimsCustomerPerformance } from '../functions/models/Claima
 import { CreateProjectEvent } from '../project-manager/Interface/project.interface';
 import { CreateClaimValuationEvent } from '../functions/Interface/ClaimValuation.interface';
 import { ResponseToPerformanceAssignedEvent } from '../project-manager/Interface/responseToPerformanceAssignedEvent.interface';
+import { UserInfo } from '../models/userInfo';
 
 @Injectable({
   providedIn: 'root',
@@ -594,6 +595,37 @@ export class EventFactoryService {
 
     return event;
   }
+
+  public ModifyUserInformation(osdUser: UserInfo): WebBaseEvent {
+    let event: WebBaseEvent;
+
+    console.log("DATOS ENVIADOS: ", osdUser)
+
+    console.log("Name: ", osdUser.Name)
+    console.log("Firstname: ", osdUser.Firstname)
+    console.log("Middlesurname: ", osdUser.Middlesurname)
+    console.log("Country: ", osdUser.Country)
+    console.log("Email: ", osdUser.Email)
+
+    event = new WebBaseEvent();
+    event.Action = EventAction.MODIFY_USER_INFORMATION;
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Date = (new Date()).toUTCString();
+    event.ApplicationIdentifier = "WebClient";
+
+    event.setBodyProperty(EventConstants.NAME, osdUser.Name);
+    event.setBodyProperty(EventConstants.FIRST_NAME, osdUser.Firstname);
+    event.setBodyProperty(EventConstants.LAST_NAME, osdUser.Middlesurname);
+    event.setBodyProperty(EventConstants.COUNTRY, osdUser.Country);
+    event.setBodyProperty(EventConstants.EMAIL, osdUser.Email);
+    event.setBodyProperty(EventConstants.USER_ID, this.authenticationService.userInfo?.Id);
+
+    return event;
+  }
+
 
   public GetPerformancesClaimById(id: string): WebBaseEvent {
     let event: WebBaseEvent;

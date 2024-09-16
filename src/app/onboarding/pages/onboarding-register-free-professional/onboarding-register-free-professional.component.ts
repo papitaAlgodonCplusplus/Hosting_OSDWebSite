@@ -87,7 +87,8 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
               }
               return undefined;
             })
-            .filter(country => country !== undefined); 
+            .filter(country => country !== undefined) 
+            .sort((a, b) => (a && b) ? a.value.localeCompare(b.value) : 0);
         }
         else if (this.translate.currentLang === "es") {
           countriesList = data
@@ -101,7 +102,8 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
               }
               return undefined;
             })
-            .filter(country => country !== undefined); 
+            .filter(country => country !== undefined)
+            .sort((a, b) => (a && b) ? a.value.localeCompare(b.value) : 0);
         }
         this.countries = countriesList as DropDownItem[];
       });

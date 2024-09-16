@@ -14,6 +14,10 @@ export class EventAction {
   public static CHANGE_PASSWORD: string = "ChangePassword";
   public static CREATE_CLAIMANT_AND_CLAIMS_CUSTOMER_PERFORMANCE: string = "CreateClaimantAndClaimsCustomerPerformance";
   public static MODIFIED_CLAIMANT_AND_CLAIMS_CUSTOMER_PERFORMANCE: string = "ModifiedClaimantAndClaimsCustomerPerformance";
+  public static MODIFY_USER_INFORMATION: string = "ModifyUserInformation";
+  public static MODIFY_USER_INFORMATION_RESPONSE: string = "ModifyUserInformationResponse";
+  public static CREATE_PERFORMANCE: string = "CreatePerformance";
+  public static MODIFIED_PERFORMANCE_CLAIM: string = "ModifiedPerformanceClaim";
   public static HANDLE_MODIFIED_PERFORMANCE_CLAIM_RESPONSE: string = "HandleModifiedPerformanceClaimResponse";
   public static GET_CLAIMS: string = "GetClaims";
   public static GET_SUBSCRIBERS: string = "GetSubscribers";
