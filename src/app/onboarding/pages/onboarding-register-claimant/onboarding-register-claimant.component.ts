@@ -99,6 +99,7 @@ export class OnboardingRegisterClaimantComponent {
             .filter(country => country !== undefined);
         }
         this.countries = countriesList as DropDownItem[];
+        this.countries.sort((a, b) => a.value.localeCompare(b.value));
       });
 
       if (this.selectorRegistry === true) {

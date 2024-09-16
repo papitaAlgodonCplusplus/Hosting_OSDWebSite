@@ -52,8 +52,8 @@
 
             <div class="w-full flex flex-col p-3 space-y-6 lg:flex-row md:flex-row md:space-y-0 lg:space-y-0">
                 <div class="flex-1 flex flex-col items-center space-y-1 ">
-                    <label for="collegiateCardArchive" class="text-center">{{'Identification' |
-                        translate}}<p class="text-sm font-medium text-darkslategray">(Obligatorio)</p></label>
+                    <label for="identificationDocument" class="text-center">{{'Identification' |
+                        translate}}<p class="text-sm font-medium text-red-500">({{'Mandatory' | translate}})</p></label>
                     <div class="flex items-center justify-center flex-col space-y-1">
                         <input type="file" id="identificationDocument" formControlName="identificationDocument"
                             class="hidden" (change)="displayFileName($event,2)">
@@ -66,12 +66,12 @@
                 </div>
 
                 <div class="flex-1 flex flex-col items-center space-y-1 ">
-                    <label for="collegiateCardArchive" class="text-center">{{'carnet_colegiado' |
-                        translate}}<p class="text-sm font-medium text-darkslategray">(Obligatorio)</p></label>
+                    <label for="curriculumVitae" class="text-center">{{'CurriculumVitae' |
+                        translate}}<p class="text-sm font-medium text-red-500">({{'Mandatory' | translate}})</p></label>
                     <div class="flex items-center justify-center flex-col space-y-1">
-                        <input type="file" id="collegiateCardArchive" formControlName="collegiateCardArchive"
+                        <input type="file" id="curriculumVitae" formControlName="curriculumVitae"
                             class="hidden" (change)="displayFileName($event,0)">
-                        <label for="collegiateCardArchive"
+                        <label for="curriculumVitae"
                             class="cursor-pointer p-2 text-sm bg-darkslategray text-white rounded-xl">
                             {{'seleccionar_archivo' | translate}}
                         </label>
@@ -81,7 +81,7 @@
 
                 <div class="flex-1 flex flex-col items-center space-y-1">
                     <label for="lastReceiptCLI" class="text-center">{{'seguro_responsabilidad_civil' |
-                        translate}} <p class="text-sm font-medium text-darkslategray">(Opcional)</p> </label>
+                        translate}} <p class="text-sm font-medium text-red-500">({{'Optional' | translate}})</p> </label>
                     <div class="flex items-center justify-center flex-col space-y-1">
                         <input type="file" id="lastReceiptCLI" formControlName="lastReceiptCLI" class="hidden"
                             (change)="displayFileName($event,1)">

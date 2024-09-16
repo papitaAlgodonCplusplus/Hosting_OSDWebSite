@@ -13,6 +13,7 @@ import { CreateClaimValuationEvent } from '../../Interface/ClaimValuation.interf
 import { Router, ActivatedRoute } from '@angular/router';
 import { UserInfo } from 'src/app/models/userInfo';
 import { ClaimantAndClaimsCustomerPerformance } from '../../models/ClaimantAndClaimsCustomerPerformance';
+import { EventConstants } from 'src/app/models/eventConstants';
 
 @Component({
   selector: 'app-file-manager',
@@ -68,13 +69,14 @@ export class FileManagerComponent implements OnDestroy {
 
       })
 
-      this.osdDataService.performanceClaimList$.subscribe(performanceClaim => {
-        this.performancesClaims = performanceClaim;
-        this.updateDisplayedItems(0, 5);
-      });
+      //this.osdDataService.performanceClaimList$.subscribe(performanceClaim => {
+      //   this.performancesClaims = performanceClaim;
+      //   this.updateDisplayedItems(0, 5);
+      // });
       
       if(this.authenticationService.userInfo){
       this.user = this.authenticationService.userInfo
+      console.log(this.user)
       }
     }, 0);
   }
@@ -134,10 +136,8 @@ export class FileManagerComponent implements OnDestroy {
 
   openPerformanceClaimsModal(): void {
     this.showModalPerformances = true;
-    this.osdEventService.GetPerformancesClaimById(this.claimId);
-    const modal = document.getElementById('performanceModal');
-    if (modal) {
-      modal.style.display = 'flex';
+    if(this.claimId){
+      this.osdEventService.GetPerformancesClaimById(this.claimId);
     }
   }
 
@@ -200,6 +200,13 @@ export class FileManagerComponent implements OnDestroy {
     if (this.closeClaimfileForm.invalid) {
       this.closeClaimfileForm.markAllAsTouched();
       return;
+    }
+  }
+
+  newPerformance(){
+    if(this.user.AccountType == EventConstants.FREE_PROFESSIONAL){}
+    else{
+      this.router.navigate(['/functions/claimant-and-claims-customer-performance']);
     }
   }
 }

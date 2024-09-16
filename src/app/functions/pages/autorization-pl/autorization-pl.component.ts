@@ -9,6 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Subscriber } from '../../models/Subscriber';
 import { FreeProfessional } from '../../models/FreeProfessional';
 import { OSDDataService } from 'src/app/services/osd-data.service';
+import { flush } from '@angular/core/testing';
 
 @Component({
   selector: 'app-autorization-pl',
@@ -40,7 +41,7 @@ export class AutorizationPlComponent implements OnDestroy {
     this.osdEventService.getFreeProfessionalsList().then(freeProfessionals => {
 
       freeProfessionals.forEach(item => {
-        if (item.Name != 'Admin') {
+        if (item.FreeprofessionaltypeAcronym !== "INFIT") {
           this.items.push(item)
         }
       });

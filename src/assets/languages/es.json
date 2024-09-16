@@ -315,5 +315,9 @@
     "Request for Additional Information": "Solicitud de Ampliación de Información",
     "Complaint Resolution": "Solución de la Queja",
     "Problem Solution": "Solución al Problema",
-    "Close Performance": "Actuacion cerrada"
+    "Close Performance": "Actuacion cerrada",
+    "CurriculumVitae" : "Curriculum Vitae",
+    "Mandatory" : "Obligatorio",
+    "Optional" : "Opcional",
+    "Filter" : "..Filtrar"
 }

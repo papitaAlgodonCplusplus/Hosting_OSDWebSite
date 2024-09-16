@@ -279,11 +279,11 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.DATE_PERFORMANCE, performance.Date);
     event.setBodyProperty(EventConstants.TYPE_PERFORMANCE, performance.Type);
     event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, performance.JustifyingDocument);
-    event.setBodyProperty(EventConstants.TRAINER_DATE, performance.TrainerDate);
-    event.setBodyProperty(EventConstants.TRAINER_WORK_HOURS, performance.TrainerWorkHours);
-    event.setBodyProperty(EventConstants.TRAINER_TRAVEL_HOURS, performance.TrainerTravelHours);
-    event.setBodyProperty(EventConstants.TRAINER_TRAVEL_EXPENSES, performance.TrainerTravelExpenses);
-    event.setBodyProperty(EventConstants.TRAINER_REMUNERATION, performance.TrainerRemuneration);
+    // event.setBodyProperty(EventConstants.TRAINER_DATE, performance.TrainerDate);
+    // event.setBodyProperty(EventConstants.TRAINER_WORK_HOURS, performance.TrainerWorkHours);
+    // event.setBodyProperty(EventConstants.TRAINER_TRAVEL_HOURS, performance.TrainerTravelHours);
+    // event.setBodyProperty(EventConstants.TRAINER_TRAVEL_EXPENSES, performance.TrainerTravelExpenses);
+    // event.setBodyProperty(EventConstants.TRAINER_REMUNERATION, performance.TrainerRemuneration);
     event.setBodyProperty(EventConstants.SUMMARY, performance.Summary);
     event.setBodyProperty(EventConstants.CLAIM_ID, claimId);
     return event;

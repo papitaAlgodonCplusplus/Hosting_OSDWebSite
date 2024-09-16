@@ -20,6 +20,9 @@
     <div *ngIf="isDropdownOpen"
         class="visible-element absolute right-0 z-10 mt-2 w-56 origin-top-right  bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
         role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+
+        <input class="border p-2 w-full" placeholder="{{'Filter' | translate}}" (input)="filter($event)" type="text">
+
         <div class="py-1 overflow-y-auto max-h-48" role="none">
             <a *ngFor="let item of dropdownItems; let i = index"
                 class="cursor-pointer text-gray-700 block px-4 py-2 text-md" role="menuitem" tabindex="-1"

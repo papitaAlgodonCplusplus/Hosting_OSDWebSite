@@ -1,4 +1,4 @@
-export interface ClaimantAndClaimsCustomerPerformance{
+export interface ClaimsTrainerPerformance{
     Id: string;
     PerformanceClaimControlId : string;
     Code: string;
@@ -6,10 +6,14 @@ export interface ClaimantAndClaimsCustomerPerformance{
     Type: string ;
     Summary: string;
     JustifyingDocument: string;
-    TrainerDate: string;
     TrainerWorkHours: string;
     TrainerTravelHours: string;
     TrainerTravelExpenses: string;
     TrainerRemuneration: string;
+    TechnicalDirectorDate: string;
+    TechnicalDirectorWorkHours: string;
+    TechnicalDirectorTravelHours: string;
+    TechnicalDirectorExpenses: string;
+    TechnicalDirectorRemuneration: string;
     Status: string;
   }
