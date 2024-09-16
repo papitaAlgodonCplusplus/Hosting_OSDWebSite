@@ -786,7 +786,6 @@ export class OSDService {
       var Message = webBaseEvent.getBodyProperty(EventConstants.MESSAGE);
       if (Message != null) {
         if (this.translate.currentLang == "en") {
-            Message = "The user information was successfully modified (Please log in again to view the changes)";
             this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: Message }));
         } else {
           Message = "Se modifico correctamente la informacion del usuario (Vuelve a iniciar session para visualizar los cambios)";

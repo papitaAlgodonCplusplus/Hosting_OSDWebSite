@@ -599,14 +599,6 @@ export class EventFactoryService {
   public ModifyUserInformation(osdUser: UserInfo): WebBaseEvent {
     let event: WebBaseEvent;
 
-    console.log("DATOS ENVIADOS: ", osdUser)
-
-    console.log("Name: ", osdUser.Name)
-    console.log("Firstname: ", osdUser.Firstname)
-    console.log("Middlesurname: ", osdUser.Middlesurname)
-    console.log("Country: ", osdUser.Country)
-    console.log("Email: ", osdUser.Email)
-
     event = new WebBaseEvent();
     event.Action = EventAction.MODIFY_USER_INFORMATION;
     event.SessionKey = this.authenticationService.sessionKey;
