@@ -194,7 +194,11 @@ export class EventConstants {
   public static UNASSIGNED_SUBSCRIBERS_LIST: string = "UnassignedSubscribersList"
 
   public static PROFESSIONAL_FREE_TRAINERS_LIST: string = "ProfessionalFreeTrainersList"
-  public static PERFORMANCES_CLAIM_LIST: string = "PerformancesClaimList"
+
+  public static CLAIMANT_AND_CLAIMS_CUSTOMER_PERFORMANCE_LIST: string = "ClaimantAndClaimsCustomerPerformanceList"
+  public static CLAIMS_PROCESSOR_PERFORMANCE_LIST: string = "ClaimsProcessorPerformanceList"
+  public static CLAIMS_TRAINER_PERFORMANCE_LIST: string = "ClaimsTrainerPerformanceList"
+
   public static PERFORMANCE_ASSIGNED_BY_ID_LIST: string = "PerformanceAssignedByIdList"
 
   public static PERFORMANCE_ASSIGNED_ID: string = "PerformanceAssignedId"

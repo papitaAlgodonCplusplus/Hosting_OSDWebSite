@@ -101,6 +101,7 @@ export class OnboardingRegisterClaimantComponent {
             .sort((a, b) => (a && b) ? a.value.localeCompare(b.value) : 0);
         }
         this.countries = countriesList as DropDownItem[];
+        this.countries.sort((a, b) => a.value.localeCompare(b.value));
       });
 
       if (this.selectorRegistry === true) {

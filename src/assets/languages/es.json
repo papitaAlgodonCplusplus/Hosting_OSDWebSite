@@ -316,5 +316,9 @@
     "Complaint Resolution": "Solución de la Queja",
     "Problem Solution": "Solución al Problema",
     "Close Performance": "Actuacion cerrada",
-    "Modify information": "Modificar Informacion"
+    "Modify information": "Modificar Informacion",
+    "CurriculumVitae" : "Curriculum Vitae",
+    "Mandatory" : "Obligatorio",
+    "Optional" : "Opcional",
+    "Filter" : "..Filtrar"
 }

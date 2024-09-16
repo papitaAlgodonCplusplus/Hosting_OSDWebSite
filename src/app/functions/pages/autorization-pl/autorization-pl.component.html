@@ -8,24 +8,26 @@
       <table class="table-auto w-full">
         <thead>
           <tr class="text-darkslategray">
-            <th class="px-2 py-2" style="width: 30%;">{{'SubscriberCustomer' | translate}} </th>
-            <th class="px-2 py-2" style="width: 30%;">{{'Identity' | translate}}</th>
-            <th class="px-2 py-2" style="width: 30%;">{{'Name' | translate}} </th>
-            <th class="px-2 py-2" style="width: 30%;">{{'actions' | translate}}</th>
-            <th class="px-2 py-2" style="width: 30%;">{{'authorized' | translate}}</th>
+           <!-- <th class="px-2 py-2" >{{'SubscriberCustomer' | translate}} </th> -->
+            <th class="px-2 py-2" >{{'Code' | translate}} </th>
+            <th class="px-2 py-2" >{{'Identity' | translate}}</th>
+            <th class="px-2 py-2" >{{'Name' | translate}} </th>
+            <th class="px-2 py-2" >{{'actions' | translate}}</th>
+            <th class="px-2 py-2" >{{'authorized' | translate}}</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let item of displayedItems">
-            <td class="text-center space-x-2 border-y px-4 py-2">
+            <!-- <td class="text-center space-x-2 border-y px-4 py-2">
               <button (click)="selectSubscriberCustomer(item)" class="underline text-darkslategray text-sm">
                 <i>{{'Associated' | translate}}</i>
               </button>
-            </td>
+            </td> -->
+            <td class="text-center border-y px-2 py-2">{{ item.Code || '-' }}</td>
 
-            <td class="text-center border-y px-2  py-2">{{ item.Identity }}</td>
+            <td class="text-center border-y px-2 py-2">{{ item.Identity }}</td>
 
-            <td class="text-center border-y px-2  py-2">{{ item.Name + " " + item.Firstname + " " + item.Middlesurname
+            <td class="text-center border-y px-2 py-2">{{ item.Name + " " + item.Firstname + " " + item.Middlesurname
               }}
             </td>
 

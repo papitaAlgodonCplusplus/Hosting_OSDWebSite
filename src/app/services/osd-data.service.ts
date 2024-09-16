@@ -10,6 +10,8 @@ import { SummaryTypes } from '../project-manager/Models/summaryTypes';
 import { FreeProfessional } from '../functions/models/FreeProfessional';
 import { ResponseToPerformanceFreeProfessional } from '../project-manager/Models/responseToperformanceFreeProfessional';
 import { ClaimantAndClaimsCustomerPerformance } from '../functions/models/ClaimantAndClaimsCustomerPerformance';
+import { ClaimsProcessorPerformance } from '../functions/models/ClaimsProcessorPerformance';
+import { ClaimsTrainerPerformance } from '../functions/models/ClaimsTrainerPerformance';
 
 @Injectable({
   providedIn: 'root'
@@ -52,8 +54,11 @@ export class OSDDataService {
 
   private performanceFreeProfessionalList = new Subject<PerformanceFreeProfessional[]>();
   private performanceBuyList = new Subject<PerformanceBuy[]>();
-  private performanceClaimList = new Subject<ClaimantAndClaimsCustomerPerformance[]>();
 
+  private claimantAndClaimsCustomerPerformanceList = new Subject<ClaimantAndClaimsCustomerPerformance[]>();
+  private claimsProcessorPerformanceList = new Subject<ClaimsProcessorPerformance[]>();
+  private claimsTrainerPerformanceList = new Subject<ClaimsTrainerPerformance[]>();
+  
   private projectsList = new Subject<Project[]>();
 
   private summaryTypesPerformanceFreeProfessionalList = new Subject<SummaryTypes[]>();
@@ -79,7 +84,11 @@ export class OSDDataService {
 
   performanceFreeProfessionalList$ = this.performanceFreeProfessionalList.asObservable();
   performanceBuyList$ = this.performanceBuyList.asObservable();
-  performanceClaimList$ = this.performanceClaimList.asObservable();
+
+  claimantAndClaimsCustomerPerformanceList$ = this.claimantAndClaimsCustomerPerformanceList.asObservable();
+  claimsProcessorPerformanceList$ = this.claimsProcessorPerformanceList.asObservable();
+  claimsTrainerPerformanceList$ = this.claimsTrainerPerformanceList.asObservable();
+
   freeProfessionalTR$ = this.freeProfessionalTR.asObservable();
   usersFreeProfessionalTR$ = this.usersFreeProfessionalTR.asObservable();
 
@@ -252,10 +261,18 @@ export class OSDDataService {
     this.professioanlFreeTrainersList.next(data);
   }
 
-  emitPerformancesClaimById(data: ClaimantAndClaimsCustomerPerformance[]) {
-    this.performanceClaimList.next(data);
-    
+  emitClaimantAndClaimsCustomerPerformanceList(data: ClaimantAndClaimsCustomerPerformance[]) {
+    this.claimantAndClaimsCustomerPerformanceList.next(data);
   }
+
+  emitClaimsProcessorPerformanceList(data: ClaimsProcessorPerformance[]) {
+    this.claimsProcessorPerformanceList.next(data);
+  }
+
+  emitClaimsTrainerPerformanceList(data: ClaimsTrainerPerformance[]) {
+    this.claimsTrainerPerformanceList.next(data);
+  }
+
   emitPerformanceAssignedListSuccess(data: PerformanceFreeProfessional[]) {
     this.performanceAssignedList.next(data);
   }

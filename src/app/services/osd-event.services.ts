@@ -394,7 +394,7 @@ export class OSDService {
     });
   }
 
-  public modifyResponseToPerformanceAssigned(subPerformanceId: string,performance: ResponseToPerformanceAssignedEvent, performanceAssignedId: string) {
+  public modifyResponseToPerformanceAssigned(subPerformanceId: string, performance: ResponseToPerformanceAssignedEvent, performanceAssignedId: string) {
     const CreateModifyResponseToPerformancesAssignedEvent: WebBaseEvent = this.eventFactoryService.CreateModifyResponseToPerformancesAssigned(subPerformanceId, performance, performanceAssignedId);
     this.restApiService.SendOSDEvent(CreateModifyResponseToPerformancesAssignedEvent).subscribe({
       next: (response) => {
@@ -407,7 +407,7 @@ export class OSDService {
     });
   }
 
-  public validateResponseToPerformanceAssigned(subPerformanceId: string,performance: ResponseToPerformanceAssignedEvent) {
+  public validateResponseToPerformanceAssigned(subPerformanceId: string, performance: ResponseToPerformanceAssignedEvent) {
     const CreateValidateResponseToPerformancesAssignedEvent: WebBaseEvent = this.eventFactoryService.CreateValidateResponseToPerformancesAssigned(subPerformanceId, performance);
     this.restApiService.SendOSDEvent(CreateValidateResponseToPerformancesAssignedEvent).subscribe({
       next: (response) => {
@@ -449,10 +449,16 @@ export class OSDService {
 
   public GetPerformancesClaimByIdResponse(webBaseEvent: WebBaseEvent) {
     try {
-      var performancesClaimList = webBaseEvent.getBodyProperty(EventConstants.PERFORMANCES_CLAIM_LIST);
 
-      if (performancesClaimList) {
-        this.osdDataService.emitPerformancesClaimById(performancesClaimList);
+      var ClaimantAndClaimsCustomerPerformanceList = webBaseEvent.getBodyProperty(EventConstants.CLAIMANT_AND_CLAIMS_CUSTOMER_PERFORMANCE_LIST);
+      var ClaimsProcessorPerformanceList = webBaseEvent.getBodyProperty(EventConstants.CLAIMS_PROCESSOR_PERFORMANCE_LIST);
+      var ClaimsTrainerPerformanceList = webBaseEvent.getBodyProperty(EventConstants.CLAIMS_TRAINER_PERFORMANCE_LIST);
+
+      if (ClaimantAndClaimsCustomerPerformanceList || ClaimsProcessorPerformanceList || ClaimsTrainerPerformanceList) {
+        this.osdDataService.emitClaimantAndClaimsCustomerPerformanceList(ClaimantAndClaimsCustomerPerformanceList);
+        this.osdDataService.emitClaimsProcessorPerformanceList(ClaimsProcessorPerformanceList);
+        this.osdDataService.emitClaimsTrainerPerformanceList(ClaimsTrainerPerformanceList);
+
       }
 
     }
@@ -519,7 +525,7 @@ export class OSDService {
           this.osdDataService.emitFreeProfessionalTR(freeProfessionalsTR)
           this.osdDataService.emitUsersFreeProfessionalTR(usersFreeProfessionalsTR)
         }
-        else{
+        else {
           this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: 'No hay tramitdores autorizados' }));
           this.store.dispatch(ModalActions.openAlert());
         }
@@ -565,7 +571,6 @@ export class OSDService {
 
   public createClaimantAndClaimsCustomerPerformance(performance: ClaimantAndClaimsCustomerPerformance, claimId: string) {
     const createClaimantAndClaimsCustomerPerformanceEvent: WebBaseEvent = this.eventFactoryService.CreateClaimantAndClaimsCustomerPerformanceEvent(performance, claimId);
-    console.log(createClaimantAndClaimsCustomerPerformanceEvent)
     this.restApiService.SendOSDEvent(createClaimantAndClaimsCustomerPerformanceEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
@@ -582,7 +587,7 @@ export class OSDService {
     this.restApiService.SendOSDEvent(modifiedPerformanceClaimEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
-         this.HandleModifiedPerformanceClaimResponse(osdEvent);
+        this.HandleModifiedPerformanceClaimResponse(osdEvent);
       },
       error: (error) => {
         //TODO: Pending implementation
@@ -866,10 +871,19 @@ export class OSDService {
 
     try {
       createPerformanceResultMessage = webBaseEvent.getBodyProperty(EventConstants.ACTION_OSD_RESULT_MESSAGE);
+     
       if (createPerformanceResultMessage) {
-        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: createPerformanceResultMessage }));
-        this.store.dispatch(ModalActions.openAlert());
-        this.securityDataService.emitUserAuthenticationSuccess("/functions/file-manager")
+        if (this.translate.currentLang == "en") {
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: createPerformanceResultMessage }));
+          this.store.dispatch(ModalActions.openAlert());
+          this.securityDataService.emitUserAuthenticationSuccess("/functions/file-manager")
+        }
+        else {
+          createPerformanceResultMessage = "La actuación se agregó correctamente.";
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "La actuación se agregó correctamente." }));
+          this.store.dispatch(ModalActions.openAlert());
+          this.securityDataService.emitUserAuthenticationSuccess("/functions/file-manager")
+        }
       }
     }
     catch (err) {

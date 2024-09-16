@@ -106,6 +106,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
             .sort((a, b) => (a && b) ? a.value.localeCompare(b.value) : 0);
         }
         this.countries = countriesList as DropDownItem[];
+        this.countries.sort((a, b) => a.value.localeCompare(b.value));
       });
 
       this.osdEventService.GetSubscribers();
@@ -154,7 +155,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
       workspace: ['', [Validators.required]],
       otherWorspace: [''],
       identificationDocument: ['', [Validators.required]],
-      collegiateCardArchive: ['', [Validators.required]],
+      curriculumVitae: ['', [Validators.required]],
       lastReceiptCLI: [''],
       servicerates: [''],
       SubscriberId: ['']

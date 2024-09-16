@@ -8,7 +8,7 @@
             <div class="font-bold flex flex-col justify-center items-center space-y-3 p-3">
                 <span class="rounded-xl p-2 bg-darkslategray text-line cursor-pointer"
                     (click)="openPerformanceClaimsModal()">{{'viewPerformance' | translate}} </span>
-                <button *ngIf="isAssignedClaim" class="space-x-2 flex items-center hover:underline"
+                <button *ngIf="isAssignedClaim" (click)="newPerformance()" class="space-x-2 flex items-center hover:underline"
                     routerLink="/functions/claims-performance">
                     <span>{{'newAction' | translate }}</span> <i
                         class="fa-solid fa-chevron-right text-base animate-pulse"></i>

@@ -8,6 +8,9 @@ import { Observable } from 'rxjs';
 import { Claim } from 'src/app/models/claim';
 import { ClaimSelectors } from 'src/app/store/selectors';
 import { OSDService } from 'src/app/services/osd-event.services';
+import { OSDDataService } from 'src/app/services/osd-data.service';
+import { AuthenticationService } from 'src/app/services/authentication.service';
+import { EventConstants } from 'src/app/models/eventConstants';
 
 @Component({
   selector: 'app-claimant-and-claims-customer-performance',
@@ -26,7 +29,8 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
     private typesOfPerformanceClaimsService: TypesOfPerformanceClaimsService,
-    private OSDEventService: OSDService
+    private OSDEventService: OSDService,
+    private AuthenticationService: AuthenticationService
   ) {
     this.performanceForm = this.createRegisterForm();
   }
@@ -35,8 +39,17 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
     setTimeout(() => {
       this.store.dispatch(UiActions.hideFooter())
       this.store.dispatch(UiActions.hideLeftSidebar())
-      this.type = this.typesOfPerformanceClaimsService.getTypesClaimant()
+
+      if (this.AuthenticationService.userInfo) {
+        var accountType = this.AuthenticationService.userInfo.AccountType;
+        if (accountType == EventConstants.CLAIMANT) {
+          this.type = this.typesOfPerformanceClaimsService.getTypesClaimant()
+        } else {
+          this.type = this.typesOfPerformanceClaimsService.getTypesSubscriber()
+        }
+      }
     }, 0);
+    
     this.claim$.subscribe(claim => {
       this.claimId = claim.Id;
     });
