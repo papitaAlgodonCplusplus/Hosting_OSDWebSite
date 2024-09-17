@@ -25,6 +25,7 @@ import { Subscriber } from '../functions/models/Subscriber';
 import { Router } from '@angular/router';
 import { ResponseToPerformanceAssignedEvent } from '../project-manager/Interface/responseToPerformanceAssignedEvent.interface';
 import { ResponseToPerformanceFreeProfessional } from '../project-manager/Models/responseToperformanceFreeProfessional';
+import { ClaimsProcessorPerformance } from '../functions/models/ClaimsProcessorPerformance';
 
 @Injectable({
   providedIn: 'root'
@@ -575,7 +576,7 @@ export class OSDService {
   }
 
   public createClaimantAndClaimsCustomerPerformance(performance: ClaimantAndClaimsCustomerPerformance, claimId: string) {
-    const createClaimantAndClaimsCustomerPerformanceEvent: WebBaseEvent = this.eventFactoryService.CreateClaimantAndClaimsCustomerPerformanceEvent(performance, claimId);
+    const createClaimantAndClaimsCustomerPerformanceEvent: WebBaseEvent = this.eventFactoryService.CreateClaimantAndClaimsCustomerPerformance(performance, claimId);
     this.restApiService.SendOSDEvent(createClaimantAndClaimsCustomerPerformanceEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
@@ -588,8 +589,34 @@ export class OSDService {
   }
 
   public modifiedClaimantAndClaimsCustomerPerformance(performance: ClaimantAndClaimsCustomerPerformance, performanceId: string) {
-    const modifiedPerformanceClaimEvent: WebBaseEvent = this.eventFactoryService.modifiedClaimantAndClaimsCustomerPerformanceEvent(performance, performanceId);
+    const modifiedPerformanceClaimEvent: WebBaseEvent = this.eventFactoryService.modifiedClaimantAndClaimsCustomerPerformance(performance, performanceId);
     this.restApiService.SendOSDEvent(modifiedPerformanceClaimEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleModifiedPerformanceClaimResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+
+  public createClaimsProcessorPerformance(performance: ClaimsProcessorPerformance, claimId: string) {
+    const createClaimsProcessorPerformanceEvent: WebBaseEvent = this.eventFactoryService.createClaimsProcessorPerformance(performance, claimId);
+    this.restApiService.SendOSDEvent(createClaimsProcessorPerformanceEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleCreatePerformanceResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+
+  public modifiedClaimsProcessorPerformance(performance: ClaimsProcessorPerformance, performanceId: string) {
+    const modifiedClaimsProcessorPerformanceEvent: WebBaseEvent = this.eventFactoryService.modifiedClaimsProcessorPerformance(performance, performanceId);
+    this.restApiService.SendOSDEvent(modifiedClaimsProcessorPerformanceEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
         this.HandleModifiedPerformanceClaimResponse(osdEvent);

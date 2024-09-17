@@ -12,5 +12,4 @@ export interface ClaimantAndClaimsCustomerPerformance{
     TrainerTravelExpenses: string;
     TrainerRemuneration: string;
     Status: string;
-    ComponentPath: string;
   }

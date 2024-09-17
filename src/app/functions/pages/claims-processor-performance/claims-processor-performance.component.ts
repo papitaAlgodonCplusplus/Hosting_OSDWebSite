@@ -35,7 +35,7 @@ export class ClaimsProcessorPerformanceComponent implements OnDestroy {
     setTimeout(() => {
       this.store.dispatch(UiActions.hideFooter())
       this.store.dispatch(UiActions.hideLeftSidebar())
-      this.type = this.typesOfPerformanceClaimsService.getTypesClaimant()
+      this.type = this.typesOfPerformanceClaimsService.getTypesProcessor()
     }, 0);
     this.claim$.subscribe(claim => {
       this.claimId = claim.Id;
@@ -55,7 +55,7 @@ export class ClaimsProcessorPerformanceComponent implements OnDestroy {
       Summary: ['', [Validators.required]],
       Processor_WorkHours: ['', [Validators.required]],
       Processor_TravelTime: ['', [Validators.required]],
-      Processor_TravelExpenses: ['', [Validators.required]],
+      Processor_TravelExpenses: [0, [Validators.required]],
       Processor_Remuneration: ['', [Validators.required]],
       Trainer_Date: [''],
       Trainer_WorkHours: [''],
@@ -126,7 +126,7 @@ export class ClaimsProcessorPerformanceComponent implements OnDestroy {
       return false;
     }
     const [hora, minutos] = horaStr.split(':').map(Number);
-    return hora > 0 && hora < 24 && minutos >= 0 && minutos < 60;
+    return hora >= 0 && hora < 24 && minutos >= 0 && minutos < 60;
   }
 
   private convertTimeToMinutes(timeStr: string): number {
@@ -170,7 +170,7 @@ export class ClaimsProcessorPerformanceComponent implements OnDestroy {
 
     this.isErrorInForm = false;
     if (this.claimId) {
-      //this.OSDEventService.createPerformanceClaim(this.performanceForm.value, this.claimId);
+      this.OSDEventService.createClaimsProcessorPerformance(this.performanceForm.value, this.claimId);
     }
   }
 }

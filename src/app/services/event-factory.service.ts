@@ -18,6 +18,7 @@ import { CreateProjectEvent } from '../project-manager/Interface/project.interfa
 import { CreateClaimValuationEvent } from '../functions/Interface/ClaimValuation.interface';
 import { ResponseToPerformanceAssignedEvent } from '../project-manager/Interface/responseToPerformanceAssignedEvent.interface';
 import { UserInfo } from '../models/userInfo';
+import { ClaimsProcessorPerformance } from '../functions/models/ClaimsProcessorPerformance';
 
 @Injectable({
   providedIn: 'root',
@@ -266,7 +267,7 @@ export class EventFactoryService {
     return event;
   }
 
-  public CreateClaimantAndClaimsCustomerPerformanceEvent(performance: ClaimantAndClaimsCustomerPerformance, claimId: string): WebBaseEvent {
+  public CreateClaimantAndClaimsCustomerPerformance(performance: ClaimantAndClaimsCustomerPerformance, claimId: string): WebBaseEvent {
     let event: WebBaseEvent;
     event = new WebBaseEvent();
     event.SessionKey = this.authenticationService.sessionKey;
@@ -290,7 +291,7 @@ export class EventFactoryService {
     return event;
   }
 
-  public modifiedClaimantAndClaimsCustomerPerformanceEvent(performance: ClaimantAndClaimsCustomerPerformance, performanceId: string): WebBaseEvent {
+  public modifiedClaimantAndClaimsCustomerPerformance(performance: ClaimantAndClaimsCustomerPerformance, performanceId: string): WebBaseEvent {
     let event: WebBaseEvent;
     event = new WebBaseEvent();
     event.SessionKey = this.authenticationService.sessionKey;
@@ -309,6 +310,58 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.TRAINER_TRAVEL_HOURS, performance.TrainerTravelHours);
     event.setBodyProperty(EventConstants.TRAINER_TRAVEL_EXPENSES, performance.TrainerTravelExpenses);
     event.setBodyProperty(EventConstants.TRAINER_REMUNERATION, performance.TrainerRemuneration);
+    event.setBodyProperty(EventConstants.SUMMARY, performance.Summary);
+    event.setBodyProperty(EventConstants.PERFORMANCE_CLAIM_ID, performanceId);
+ 
+    return event;
+  }
+
+  public createClaimsProcessorPerformance(performance: ClaimsProcessorPerformance, claimId: string): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.CREATE_CLAIM_PROCESSOR_PERFORMANCE;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient'; //TODO: change to use an application identifier
+
+    event.setBodyProperty(EventConstants.DATE_PERFORMANCE, performance.Date);
+    event.setBodyProperty(EventConstants.TYPE_PERFORMANCE, performance.Type);
+    event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, performance.JustifyingDocument);
+    event.setBodyProperty(EventConstants.PROCESSOR_WORK_HOURS, performance.Processor_WorkHours);
+    event.setBodyProperty(EventConstants.PROCESSOR_TRAVEL_HOURS, performance.Processor_TravelTime);
+    event.setBodyProperty(EventConstants.PROCESSOR_TRAVEL_EXPENSES, performance.Processor_TravelExpenses);
+    event.setBodyProperty(EventConstants.PROCESSOR_REMUNERATION, performance.Processor_Remuneration);
+    event.setBodyProperty(EventConstants.SUMMARY, performance.Summary);
+    event.setBodyProperty(EventConstants.CLAIM_ID, claimId);
+    return event;
+  }
+
+  public modifiedClaimsProcessorPerformance(performance: ClaimsProcessorPerformance, performanceId: string): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.MODIFIED_CLAIM_PROCESSOR_PERFORMANCE;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient'; //TODO: change to use an application identifier
+
+    event.setBodyProperty(EventConstants.DATE_PERFORMANCE, performance.Date);
+    event.setBodyProperty(EventConstants.TYPE_PERFORMANCE, performance.Type);
+    event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, performance.JustifyingDocument);
+    event.setBodyProperty(EventConstants.PROCESSOR_WORK_HOURS, performance.Processor_WorkHours);
+    event.setBodyProperty(EventConstants.PROCESSOR_TRAVEL_HOURS, performance.Processor_TravelTime);
+    event.setBodyProperty(EventConstants.PROCESSOR_TRAVEL_EXPENSES, performance.Processor_TravelExpenses);
+    event.setBodyProperty(EventConstants.PROCESSOR_REMUNERATION, performance.Processor_Remuneration);
+    event.setBodyProperty(EventConstants.TRAINER_DATE, performance.Trainer_Date);
+    event.setBodyProperty(EventConstants.TRAINER_WORK_HOURS, performance.Trainer_WorkHours);
+    event.setBodyProperty(EventConstants.TRAINER_TRAVEL_HOURS, performance.Trainer_TravelTime);
+    event.setBodyProperty(EventConstants.TRAINER_TRAVEL_EXPENSES, performance.Trainer_TravelExpenses);
+    event.setBodyProperty(EventConstants.TRAINER_REMUNERATION, performance.Trainer_Remuneration);
     event.setBodyProperty(EventConstants.SUMMARY, performance.Summary);
     event.setBodyProperty(EventConstants.PERFORMANCE_CLAIM_ID, performanceId);
  

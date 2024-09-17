@@ -27,10 +27,11 @@
             </div>
         </div>
 
-        <div class="text-darkslategray text-base pl-1 mt-3 text-start font-medium">
-            <h1 class="border-b">
-                {{ 'Processor' | translate }}
+        <div class="flex flex-row items-center space-x-3 text-darkslategray border-b mt-3 text-start p-2 ">
+            <h1 class="font-medium">
+                {{'Processor' | translate}}
             </h1>
+            <span class="text-sm">(Formato de horas deber ser 0:00)</span>
         </div>
 
         <div class="flex flex-wrap justify-center">
@@ -50,11 +51,11 @@
                 label="{{ 'Remuneration' | translate }}" inputType="text" [formGroup]="performanceForm"
                 [bgColor]="'bg-white-lightbone'" [readOnly]="true"></shared-input-field>
         </div>
-
-        <div class="text-darkslategray text-base pl-1 mt-3 text-start font-medium">
-            <h1 class="border-b">
-                {{ 'Trainer' | translate }}
+        <div class="flex flex-row items-center space-x-3 text-darkslategray border-b mt-3 text-start p-2 ">
+            <h1 class="font-medium">
+                {{'Trainer' | translate}}
             </h1>
+            <span class="text-sm">(Formato de horas deber ser 0:00)</span>
         </div>
 
         <div class="flex flex-wrap justify-center">
