@@ -10,6 +10,7 @@
       [formControlName]="fieldName"
       [name]="fieldName"
       [id]="fieldName"
+      [readOnly]="readOnly"
     ></textarea>
     <p class="mt-2 text-sm text-red-600" *ngIf="isValidField(fieldName)">
       {{ getFieldError(fieldName) }}

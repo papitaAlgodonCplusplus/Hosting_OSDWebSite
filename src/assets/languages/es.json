@@ -320,5 +320,9 @@
     "CurriculumVitae" : "Curriculum Vitae",
     "Mandatory" : "Obligatorio",
     "Optional" : "Opcional",
-    "Filter" : "..Filtrar"
+    "Filter" : "..Filtrar",
+    "EvidenceDocuments": "Documentos probatorios",
+    "Downloadevidentiarydocument1": "Descargar documento probatorio 1",
+    "Downloadevidentiarydocument2": "Descargar documento probatorio 2",
+    "AccountType" : "Tipo de cuenta"
 }

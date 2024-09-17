@@ -14,6 +14,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { UserInfo } from 'src/app/models/userInfo';
 import { ClaimantAndClaimsCustomerPerformance } from '../../models/ClaimantAndClaimsCustomerPerformance';
 import { EventConstants } from 'src/app/models/eventConstants';
+import { ClaimsProcessorPerformance } from '../../models/ClaimsProcessorPerformance';
+import { ClaimsTrainerPerformance } from '../../models/ClaimsTrainerPerformance';
 
 @Component({
   selector: 'app-file-manager',
@@ -28,7 +30,9 @@ export class FileManagerComponent implements OnDestroy {
   claim$: Observable<Claim> = this.store.select(ClaimSelectors.claim);
   fileCode$: Observable<string> = this.store.select(PerformanceSelectors.fileCode)
   fileCode: string = "";
-  performancesClaims: ClaimantAndClaimsCustomerPerformance[] = [];
+  claimantAndClaimsCustomerPerformances: ClaimantAndClaimsCustomerPerformance[] = [];
+  claimsProcessorPerformances: ClaimsProcessorPerformance[] = [];
+  claimsTrainerPerformances: ClaimsTrainerPerformance[] = [];
   claimId!: string;
   claimIdUrl!: string;
   displayedItems: any[] = [];
@@ -39,6 +43,8 @@ export class FileManagerComponent implements OnDestroy {
   showModalRatings: boolean = false;
   showModalPerformances: boolean = false;
   user! : UserInfo
+  document1!: string;
+  document2!: string;
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
@@ -69,14 +75,24 @@ export class FileManagerComponent implements OnDestroy {
 
       })
 
-      //this.osdDataService.performanceClaimList$.subscribe(performanceClaim => {
-      //   this.performancesClaims = performanceClaim;
-      //   this.updateDisplayedItems(0, 5);
-      // });
-      
+      this.osdDataService.claimantAndClaimsCustomerPerformanceList$.subscribe(performanceClaim => {
+        this.claimantAndClaimsCustomerPerformances = performanceClaim;
+        performanceClaim.forEach(performance=>{
+          performance.ComponentPath = "/functions/claimant-and-claims-customer-performance"
+        })
+        this.updateDisplayedItems(0,5)
+      });
+
+      this.osdDataService.claimsProcessorPerformanceList$.subscribe(performanceClaim => {
+        this.claimsProcessorPerformances = performanceClaim;
+      });
+
+      this.osdDataService.claimsTrainerPerformanceList$.subscribe(performanceClaim => {
+        this.claimsTrainerPerformances = performanceClaim;
+      });
+
       if(this.authenticationService.userInfo){
       this.user = this.authenticationService.userInfo
-      console.log(this.user)
       }
     }, 0);
   }
@@ -102,12 +118,14 @@ export class FileManagerComponent implements OnDestroy {
   }
 
   private fillForm(claim: Claim): FormGroup {
-
+    this.document1 = claim.Document1;
+    this.document2 = claim.Document2;
     const form = this.formBuilder.group({
       claimant: [this.translate.instant(claim.Claimtype)],
       state: [this.translate.instant(claim.Status)],
       subscriber: [claim.NameCompanySubscriberclaimed],
       amountClaimed: [claim.Amountclaimed],
+      facts : [claim.Facts],
       //freeProfessional: [''],
       valuationSubscriber: [claim.Valuationsubscriber || 0],
       valuationClaimant: [claim.Valuationclaimant || 0],
@@ -153,11 +171,12 @@ export class FileManagerComponent implements OnDestroy {
   }
 
   private updateDisplayedItems(startIndex: number, endIndex: number) {
-    this.displayedItems = this.performancesClaims.slice(startIndex, endIndex);
+    this.displayedItems = this.claimantAndClaimsCustomerPerformances.slice(startIndex, endIndex);
   }
 
   viewPerformance(performance: ClaimantAndClaimsCustomerPerformance) {
     this.store.dispatch(PerformanceActions.setPerformanceClaim({ performanceClaim: performance }))
+    this.router.navigate([performance.ComponentPath]);
   }
 
   assignValuation() {
@@ -204,9 +223,17 @@ export class FileManagerComponent implements OnDestroy {
   }
 
   newPerformance(){
-    if(this.user.AccountType == EventConstants.FREE_PROFESSIONAL){}
-    else{
+    if(this.user.AccountType == EventConstants.SUBSCRIBER_CUSTOMER || this.user.AccountType == EventConstants.CLAIMANT){
       this.router.navigate(['/functions/claimant-and-claims-customer-performance']);
+    }
+    else{
+      this.router.navigate(['/functions/file-manager']);
+    }
+  }
+
+  filterByType(type: string) {
+    if(type == "SubscriberClaimant"){
+
     }
   }
 }

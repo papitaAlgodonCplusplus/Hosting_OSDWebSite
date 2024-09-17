@@ -34,6 +34,7 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit(): void {
     setTimeout(() => {
+      this.store.dispatch(UiActions.hideLeftSidebar())
       this.countryService.getCountries().subscribe((data: any[]) => {
         let countriesList;
         if (this.translate.currentLang === "en") {

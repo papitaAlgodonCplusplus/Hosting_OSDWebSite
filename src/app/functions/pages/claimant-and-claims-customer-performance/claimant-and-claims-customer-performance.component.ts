@@ -2,15 +2,18 @@ import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
-import { UiActions } from 'src/app/store/actions';
+import { ClaimActions, PerformanceActions, UiActions } from 'src/app/store/actions';
 import { TypesOfPerformanceClaimsService } from '../../services/types-of-performance-claims.service';
 import { Observable } from 'rxjs';
 import { Claim } from 'src/app/models/claim';
-import { ClaimSelectors } from 'src/app/store/selectors';
+import { ClaimSelectors, PerformanceSelectors } from 'src/app/store/selectors';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { OSDDataService } from 'src/app/services/osd-data.service';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { EventConstants } from 'src/app/models/eventConstants';
+import { FreeProfessional } from '../../models/FreeProfessional';
+import { ClaimantAndClaimsCustomerPerformance } from '../../models/ClaimantAndClaimsCustomerPerformance';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-claimant-and-claims-customer-performance',
@@ -24,48 +27,102 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
   type!: DropDownItem[];
   claimId!: string;
   claim$: Observable<Claim> = this.store.select(ClaimSelectors.claim);
+  performance$: Observable<ClaimantAndClaimsCustomerPerformance> = this.store.select(PerformanceSelectors.performanceClaim);
+  performance!: ClaimantAndClaimsCustomerPerformance;
   isErrorInForm: boolean = false;
+  isTrainer: boolean = true;
+  isUnrevised: boolean = false;
+  isViewPerformance!: boolean;
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
     private typesOfPerformanceClaimsService: TypesOfPerformanceClaimsService,
     private OSDEventService: OSDService,
-    private AuthenticationService: AuthenticationService
+    private AuthenticationService: AuthenticationService,
+    private datePipe: DatePipe,
   ) {
-    this.performanceForm = this.createRegisterForm();
+    this.performanceForm = this.createForm();
   }
 
   ngOnInit(): void {
     setTimeout(() => {
       this.store.dispatch(UiActions.hideFooter())
       this.store.dispatch(UiActions.hideLeftSidebar())
+    }, 0);
 
-      if (this.AuthenticationService.userInfo) {
-        var accountType = this.AuthenticationService.userInfo.AccountType;
-        if (accountType == EventConstants.CLAIMANT) {
-          this.type = this.typesOfPerformanceClaimsService.getTypesClaimant()
-        } else {
-          this.type = this.typesOfPerformanceClaimsService.getTypesSubscriber()
+    if (this.AuthenticationService.userInfo) {
+      var accountType = this.AuthenticationService.userInfo.AccountType;
+      if (accountType == EventConstants.CLAIMANT) {
+        this.type = this.typesOfPerformanceClaimsService.getTypesClaimant()
+      } else if (accountType == EventConstants.SUBSCRIBER_CUSTOMER) {
+        this.type = this.typesOfPerformanceClaimsService.getTypesSubscriber()
+      }
+      else {
+        this.OSDEventService.GetFreeProfessionalsDataEvent();
+        this.OSDEventService.getFreeProfessionalsList()
+          .then(freeProfessionals => {
+            if (Array.isArray(freeProfessionals)) {
+              var freeProfessionalFind: FreeProfessional = freeProfessionals.find(fp => fp.Userid == this.AuthenticationService.userInfo?.Id)
+              if (freeProfessionalFind.FreeprofessionaltypeName == "Trainer") {
+                this.isTrainer = false
+              }
+            }
+          })
+      }
+    }
+
+    this.performance$.subscribe(performanceClaim => {
+      if (performance) {
+        this.performance = performanceClaim;
+        this.performanceForm = this.fillForm(performanceClaim)
+        if (performanceClaim.TrainerWorkHours != null) {
+          this.isUnrevised = true;
         }
       }
-    }, 0);
+    })
     
+    if(this.performance.Id != null){
+      this.isViewPerformance = false;
+    }else{
+      this.isViewPerformance = true;
+    }
+
     this.claim$.subscribe(claim => {
       this.claimId = claim.Id;
     });
   }
+
   ngOnDestroy(): void {
     setTimeout(() => {
       this.store.dispatch(UiActions.showAll())
+      this.store.dispatch(PerformanceActions.setPerformanceClaim({ performanceClaim: {} as ClaimantAndClaimsCustomerPerformance }))
     }, 0);
   }
 
-  private createRegisterForm(): FormGroup {
+  private createForm(): FormGroup {
     const form = this.formBuilder.group({
       Date: ['', [Validators.required]],
       Type: ['', [Validators.required]],
       JustifyingDocument: ['', [Validators.required]],
       Summary: ['', [Validators.required]],
+      Trainer_Date: [''],
+      Trainer_WorkHours: [''],
+      Trainer_TravelTime: [''],
+      Trainer_TravelExpenses: [''],
+      Trainer_Remuneration: ['']
+    });
+    return form;
+  }
+
+  private fillForm(performance: ClaimantAndClaimsCustomerPerformance): FormGroup {
+    let originalDate = performance.Date;
+    let formatedStartDate = this.datePipe.transform(originalDate, 'yyyy-MM-dd');
+    this.documentName = performance.JustifyingDocument
+    const form = this.formBuilder.group({
+      Date: [formatedStartDate, [Validators.required]],
+      Type: [performance.Type, [Validators.required]],
+      JustifyingDocument: [performance.JustifyingDocument, [Validators.required]],
+      Summary: [performance.Summary, [Validators.required]],
       Trainer_Date: [''],
       Trainer_WorkHours: [''],
       Trainer_TravelTime: [''],

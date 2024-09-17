@@ -449,18 +449,23 @@ export class OSDService {
 
   public GetPerformancesClaimByIdResponse(webBaseEvent: WebBaseEvent) {
     try {
-
       var ClaimantAndClaimsCustomerPerformanceList = webBaseEvent.getBodyProperty(EventConstants.CLAIMANT_AND_CLAIMS_CUSTOMER_PERFORMANCE_LIST);
       var ClaimsProcessorPerformanceList = webBaseEvent.getBodyProperty(EventConstants.CLAIMS_PROCESSOR_PERFORMANCE_LIST);
       var ClaimsTrainerPerformanceList = webBaseEvent.getBodyProperty(EventConstants.CLAIMS_TRAINER_PERFORMANCE_LIST);
 
-      if (ClaimantAndClaimsCustomerPerformanceList || ClaimsProcessorPerformanceList || ClaimsTrainerPerformanceList) {
+      if (ClaimantAndClaimsCustomerPerformanceList.length > 0 || ClaimsProcessorPerformanceList.length > 0 || ClaimsTrainerPerformanceList.length > 0) {
         this.osdDataService.emitClaimantAndClaimsCustomerPerformanceList(ClaimantAndClaimsCustomerPerformanceList);
         this.osdDataService.emitClaimsProcessorPerformanceList(ClaimsProcessorPerformanceList);
         this.osdDataService.emitClaimsTrainerPerformanceList(ClaimsTrainerPerformanceList);
-
       }
-
+      else{
+        if (this.translate.currentLang == "en") {
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "No performance has been created" }));
+        } else {
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "No se ha creado ninguna actuación" }));
+        }
+        this.store.dispatch(ModalActions.openAlert());
+      }
     }
     catch (err) {
       //TODO: create exception event and send to local file or core

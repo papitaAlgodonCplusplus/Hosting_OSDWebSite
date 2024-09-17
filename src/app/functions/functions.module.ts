@@ -17,6 +17,7 @@ import { AssignClientToTrainerComponent } from './pages/assign-client-to-trainer
 import { ClaimantAndClaimsCustomerPerformanceComponent } from './pages/claimant-and-claims-customer-performance/claimant-and-claims-customer-performance.component';
 import { ClaimsTrainerPerformanceComponent } from './pages/claims-trainer-performance/claims-trainer-performance.component';
 import { ClaimsProcessorPerformanceComponent } from './pages/claims-processor-performance/claims-processor-performance.component';
+import { TruncatePipe } from './pipes/truncate.pipe';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { ClaimsProcessorPerformanceComponent } from './pages/claims-processor-pe
     AssignClientToTrainerComponent,
     ClaimantAndClaimsCustomerPerformanceComponent,
     ClaimsTrainerPerformanceComponent,
-    ClaimsProcessorPerformanceComponent
+    ClaimsProcessorPerformanceComponent,
+    TruncatePipe
     ],
   imports: [
     CommonModule,

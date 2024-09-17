@@ -14,4 +14,6 @@ export interface Claim {
     Valuationclaimant: string;
     Valuationfreeprofessionals: string;
     Valuationsubscriber: string;
+    Document1: string;
+    Document2: string;
 }

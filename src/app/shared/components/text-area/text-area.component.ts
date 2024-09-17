@@ -15,7 +15,8 @@ export class TextAreaComponent {
   @Input() inputType: 'text' | 'email' | 'number' | 'tel' = 'text';
   @Input() formGroup!: FormGroup;
   @Input() bgColor: string = 'bg-white';
-
+  @Input() readOnly!: boolean;
+  
   constructor(
     private validationsService: ValidationsService
   ) {}

@@ -317,5 +317,9 @@
   "CurriculumVitae" : "Curriculum Vitae",
   "Mandatory" : "Mandatory",
   "Optional" : "Optional",
-  "Filter" : "..Filter"
+  "Filter" : "..Filter",
+  "EvidenceDocuments": "Evidence documents",
+  "Downloadevidentiarydocument1": "Download evidentiary document 1",
+  "Downloadevidentiarydocument2": "Download evidentiary document 2",
+  "AccountType" : "Account type"
 }
