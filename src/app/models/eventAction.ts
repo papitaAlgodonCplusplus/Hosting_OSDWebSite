@@ -28,6 +28,12 @@ export class EventAction {
   public static GET_SUBSCRIBERS: string = "GetSubscribers";
   public static ADD_PERFORMANCE_FREE_PROFESSIONAL: string = "AddPerformanceFreeProfessional";
   public static MODIFY_PERFORMANCE_FREE_PROFESSIONAL: string = "ModifyPerformanceFreeProfessional";
+
+  public static ADD_PERFORMANCE_CLAIM_TRAINER: string = "AddPerformanceClaimTrainer";
+  public static ADD_PERFORMANCE_CLAIM_TRAINER_RESPONSE: string = "AddPerformanceClaimTrainerResponse";
+  public static MODIFY_PERFORMANCE_CLAIM_TRAINER: string = "ModifyPerformanceClaimTrainer";
+  public static MODIFY_PERFORMANCE_CLAIM_TRAINER_RESPONSE: string = "ModifyPerformanceClaimTrainerResponse";
+
   public static MODIFY_PERFORMANCE_FREE_PROFESSIONAL_RESPONSE: string = "ModifyPerformanceFreeProfessionalResponse";
   public static CREATE_PERFORMANCE_BUY: string = "CreatePerformanceBuy";
   public static MODIFY_PERFORMANCE_BUY: string = "ModifyPerformanceBuy";

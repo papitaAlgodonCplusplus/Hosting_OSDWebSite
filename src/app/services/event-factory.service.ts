@@ -19,6 +19,7 @@ import { CreateClaimValuationEvent } from '../functions/Interface/ClaimValuation
 import { ResponseToPerformanceAssignedEvent } from '../project-manager/Interface/responseToPerformanceAssignedEvent.interface';
 import { UserInfo } from '../models/userInfo';
 import { ClaimsProcessorPerformance } from '../functions/models/ClaimsProcessorPerformance';
+import { ClaimsTrainerPerformance } from '../functions/models/ClaimsTrainerPerformance';
 import { CloseClaimFileEvent } from '../functions/models/CloseClaimFileEvent';
 
 @Injectable({
@@ -108,6 +109,7 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.EMAIL, loginForm.email);
     event.setBodyProperty(EventConstants.PASSWORD, loginForm.password);
 
+    console.log("Evento: ",event)
     return event;
   }
 
@@ -159,6 +161,55 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.FORECAST_TRAVEL_TIME, performanceFP.ForecastTravelTime);
     event.setBodyProperty(EventConstants.FORECAST_WORK_HOURS, performanceFP.ForecastWorkHours);  
     event.setBodyProperty(EventConstants.TOTAL_FORECAST_DATA, performanceFP.TotalForecastData);  
+    return event;
+  }
+
+  public CreateClaimTrainerEvent(claimTrainer: ClaimsTrainerPerformance, claimId : string): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.ADD_PERFORMANCE_CLAIM_TRAINER;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+
+    event.setBodyProperty(EventConstants.CLAIM_ID, claimId);
+    event.setBodyProperty(EventConstants.DATE, claimTrainer.Date);
+    event.setBodyProperty(EventConstants.TYPE, claimTrainer.Type);
+    event.setBodyProperty(EventConstants.SUMMARY, claimTrainer.Summary);
+    event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, claimTrainer.JustifyingDocument);
+    event.setBodyProperty(EventConstants.TRAINER_WORK_HOURS, claimTrainer.TrainerWorkHours);
+    event.setBodyProperty(EventConstants.TRAINER_TRAVEL_HOURS, claimTrainer.TrainerTravelHours);
+    event.setBodyProperty(EventConstants.TRAINER_TRAVEL_EXPENSES, claimTrainer.TrainerTravelExpenses);
+    event.setBodyProperty(EventConstants.TRAINER_REMUNERATION, claimTrainer.TrainerRemuneration);
+
+    console.log("Tipo: ",event.Type)
+    return event;
+  }
+
+  public ModifyPerformanceTrainerEvent(claimTrainer: ClaimsTrainerPerformance, performanceId : string): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.MODIFY_PERFORMANCE_CLAIM_TRAINER;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+
+    event.setBodyProperty(EventConstants.PERFORMANCE_ID, performanceId);
+    event.setBodyProperty(EventConstants.DATE, claimTrainer.Date);
+    event.setBodyProperty(EventConstants.TYPE, claimTrainer.Type);
+    event.setBodyProperty(EventConstants.SUMMARY, claimTrainer.Summary);
+    event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, claimTrainer.JustifyingDocument);
+    event.setBodyProperty(EventConstants.TRAINER_WORK_HOURS, claimTrainer.TrainerWorkHours);
+    event.setBodyProperty(EventConstants.TRAINER_TRAVEL_HOURS, claimTrainer.TrainerTravelHours);
+    event.setBodyProperty(EventConstants.TRAINER_TRAVEL_EXPENSES, claimTrainer.TrainerTravelExpenses);
+    event.setBodyProperty(EventConstants.TRAINER_REMUNERATION, claimTrainer.TrainerRemuneration);
+
     return event;
   }
 
