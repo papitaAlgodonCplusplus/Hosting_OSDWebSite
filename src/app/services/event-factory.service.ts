@@ -19,6 +19,7 @@ import { CreateClaimValuationEvent } from '../functions/Interface/ClaimValuation
 import { ResponseToPerformanceAssignedEvent } from '../project-manager/Interface/responseToPerformanceAssignedEvent.interface';
 import { UserInfo } from '../models/userInfo';
 import { ClaimsProcessorPerformance } from '../functions/models/ClaimsProcessorPerformance';
+import { CloseClaimFileEvent } from '../functions/models/CloseClaimFileEvent';
 
 @Injectable({
   providedIn: 'root',
@@ -846,6 +847,25 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.SUBSCRIBER_ID, subscriberId);
     event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_ID, trainerId);
 
+
+    return event;
+  }
+
+  public CreateCloseClaimFile(closeClaimfileForm: CloseClaimFileEvent, ClaimId : string): WebBaseEvent {
+    let event: WebBaseEvent;
+
+    event = new WebBaseEvent();
+    event.Action = EventAction.CLOSE_CLAIM_FILE;
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Date = (new Date()).toUTCString();
+    event.ApplicationIdentifier = "WebClient";
+    event.setBodyProperty(EventConstants.CLAIM_ID, ClaimId);
+    event.setBodyProperty(EventConstants.AMOUNT_PAID, closeClaimfileForm.AmountPaid);
+    event.setBodyProperty(EventConstants.PAYMENT_DATE, closeClaimfileForm.creditingDate);
+    event.setBodyProperty(EventConstants.SAVINGS_INSTITUTION, closeClaimfileForm.AAsavingsPP);
 
     return event;
   }

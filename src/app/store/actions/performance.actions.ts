@@ -20,11 +20,6 @@ export const setClaimProcessorPerformance = createAction(
   props<{ performanceClaim: ClaimsProcessorPerformance }>()
 );
 
-export const setPerformanceClaim = createAction(
-  '[Performance] Add performance Id',
-  props<{ performanceClaim: ClaimantAndClaimsCustomerPerformance }>()
-);
-
 export const setPerformanceFreeProfessional = createAction(
   '[Performance Id] Add performance Id',
   props<{ performanceFreeProfessional: PerformanceFreeProfessional }>()

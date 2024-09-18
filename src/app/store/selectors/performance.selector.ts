@@ -13,9 +13,14 @@ export const performanceFreeProfessional = createSelector(
     (performanceState) => performanceState.performanceFreeProfessional
 );
 
-export const performanceClaim = createSelector(
+export const claimantAndClaimsCustomerPerformance = createSelector(
     performanceState,
-    (performanceState) => performanceState.performanceClaim
+    (performanceState) => performanceState.claimantAndClaimsCustomerPerformance
+);
+
+export const claimsProcessorPerformance = createSelector(
+    performanceState,
+    (performanceState) => performanceState.claimsProcessorPerformance
 );
 
 export const fileCode = createSelector(
