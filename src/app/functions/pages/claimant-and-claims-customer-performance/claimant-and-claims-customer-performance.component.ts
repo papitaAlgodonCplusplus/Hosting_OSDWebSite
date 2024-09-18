@@ -48,6 +48,10 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
     setTimeout(() => {
       this.store.dispatch(UiActions.hideFooter())
       this.store.dispatch(UiActions.hideLeftSidebar())
+      this.claim$.subscribe(claim => {
+        this.claimId = claim.Id;
+      });
+  
     }, 0);
 
     if (this.AuthenticationService.userInfo) {
@@ -72,7 +76,7 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
     }
 
     this.performance$.subscribe(performanceClaim => {
-      if (performance) {
+      if (Object.keys(performanceClaim).length > 0) {
         this.performance = performanceClaim;
         this.performanceForm = this.fillForm(performanceClaim)
         if (performanceClaim.TrainerWorkHours != null) {
@@ -86,10 +90,6 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
     }else{
       this.isViewPerformance = false;
     }
-
-    this.claim$.subscribe(claim => {
-      this.claimId = claim.Id;
-    });
   }
 
   ngOnDestroy(): void {
@@ -208,7 +208,9 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
     }
 
     this.isErrorInForm = false;
+    console.log(this.claimId)
     if (this.claimId) {
+      console.log("hola")
       this.OSDEventService.createClaimantAndClaimsCustomerPerformance(this.performanceForm.value, this.claimId);
     }
   }

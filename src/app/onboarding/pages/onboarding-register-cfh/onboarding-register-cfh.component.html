@@ -48,8 +48,8 @@
                 [formGroup]="personalForm" [dropdownItems]="countries" [selectedItem]="selectedCountries">
             </shared-simple-dropdown>
             
-            <shared-input-field class="w-full md:w-1/2" fieldName="address" label="{{'direccion' | translate}}"
-                inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+            <shared-text-area class="w-full" fieldName="address" label="{{'direccion' | translate}}"
+                inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-text-area>
 
         </form>
         <form [formGroup]="accountForm" (ngSubmit)="onSubmit()" autocomplete="off" class=" flex-1 flex flex-col ">

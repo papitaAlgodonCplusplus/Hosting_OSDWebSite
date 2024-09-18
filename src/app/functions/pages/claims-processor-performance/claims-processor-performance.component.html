@@ -1,4 +1,4 @@
-<div class="flex flex-col justify-end items-end">
+<div class="flex flex-col justify-end items-end h-full">
     <form [formGroup]="performanceForm" autocomplete="off" class="px-10 py-2 w-full h-full">
         <div class="flex flex-wrap items-center">
             <shared-input-field [readOnly]="isView" class="w-full md:w-1/2" fieldName="Date"
@@ -94,7 +94,7 @@
         <button class="p-2 bg-line text-darkslategray rounded-lg" routerLink="/functions/file-manager">
             {{'regresar' | translate}}
         </button>
-        <button *ngIf="isView" (click)="onSubmit()" class="p-2 bg-darkslategray text-line rounded-lg">
+        <button *ngIf="!isView" (click)="onSubmit()" class="p-2 bg-darkslategray text-line rounded-lg">
             {{'CreatePerformance' | translate}}
         </button>
     </div>

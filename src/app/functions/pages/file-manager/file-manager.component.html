@@ -170,22 +170,22 @@
                         <div
                             class="flex flex-col items-center space-x-0 lg:flex-row lg:space-x-3 md:flex-row md:space-x-3">
 
-                            <div class="flex flex-col w-full lg:w-1/2">
+                            <div *ngIf="isSubscriber" class="flex flex-col w-full ">
                                 <label for="valuationSubscriber">{{'institutionOsdValuation' | translate}}</label>
-                                <input [readonly]="isSubscriber" formControlName="valuationSubscriber"
+                                <input formControlName="valuationSubscriber"
                                     id="valuationSubscriber" class=" border p-2" type="number" max="5" min="0">
                             </div>
 
-                            <div class="flex flex-col w-full lg:w-1/2">
+                            <div *ngIf="isClaimant" class="flex flex-col w-full ">
                                 <label for="valuationClaimant">{{'institutionClaimantRating' | translate}}</label>
-                                <input [readonly]="isClaimant" formControlName="valuationClaimant"
+                                <input formControlName="valuationClaimant"
                                     id="valuationClaimant" class="border p-2" type="number" max="5" min="0">
                             </div>
 
-                            <div class="flex flex-col w-full lg:w-1/2">
+                            <div *ngIf="isFreeProfessional" class="flex flex-col w-full ">
                                 <label for="valuationFreeProfessionals">{{'institutionValuationFreeOsdProfessionals' |
                                     translate}}</label>
-                                <input [readonly]="isFreeProfessional" formControlName="valuationFreeProfessionals"
+                                <input formControlName="valuationFreeProfessionals"
                                     id="valuationFreeProfessionals" class="border p-2" type="number" max="5" min="0">
                             </div>
                         </div>

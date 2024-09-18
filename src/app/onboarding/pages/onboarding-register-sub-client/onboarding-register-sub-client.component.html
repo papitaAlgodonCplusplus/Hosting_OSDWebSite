@@ -54,42 +54,25 @@
                     [formGroup]="personalForm" [dropdownItems]="countries" [selectedItem]="selectedCountries">
                 </shared-simple-dropdown>
 
-                <shared-text-area class="w-full md:w-1/2" fieldName="address" label="{{'direccion' | translate}}"
+                <shared-text-area class="w-full" fieldName="address" label="{{'direccion' | translate}}"
                     inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-text-area>
 
-                <!-- <div class="w-full md:w-1/1">
-                        <div class="flex items-center justify-center flex-col space-y-1">
-                            <label>{{ 'Contract' | translate }}</label>
-                            <input type="file" id="fileInput" formControlName="fileInput" class="hidden" (change)="displayFileName($event)">
-                            <label for="fileInput" class="cursor-pointer inline-flex items-center justify-center w-50 h-12 px-4 py-2 border-transparent text-base font-medium text-white bg-darkslategray shadow-lg">
-                                {{'Select_File' | translate}}
-                            </label>                            
-                            <span>{{ documentName }}</span>
-                        </div>
-                    </div> -->
-
-                <div class="flex flex-wrap text-black w-full my-2 py-3 ">
-                    <div class="flex-1 flex flex-col  p-2 text-black space-y-4">
-                        <h1 class="text-lg font-bold text-darkslategray">{{'iniciar_sesion' | translate}}:
-                        </h1>
+                <div class="flex flex-col lg:flex-row md:flex-row text-black w-full my-2 py-3 ">
+                    <div class="flex-1 flex flex-col p-2 text-black space-y-4">
+                        <h1 class="text-lg font-bold text-darkslategray">{{'iniciar_sesion' | translate}}:</h1>
                         <span class="">{{'loginInRegister' | translate}}</span>
+                    </div>
+                    <div class="flex-1 flex flex-col ">
+                        <shared-input-field class="w-full" fieldName="email" label="{{'email' | translate}}"
+                            inputType="email" [formGroup]="personalForm"
+                            [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+                        <auth-input-password class="w-full" [formGroup]="personalForm" fieldName="password"
+                            label="{{'contraseña' | translate}}"></auth-input-password>
                     </div>
                 </div>
 
-                <shared-input-field class="w-full md:w-1/2" fieldName="email" label="{{'email' | translate}}"
-                    inputType="email" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-                <auth-input-password class="w-full md:w-1/2" [formGroup]="personalForm" fieldName="password"
-                    label="{{'contraseña' | translate}}"></auth-input-password>
-
-                <input type="checkbox" id="acceptConditions" formControlName="acceptConditions">
-                <label for="acceptConditions"> {{'aceptar_condiciones' | translate}}</label>
-                <div *ngIf="!personalForm.value.acceptConditions" class="text-red-700 pl-1">
-                    {{'error_condiciones' | translate}}
-                </div>
-
-                <div class="p-2 bg-white flex flex-wrap items-start">
-
+                <div class="bg-white flex flex-col items-start space-y-3">
                     <div class="display-flex m-2">
                         <a *ngIf="!showDocument"
                             class="font-medium  rounded-xl p-2 bg-darkslategray text-white animate__animated animate__fadeInDown w-50 m-2"
@@ -102,9 +85,14 @@
                             {{'Contract' | translate }}
                         </a>
                     </div>
-
+                    <div>
+                        <input type="checkbox" id="acceptConditions" formControlName="acceptConditions">
+                        <label for="acceptConditions"> {{'aceptar_condiciones' | translate}}</label>
+                        <div *ngIf="!personalForm.value.acceptConditions" class="text-red-700 pl-1">
+                            {{'error_condiciones' | translate}}
+                        </div>
+                    </div>
                 </div>
-
             </div>
         </form>
     </div>

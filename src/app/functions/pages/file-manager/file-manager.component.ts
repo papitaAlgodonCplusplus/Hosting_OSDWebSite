@@ -28,9 +28,9 @@ export class FileManagerComponent implements OnDestroy {
   claim$: Observable<Claim> = this.store.select(ClaimSelectors.claim);
   claimId!: string;
   displayedItems: any[] = [];
-  isSubscriber: boolean = true;
-  isClaimant: boolean = true;
-  isFreeProfessional: boolean = true;
+  isSubscriber: boolean = false;
+  isClaimant: boolean = false;
+  isFreeProfessional: boolean = false;
   isAssignedClaim: boolean = false;
   showModalRatings: boolean = false;
   showModalPerformances: boolean = false;
@@ -191,13 +191,13 @@ export class FileManagerComponent implements OnDestroy {
     console.log(claim)
     var userInfo = this.authenticationService.userInfo
     if (userInfo?.AccountType == "SubscriberCustomer") {
-      this.isSubscriber = false
+      this.isSubscriber = true
       if (claim.Valuationsubscriber == "0") {
         this.showModalRatings = true;
       }
     }
     else if (userInfo?.AccountType == "Claimant") {
-      this.isClaimant = false
+      this.isClaimant = true
       if (claim.Valuationclaimant == "0") {
         this.showModalRatings = true;
       }
@@ -208,13 +208,17 @@ export class FileManagerComponent implements OnDestroy {
       if (Array.isArray(freeProfessionals)) {
         const freeProfessionalFind: FreeProfessional | undefined = freeProfessionals.find(fp => fp.Userid == this.user.Id);
         if (freeProfessionalFind?.FreeprofessionaltypeName == "Processor") {
-          this.isFreeProfessional = false
+          this.isFreeProfessional = true
           if (claim.Valuationfreeprofessionals == "0") {
             this.showModalRatings = true;
           }
         }
       }
     }
+
+    console.log(this.isSubscriber)
+    console.log(this.isClaimant)
+    console.log(this.isFreeProfessional)
   }
 
   updateValuation() {

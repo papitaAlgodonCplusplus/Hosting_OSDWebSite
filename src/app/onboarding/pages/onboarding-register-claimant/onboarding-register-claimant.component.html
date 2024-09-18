@@ -21,16 +21,16 @@
                     label="{{'RazonSocial' | translate}}" inputType="text" [formGroup]="personalForm"
                     [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-                <shared-input-field class="w-full md:w-1/2 " fieldName="address" label="{{'direccion' | translate}}"
-                    inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                <shared-simple-dropdown class="w-full md:w-1/2" fieldName="country" label="{{'pais' | translate}}"
+                    [formGroup]="personalForm" [dropdownItems]="countries" [selectedItem]="selectedCountries">
+                </shared-simple-dropdown>
 
                 <shared-input-field class="w-full md:w-1/3" fieldName="city" label="{{'City' | translate}}"
                     inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-                <shared-simple-dropdown class="w-full md:w-1/2" fieldName="country" label="{{'pais' | translate}}"
-                    [formGroup]="personalForm" [dropdownItems]="countries" [selectedItem]="selectedCountries">
-                </shared-simple-dropdown>
-                
+                <shared-text-area class="w-full" fieldName="address" label="{{'direccion' | translate}}"
+                    inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-text-area>
+
                 <shared-input-field class="w-full md:w-1/3" fieldName="zipCode" label="{{'cod_postal' | translate}}"
                     inputType="number" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 

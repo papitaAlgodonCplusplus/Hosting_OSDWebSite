@@ -66,9 +66,11 @@ export class ClaimsProcessorPerformanceComponent implements OnDestroy {
     })
 
     if(Object.keys(this.performance).length > 0){
+      console.log(this.performance)
       this.isView = true;
     }
     else{
+      console.log("No hay nada ")
       this.isView = false;
     }
 
