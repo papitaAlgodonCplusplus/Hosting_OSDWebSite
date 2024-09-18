@@ -34,30 +34,30 @@
         </div>
 
         <div class="flex flex-wrap justify-center">
-            <shared-input-field class="w-full md:w-1/2" fieldName="Trainer_WorkHours"
+            <shared-input-field class="w-full md:w-1/2" fieldName="TrainerWorkHours"
                 label="{{ 'WorkHours' | translate }}" inputType="text" (input)="verifiedFormat('trainer')"
                 [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-            <shared-input-field class="w-full md:w-1/2" (input)="verifiedFormat('trainer')" fieldName="Trainer_TravelTime"
+            <shared-input-field class="w-full md:w-1/2" (input)="verifiedFormat('trainer')" fieldName="TrainerTravelHours"
                 label="{{ 'TravelTime' | translate }}" inputType="text" [formGroup]="performanceForm"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-            <shared-input-field class="w-full md:w-1/2" fieldName="Trainer_TravelExpenses"
+            <shared-input-field class="w-full md:w-1/2" fieldName="TrainerTravelExpenses"
                 label="{{ 'TravelExpenses' | translate }}" inputType="text" [formGroup]="performanceForm"
                 (input)="verifiedFormat('trainer')" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-            <shared-input-field class="w-full md:w-1/2" fieldName="Trainer_Remuneration"
+            <shared-input-field class="w-full md:w-1/2" fieldName="TrainerRemuneration"
                 label="{{ 'Remuneration' | translate }}" inputType="text" [formGroup]="performanceForm"
                 [bgColor]="'bg-white-lightbone'" [readOnly]="true"></shared-input-field>
         </div>
 
-        <div class="text-darkslategray text-base pl-1 mt-3 text-start font-medium">
+        <div *ngIf="reviewPerformance != null" class="text-darkslategray text-base pl-1 mt-3 text-start font-medium">
             <h1 class="border-b">
                 {{ 'TechnicalDirector' | translate }}
             </h1>
         </div>
 
-        <div class="flex flex-wrap justify-center">
+        <div class="flex flex-wrap justify-center" *ngIf="reviewPerformance != null">
             <div class="w-full flex">
                 <shared-input-field class="w-full md:w-1/2" fieldName="Technical_Director_Date" label="{{ 'Date' | translate }}"
                     inputType="date" [formGroup]="performanceForm"
@@ -87,6 +87,9 @@
         </button>
         <button (click)="onSubmit()" class="p-2 bg-darkslategray text-line rounded-lg">
             {{'CreatePerformance' | translate}}
+        </button>
+        <button *ngIf="modifyPerformanceTrainer != null" (click)="modifyPerformance()" class="p-2 bg-darkslategray text-line rounded-lg">
+            {{'Modified' | translate}}
         </button>
     </div>
 </div>

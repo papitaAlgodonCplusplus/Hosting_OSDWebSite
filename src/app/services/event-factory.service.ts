@@ -176,8 +176,8 @@ export class EventFactoryService {
     event.ApplicationIdentifier = 'WebClient';
 
     event.setBodyProperty(EventConstants.CLAIM_ID, claimId);
-    event.setBodyProperty(EventConstants.DATE, claimTrainer.Date);
-    event.setBodyProperty(EventConstants.TYPE, claimTrainer.Type);
+    event.setBodyProperty(EventConstants.DATE_PERFORMANCE, claimTrainer.Date);
+    event.setBodyProperty(EventConstants.TYPE_PERFORMANCE, claimTrainer.Type);
     event.setBodyProperty(EventConstants.SUMMARY, claimTrainer.Summary);
     event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, claimTrainer.JustifyingDocument);
     event.setBodyProperty(EventConstants.TRAINER_WORK_HOURS, claimTrainer.TrainerWorkHours);
@@ -185,7 +185,7 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.TRAINER_TRAVEL_EXPENSES, claimTrainer.TrainerTravelExpenses);
     event.setBodyProperty(EventConstants.TRAINER_REMUNERATION, claimTrainer.TrainerRemuneration);
 
-    console.log("Tipo: ",event.Type)
+    console.log("Evento: ",event)
     return event;
   }
 
@@ -201,8 +201,8 @@ export class EventFactoryService {
     event.ApplicationIdentifier = 'WebClient';
 
     event.setBodyProperty(EventConstants.PERFORMANCE_ID, performanceId);
-    event.setBodyProperty(EventConstants.DATE, claimTrainer.Date);
-    event.setBodyProperty(EventConstants.TYPE, claimTrainer.Type);
+    event.setBodyProperty(EventConstants.DATE_PERFORMANCE, claimTrainer.Date);
+    event.setBodyProperty(EventConstants.TYPE_PERFORMANCE, claimTrainer.Type);
     event.setBodyProperty(EventConstants.SUMMARY, claimTrainer.Summary);
     event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, claimTrainer.JustifyingDocument);
     event.setBodyProperty(EventConstants.TRAINER_WORK_HOURS, claimTrainer.TrainerWorkHours);

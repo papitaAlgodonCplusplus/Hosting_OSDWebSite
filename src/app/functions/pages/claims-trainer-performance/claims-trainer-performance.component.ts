@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 import { Claim } from 'src/app/models/claim';
 import { ClaimSelectors } from 'src/app/store/selectors';
 import { OSDService } from 'src/app/services/osd-event.services';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-claims-trainer-performance',
@@ -22,16 +23,25 @@ export class ClaimsTrainerPerformanceComponent implements OnDestroy {
   claimId!: string;
   claim$: Observable<Claim> = this.store.select(ClaimSelectors.claim);
   isErrorInForm: boolean = false;
+  reviewPerformance: any;
+  modifyPerformanceTrainer: any;
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
     private typesOfPerformanceClaimsService: TypesOfPerformanceClaimsService,
-    private OSDEventService: OSDService
+    private OSDEventService: OSDService,
+    private route: ActivatedRoute,
   ) {
     this.performanceForm = this.createRegisterForm();
   }
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      this.reviewPerformance = params['review'];
+    });
+    this.route.queryParams.subscribe(params => {
+      this.modifyPerformanceTrainer = params['modify'];
+    });
     setTimeout(() => {
       this.store.dispatch(UiActions.hideFooter())
       this.store.dispatch(UiActions.hideLeftSidebar())
@@ -53,10 +63,10 @@ export class ClaimsTrainerPerformanceComponent implements OnDestroy {
       Type: ['', [Validators.required]],
       JustifyingDocument: ['', [Validators.required]],
       Summary: ['', [Validators.required]],
-      Trainer_WorkHours: ['', [Validators.required]],
-      Trainer_TravelTime: ['', [Validators.required]],
-      Trainer_TravelExpenses: ['', [Validators.required]],
-      Trainer_Remuneration: ['', [Validators.required]],
+      TrainerWorkHours: ['', [Validators.required]],
+      TrainerTravelHours: ['', [Validators.required]],
+      TrainerTravelExpenses: ['', [Validators.required]],
+      TrainerRemuneration: ['', [Validators.required]],
       Technical_Director_Date: [''],
       Technical_Director_WorkHours: [''],
       Technical_Director_TravelTime: [''],
@@ -80,9 +90,9 @@ export class ClaimsTrainerPerformanceComponent implements OnDestroy {
   
     switch (data) {
       case "trainer":
-        travelTime = formValues.Trainer_TravelTime;
-        workHours = formValues.Trainer_WorkHours;
-        expenses = formValues.Trainer_TravelExpenses;
+        travelTime = formValues.TrainerTravelHours;
+        workHours = formValues.TrainerWorkHours;
+        expenses = formValues.TrainerTravelExpenses;
         break;
       case "technicalDirector":
         travelTime = formValues.Technical_Director_TravelTime;
@@ -104,7 +114,7 @@ export class ClaimsTrainerPerformanceComponent implements OnDestroy {
       }
     } else {
       if (data === "trainer") {
-        this.performanceForm.patchValue({ Trainer_Remuneration: '' });
+        this.performanceForm.patchValue({ TrainerRemuneration: '' });
       } else if (data === "technicalDirector") {
         this.performanceForm.patchValue({ Technical_Director_Remuneration: '' });
       }
@@ -135,16 +145,16 @@ export class ClaimsTrainerPerformanceComponent implements OnDestroy {
   }
 
   chargeRemunerationTrainer(formValues: any) {
-    const WorkHours = this.convertTimeToMinutes(formValues.Trainer_WorkHours) / 60;
-    const TransportHours = this.convertTimeToMinutes(formValues.Trainer_TravelTime) / 60;
-    const TransportExpenses = Number(formValues.Trainer_TravelExpenses);
+    const WorkHours = this.convertTimeToMinutes(formValues.TrainerWorkHours) / 60;
+    const TransportHours = this.convertTimeToMinutes(formValues.TrainerTravelHours) / 60;
+    const TransportExpenses = Number(formValues.TrainerTravelExpenses);
 
     const totalWorkHours = WorkHours * 60;
     const totalTransportHours = TransportHours * 30;
     const total: number = (totalWorkHours + totalTransportHours) + TransportExpenses;
 
     this.performanceForm.patchValue({
-      Trainer_Remuneration: total
+      TrainerRemuneration: total
     });
   }
 
@@ -170,6 +180,7 @@ export class ClaimsTrainerPerformanceComponent implements OnDestroy {
 
     this.isErrorInForm = false;
     if (this.claimId) {
+      console.log("Datos: ",this.performanceForm.value)
       this.OSDEventService.createPerformanceClaimTrainer(this.performanceForm.value, this.claimId);
     }
   }

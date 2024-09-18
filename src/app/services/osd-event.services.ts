@@ -167,7 +167,7 @@ export class OSDService {
     this.restApiService.SendOSDEvent(event).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
-        //this.HandleAddPerformanceFreeProfessionalResponse(osdEvent);
+        this.HandleAddPerformanceTrainerResponse(osdEvent);
       },
       error: (error) => {
         //TODO: Pending implementation
@@ -180,7 +180,7 @@ export class OSDService {
     this.restApiService.SendOSDEvent(event).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
-        //this.HandleAddPerformanceFreeProfessionalResponse(osdEvent);
+        this.HandleModifyPerformanceTrainerResponse(osdEvent);
       },
       error: (error) => {
         //TODO: Pending implementation
@@ -499,6 +499,7 @@ export class OSDService {
         this.osdDataService.emitClaimantAndClaimsCustomerPerformanceList(ClaimantAndClaimsCustomerPerformanceList);
         this.osdDataService.emitClaimsProcessorPerformanceList(ClaimsProcessorPerformanceList);
         this.osdDataService.emitClaimsTrainerPerformanceList(ClaimsTrainerPerformanceList);
+        console.log("Performances: ",ClaimsTrainerPerformanceList)
       }
       else{
         if (this.translate.currentLang == "en") {
@@ -1054,6 +1055,48 @@ export class OSDService {
           message = "Actuación modificada correctamente"
           this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
           this.securityDataService.emitUserAuthenticationSuccess("/project-manager");
+        }
+      }
+      this.store.dispatch(ModalActions.openAlert())
+    } catch {
+
+    }
+  }
+
+  public HandleAddPerformanceTrainerResponse(webBaseEvent: WebBaseEvent) {
+    let message: string;
+
+    try {
+      message = webBaseEvent.getBodyProperty(EventConstants.ACTION_OSD_RESULT_MESSAGE);
+
+      if (this.translate.currentLang == "en") {
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
+      } else {
+        if (message == "The performance was added correctly") {
+          message = "La actuación se agregó correctamente."
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
+          this.securityDataService.emitUserAuthenticationSuccess("/functions/file-manager");
+        }
+      }
+      this.store.dispatch(ModalActions.openAlert())
+    } catch {
+
+    }
+  }
+
+  public HandleModifyPerformanceTrainerResponse(webBaseEvent: WebBaseEvent) {
+    let message: string;
+
+    try {
+      message = webBaseEvent.getBodyProperty(EventConstants.ACTION_OSD_RESULT_MESSAGE);
+
+      if (this.translate.currentLang == "en") {
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
+      } else {
+        if (message == "The performance was modified correctly") {
+          message = "La actuación se modificó correctamente."
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
+          this.securityDataService.emitUserAuthenticationSuccess("/functions/file-manager");
         }
       }
       this.store.dispatch(ModalActions.openAlert())
