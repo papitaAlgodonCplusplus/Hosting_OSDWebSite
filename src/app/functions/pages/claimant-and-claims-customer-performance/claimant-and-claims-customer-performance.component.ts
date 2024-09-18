@@ -24,10 +24,10 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
   performanceForm: FormGroup;
   documentName!: string;
   selectedType: string | undefined;
-  type!: DropDownItem[];
+  type: DropDownItem[] = [];
   claimId!: string;
   claim$: Observable<Claim> = this.store.select(ClaimSelectors.claim);
-  performance$: Observable<ClaimantAndClaimsCustomerPerformance> = this.store.select(PerformanceSelectors.performanceClaim);
+  performance$: Observable<ClaimantAndClaimsCustomerPerformance> = this.store.select(PerformanceSelectors.claimantAndClaimsCustomerPerformance);
   performance!: ClaimantAndClaimsCustomerPerformance;
   isErrorInForm: boolean = false;
   isTrainer: boolean = true;
@@ -39,7 +39,7 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
     private typesOfPerformanceClaimsService: TypesOfPerformanceClaimsService,
     private OSDEventService: OSDService,
     private AuthenticationService: AuthenticationService,
-    private datePipe: DatePipe,
+    private datePipe: DatePipe
   ) {
     this.performanceForm = this.createForm();
   }
@@ -82,9 +82,9 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
     })
     
     if(this.performance.Id != null){
-      this.isViewPerformance = false;
-    }else{
       this.isViewPerformance = true;
+    }else{
+      this.isViewPerformance = false;
     }
 
     this.claim$.subscribe(claim => {
@@ -95,7 +95,7 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
   ngOnDestroy(): void {
     setTimeout(() => {
       this.store.dispatch(UiActions.showAll())
-      this.store.dispatch(PerformanceActions.setPerformanceClaim({ performanceClaim: {} as ClaimantAndClaimsCustomerPerformance }))
+      this.store.dispatch(PerformanceActions.setClaimantAndClaimsCustomerPerformance({ performanceClaim: {} as ClaimantAndClaimsCustomerPerformance }))
     }, 0);
   }
 
@@ -115,6 +115,10 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
   }
 
   private fillForm(performance: ClaimantAndClaimsCustomerPerformance): FormGroup {
+    this.type = [
+      ...this.typesOfPerformanceClaimsService.getTypesSubscriber(),
+      ...this.typesOfPerformanceClaimsService.getTypesClaimant()
+    ];
     let originalDate = performance.Date;
     let formatedStartDate = this.datePipe.transform(originalDate, 'yyyy-MM-dd');
     this.documentName = performance.JustifyingDocument

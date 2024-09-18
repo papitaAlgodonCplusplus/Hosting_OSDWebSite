@@ -16,4 +16,7 @@ export interface Claim {
     Valuationsubscriber: string;
     Document1: string;
     Document2: string;
+    CreditingDate: string;
+    AmountPaid: string;
+    ImprovementSavings: string;
 }

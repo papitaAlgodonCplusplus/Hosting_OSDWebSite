@@ -58,7 +58,6 @@ export class PerformanceFreeProfessionalComponent {
   validatePerformanceOnDataService(): FormGroup {
     this.performanceFreeProfessional$.subscribe(performance => {
       this.performanceFP = performance;
-      console.log("Que tiene el performance: ",performance)
     })
 
     if (this.performanceFP != undefined) {

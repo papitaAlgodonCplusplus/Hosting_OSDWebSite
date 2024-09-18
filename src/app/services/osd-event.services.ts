@@ -27,6 +27,7 @@ import { ResponseToPerformanceAssignedEvent } from '../project-manager/Interface
 import { ResponseToPerformanceFreeProfessional } from '../project-manager/Models/responseToperformanceFreeProfessional';
 import { ClaimsProcessorPerformance } from '../functions/models/ClaimsProcessorPerformance';
 import { ClaimsTrainerPerformance } from '../functions/models/ClaimsTrainerPerformance';
+import { CloseClaimFileEvent } from '../functions/models/CloseClaimFileEvent';
 
 @Injectable({
   providedIn: 'root'
@@ -362,7 +363,7 @@ export class OSDService {
     this.restApiService.SendOSDEvent(ChangePasswordEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
-        this.GetTransparencyReportsSubscriberClientsResponse(osdEvent);
+        this.HandleChangePasswordResponse(osdEvent);
       },
       error: (error) => {
         //TODO: Pending implementation
@@ -454,6 +455,19 @@ export class OSDService {
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
         this.HandleGetSubPerformanceByIdResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+
+  public CloseClaimFile(closeClaimfileForm: CloseClaimFileEvent, claimId: string) {
+    const CreateCloseClaimFileEvent: WebBaseEvent = this.eventFactoryService.CreateCloseClaimFile(closeClaimfileForm, claimId);
+    this.restApiService.SendOSDEvent(CreateCloseClaimFileEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleCloseClaimFileResponse(osdEvent);
       },
       error: (error) => {
         //TODO: Pending implementation
@@ -1358,6 +1372,26 @@ export class OSDService {
 
       this.store.dispatch(ModalActions.openAlert())
       this.securityDataService.emitUserAuthenticationSuccess("/functions/assign-client-to-Trainer");
+
+    } catch {
+
+    }
+  }
+
+
+  public HandleCloseClaimFileResponse(webBaseEvent: WebBaseEvent) {
+    let message: string;
+    try {
+      message = webBaseEvent.getBodyProperty(EventConstants.ACTION_OSD_RESULT_MESSAGE);
+      if (this.translate.currentLang == "en") {
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
+      }
+      else {
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "El reclamo fue completamente cerrado" }));
+      }
+
+      this.store.dispatch(ModalActions.openAlert())
+      this.securityDataService.emitUserAuthenticationSuccess("/functions/claims-file");
 
     } catch {
 

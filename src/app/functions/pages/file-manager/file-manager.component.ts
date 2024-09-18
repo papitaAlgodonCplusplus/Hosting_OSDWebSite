@@ -6,7 +6,7 @@ import { combineLatest, map, Observable } from 'rxjs';
 import { Claim } from 'src/app/models/claim';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { OSDService } from 'src/app/services/osd-event.services';
-import { UiActions } from 'src/app/store/actions';
+import { PerformanceActions, UiActions } from 'src/app/store/actions';
 import { ClaimSelectors } from 'src/app/store/selectors';
 import { OSDDataService } from 'src/app/services/osd-data.service';
 import { CreateClaimValuationEvent } from '../../Interface/ClaimValuation.interface';
@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
 import { UserInfo } from 'src/app/models/userInfo';
 import { EventConstants } from 'src/app/models/eventConstants';
 import { FreeProfessional } from '../../models/FreeProfessional';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-file-manager',
@@ -37,6 +38,7 @@ export class FileManagerComponent implements OnDestroy {
   document1!: string;
   document2!: string;
   allPerformances!: any[];
+  isTerminatedPerformance: boolean = false;
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
@@ -44,13 +46,13 @@ export class FileManagerComponent implements OnDestroy {
     private translate: TranslateService,
     private osdDataService: OSDDataService,
     private router: Router,
+    private datePipe: DatePipe,
     private authenticationService: AuthenticationService) {
     this.fileManager = this.createForm();
     this.closeClaimfileForm = this.createCloseClaimFileForm();
   }
 
   ngOnInit() {
-    this.assignValuation()
     setTimeout(() => {
       this.store.dispatch(UiActions.hideFooter());
       this.store.dispatch(UiActions.hideLeftSidebar());
@@ -59,9 +61,11 @@ export class FileManagerComponent implements OnDestroy {
         this.claimId = claim.Id;
         if (claim.Status == "Running") {
           this.isAssignedClaim = true;
-        } else if (claim.Status == "Finished") {
+          this.isTerminatedPerformance = true;
+        } else if (claim.Status == "Completed") {
           this.isAssignedClaim = false;
-          this.showModalRatings = true;
+          this.assignValuation(claim)
+          this.closeClaimfileForm = this.fillFormCloseClaimFile(claim);
         }
 
       })
@@ -96,10 +100,11 @@ export class FileManagerComponent implements OnDestroy {
     this.document1 = claim.Document1;
     this.document2 = claim.Document2;
     const form = this.formBuilder.group({
+      code: [claim.Code],
       claimant: [this.translate.instant(claim.Claimtype)],
       state: [this.translate.instant(claim.Status)],
       subscriber: [claim.NameCompanySubscriberclaimed],
-      amountClaimed: [claim.Amountclaimed],
+      amountClaimed: ['€ ' + claim.Amountclaimed],
       facts: [claim.Facts],
       //freeProfessional: [''],
       valuationSubscriber: [claim.Valuationsubscriber || 0],
@@ -154,11 +159,9 @@ export class FileManagerComponent implements OnDestroy {
     }
   }
 
-
   closePerformanceModal(): void {
     this.showModalPerformances = false;
   }
-
 
   onPageChange(event: any) {
     const startIndex = event.pageIndex * event.pageSize;
@@ -167,36 +170,50 @@ export class FileManagerComponent implements OnDestroy {
   }
 
   private updateDisplayedItems(startIndex: number, endIndex: number) {
-    // Asegurarte de que se pagine sobre el array que contiene todas las entidades.
     this.displayedItems = this.allPerformances.slice(startIndex, endIndex);
   }
 
-
   viewPerformance(performance: any) {
-    console.log(performance.typePerformance)
-    if(performance.typePerformance == "ClaimantCustomer"){
+    if (performance.typePerformance == "ClaimantCustomer") {
       this.router.navigate(["/functions/claimant-and-claims-customer-performance"]);
-      //this.store.dispatch(PerformanceActions.setPerformanceClaim({ performanceClaim: performance }))
+      this.store.dispatch(PerformanceActions.setClaimantAndClaimsCustomerPerformance({ performanceClaim: performance }))
     }
-    else if(performance.typePerformance == "Processor"){
+    else if (performance.typePerformance == "Processor") {
       this.router.navigate(["/functions/claims-processor-performance"]);
+      this.store.dispatch(PerformanceActions.setClaimProcessorPerformance({ performanceClaim: performance }))
     }
-    else{
+    else {
       this.router.navigate(["/functions/claims-trainer-performance"]);
-
     }
   }
 
-  assignValuation() {
+  async assignValuation(claim: Claim) {
+    console.log(claim)
     var userInfo = this.authenticationService.userInfo
     if (userInfo?.AccountType == "SubscriberCustomer") {
       this.isSubscriber = false
+      if (claim.Valuationsubscriber == "0") {
+        this.showModalRatings = true;
+      }
     }
     else if (userInfo?.AccountType == "Claimant") {
       this.isClaimant = false
+      if (claim.Valuationclaimant == "0") {
+        this.showModalRatings = true;
+      }
     }
     else {
-      this.isFreeProfessional = false
+      this.osdEventService.GetFreeProfessionalsDataEvent();
+      const freeProfessionals = await this.osdEventService.getFreeProfessionalsList();
+      if (Array.isArray(freeProfessionals)) {
+        const freeProfessionalFind: FreeProfessional | undefined = freeProfessionals.find(fp => fp.Userid == this.user.Id);
+        if (freeProfessionalFind?.FreeprofessionaltypeName == "Processor") {
+          this.isFreeProfessional = false
+          if (claim.Valuationfreeprofessionals == "0") {
+            this.showModalRatings = true;
+          }
+        }
+      }
     }
   }
 
@@ -208,6 +225,7 @@ export class FileManagerComponent implements OnDestroy {
       ValuationSubscriber: this.fileManager.value.valuationSubscriber
     }
     this.osdEventService.UpdateValuation(valuationForm);
+    this.closeModalRatings();
   }
 
   private createCloseClaimFileForm(): FormGroup {
@@ -228,6 +246,8 @@ export class FileManagerComponent implements OnDestroy {
       this.closeClaimfileForm.markAllAsTouched();
       return;
     }
+
+    this.osdEventService.CloseClaimFile(this.closeClaimfileForm.value, this.claimId);
   }
 
   async newPerformance() {
@@ -247,4 +267,20 @@ export class FileManagerComponent implements OnDestroy {
     }
   }
 
+  private fillFormCloseClaimFile(claim: Claim): FormGroup {
+    let originalDate = claim.CreditingDate;
+    let formattedDateString = originalDate.replace("p. m.", "PM").replace("a. m.", "AM");
+    let [datePart, timePart] = formattedDateString.split(' ');
+    let [day, month, year] = datePart.split('/');
+    let newDateString = `${month}/${day}/${year} ${timePart}`;
+    let parsedDate = new Date(newDateString);
+    let formattedDate = this.datePipe.transform(parsedDate, 'yyyy-MM-dd');
+
+    const form = this.formBuilder.group({
+      AAsavingsPP: ['€ ' + claim.ImprovementSavings, [Validators.required]],
+      creditingDate: [formattedDate, [Validators.required]],
+      AmountPaid: ['€ ' + claim.AmountPaid, [Validators.required]],
+    });
+    return form;
+  }
 }

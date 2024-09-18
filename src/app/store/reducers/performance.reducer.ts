@@ -5,10 +5,12 @@ import { PerformanceBuy } from "src/app/project-manager/Models/performanceBuy";
 import { PerformanceFreeProfessional } from "src/app/project-manager/Models/performanceFreeProfessional";
 import { ResponseToPerformanceFreeProfessional } from "src/app/project-manager/Models/responseToperformanceFreeProfessional";
 import { ClaimantAndClaimsCustomerPerformance } from "src/app/functions/models/ClaimantAndClaimsCustomerPerformance";
+import { ClaimsProcessorPerformance } from "src/app/functions/models/ClaimsProcessorPerformance";
 
 export interface PerformanceState {  
     performanceBuy: PerformanceBuy,
-    performanceClaim: ClaimantAndClaimsCustomerPerformance,
+    claimantAndClaimsCustomerPerformance: ClaimantAndClaimsCustomerPerformance,
+    claimsProcessorPerformance: ClaimsProcessorPerformance,
     performanceFreeProfessional: PerformanceFreeProfessional,
     responseToPerformanceFreeProfessional: ResponseToPerformanceFreeProfessional,
     fileCode: string,
@@ -18,7 +20,8 @@ export interface PerformanceState {
 
 const initialState: PerformanceState = {   
     performanceBuy: {} as PerformanceBuy,
-    performanceClaim: {} as ClaimantAndClaimsCustomerPerformance,
+    claimantAndClaimsCustomerPerformance: {} as ClaimantAndClaimsCustomerPerformance,
+    claimsProcessorPerformance : {} as ClaimsProcessorPerformance,
     performanceFreeProfessional: {} as PerformanceFreeProfessional,
     responseToPerformanceFreeProfessional: {} as ResponseToPerformanceFreeProfessional,
     fileCode: "",
@@ -31,9 +34,13 @@ export const performanceReducers = createReducer(initialState,
         ...currentState,
         performanceBuy: performanceBuy
     })),
-    on(PerformanceActions.setPerformanceClaim, (currentState, { performanceClaim }) => ({
+    on(PerformanceActions.setClaimantAndClaimsCustomerPerformance, (currentState, { performanceClaim }) => ({
         ...currentState,
-        performanceClaim: performanceClaim
+        claimantAndClaimsCustomerPerformance: performanceClaim
+    })),
+    on(PerformanceActions.setClaimProcessorPerformance, (currentState, { performanceClaim }) => ({
+        ...currentState,
+        claimsProcessorPerformance: performanceClaim
     })),
     on(PerformanceActions.setPerformanceFreeProfessional, (currentState, { performanceFreeProfessional }) => ({
         ...currentState,

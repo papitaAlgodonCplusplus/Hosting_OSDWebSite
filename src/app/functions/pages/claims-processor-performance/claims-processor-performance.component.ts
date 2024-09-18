@@ -2,12 +2,16 @@ import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
-import { UiActions } from 'src/app/store/actions';
+import { PerformanceActions, UiActions } from 'src/app/store/actions';
 import { TypesOfPerformanceClaimsService } from '../../services/types-of-performance-claims.service';
 import { Observable } from 'rxjs';
 import { Claim } from 'src/app/models/claim';
-import { ClaimSelectors } from 'src/app/store/selectors';
+import { ClaimSelectors, PerformanceSelectors } from 'src/app/store/selectors';
 import { OSDService } from 'src/app/services/osd-event.services';
+import { ClaimsProcessorPerformance } from '../../models/ClaimsProcessorPerformance';
+import { DatePipe } from '@angular/common';
+import { FreeProfessional } from '../../models/FreeProfessional';
+import { AuthenticationService } from 'src/app/services/authentication.service';
 
 @Component({
   selector: 'app-claims-processor-performance',
@@ -22,11 +26,18 @@ export class ClaimsProcessorPerformanceComponent implements OnDestroy {
   claimId!: string;
   claim$: Observable<Claim> = this.store.select(ClaimSelectors.claim);
   isErrorInForm: boolean = false;
+  performanceObservable$ : Observable<ClaimsProcessorPerformance> = this.store.select(PerformanceSelectors.claimsProcessorPerformance)
+  performance! : ClaimsProcessorPerformance;
+  isUnrevised! : boolean;
+  isView! : boolean;
+  isTrainer: boolean = false
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
     private typesOfPerformanceClaimsService: TypesOfPerformanceClaimsService,
-    private OSDEventService: OSDService
+    private OSDEventService: OSDService,
+    private datePipe: DatePipe,
+    private AuthenticationService: AuthenticationService,
   ) {
     this.performanceForm = this.createRegisterForm();
   }
@@ -37,13 +48,48 @@ export class ClaimsProcessorPerformanceComponent implements OnDestroy {
       this.store.dispatch(UiActions.hideLeftSidebar())
       this.type = this.typesOfPerformanceClaimsService.getTypesProcessor()
     }, 0);
+
     this.claim$.subscribe(claim => {
       this.claimId = claim.Id;
     });
+
+    this.performanceObservable$.subscribe(performance =>{
+      this.performance = performance
+      if(this.performance){
+        this.performanceForm = this.fillForm(performance)
+        if(this.performance.Status == "Running"){
+          this.isUnrevised = false;
+        }else{
+          this.isUnrevised = true;
+        }
+      }
+    })
+
+    if(Object.keys(this.performance).length > 0){
+      this.isView = true;
+    }
+    else{
+      this.isView = false;
+    }
+
+    this.OSDEventService.GetFreeProfessionalsDataEvent();
+        this.OSDEventService.getFreeProfessionalsList()
+          .then(freeProfessionals => {
+            if (Array.isArray(freeProfessionals)) {
+              var freeProfessionalFind: FreeProfessional = freeProfessionals.find(fp => fp.Userid == this.AuthenticationService.userInfo?.Id)
+              if (freeProfessionalFind.FreeprofessionaltypeName == "Trainer") {
+                console.log(freeProfessionalFind)
+                this.isTrainer = true
+              }
+            }
+          })
   }
+
   ngOnDestroy(): void {
     setTimeout(() => {
       this.store.dispatch(UiActions.showAll())
+      this.store.dispatch(PerformanceActions.setClaimProcessorPerformance({ performanceClaim: {} as ClaimsProcessorPerformance }))
+
     }, 0);
   }
 
@@ -62,6 +108,32 @@ export class ClaimsProcessorPerformanceComponent implements OnDestroy {
       Trainer_TravelTime: [''],
       Trainer_TravelExpenses: [''],
       Trainer_Remuneration: ['']
+    });
+    return form;
+  }
+
+  private fillForm(performance : ClaimsProcessorPerformance): FormGroup {
+    let originalDate = performance.Date;
+    let formatedDate = this.datePipe.transform(originalDate, 'yyyy-MM-dd');
+
+    let originalTrainer_Date = performance.Date;
+    let formatedTrainer_Date = this.datePipe.transform(originalTrainer_Date, 'yyyy-MM-dd');
+
+    this.documentName = performance.JustifyingDocument;
+    const form = this.formBuilder.group({
+      Date: [formatedDate, [Validators.required]],
+      Type: [performance.Type, [Validators.required]],
+      JustifyingDocument: [performance.JustifyingDocument, [Validators.required]],
+      Summary: [performance.Summary, [Validators.required]],
+      Processor_WorkHours: [performance.Processor_WorkHours, [Validators.required]],
+      Processor_TravelTime: [performance.Processor_TravelTime, [Validators.required]],
+      Processor_TravelExpenses: [performance.Processor_TravelExpenses, [Validators.required]],
+      Processor_Remuneration: [performance.Processor_Remuneration, [Validators.required]],
+      Trainer_Date: [formatedTrainer_Date],
+      Trainer_WorkHours: [performance.Trainer_WorkHours],
+      Trainer_TravelTime: [performance.Trainer_TravelTime],
+      Trainer_TravelExpenses: [performance.Trainer_TravelExpenses],
+      Trainer_Remuneration: [performance.Trainer_Remuneration]
     });
     return form;
   }

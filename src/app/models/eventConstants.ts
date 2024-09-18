@@ -210,6 +210,10 @@ export class EventConstants {
 
   public static SUBSCRIBER_ID: string = "SubscriberId"
 
+  public static AMOUNT_PAID: string = "AmountPaid"
+  public static PAYMENT_DATE: string = "PaymentDate"
+  public static SAVINGS_INSTITUTION: string = "SavingsInstitution"
+  
   //#endregion
   constructor() {
 
