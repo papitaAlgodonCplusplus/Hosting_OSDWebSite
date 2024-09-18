@@ -26,6 +26,7 @@ import { Router } from '@angular/router';
 import { ResponseToPerformanceAssignedEvent } from '../project-manager/Interface/responseToPerformanceAssignedEvent.interface';
 import { ResponseToPerformanceFreeProfessional } from '../project-manager/Models/responseToperformanceFreeProfessional';
 import { ClaimsProcessorPerformance } from '../functions/models/ClaimsProcessorPerformance';
+import { ClaimsTrainerPerformance } from '../functions/models/ClaimsTrainerPerformance';
 
 @Injectable({
   providedIn: 'root'
@@ -153,6 +154,32 @@ export class OSDService {
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
         this.HandleModifyPerformanceFreeProfessionalResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+
+  public createPerformanceClaimTrainer(performanceTrainer: ClaimsTrainerPerformance, claimId: string) {
+    const event: WebBaseEvent = this.eventFactoryService.CreateClaimTrainerEvent(performanceTrainer, claimId);
+    this.restApiService.SendOSDEvent(event).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        //this.HandleAddPerformanceFreeProfessionalResponse(osdEvent);
+      },
+      error: (error) => {
+        //TODO: Pending implementation
+      }
+    });
+  }
+
+  public ModifyPerformanceClaimTrainer(performanceTrainer: ClaimsTrainerPerformance, performanceId: string) {
+    const event: WebBaseEvent = this.eventFactoryService.ModifyPerformanceTrainerEvent(performanceTrainer, performanceId);
+    this.restApiService.SendOSDEvent(event).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        //this.HandleAddPerformanceFreeProfessionalResponse(osdEvent);
       },
       error: (error) => {
         //TODO: Pending implementation

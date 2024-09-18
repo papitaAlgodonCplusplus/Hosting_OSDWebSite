@@ -170,8 +170,20 @@ export class ClaimsTrainerPerformanceComponent implements OnDestroy {
 
     this.isErrorInForm = false;
     if (this.claimId) {
-      //this.OSDEventService.createPerformanceClaim(this.performanceForm.value, this.claimId);
+      this.OSDEventService.createPerformanceClaimTrainer(this.performanceForm.value, this.claimId);
     }
   }
+
+  modifyPerformance(): void {
+    if (this.performanceForm.invalid) {
+      this.performanceForm.markAllAsTouched();
+      this.isErrorInForm = true;
+      return;
+    }
+
+    this.isErrorInForm = false;
+      this.OSDEventService.ModifyPerformanceClaimTrainer(this.performanceForm.value, this.claimId);
+  }
+
 }
 
