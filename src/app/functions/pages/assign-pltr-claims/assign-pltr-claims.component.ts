@@ -9,6 +9,7 @@ import { Claim } from 'src/app/models/claim';
 import { UserInfo } from 'src/app/models/userInfo';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { FreeProfessional } from '../../models/FreeProfessional';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-assign-pltr-claims',
@@ -58,13 +59,14 @@ export class AssignPLTRClaimsComponent implements OnDestroy {
     setTimeout(() => {
       this.store.dispatch(UiActions.hideLeftSidebar())
       this.store.dispatch(UiActions.hideFooter())
-      if (this.authenticationService.userInfo) {
-        this.user = this.authenticationService.userInfo
-        this.osdEventService.gettingClaimsData(this.user.Id, this.user.AccountType)
-      }
     }, 0);
 
-    this.osdEventService.getClaimList().then(claims => {
+    if (this.authenticationService.userInfo) {
+      this.user = this.authenticationService.userInfo
+      this.osdEventService.gettingClaimsData(this.user.Id, this.user.AccountType)
+    }
+
+    this.osdDataService.ClaimsList$.subscribe(claims => {
       this.claims = claims
     },)
 
@@ -73,7 +75,6 @@ export class AssignPLTRClaimsComponent implements OnDestroy {
     })
 
     this.osdDataService.usersFreeProfessionalTR$.subscribe(item => {
-      console.log(item)
       this.users = item;
     })
 
@@ -109,16 +110,5 @@ export class AssignPLTRClaimsComponent implements OnDestroy {
 
   closeModal(): void {
     this.showModal = false
-  }
-
-  showDate(dateAndHour: string): string {
-    const [datePart, timePart] = dateAndHour.split(' ');
-    const [day, month, year] = datePart.split('/');
-    const [hour, minute, second] = timePart.split(':');
-
-    const fechaConHora = new Date(+year, +month - 1, +day, +hour, +minute, +second);
-    const soloFecha = fechaConHora.toLocaleDateString();
-
-    return soloFecha;
   }
 }

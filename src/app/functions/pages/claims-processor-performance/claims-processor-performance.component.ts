@@ -99,7 +99,7 @@ export class ClaimsProcessorPerformanceComponent implements OnDestroy {
     const form = this.formBuilder.group({
       Date: ['', [Validators.required]],
       Type: ['', [Validators.required]],
-      JustifyingDocument: ['', [Validators.required]],
+      JustifyingDocument: [''],
       Summary: ['', [Validators.required]],
       Processor_WorkHours: ['', [Validators.required]],
       Processor_TravelTime: ['', [Validators.required]],
@@ -125,7 +125,7 @@ export class ClaimsProcessorPerformanceComponent implements OnDestroy {
     const form = this.formBuilder.group({
       Date: [formatedDate, [Validators.required]],
       Type: [performance.Type, [Validators.required]],
-      JustifyingDocument: [performance.JustifyingDocument, [Validators.required]],
+      JustifyingDocument: [performance.JustifyingDocument],
       Summary: [performance.Summary, [Validators.required]],
       Processor_WorkHours: [performance.Processor_WorkHours, [Validators.required]],
       Processor_TravelTime: [performance.Processor_TravelTime, [Validators.required]],
@@ -144,7 +144,6 @@ export class ClaimsProcessorPerformanceComponent implements OnDestroy {
     const justifyingDocument = document.getElementById('JustifyingDocument') as HTMLInputElement;
     if (justifyingDocument.value !== null) {
       this.documentName = justifyingDocument.value;
-      this.isErrorInForm = false;
     }
   }
 

@@ -23,9 +23,9 @@
                         <td class="text-center border-y px-4 py-2">{{ claim.Code}}</td>
                         <td class="text-center border-y px-4 py-2">{{ claim.Claimtype | translate }}</td>
                         <td class="text-center border-y px-4 py-2">{{ claim.Facts }}</td>
-                        <td class="border-y px-3 py-2">{{ showDate(claim.Date) }}</td>
+                        <td class="border-y px-3 py-2">{{ claim.Date }}</td>
                         <td class="text-center border-y px-4 py-2">
-                            <button *ngIf="claim.Status != 'Running'; else isAssigned"
+                            <button *ngIf="claim.Status == 'Unassigned'; else isAssigned"
                                 class="rounded-xl bg-line text-darkslategray p-2" (click)="openModal(claim)"
                                 data-modal-target="default-modal">
                                 {{'assignProcessor' | translate}}

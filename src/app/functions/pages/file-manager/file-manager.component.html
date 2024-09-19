@@ -24,12 +24,10 @@
     <div class="py-5 flex flex-col justify-center px-2 h-full">
         <form [formGroup]="fileManager" (ngSubmit)="onSubmit()" autocomplete="off" class="flex flex-wrap items-center">
 
-            <div class="w-full flex">
-                <shared-input-field [readOnly]="true" class="w-full lg:w-1/2" fieldName="code"
-                    label="{{'Code' | translate}}" inputType="text" [formGroup]="fileManager"
-                    [bgColor]="'bg-white-lightbone'">
-                </shared-input-field>
-            </div>
+            <shared-input-field [readOnly]="true" class="w-full lg:w-1/2" fieldName="code"
+                label="{{'Code' | translate}}" inputType="text" [formGroup]="fileManager"
+                [bgColor]="'bg-white-lightbone'">
+            </shared-input-field>
 
             <div class="w-full ">
                 <shared-text-area [readOnly]="true" class="w-full lg:w-1/2" fieldName="facts"
@@ -81,17 +79,17 @@
             <div class="w-full border-b px-2">
                 <h1>{{'Processor' | translate}}</h1>
             </div>
-            <shared-input-field [readOnly]="user.AccountType != 'FreeProfessional' || !isTerminatedPerformance" class="w-full lg:w-1/2"
-                fieldName="AAsavingsPP" label="{{'amountPaidByOtherParty' | translate}}" inputType="text"
-                [formGroup]="closeClaimfileForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+            <shared-input-field [readOnly]="user.AccountType != 'FreeProfessional' || !isTerminatedPerformance"
+                class="w-full lg:w-1/2" fieldName="AAsavingsPP" label="{{'amountPaidByOtherParty' | translate}}"
+                inputType="text" [formGroup]="closeClaimfileForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-            <shared-input-field [readOnly]="user.AccountType != 'FreeProfessional'  || !isTerminatedPerformance" class="w-full lg:w-1/2"
-                fieldName="AmountPaid" label="{{'institutionalImprovementSavings' | translate}}" inputType="text"
-                [formGroup]="closeClaimfileForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+            <shared-input-field [readOnly]="user.AccountType != 'FreeProfessional'  || !isTerminatedPerformance"
+                class="w-full lg:w-1/2" fieldName="AmountPaid" label="{{'institutionalImprovementSavings' | translate}}"
+                inputType="text" [formGroup]="closeClaimfileForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-            <shared-input-field [readOnly]="user.AccountType != 'FreeProfessional'  || !isTerminatedPerformance" class="w-full lg:w-1/2"
-                fieldName="creditingDate" label="{{'creditingDate' | translate}}" inputType="date"
-                [formGroup]="closeClaimfileForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+            <shared-input-field [readOnly]="user.AccountType != 'FreeProfessional'  || !isTerminatedPerformance"
+                class="w-full lg:w-1/2" fieldName="creditingDate" label="{{'creditingDate' | translate}}"
+                inputType="date" [formGroup]="closeClaimfileForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
         </form>
     </div>
 </div>
@@ -164,29 +162,28 @@
         <div class="justify-center">
             <div class="p-3 flex flex-col items-center">
                 <div class="w-full flex-col flex justify-end space-y-3">
-                    <form [formGroup]="fileManager" autocomplete="off"
-                        class="w-full flex flex-col space-y-3 px-1 ">
+                    <form [formGroup]="fileManager" autocomplete="off" class="w-full flex flex-col space-y-3 px-1 ">
                         <h1 class="text-center text-darkslategray font-medium">{{'Valoration' | translate}}</h1>
                         <div
                             class="flex flex-col items-center space-x-0 lg:flex-row lg:space-x-3 md:flex-row md:space-x-3">
 
                             <div *ngIf="isSubscriber" class="flex flex-col w-full ">
                                 <label for="valuationSubscriber">{{'institutionOsdValuation' | translate}}</label>
-                                <input formControlName="valuationSubscriber"
-                                    id="valuationSubscriber" class=" border p-2" type="number" max="5" min="0">
+                                <input formControlName="valuationSubscriber" id="valuationSubscriber"
+                                    class=" border p-2" type="number" max="5" min="0">
                             </div>
 
                             <div *ngIf="isClaimant" class="flex flex-col w-full ">
                                 <label for="valuationClaimant">{{'institutionClaimantRating' | translate}}</label>
-                                <input formControlName="valuationClaimant"
-                                    id="valuationClaimant" class="border p-2" type="number" max="5" min="0">
+                                <input formControlName="valuationClaimant" id="valuationClaimant" class="border p-2"
+                                    type="number" max="5" min="0">
                             </div>
 
                             <div *ngIf="isFreeProfessional" class="flex flex-col w-full ">
                                 <label for="valuationFreeProfessionals">{{'institutionValuationFreeOsdProfessionals' |
                                     translate}}</label>
-                                <input formControlName="valuationFreeProfessionals"
-                                    id="valuationFreeProfessionals" class="border p-2" type="number" max="5" min="0">
+                                <input formControlName="valuationFreeProfessionals" id="valuationFreeProfessionals"
+                                    class="border p-2" type="number" max="5" min="0">
                             </div>
                         </div>
                         <div class="flex justify-center">

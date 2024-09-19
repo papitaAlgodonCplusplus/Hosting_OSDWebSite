@@ -65,6 +65,7 @@ export class FileManagerComponent implements OnDestroy {
         } else if (claim.Status == "Completed") {
           this.isAssignedClaim = false;
           this.assignValuation(claim)
+          console.log(claim)
           this.closeClaimfileForm = this.fillFormCloseClaimFile(claim);
         }
 
@@ -99,6 +100,7 @@ export class FileManagerComponent implements OnDestroy {
   private fillForm(claim: Claim): FormGroup {
     this.document1 = claim.Document1;
     this.document2 = claim.Document2;
+
     const form = this.formBuilder.group({
       code: [claim.Code],
       claimant: [this.translate.instant(claim.Claimtype)],
@@ -189,7 +191,6 @@ export class FileManagerComponent implements OnDestroy {
   }
 
   async assignValuation(claim: Claim) {
-    console.log(claim)
     var userInfo = this.authenticationService.userInfo
     if (userInfo?.AccountType == "SubscriberCustomer") {
       this.isSubscriber = true
@@ -216,10 +217,6 @@ export class FileManagerComponent implements OnDestroy {
         }
       }
     }
-
-    console.log(this.isSubscriber)
-    console.log(this.isClaimant)
-    console.log(this.isFreeProfessional)
   }
 
   updateValuation() {
@@ -273,17 +270,15 @@ export class FileManagerComponent implements OnDestroy {
   }
 
   private fillFormCloseClaimFile(claim: Claim): FormGroup {
-    let originalDate = claim.CreditingDate;
-    let formattedDateString = originalDate.replace("p. m.", "PM").replace("a. m.", "AM");
-    let [datePart, timePart] = formattedDateString.split(' ');
-    let [day, month, year] = datePart.split('/');
-    let newDateString = `${month}/${day}/${year} ${timePart}`;
-    let parsedDate = new Date(newDateString);
-    let formattedDate = this.datePipe.transform(parsedDate, 'yyyy-MM-dd');
-
+    console.log(claim)
+    let originalDate = claim.Date; 
+    let parts = originalDate.split("/");
+    let formattedDate = new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0])); // Create a valid Date object
+    let formatedStartDate = this.datePipe.transform(formattedDate, 'yyyy-MM-dd');
+    
     const form = this.formBuilder.group({
       AAsavingsPP: ['€ ' + claim.ImprovementSavings, [Validators.required]],
-      creditingDate: [formattedDate, [Validators.required]],
+      creditingDate: [formatedStartDate, [Validators.required]],
       AmountPaid: ['€ ' + claim.AmountPaid, [Validators.required]],
     });
     return form;

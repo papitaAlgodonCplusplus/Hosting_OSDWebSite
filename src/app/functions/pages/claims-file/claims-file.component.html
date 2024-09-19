@@ -31,7 +31,7 @@
                                     [ngClass]="{'text-red-500' : claim.Status == 'Unassigned',
                                                                                'text-yellow-500' : claim.Status == 'Running',
                                                                                'text-green-500' : claim.Status == 'Completed'}"></i>{{ claim.Status | translate }}</td>
-                            <td class="p-2 border-y text-center">{{ showDate(claim.Date) }}</td>
+                            <td class="p-2 border-y text-center">{{ claim.Date }}</td>
                         </tr>
                     </tbody>
                 </ng-container>

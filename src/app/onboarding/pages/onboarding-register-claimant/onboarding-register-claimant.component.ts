@@ -158,7 +158,9 @@ export class OnboardingRegisterClaimantComponent {
   }
 
   private createAccountForm(): FormGroup {
+    const currentDate = new Date().toISOString().split('T')[0];
     const form = this.formBuilder.group({
+      Date:[currentDate],
       claimtype: ['', [Validators.required]],
       subscriberClaimed: ['', [Validators.required]],
       serviceProvided: ['', [Validators.required]],

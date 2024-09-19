@@ -14,9 +14,9 @@
                 label="{{ 'Summary' | translate }}" inputType="text" [formGroup]="performanceForm"
                 [bgColor]="'bg-white-lightbone'"></shared-text-area>
 
-            <div class="flex-1 flex flex-col items-center space-y-1">
+            <div *ngIf="documentName != ''" class="flex-1 flex flex-col items-center space-y-1">
                 <label for="JustifyingDocument" class="text-center">{{'justifyingDocument' |
-                    translate}}</label>
+                    translate}} <p *ngIf="!isViewPerformance" class="text-sm font-medium text-red-500">({{'Optional' | translate}})</p></label> 
                 <div class="flex items-center justify-center flex-col space-y-1">
                     <input type="file" id="JustifyingDocument" formControlName="JustifyingDocument" class="hidden"
                         (change)="displayFileName()">
@@ -24,7 +24,7 @@
                         class="cursor-pointer p-2 text-sm bg-darkslategray text-white rounded-xl">
                         {{'seleccionar_archivo' | translate}}
                     </label>
-                    <label *ngIf="isViewPerformance" for="JustifyingDocument"
+                    <label *ngIf="isViewPerformance && documentName != ''" for="JustifyingDocument"
                         class="cursor-pointer p-2 text-sm bg-darkslategray text-white rounded-xl">
                         {{'Download' | translate}}
                     </label>

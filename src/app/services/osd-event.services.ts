@@ -28,6 +28,7 @@ import { ResponseToPerformanceFreeProfessional } from '../project-manager/Models
 import { ClaimsProcessorPerformance } from '../functions/models/ClaimsProcessorPerformance';
 import { ClaimsTrainerPerformance } from '../functions/models/ClaimsTrainerPerformance';
 import { CloseClaimFileEvent } from '../functions/models/CloseClaimFileEvent';
+import { claim } from '../store/selectors/claim.selectors';
 
 @Injectable({
   providedIn: 'root'
@@ -241,6 +242,7 @@ export class OSDService {
   }
 
   public addClaim(claimForm: Form) {
+    console.log(claimForm)
     const addClaimEvent: WebBaseEvent = this.eventFactoryService.CreateAddClaimEvent(claimForm);
     this.restApiService.SendOSDEvent(addClaimEvent).subscribe({
       next: (response) => {
@@ -499,9 +501,9 @@ export class OSDService {
         this.osdDataService.emitClaimantAndClaimsCustomerPerformanceList(ClaimantAndClaimsCustomerPerformanceList);
         this.osdDataService.emitClaimsProcessorPerformanceList(ClaimsProcessorPerformanceList);
         this.osdDataService.emitClaimsTrainerPerformanceList(ClaimsTrainerPerformanceList);
-        console.log("Performances: ",ClaimsTrainerPerformanceList)
+        console.log("Performances: ", ClaimsTrainerPerformanceList)
       }
-      else{
+      else {
         if (this.translate.currentLang == "en") {
           this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "No performance has been created" }));
         } else {
@@ -551,8 +553,11 @@ export class OSDService {
   public HandleGettingClaimListResponse(webBaseEvent: WebBaseEvent) {
     try {
       if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['ClaimList']) {
-        this.claims = webBaseEvent.Body['ClaimList'];
-        this.claimsResponse = true;
+        var claims = webBaseEvent.Body['ClaimList'];
+
+        if (claims.length > 0) {
+          this.osdDataService.emitClaimsListSuccess(claims)
+        }
       } else {
         this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'No hay reclamaciones existentes' }));
       }
@@ -567,7 +572,6 @@ export class OSDService {
       if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['FreeProfessionalList']) {
         var usersFreeProfessionalsTR = webBaseEvent.Body['OsdUserList'];
         var freeProfessionalsTR = webBaseEvent.Body['FreeProfessionalList'];
-        console.log(usersFreeProfessionalsTR)
         if (usersFreeProfessionalsTR.length > 0) {
           this.freeProfessionalsTRResponse = true;
           this.osdDataService.emitFreeProfessionalTR(freeProfessionalsTR)
@@ -860,11 +864,11 @@ export class OSDService {
       var Message = webBaseEvent.getBodyProperty(EventConstants.MESSAGE);
       if (Message != null) {
         if (this.translate.currentLang == "en") {
-            this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: Message }));
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: Message }));
         } else {
           Message = "Se modifico correctamente la informacion del usuario (Vuelve a iniciar session para visualizar los cambios)";
           this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: Message }));
-      }
+        }
       }
       this.store.dispatch(ModalActions.openAlert());
     }
@@ -872,7 +876,7 @@ export class OSDService {
       //TODO: create exception event and send to local file or core
     }
   }
-  
+
   public GetTransparencyReportsIncomeExpensesResponse(webBaseEvent: WebBaseEvent) {
     try {
       var totalOsdExpenses = webBaseEvent.getBodyProperty(EventConstants.TOTAL_OSD_EXPENSES);
@@ -944,7 +948,7 @@ export class OSDService {
 
     try {
       createPerformanceResultMessage = webBaseEvent.getBodyProperty(EventConstants.ACTION_OSD_RESULT_MESSAGE);
-     
+
       if (createPerformanceResultMessage) {
         if (this.translate.currentLang == "en") {
           this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: createPerformanceResultMessage }));
@@ -1109,15 +1113,25 @@ export class OSDService {
     let message: string;
 
     try {
-      message = webBaseEvent.getBodyProperty(EventConstants.MESSAGE);
-      this.store.dispatch(ModalActions.changeAlertType({ alertType: 'success' }));
-      this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
-      this.store.dispatch(ModalActions.openAlert())
-      if (this.authenticationService.userInfo != null) {
-        this.securityDataService.emitUserAuthenticationSuccess("/home");
-      }
-      else {
-        this.securityDataService.emitUserAuthenticationSuccess("/auth");
+      message = webBaseEvent.getBodyProperty(EventConstants.ACTION_OSD_RESULT_MESSAGE);
+      if (message != "") {
+
+        if (this.translate.currentLang == "en") {
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
+        }
+        else {
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "El reclamo fue creado correctamente" }));
+        }
+
+        this.store.dispatch(ModalActions.changeAlertType({ alertType: 'success' }));
+        this.store.dispatch(ModalActions.openAlert())
+
+        if (this.authenticationService.userInfo != null) {
+          this.securityDataService.emitUserAuthenticationSuccess("/home");
+        }
+        else {
+          this.securityDataService.emitUserAuthenticationSuccess("/auth");
+        }
       }
     } catch {
 

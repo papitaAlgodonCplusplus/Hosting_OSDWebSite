@@ -72,6 +72,8 @@ export class OSDDataService {
 
   private SubPerformanceByIdList = new Subject<ResponseToPerformanceFreeProfessional[]>();
 
+  private ClaimsList = new Subject<Claim[]>();
+
   actionRegisterSuccess$ = this.actionRegisterSuccessSubject.asObservable();
   userRegisterSuccess$ = this.userRegisterSuccessSubject.asObservable();
   verifyEmailSuccess$ = this.verifyEmailSuccessSubject.asObservable();
@@ -129,6 +131,8 @@ export class OSDDataService {
 
   SubPerformanceByIdList$ = this.SubPerformanceByIdList.asObservable();
   
+  ClaimsList$ = this.ClaimsList.asObservable();
+
   constructor() {
   }
 
@@ -279,5 +283,9 @@ export class OSDDataService {
 
   emitSubPerformanceByIdListSuccess(data: ResponseToPerformanceFreeProfessional[]) {
     this.SubPerformanceByIdList.next(data);
+  }
+
+  emitClaimsListSuccess(data: Claim[]) {
+    this.ClaimsList.next(data);
   }
 }

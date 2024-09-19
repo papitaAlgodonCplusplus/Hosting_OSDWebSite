@@ -10,13 +10,13 @@
                 [selectedItem]="selectedType">
             </shared-simple-dropdown>
 
-            <shared-input-field [readOnly]="isView" class="w-full md:w-1/2" fieldName="Summary"
+            <shared-text-area [readOnly]="isView" class="w-full md:w-1/2" fieldName="Summary"
                 label="{{ 'Summary' | translate }}" inputType="text" [formGroup]="performanceForm"
-                [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                [bgColor]="'bg-white-lightbone'"></shared-text-area>
 
-            <div class="flex-1 flex flex-col items-center space-y-1">
+            <div *ngIf="documentName != ''" class="flex-1 flex flex-col items-center space-y-1">
                 <label for="JustifyingDocument" class="text-center">{{'justifyingDocument' |
-                    translate}}</label>
+                    translate}} <p *ngIf="!isView" class="text-sm font-medium text-red-500">({{'Optional' | translate}})</p></label>
                 <div class="flex items-center justify-center flex-col space-y-1">
                     <input type="file" id="JustifyingDocument" formControlName="JustifyingDocument" class="hidden"
                         (change)="displayFileName()">
@@ -29,7 +29,6 @@
                         {{'Download' | translate}}
                     </label>
                     <span class="ml-2 text-sm text-darkslategray">{{documentName}}</span>
-                    <p *ngIf="isErrorInForm" class="text-sm text-red-500">Este campo es obligatorio</p>
                 </div>
             </div>
         </div>

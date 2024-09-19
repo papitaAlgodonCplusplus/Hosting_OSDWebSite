@@ -6,6 +6,7 @@ import { AuthenticationService } from 'src/app/services/authentication.service';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { ClaimActions, PerformanceActions, UiActions } from 'src/app/store/actions';
 import { Router, ActivatedRoute  } from '@angular/router';
+import { OSDDataService } from 'src/app/services/osd-data.service';
 
 @Component({
   selector: 'app-claims-file',
@@ -21,25 +22,25 @@ export class ClaimsFileComponent {
     private osdEventService: OSDService,
     private store: Store,
     private router: Router,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private osdDataService: OSDDataService,
   ) { }
 
   ngOnInit(): void {
     setTimeout(() => {
       this.store.dispatch(UiActions.hideLeftSidebar());
       this.store.dispatch(UiActions.hideFooter());
-      if (this.authenticationService.userInfo) {
-        this.user = this.authenticationService.userInfo
-        this.osdEventService.gettingClaimsData(this.user.Id, this.user.AccountType)
-      }
     }, 0);
 
-    setTimeout(() => {
-      this.osdEventService.getClaimList().then(claims => {
-        this.claims = claims
-        this.updateDisplayedItems();
-      },)
-    }, 1000);
+    if (this.authenticationService.userInfo) {
+      this.user = this.authenticationService.userInfo
+      this.osdEventService.gettingClaimsData(this.user.Id, this.user.AccountType)
+    }
+    
+    this.osdDataService.ClaimsList$.subscribe(claims => {
+      this.claims = claims;
+      this.updateDisplayedItems();
+    },)
   }
 
   ngOnDestroy(): void {
@@ -47,18 +48,6 @@ export class ClaimsFileComponent {
       this.store.dispatch(UiActions.showAll());
     }, 0);
   }
-
-  showDate(dateAndHour: string): string {
-    const [datePart, timePart] = dateAndHour.split(' ');
-    const [day, month, year] = datePart.split('/');
-    const [hour, minute, second] = timePart.split(':');
-
-    const fechaConHora = new Date(+year, +month - 1, +day, +hour, +minute, +second);
-    const soloFecha = fechaConHora.toLocaleDateString();
-
-    return soloFecha;
-  }
-
 
   selectClaim(claim: Claim) {
     this.store.dispatch(ClaimActions.setClaim({ claim: claim }))

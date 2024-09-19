@@ -103,7 +103,7 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
     const form = this.formBuilder.group({
       Date: ['', [Validators.required]],
       Type: ['', [Validators.required]],
-      JustifyingDocument: ['', [Validators.required]],
+      JustifyingDocument: [''],
       Summary: ['', [Validators.required]],
       Trainer_Date: [''],
       Trainer_WorkHours: [''],
