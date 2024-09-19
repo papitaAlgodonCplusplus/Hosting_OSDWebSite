@@ -48,22 +48,22 @@
             <span class="">(Formato de horas deber ser 0:00)</span>
         </div>
         <div class="flex flex-wrap pt-3">
-            <shared-input-field class="w-full md:w-1/3" fieldName="ForecastWorkHours"
-                label="{{'ForecastWorkHours'|translate}}" inputType="text" [formGroup]="performanceForm"
-                [bgColor]="'bg-white-lightbone'" (change)="verifiedFormat('forecast')">
-            </shared-input-field>
+            <shared-time-input-component class="w-full md:w-1/2" fieldName="ForecastWorkHours" label="{{'ForecastWorkHours'|translate}}"
+                inputType="time" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"
+                (input)="verifiedFormat('forecast')">
+            </shared-time-input-component>
 
-            <shared-input-field class="w-full md:w-1/3" fieldName="ForecastTravelTime"
-                label="{{'ForecastTravelTime'|translate}}" inputType="text" [formGroup]="performanceForm"
-                [bgColor]="'bg-white-lightbone'" (change)="verifiedFormat('forecast')">
-            </shared-input-field>
-
-            <shared-input-field class="w-full md:w-1/3" fieldName="ForecastTravelExpenses"
+            <shared-time-input-component class="w-full md:w-1/2" fieldName="ForecastTravelTime" label="{{'ForecastTravelTime'|translate}}"
+                inputType="time" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"
+                (input)="verifiedFormat('forecast')">
+            </shared-time-input-component>
+ 
+            <shared-input-field class="w-full md:w-1/2" fieldName="ForecastTravelExpenses"
                 label="{{'ForecastTravelExpenses'|translate}}" inputType="number" [formGroup]="performanceForm"
                 [bgColor]="'bg-white-lightbone'" (change)="verifiedFormat('forecast')"
                 [readOnly]="false"></shared-input-field>
 
-            <shared-input-field class="w-full md:w-1/3" fieldName="TotalForecastData"
+            <shared-input-field class="w-full md:w-1/2" fieldName="TotalForecastData"
                 label="{{'Total de datos previstos'|translate}}" inputType="text" [formGroup]="performanceForm"
                 [bgColor]="'bg-white-lightbone'" [readOnly]="true"></shared-input-field>
 
@@ -73,7 +73,7 @@
             <button routerLink="/project-manager" class="p-2 bg-line text-darkslategray rounded-xl">
                 {{'regresar' | translate}}
             </button>
-            <div *ngIf="!performanceFP">
+            <div *ngIf="performanceFP">
                 <button (click)="onSubmit()" class="p-2 bg-darkslategray text-line rounded-xl">
                     {{'CreatePerformance'|translate}}
                 </button>
@@ -84,7 +84,7 @@
                     {{'Modified'|translate}}
                 </button>
             </div>
-            
+
         </div>
     </form>
 </div>

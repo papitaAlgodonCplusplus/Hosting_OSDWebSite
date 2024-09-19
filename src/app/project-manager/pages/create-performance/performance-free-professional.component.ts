@@ -187,7 +187,7 @@ export class PerformanceFreeProfessionalComponent {
     const isTravelTimeValid = this.validarHora(travelTime);
     const isWorkHoursValid = this.validarHora(workHours);
 
-    if (isTravelTimeValid && isWorkHoursValid && transportExpenses > 0) {
+    if (isTravelTimeValid && isWorkHoursValid && transportExpenses >= 0) {
       this.totalExpectedDataExpenses(formValues);
       this.incorrectFormat = false;
     } else {
@@ -214,11 +214,11 @@ export class PerformanceFreeProfessionalComponent {
     let totalTransportHours = 0;
     let total: number = 0;
 
-    if(estimatedTransportExpenses != 0 ){
+    if (estimatedTransportExpenses != 0) {
       totalWorkHours = estimatedWorkHours * 60;
       totalTransportHours = estimatedTransportHours * 30;
       total = (totalWorkHours + totalTransportHours) + estimatedTransportExpenses;
-    }else{
+    } else {
       totalWorkHours = estimatedWorkHours * 60;
       totalTransportHours = estimatedTransportHours * 30;
       total = (totalWorkHours + totalTransportHours);
