@@ -2,7 +2,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
-import { UiActions } from 'src/app/store/actions';
+import { PerformanceActions, UiActions } from 'src/app/store/actions';
 import { TypesOfPerformanceClaimsService } from '../../services/types-of-performance-claims.service';
 import { Observable } from 'rxjs';
 import { Claim } from 'src/app/models/claim';
@@ -52,7 +52,7 @@ export class ClaimsTrainerPerformanceComponent implements OnDestroy {
     setTimeout(() => {
       this.store.dispatch(UiActions.hideFooter())
       this.store.dispatch(UiActions.hideLeftSidebar())
-      this.type = this.typesOfPerformanceClaimsService.getTypesClaimant()
+      this.type = this.typesOfPerformanceClaimsService.getTypesProcessor()
     }, 0);
     this.claim$.subscribe(claim => {
       this.claimId = claim.Id;
@@ -75,15 +75,15 @@ export class ClaimsTrainerPerformanceComponent implements OnDestroy {
       this.isView = true;
     }
     else{
-      console.log("No hay nada ")
       this.isView = false;
     }
-    
+
   }
 
   ngOnDestroy(): void {
     setTimeout(() => {
       this.store.dispatch(UiActions.showAll())
+      this.store.dispatch(PerformanceActions.setClaimTrainerPerformance({ performanceClaim: {} as ClaimsTrainerPerformance }))
     }, 0);
   }
 
@@ -98,7 +98,7 @@ export class ClaimsTrainerPerformanceComponent implements OnDestroy {
     const form = this.formBuilder.group({
       Date: [formatedDate, [Validators.required]],
       Type: [performance.Type, [Validators.required]],
-      JustifyingDocument: [performance.JustifyingDocument, [Validators.required]],
+      JustifyingDocument: [performance.JustifyingDocument],
       Summary: [performance.Summary, [Validators.required]],
       TrainerWorkHours: [performance.TrainerWorkHours, [Validators.required]],
       TrainerTravelHours: [performance.TrainerTravelHours, [Validators.required]],
@@ -117,7 +117,7 @@ export class ClaimsTrainerPerformanceComponent implements OnDestroy {
     const form = this.formBuilder.group({
       Date: ['', [Validators.required]],
       Type: ['', [Validators.required]],
-      JustifyingDocument: ['', [Validators.required]],
+      JustifyingDocument: ['',],
       Summary: ['', [Validators.required]],
       TrainerWorkHours: ['', [Validators.required]],
       TrainerTravelHours: ['', [Validators.required]],
