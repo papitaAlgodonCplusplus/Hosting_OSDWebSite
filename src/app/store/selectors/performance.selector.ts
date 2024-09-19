@@ -23,6 +23,11 @@ export const claimsProcessorPerformance = createSelector(
     (performanceState) => performanceState.claimsProcessorPerformance
 );
 
+export const claimsTrainerPerformance = createSelector(
+    performanceState,
+    (performanceState) => performanceState.claimsTrainerPerformance
+);
+
 export const fileCode = createSelector(
     performanceState,
     (performanceState) => performanceState.fileCode

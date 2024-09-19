@@ -6,9 +6,11 @@ import { UiActions } from 'src/app/store/actions';
 import { TypesOfPerformanceClaimsService } from '../../services/types-of-performance-claims.service';
 import { Observable } from 'rxjs';
 import { Claim } from 'src/app/models/claim';
-import { ClaimSelectors } from 'src/app/store/selectors';
+import { ClaimSelectors, PerformanceSelectors } from 'src/app/store/selectors';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { ActivatedRoute } from '@angular/router';
+import { ClaimsTrainerPerformance } from '../../models/ClaimsTrainerPerformance';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-claims-trainer-performance',
@@ -25,12 +27,17 @@ export class ClaimsTrainerPerformanceComponent implements OnDestroy {
   isErrorInForm: boolean = false;
   reviewPerformance: any;
   modifyPerformanceTrainer: any;
+  performanceObservable$ : Observable<ClaimsTrainerPerformance> = this.store.select(PerformanceSelectors.claimsTrainerPerformance)
+  performance! : ClaimsTrainerPerformance;
+  isUnrevised! : boolean;
+  isView! : boolean;
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
     private typesOfPerformanceClaimsService: TypesOfPerformanceClaimsService,
     private OSDEventService: OSDService,
     private route: ActivatedRoute,
+    private datePipe: DatePipe,
   ) {
     this.performanceForm = this.createRegisterForm();
   }
@@ -50,11 +57,60 @@ export class ClaimsTrainerPerformanceComponent implements OnDestroy {
     this.claim$.subscribe(claim => {
       this.claimId = claim.Id;
     });
+
+    this.performanceObservable$.subscribe(performance =>{
+      this.performance = performance
+      if(this.performance){
+        this.performanceForm = this.fillForm(performance)
+        if(this.performance.Status == "Running"){
+          this.isUnrevised = false;
+        }else{
+          this.isUnrevised = true;
+        }
+      }
+    })
+
+    if(Object.keys(this.performance).length > 0){
+      console.log(this.performance)
+      this.isView = true;
+    }
+    else{
+      console.log("No hay nada ")
+      this.isView = false;
+    }
+    
   }
+
   ngOnDestroy(): void {
     setTimeout(() => {
       this.store.dispatch(UiActions.showAll())
     }, 0);
+  }
+
+  private fillForm(performance : ClaimsTrainerPerformance): FormGroup {
+    let originalDate = performance.Date;
+    let formatedDate = this.datePipe.transform(originalDate, 'yyyy-MM-dd');
+
+    let originalTD_Date = performance.TechnicalDirectorDate;
+    let formatedTD_Date = this.datePipe.transform(originalTD_Date, 'yyyy-MM-dd');
+
+    this.documentName = performance.JustifyingDocument;
+    const form = this.formBuilder.group({
+      Date: [formatedDate, [Validators.required]],
+      Type: [performance.Type, [Validators.required]],
+      JustifyingDocument: [performance.JustifyingDocument, [Validators.required]],
+      Summary: [performance.Summary, [Validators.required]],
+      TrainerWorkHours: [performance.TrainerWorkHours, [Validators.required]],
+      TrainerTravelHours: [performance.TrainerTravelHours, [Validators.required]],
+      TrainerTravelExpenses: [performance.TrainerTravelExpenses, [Validators.required]],
+      TrainerRemuneration: [performance.TrainerRemuneration, [Validators.required]],
+      TechnicalDirectorDate: [formatedTD_Date],
+      TechnicalDirectorWorkHours: [performance.TechnicalDirectorWorkHours],
+      TechnicalDirectorTravelExpenses: [performance.TechnicalDirectorExpenses],
+      TechnicalDirectorTravelTime: [performance.TechnicalDirectorTravelHours],
+      TechnicalDirectorRemuneration: [performance.TechnicalDirectorRemuneration]
+    });
+    return form;
   }
 
   private createRegisterForm(): FormGroup {
@@ -67,11 +123,11 @@ export class ClaimsTrainerPerformanceComponent implements OnDestroy {
       TrainerTravelHours: ['', [Validators.required]],
       TrainerTravelExpenses: ['', [Validators.required]],
       TrainerRemuneration: ['', [Validators.required]],
-      Technical_Director_Date: [''],
-      Technical_Director_WorkHours: [''],
-      Technical_Director_TravelTime: [''],
-      Technical_Director_TravelExpenses: [''],
-      Technical_Director_Remuneration: ['']
+      TechnicalDirectorDate: [''],
+      TechnicalDirectorWorkHours: [''],
+      TechnicalDirectorTravelTime: [''],
+      TechnicalDirectorTravelExpenses: [''],
+      TechnicalDirectorRemuneration: ['']
     });
     return form;
   }
@@ -180,7 +236,6 @@ export class ClaimsTrainerPerformanceComponent implements OnDestroy {
 
     this.isErrorInForm = false;
     if (this.claimId) {
-      console.log("Datos: ",this.performanceForm.value)
       this.OSDEventService.createPerformanceClaimTrainer(this.performanceForm.value, this.claimId);
     }
   }

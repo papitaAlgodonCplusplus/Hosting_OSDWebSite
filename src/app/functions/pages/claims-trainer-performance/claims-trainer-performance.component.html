@@ -59,33 +59,33 @@
 
         <div class="flex flex-wrap justify-center" *ngIf="reviewPerformance != null">
             <div class="w-full flex">
-                <shared-input-field class="w-full md:w-1/2" fieldName="Technical_Director_Date" label="{{ 'Date' | translate }}"
+                <shared-input-field class="w-full md:w-1/2" fieldName="TechnicalDirectorDate" label="{{ 'Date' | translate }}"
                     inputType="date" [formGroup]="performanceForm"
                     [bgColor]="'bg-white-lightbone'"></shared-input-field>
             </div>
 
-            <shared-input-field class="w-full md:w-1/2" fieldName="Technical_Director_WorkHours"
+            <shared-input-field class="w-full md:w-1/2" fieldName="TechnicalDirectorWorkHours"
                 label="{{ 'WorkHours' | translate }}" inputType="text" (input)="verifiedFormat('technicalDirector')"
                 [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-            <shared-input-field class="w-full md:w-1/2" (input)="verifiedFormat('technicalDirector')" fieldName="Technical_Director_TravelTime"
+            <shared-input-field class="w-full md:w-1/2" (input)="verifiedFormat('technicalDirector')" fieldName="TechnicalDirectorTravelTime"
                 label="{{ 'TravelTime' | translate }}" inputType="text" [formGroup]="performanceForm"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-            <shared-input-field class="w-full md:w-1/2" fieldName="Technical_Director_TravelExpenses"
+            <shared-input-field class="w-full md:w-1/2" fieldName="TechnicalDirectorTravelExpenses"
                 label="{{ 'TravelExpenses' | translate }}" inputType="text" [formGroup]="performanceForm"
                 (input)="verifiedFormat('technicalDirector')" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-            <shared-input-field class="w-full md:w-1/2" fieldName="Technical_Director_Remuneration"
+            <shared-input-field class="w-full md:w-1/2" fieldName="TechnicalDirectorRemuneration"
                 label="{{ 'Remuneration' | translate }}" inputType="text" [formGroup]="performanceForm"
                 [bgColor]="'bg-white-lightbone'" [readOnly]="true"></shared-input-field>
         </div>
     </form>
     <div class="font-medium rounded-xl w-full flex items-end justify-end p-3 space-x-3">
-        <button class="p-2 bg-line text-darkslategray rounded-lg" routerLink="/home">
+        <button class="p-2 bg-line text-darkslategray rounded-lg" routerLink="/functions/file-manager">
             {{'regresar' | translate}}
         </button>
-        <button (click)="onSubmit()" class="p-2 bg-darkslategray text-line rounded-lg">
+        <button *ngIf="!isView" (click)="onSubmit()" class="p-2 bg-darkslategray text-line rounded-lg">
             {{'CreatePerformance' | translate}}
         </button>
         <button *ngIf="modifyPerformanceTrainer != null" (click)="modifyPerformance()" class="p-2 bg-darkslategray text-line rounded-lg">

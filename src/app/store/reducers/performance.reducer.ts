@@ -6,11 +6,13 @@ import { PerformanceFreeProfessional } from "src/app/project-manager/Models/perf
 import { ResponseToPerformanceFreeProfessional } from "src/app/project-manager/Models/responseToperformanceFreeProfessional";
 import { ClaimantAndClaimsCustomerPerformance } from "src/app/functions/models/ClaimantAndClaimsCustomerPerformance";
 import { ClaimsProcessorPerformance } from "src/app/functions/models/ClaimsProcessorPerformance";
+import { ClaimsTrainerPerformance } from "src/app/functions/models/ClaimsTrainerPerformance";
 
 export interface PerformanceState {  
     performanceBuy: PerformanceBuy,
     claimantAndClaimsCustomerPerformance: ClaimantAndClaimsCustomerPerformance,
     claimsProcessorPerformance: ClaimsProcessorPerformance,
+    claimsTrainerPerformance: ClaimsTrainerPerformance,
     performanceFreeProfessional: PerformanceFreeProfessional,
     responseToPerformanceFreeProfessional: ResponseToPerformanceFreeProfessional,
     fileCode: string,
@@ -22,6 +24,7 @@ const initialState: PerformanceState = {
     performanceBuy: {} as PerformanceBuy,
     claimantAndClaimsCustomerPerformance: {} as ClaimantAndClaimsCustomerPerformance,
     claimsProcessorPerformance : {} as ClaimsProcessorPerformance,
+    claimsTrainerPerformance : {} as ClaimsTrainerPerformance,
     performanceFreeProfessional: {} as PerformanceFreeProfessional,
     responseToPerformanceFreeProfessional: {} as ResponseToPerformanceFreeProfessional,
     fileCode: "",
@@ -41,6 +44,10 @@ export const performanceReducers = createReducer(initialState,
     on(PerformanceActions.setClaimProcessorPerformance, (currentState, { performanceClaim }) => ({
         ...currentState,
         claimsProcessorPerformance: performanceClaim
+    })),
+    on(PerformanceActions.setClaimTrainerPerformance, (currentState, { performanceClaim }) => ({
+        ...currentState,
+        claimsTrainerPerformance: performanceClaim
     })),
     on(PerformanceActions.setPerformanceFreeProfessional, (currentState, { performanceFreeProfessional }) => ({
         ...currentState,

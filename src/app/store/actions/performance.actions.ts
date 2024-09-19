@@ -1,6 +1,7 @@
 import { createAction, props } from "@ngrx/store";
 import { ClaimantAndClaimsCustomerPerformance } from "src/app/functions/models/ClaimantAndClaimsCustomerPerformance";
 import { ClaimsProcessorPerformance } from "src/app/functions/models/ClaimsProcessorPerformance";
+import { ClaimsTrainerPerformance } from "src/app/functions/models/ClaimsTrainerPerformance";
 import { PerformanceBuy } from "src/app/project-manager/Models/performanceBuy";
 import { PerformanceFreeProfessional } from "src/app/project-manager/Models/performanceFreeProfessional";
 import { ResponseToPerformanceFreeProfessional } from "src/app/project-manager/Models/responseToperformanceFreeProfessional";
@@ -18,6 +19,11 @@ export const setClaimantAndClaimsCustomerPerformance = createAction(
 export const setClaimProcessorPerformance = createAction(
   '[Performance] Add claim processor performance',
   props<{ performanceClaim: ClaimsProcessorPerformance }>()
+);
+
+export const setClaimTrainerPerformance = createAction(
+  '[Performance] Add claim trainer performance',
+  props<{ performanceClaim: ClaimsTrainerPerformance }>()
 );
 
 export const setPerformanceFreeProfessional = createAction(

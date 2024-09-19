@@ -184,6 +184,7 @@ export class FileManagerComponent implements OnDestroy {
     }
     else {
       this.router.navigate(["/functions/claims-trainer-performance"]);
+      this.store.dispatch(PerformanceActions.setClaimTrainerPerformance({ performanceClaim: performance }))
     }
   }
 
