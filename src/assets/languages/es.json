@@ -29,7 +29,7 @@
     "direccion": "Dirección",
     "cod_postal": "Código postal",
     "pais": "País",
-    "ciudad": "Ciudad",
+    "Ciudad": "Ciudad",
     "tel_fijo": "Teléfono fijo",
     "tel_movil": "Teléfono móvil",
     "pagina_web": "Página web",
@@ -324,5 +324,13 @@
     "EvidenceDocuments": "Documentos probatorios",
     "Downloadevidentiarydocument1": "Descargar documento probatorio 1",
     "Downloadevidentiarydocument2": "Descargar documento probatorio 2",
-    "AccountType" : "Tipo de cuenta"
+    "AccountType" : "Tipo de cuenta",
+    "Mostrar actuaciones de compra":"Mostrar actuaciones de compra",
+    "Mostrar actuaciones de Gestor de proyecto":"Mostrar actuaciones de Gestor de proyecto",
+    "Elegir proyecto..":"Elegir proyecto..",
+    "Ver mis actuaciones Asignadas":"Ver mis actuaciones Asignadas",
+    "Finalizar expediente de reclamacion":"Finalizar expediente de reclamacion",
+    "Total de gastos previstos": "Total de gastos previstos",
+    "Cambiar contraseña": "Cambiar contraseña",
+    "Ver perfil":"Ver perfil"
 }

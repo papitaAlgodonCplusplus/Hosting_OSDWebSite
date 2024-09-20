@@ -16,7 +16,7 @@
   "direccion": "Address",
   "cod_postal": "Postal Code",
   "pais": "Country",
-  "ciudad": "City",
+  "Ciudad": "City",
   "tel_fijo": "Landline",
   "tel_movil": "Mobile Phone",
   "email": "Email",
@@ -321,5 +321,13 @@
   "EvidenceDocuments": "Evidence documents",
   "Downloadevidentiarydocument1": "Download evidentiary document 1",
   "Downloadevidentiarydocument2": "Download evidentiary document 2",
-  "AccountType" : "Account type"
+  "AccountType" : "Account type",
+  "Mostrar actuaciones de compra":"Show purchase performances",
+  "Mostrar actuaciones de Gestor de proyecto":"Show project manager performances",
+  "Elegir proyecto..":"Choose project..",
+  "Ver mis actuaciones Asignadas":"See my assigned performances",
+  "Finalizar expediente de reclamacion":"Finalize claim file",
+  "Total de gastos previstos": "Total planned expenses",
+  "Cambiar contraseña": "Change password",
+  "Ver perfil":"View profile"
 }

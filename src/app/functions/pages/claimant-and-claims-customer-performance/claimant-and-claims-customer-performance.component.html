@@ -47,17 +47,32 @@
                     [bgColor]="'bg-white-lightbone'"></shared-input-field>
             </div>
 
-            <shared-input-field [readOnly]="isTrainer" class="w-full md:w-1/2" fieldName="Trainer_WorkHours"
+            <shared-time-input-component [readOnly]="isTrainer" class="w-full md:w-1/2" fieldName="Trainer_WorkHours" label="{{'WorkHours'|translate}}"
+                inputType="time" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"
+                (input)="verifiedFormat()">
+            </shared-time-input-component>
+
+            <shared-time-input-component [readOnly]="isTrainer" class="w-full md:w-1/2" fieldName="Trainer_TravelTime" label="{{'TravelTime'|translate}}"
+                inputType="time" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"
+                (input)="verifiedFormat()">
+            </shared-time-input-component>
+
+            <shared-time-input-component [readOnly]="isTrainer" class="w-full md:w-1/2" fieldName="Trainer_TravelExpenses" label="{{'TravelExpenses'|translate}}"
+                inputType="time" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"
+                (input)="verifiedFormat()">
+            </shared-time-input-component>
+
+            <!-- <shared-input-field [readOnly]="isTrainer" class="w-full md:w-1/2" fieldName="Trainer_WorkHours"
                 label="{{ 'WorkHours' | translate }}" inputType="text" (input)="verifiedFormat()"
-                [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"></shared-input-field> -->
 
-            <shared-input-field [readOnly]="isTrainer" class="w-full md:w-1/2" (input)="verifiedFormat()"
+            <!-- <shared-input-field [readOnly]="isTrainer" class="w-full md:w-1/2" (input)="verifiedFormat()"
                 fieldName="Trainer_TravelTime" label="{{ 'TravelTime' | translate }}" inputType="text"
-                [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"></shared-input-field> -->
 
-            <shared-input-field [readOnly]="isTrainer" class="w-full md:w-1/2" fieldName="Trainer_TravelExpenses"
+            <!-- <shared-input-field [readOnly]="isTrainer" class="w-full md:w-1/2" fieldName="Trainer_TravelExpenses"
                 label="{{ 'TravelExpenses' | translate }}" inputType="text" [formGroup]="performanceForm"
-                (input)="verifiedFormat()" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                (input)="verifiedFormat()" [bgColor]="'bg-white-lightbone'"></shared-input-field> -->
 
             <shared-input-field [readOnly]="isTrainer" class="w-full md:w-1/2" fieldName="Trainer_Remuneration"
                 label="{{ 'Remuneration' | translate }}" inputType="text" [formGroup]="performanceForm"

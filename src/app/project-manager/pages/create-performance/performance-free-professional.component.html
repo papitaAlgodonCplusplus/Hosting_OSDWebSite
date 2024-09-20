@@ -64,7 +64,7 @@
                 [readOnly]="false"></shared-input-field>
 
             <shared-input-field class="w-full md:w-1/2" fieldName="TotalForecastData"
-                label="{{'Total de datos previstos'|translate}}" inputType="text" [formGroup]="performanceForm"
+                label="{{'Total de gastos previstos'|translate}}" inputType="text" [formGroup]="performanceForm"
                 [bgColor]="'bg-white-lightbone'" [readOnly]="true"></shared-input-field>
 
         </div>
@@ -73,7 +73,7 @@
             <button routerLink="/project-manager" class="p-2 bg-line text-darkslategray rounded-xl">
                 {{'regresar' | translate}}
             </button>
-            <div *ngIf="performanceFP">
+            <div *ngIf="!performanceFP">
                 <button (click)="onSubmit()" class="p-2 bg-darkslategray text-line rounded-xl">
                     {{'CreatePerformance'|translate}}
                 </button>
