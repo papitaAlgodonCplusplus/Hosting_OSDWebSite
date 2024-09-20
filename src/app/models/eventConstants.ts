@@ -157,7 +157,7 @@ export class EventConstants {
   public static CLAIMED_RATING: string = "ClaimedRating";
   public static OSD_RATING: string = "OsdRating";
 
-  public static TOTAL_OSD_EXPENSES: string = "TotalOsdExpenses";
+  public static TRANSPARENCY_INCOME_EXPENSES: string = "TransparencyIncomeExpenses";
   public static COMPENSATION_OF_CLAIMANT: string = "CompensationOfClaimant";
   public static TOTAL_OSD_INCOMES: string = "TotalOsdIncomes";
 
