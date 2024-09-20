@@ -80,11 +80,11 @@
                 <h1>{{'Processor' | translate}}</h1>
             </div>
             <shared-input-field [readOnly]="user.AccountType != 'FreeProfessional' || !isTerminatedPerformance"
-                class="w-full lg:w-1/2" fieldName="AAsavingsPP" label="{{'amountPaidByOtherParty' | translate}}"
+                class="w-full lg:w-1/2" fieldName="AmountPaid" label="{{'amountPaidByOtherParty' | translate}}"
                 inputType="text" [formGroup]="closeClaimfileForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
             <shared-input-field [readOnly]="user.AccountType != 'FreeProfessional'  || !isTerminatedPerformance"
-                class="w-full lg:w-1/2" fieldName="AmountPaid" label="{{'institutionalImprovementSavings' | translate}}"
+                class="w-full lg:w-1/2" fieldName="AAsavingsPP" label="{{'institutionalImprovementSavings' | translate}}"
                 inputType="text" [formGroup]="closeClaimfileForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
             <shared-input-field [readOnly]="user.AccountType != 'FreeProfessional'  || !isTerminatedPerformance"

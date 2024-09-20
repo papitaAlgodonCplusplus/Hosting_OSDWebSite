@@ -12,6 +12,7 @@ import { ResponseToPerformanceFreeProfessional } from '../project-manager/Models
 import { ClaimantAndClaimsCustomerPerformance } from '../functions/models/ClaimantAndClaimsCustomerPerformance';
 import { ClaimsProcessorPerformance } from '../functions/models/ClaimsProcessorPerformance';
 import { ClaimsTrainerPerformance } from '../functions/models/ClaimsTrainerPerformance';
+import { TransparencyIncomeExpenses } from '../reports/models/TransparencyIncomeExpenses.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -36,15 +37,9 @@ export class OSDDataService {
   private ClaimantsRating = new Subject<any[]>();
   private ClaimedRating = new Subject<any[]>();
   private OsdRating = new Subject<any[]>();
-  private TotalOsdExpenses = new Subject<any>();
-  private CompensationOfClaimant = new Subject<any>();
-  private TotalOsdIncomes = new Subject<any>();
 
-  private DT_Expenses = new Subject<any>();
-  private TC_Expenses = new Subject<any>();
-  private TM_Expenses = new Subject<any>();
-  private TS_Expenses = new Subject<any>();
-  private IN_Expenses = new Subject<any>();
+  private TransparencyIncomeExpenses = new Subject<TransparencyIncomeExpenses>();
+
 
   private FpFullNames = new Subject<string[]>();
   private HoursPerformances = new Subject<number[]>();
@@ -102,15 +97,7 @@ export class OSDDataService {
   ClaimedRating$ = this.ClaimedRating.asObservable();
   OsdRating$ = this.OsdRating.asObservable();
 
-  TotalOsdExpenses$ = this.TotalOsdExpenses.asObservable();
-  CompensationOfClaimant$ = this.CompensationOfClaimant.asObservable();
-  TotalOsdIncomes$ = this.TotalOsdIncomes.asObservable();
-
-  DT_Expenses$ = this.DT_Expenses.asObservable();
-  TC_Expenses$ = this.TC_Expenses.asObservable();
-  TM_Expenses$ = this.TM_Expenses.asObservable();
-  TS_Expenses$ = this.TS_Expenses.asObservable();
-  IN_Expenses$ = this.IN_Expenses.asObservable();
+  TotalOsdIncomeExpenses$ = this.TransparencyIncomeExpenses.asObservable();
 
   FpFullNames$ = this.FpFullNames.asObservable();
   HoursPerformances$ = this.HoursPerformances.asObservable();
@@ -205,30 +192,11 @@ export class OSDDataService {
   emitOsdRating(data: any[]) {
     this.OsdRating.next(data);
   }
-  emitTotalOsdExpenses(data: any) {
-    this.TotalOsdExpenses.next(data);
+  
+  emitTotalOsdIncomeExpenses(data: TransparencyIncomeExpenses) {
+    this.TransparencyIncomeExpenses.next(data);
   }
-  emitCompensationOfClaimant(data: any) {
-    this.CompensationOfClaimant.next(data);
-  }
-  emitTotalOsdIncomes(data: any) {
-    this.TotalOsdIncomes.next(data);
-  }
-  emitDT_Expenses(data: any) {
-    this.DT_Expenses.next(data);
-  }
-  emitTC_Expenses(data: any) {
-    this.TC_Expenses.next(data);
-  }
-  emitTM_Expenses(data: any) {
-    this.TM_Expenses.next(data);
-  }
-  emitTS_Expenses(data: any) {
-    this.TS_Expenses.next(data);
-  }
-  emitIN_Expenses(data: any) {
-    this.IN_Expenses.next(data);
-  }
+
   emitFpFullNames(data: string[]) {
     this.FpFullNames.next(data);
   }

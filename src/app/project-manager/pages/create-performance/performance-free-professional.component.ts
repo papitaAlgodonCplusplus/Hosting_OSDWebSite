@@ -161,6 +161,7 @@ export class PerformanceFreeProfessionalComponent {
   }
 
   onSubmit(): void {
+    console.log(this.performanceForm.value)
     if (this.performanceForm.invalid) {
       this.performanceForm.markAllAsTouched();
       return;

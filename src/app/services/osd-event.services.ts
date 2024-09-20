@@ -879,26 +879,10 @@ export class OSDService {
 
   public GetTransparencyReportsIncomeExpensesResponse(webBaseEvent: WebBaseEvent) {
     try {
-      var totalOsdExpenses = webBaseEvent.getBodyProperty(EventConstants.TOTAL_OSD_EXPENSES);
-      var compensationOfClaimant = webBaseEvent.getBodyProperty(EventConstants.COMPENSATION_OF_CLAIMANT);
-      var totalOsdIncomes = webBaseEvent.getBodyProperty(EventConstants.TOTAL_OSD_INCOMES);
+      var totalOsdIncomeExpenses = webBaseEvent.getBodyProperty(EventConstants.TRANSPARENCY_INCOME_EXPENSES);
 
-      var DT_Expenses = webBaseEvent.getBodyProperty(EventConstants.TECHNICAL_DIRECTOR_EXPENSES);
-      var TC_Expenses = webBaseEvent.getBodyProperty(EventConstants.ACCOUNTING_TECHNITIAN_EXPENSES);
-      var TM_Expenses = webBaseEvent.getBodyProperty(EventConstants.MARKETING_TECHNITIAN_EXPENSES);
-      var TS_Expenses = webBaseEvent.getBodyProperty(EventConstants.SAC_TECHNITIAN_EXPENSES);
-      var IN_Expenses = webBaseEvent.getBodyProperty(EventConstants.SYSTEM_ENGINEER_EXPENSES);
-
-      if (totalOsdExpenses != null && compensationOfClaimant != null && totalOsdIncomes != null) {
-        this.osdDataService.emitTotalOsdExpenses(totalOsdExpenses);
-        this.osdDataService.emitCompensationOfClaimant(compensationOfClaimant);
-        this.osdDataService.emitTotalOsdIncomes(totalOsdIncomes);
-
-        this.osdDataService.emitDT_Expenses(DT_Expenses);
-        this.osdDataService.emitTC_Expenses(TC_Expenses);
-        this.osdDataService.emitTM_Expenses(TM_Expenses);
-        this.osdDataService.emitTS_Expenses(TS_Expenses);
-        this.osdDataService.emitIN_Expenses(IN_Expenses);
+      if (totalOsdIncomeExpenses != null) {
+        this.osdDataService.emitTotalOsdIncomeExpenses(totalOsdIncomeExpenses);
       }
     }
     catch (err) {

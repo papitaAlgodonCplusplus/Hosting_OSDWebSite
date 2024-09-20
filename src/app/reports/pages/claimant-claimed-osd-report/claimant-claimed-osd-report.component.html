@@ -33,8 +33,8 @@
                 <tr *ngFor="let index of institutionsNames; let i = index">
                     <td class="py-2 px-4 border-y">{{ institutionsNames[i] || 0 }}</td>
                     <td class="py-2 px-4 border-y">€{{ claimsAmount[i] != null ? claimsAmount[i] : 0 }}</td>
-                    <td class="py-2 px-4 border-y">€{{ savingsImprovement[i] != null ? savingsImprovement[i] : 0 }}</td>
                     <td class="py-2 px-4 border-y">€{{ compensationObtainedByClaimant[i] != null ? compensationObtainedByClaimant[i] : 0 }}</td>
+                    <td class="py-2 px-4 border-y">€{{ savingsImprovement[i] != null ? savingsImprovement[i] : 0 }}</td>
                     <td class="py-2 px-4 border-y whitespace-nowrap" [innerHTML]="claimantsRating[i] != null ? generateStarRating(claimantsRating[i]) : generateStarRating(0)"></td>
                     <td class="py-2 px-4 border-y whitespace-nowrap" [innerHTML]="claimedRating[i] != null ? generateStarRating(claimedRating[i]) : generateStarRating(0)"></td>
                     <td class="py-2 px-4 border-y whitespace-nowrap" [innerHTML]="osdRating[i] != null ? generateStarRating(osdRating[i]) : generateStarRating(0)"></td>
