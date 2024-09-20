@@ -3,4 +3,5 @@ export class TransparencyIncomeExpenses {
     Expenses: number = 0;
     Amountpaid: number = 0;
     ImprovementSavings: number = 0;
+    Numberfiles: number = 0;
 }
