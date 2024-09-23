@@ -52,22 +52,9 @@
                 (input)="verifiedFormat('processor')">
             </shared-time-input-component>
 
-            <shared-time-input-component [readOnly]="isView" class="w-full md:w-1/2" fieldName="Processor_TravelExpenses" label="{{'TravelExpenses'|translate}}"
-                inputType="time" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"
-                (input)="verifiedFormat('processor')">
-            </shared-time-input-component>
-
-            <!-- <shared-input-field [readOnly]="isView" class="w-full md:w-1/2" fieldName="Processor_WorkHours"
-                label="{{ 'WorkHours' | translate }}" inputType="text" (input)="verifiedFormat('processor')"
-                [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"></shared-input-field> -->
-
-            <!-- <shared-input-field [readOnly]="isView" class="w-full md:w-1/2" (input)="verifiedFormat('processor')"
-                fieldName="Processor_TravelTime" label="{{ 'TravelTime' | translate }}" inputType="text"
-                [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"></shared-input-field> -->
-
-            <!-- <shared-input-field [readOnly]="isView" class="w-full md:w-1/2" fieldName="Processor_TravelExpenses"
-                label="{{ 'TravelExpenses' | translate }}" inputType="text" [formGroup]="performanceForm"
-                (input)="verifiedFormat('processor')" [bgColor]="'bg-white-lightbone'"></shared-input-field> -->
+            <shared-input-field [readOnly]="isView" class="w-full md:w-1/2" fieldName="Processor_TravelExpenses"
+            label="{{ 'TravelExpenses' | translate }}" inputType="text" [formGroup]="performanceForm"
+            (input)="verifiedFormat('processor')" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
             <shared-input-field [readOnly]="isView" class="w-full md:w-1/2" fieldName="Processor_Remuneration"
                 label="{{ 'Remuneration' | translate }}" inputType="text" [formGroup]="performanceForm"

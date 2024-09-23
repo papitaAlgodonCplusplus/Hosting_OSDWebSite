@@ -11,13 +11,7 @@ export class TimeInputComponentComponent {
   @Input() fieldName!: string;
   @Input() readOnly!: boolean;
   @Input() label!: string;
-  timeValue: string = '';
-  
-  constructor(){
 
-  }
-
-  // Método para formatear la entrada de tiempo
   formatTimeInput(value: string): string {
     let [hoursPart, minutesPart] = value.split(':');
 
@@ -41,10 +35,11 @@ export class TimeInputComponentComponent {
     return `${formattedHours}:${formattedMinutes}`;
   }
 
-  // Método que se ejecuta cuando el input pierde el foco (blur)
   onTimeInputBlur(): void {
-    if (this.timeValue) {
-      this.timeValue = this.formatTimeInput(this.timeValue);
+    const control = this.formGroup.get(this.fieldName);
+    if (control?.value) {
+      const formattedValue = this.formatTimeInput(control.value);
+      control.setValue(formattedValue, { emitEvent: false });
     }
   }
 }
