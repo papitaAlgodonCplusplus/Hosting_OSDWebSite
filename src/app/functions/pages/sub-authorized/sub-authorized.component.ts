@@ -84,7 +84,7 @@ export class SubAuthorizedComponent implements OnDestroy {
     }
     this.userId = foundUser.Id;
     const userDTO: UserInfo = {} as UserInfo;
-    userDTO.Code = foundUser.Country.toUpperCase().trim() + '/' + foundUser.Code
+    userDTO.Code =  foundUser.Code
     userDTO.Identity = foundUser.Identity;
     userDTO.Name = foundUser.Name.trim();
     userDTO.Email = foundUser.Email;
