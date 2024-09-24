@@ -5,12 +5,14 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { OSDDataService } from 'src/app/services/osd-data.service';
 import { OSDService } from 'src/app/services/osd-event.services';
-import { ModalActions, UiActions } from 'src/app/store/actions';
+import { ModalActions, PerformanceActions, UiActions } from 'src/app/store/actions';
 import { AuthSelectors, PerformanceSelectors } from 'src/app/store/selectors';
 import { PerformanceBuy } from '../../Models/performanceBuy';
 import { DatePipe } from '@angular/common';
-import { Router, ActivatedRoute  } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
+import { AuthenticationService } from 'src/app/services/authentication.service';
+import { FreeProfessional } from 'src/app/functions/models/FreeProfessional';
 
 @Component({
   selector: 'app-performance-buy',
@@ -24,7 +26,6 @@ export class PerformanceBuyComponent implements OnDestroy {
   performance$: Observable<PerformanceBuy> = this.store.select(PerformanceSelectors.performanceBuy)
   performanceBuy!: PerformanceBuy;
   performance!: any;
-  isView: boolean = false;
   isAuthenticated$: Observable<boolean> = this.store.select(AuthSelectors.authenticationToken)
   showButtons: boolean = true;
   selectedSummaryType: string | undefined;
@@ -32,15 +33,16 @@ export class PerformanceBuyComponent implements OnDestroy {
   projectManagerSelectedObservable$: Observable<string> = this.store.select(PerformanceSelectors.projectManagerId)
   projectManagerSelected: string = "";
   modifiedPerformanceBuy: any;
+  isCreatePerformance: boolean = false;
+  isViewPerformance: boolean = true;
 
   constructor(private store: Store,
     private osdEventService: OSDService,
     private formBuilder: FormBuilder,
     private datePipe: DatePipe,
-    private router: Router,
-    private route: ActivatedRoute,
-    private OSDEventService : OSDService,
-    private OSDDataService: OSDDataService
+    private OSDEventService: OSDService,
+    private OSDDataService: OSDDataService,
+    private authService: AuthenticationService
   ) {
     this.performanceForm = this.validatePerformanceOnDataService();
   }
@@ -49,14 +51,10 @@ export class PerformanceBuyComponent implements OnDestroy {
     this.performance$.subscribe(performance => {
       this.performanceBuy = performance;
     })
-    
-    if (this.performanceBuy != undefined) {
 
-      let Date = this.performanceBuy.Date;
-      let formatedStartDate = this.datePipe.transform(Date, 'yyyy-MM-dd');
-
+    if (Object.keys(this.performanceBuy).length > 0) {
       const form = this.formBuilder.group({
-        Date: Date,
+        Date: this.performanceBuy.Date,
         JustifyingDocument: this.performanceBuy.JustifyingDocument,
         SummaryTypeId: this.performanceBuy.SummaryTypeId,
         ProductServiceId: this.performanceBuy.ProductServiceId,
@@ -68,65 +66,77 @@ export class PerformanceBuyComponent implements OnDestroy {
       return form;
     }
     else {
+      this.isCreatePerformance = true
       return this.createForm()
     }
   }
 
   ngOnInit() {
-    this.route.queryParams.subscribe(params => {
-      this.modifiedPerformanceBuy = params['modified'];
-    });
-
     setTimeout(() => {
       this.store.dispatch(UiActions.hideLeftSidebar());
       this.store.dispatch(UiActions.hideFooter());
-      this.OSDEventService.GetSummaryTypes(); 
-      this.performance$.subscribe(performance => {
-        this.performance = performance
-      })
-
-      this.OSDDataService.SummaryTypesPerformanceBuyList$.subscribe(summaryTypes => {
-        summaryTypes.forEach(items => {
-          var entityDropDownItem: DropDownItem = { value: items.Summary, key: items.Id };
-          this.summaryTypes.push(entityDropDownItem);
-        });
-      });
-
-      if (this.performance != null) {
-        this.performanceForm = this.fillForm()
-      }
-
-      this.isAuthenticated$.subscribe((isAuthenticated: boolean) => {
-        if (isAuthenticated === false) {
-          this.showButtons = false
-        }
-      });
-
-      this.projectManagerSelectedObservable$.subscribe(id=>{
-        this.projectManagerSelected = id;
-      })
+      this.OSDEventService.GetSummaryTypes();
+      this.OSDEventService.GetFreeProfessionalsDataEvent();
     }, 0);
+
+    this.performance$.subscribe(performance => {
+      this.performance = performance
+    })
+
+    this.OSDDataService.SummaryTypesPerformanceBuyList$.subscribe(summaryTypes => {
+      summaryTypes.forEach(items => {
+        var entityDropDownItem: DropDownItem = { value: items.Summary, key: items.Id };
+        this.summaryTypes.push(entityDropDownItem);
+      });
+    });
+
+    if (this.performance != null) {
+      this.performanceForm = this.fillForm()
+    }
+
+    this.isAuthenticated$.subscribe((isAuthenticated: boolean) => {
+      if (isAuthenticated === false) {
+        this.showButtons = false
+      }
+    });
+
+    this.projectManagerSelectedObservable$.subscribe(id => {
+      this.projectManagerSelected = id;
+    })
+
+    this.OSDEventService.getFreeProfessionalsList().then(freeProfessionals => {
+      if (this.authService.userInfo) {
+        if (freeProfessionals) {
+          const freeProfessional: FreeProfessional | undefined = freeProfessionals?.find(fp => fp.Userid === this.authService.userInfo?.Id);
+          if (freeProfessional?.FreeprofessionaltypeAcronym == "DT" || freeProfessional?.FreeprofessionaltypeAcronym == "INFIT") {
+            this.isViewPerformance = false;
+          }
+        }
+      }
+    });
   }
 
   ngOnDestroy() {
     setTimeout(() => {
       this.store.dispatch(UiActions.showAll());
+      this.store.dispatch(PerformanceActions.setPerformanceBuy({ performanceBuy: {} as PerformanceBuy }))
     }, 0);
   }
 
   private fillForm(): FormGroup {
+    console.log(this.performance)
     const fechaOriginal = this.performance.Date;
     const fechaFormateada = this.datePipe.transform(fechaOriginal, 'yyyy-MM-dd');
     this.documentName = this.performance.JustifyingDocument;
     const form = this.formBuilder.group({
       Date: fechaFormateada,
-      ProductServiceId: this.performance.ProductServiceId, 
-      MinimumUnits: this.performance.MinimumUnits ,
+      ProductServiceId: this.performance.ProductServiceId,
+      MinimumUnits: this.performance.MinimumUnits,
       MaximumUnits: this.performance.MaximumUnits,
       UnitaryCost: this.performance.UnitaryCost,
       ShelfLife: this.performance.ShelfLife,
       SummaryTypeId: this.performance.SummaryTypeId,
-      JustifyingDocument: ['', [Validators.required]]
+      JustifyingDocument: [this.performance.JustifyingDocument, [Validators.required]]
     });
     return form;
   }
@@ -147,22 +157,18 @@ export class PerformanceBuyComponent implements OnDestroy {
 
   onSubmit(): void {
     if (this.performanceForm.invalid) {
-      this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Faltan campos por llenar" }))
-      this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }))
-      this.store.dispatch(ModalActions.openAlert())
       this.performanceForm.markAllAsTouched();
       return;
     }
-    
-   this.osdEventService.performanceBuy(this.performanceForm.value,this.projectManagerSelected);
+    this.osdEventService.performanceBuy(this.performanceForm.value, this.projectManagerSelected);
   }
 
   modifyPerformance(): void {
-    // if (this.performanceForm.invalid) {
-    //   this.performanceForm.markAllAsTouched();
-    //   return;
-    // }
-    this.OSDEventService.modifyPerformanceBuy(this.performanceForm.value,this.projectManagerSelected, this.performance.Id);
+    if (this.performanceForm.invalid) {
+      this.performanceForm.markAllAsTouched();
+      return;
+    }
+    this.OSDEventService.modifyPerformanceBuy(this.performanceForm.value, this.projectManagerSelected, this.performance.Id);
   }
 
   displayFileName(): void {

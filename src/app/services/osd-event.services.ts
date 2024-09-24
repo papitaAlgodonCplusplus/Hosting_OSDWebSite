@@ -137,7 +137,6 @@ export class OSDService {
 
   public addPerformanceFreeProfessional(performanceFP: PerformanceFreeProfessional, projectManagerSelectedId: string) {
     const event: WebBaseEvent = this.eventFactoryService.CreateAddPerformanceFreeProfessionalEvent(performanceFP, projectManagerSelectedId);
-    console.log(event)
     this.restApiService.SendOSDEvent(event).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
@@ -151,7 +150,6 @@ export class OSDService {
 
   public modifyPerformanceFreeProfessional(performanceFP: PerformanceFreeProfessional, projectManagerSelectedId: string, performanceId: string) {
     const event: WebBaseEvent = this.eventFactoryService.CreateModifyPerformanceFreeProfessionalEvent(performanceFP, projectManagerSelectedId, performanceId);
-    console.log(event)
     this.restApiService.SendOSDEvent(event).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
@@ -1319,7 +1317,6 @@ export class OSDService {
 
   public HandleCreateGetPerformanceAssignedByIdResponse(webBaseEvent: WebBaseEvent) {
     var performanceAssigned: PerformanceFreeProfessional[];
-    console.log(webBaseEvent)
     try {
       performanceAssigned = webBaseEvent.getBodyProperty(EventConstants.PERFORMANCE_ASSIGNED_BY_ID_LIST);
       if (performanceAssigned.length > 0) {

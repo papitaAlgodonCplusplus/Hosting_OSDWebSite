@@ -315,7 +315,7 @@
     "Request for Additional Information": "Solicitud de Ampliación de Información",
     "Complaint Resolution": "Solución de la Queja",
     "Problem Solution": "Solución al Problema",
-    "Close Performance": "Actuacion cerrada",
+    "Close Performance": "Actuación cerrada",
     "Modify information": "Modificar Informacion",
     "CurriculumVitae" : "Curriculum Vitae",
     "Mandatory" : "Obligatorio",
@@ -333,5 +333,6 @@
     "Total de gastos previstos": "Total de gastos previstos",
     "Cambiar contraseña": "Cambiar contraseña",
     "Appeal":"Apelación",
-    "Monitoring Review":"Monitorización/Revisión Expediente"
+    "Monitoring Review":"Monitorización/Revisión Expediente",
+    "Assigned free professional" : "Profesional libre asignado"
 }

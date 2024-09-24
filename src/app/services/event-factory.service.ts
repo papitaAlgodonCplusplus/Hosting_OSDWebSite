@@ -109,7 +109,6 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.EMAIL, loginForm.email);
     event.setBodyProperty(EventConstants.PASSWORD, loginForm.password);
 
-    console.log("Evento: ",event)
     return event;
   }
 
@@ -263,8 +262,8 @@ export class EventFactoryService {
 
     return event;
   }
+
   public CreateGetPerformancesProjectManagerById(projectManagerId : string): WebBaseEvent {
-    console.log("CreateGetPerformancesProjectManagerById", projectManagerId)
     let event: WebBaseEvent;
     event = new WebBaseEvent();
     event.SessionKey = this.authenticationService.sessionKey;

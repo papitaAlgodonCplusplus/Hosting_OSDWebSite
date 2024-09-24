@@ -1,16 +1,20 @@
-<div class="flex flex-col justify-center">
+<div class="flex flex-col justify-end items-end h-full">
     <div
         class="w-full text-darkslategray text-start py-3 text-xl font-medium space-x-3 animate__animated animate__fadeInLeft">
         <span class="pl-5 pr-3 py-1 bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden">
             {{'compra' | translate}}</span>
     </div>
-    <form [formGroup]="performanceForm" autocomplete="off" class="flex flex-col p-3">
+    <form [formGroup]="performanceForm" autocomplete="off" class="h-full w-full flex flex-col p-3">
         <div class=" flex flex-wrap items-center">
-            <shared-input-field class="w-full md:w-1/2" fieldName="Date" label="{{'Date' | translate}}" inputType="date"
-                [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-            <shared-simple-dropdown class="w-full md:w-1/2" fieldName="SummaryTypeId" label="{{'Summary'|translate}}"
-                inputType="text" [formGroup]="performanceForm" [selectedItem]="selectedSummaryType"
-                [dropdownItems]="summaryTypes" [bgColor]="'bg-white-lightbone'"></shared-simple-dropdown>
+
+            <shared-input-field [readOnly]="isViewPerformance" class="w-full md:w-1/2" fieldName="Date"
+                label="{{'Date' | translate}}" inputType="date" [formGroup]="performanceForm"
+                [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+            <shared-simple-dropdown [readOnly]="isViewPerformance" class="w-full md:w-1/2" fieldName="SummaryTypeId"
+                label="{{'Summary'|translate}}" inputType="text" [formGroup]="performanceForm"
+                [selectedItem]="selectedSummaryType" [dropdownItems]="summaryTypes"
+                [bgColor]="'bg-white-lightbone'"></shared-simple-dropdown>
         </div>
 
         <div class="flex flex-col items-center justify-center space-x-2 w-full">
@@ -34,45 +38,45 @@
                 {{'Solicitud productos/servicios'|translate}}</span>
 
             <div class="flex flex-wrap">
-                <shared-input-field class="w-full md:w-1/2" fieldName="ProductServiceId"
+                <shared-input-field [readOnly]="isViewPerformance" class="w-full md:w-1/2" fieldName="ProductServiceId"
                     label="{{'Identificación Producto/Servicio' | translate}}" inputType="text"
-                    [formGroup]="performanceForm" [readOnly]="false"></shared-input-field>
+                    [formGroup]="performanceForm" ></shared-input-field>
 
-                <shared-input-field class="w-full md:w-1/2" fieldName="MinimumUnits"
+                <shared-input-field [readOnly]="isViewPerformance" class="w-full md:w-1/2" fieldName="MinimumUnits"
                     label="{{'Unidades min-max' | translate}}" inputType="number"
                     [formGroup]="performanceForm"></shared-input-field>
 
-                <shared-input-field class="w-full md:w-1/2" fieldName="MaximumUnits"
+                <shared-input-field [readOnly]="isViewPerformance" class="w-full md:w-1/2" fieldName="MaximumUnits"
                     label="{{'Unidades max-min' | translate}}" inputType="number"
                     [formGroup]="performanceForm"></shared-input-field>
 
-                <shared-input-field class="w-full md:w-1/2" fieldName="UnitaryCost"
+                <shared-input-field [readOnly]="isViewPerformance" class="w-full md:w-1/2" fieldName="UnitaryCost"
                     label="{{'Coste Unitario' | translate}}" inputType="number"
                     [formGroup]="performanceForm"></shared-input-field>
 
-                <shared-input-field class="w-full md:w-1/2" fieldName="ShelfLife" label="{{'Vida util' | translate}}"
-                    inputType="text" [formGroup]="performanceForm"></shared-input-field>
+                <shared-input-field [readOnly]="isViewPerformance" class="w-full md:w-1/2" fieldName="ShelfLife"
+                    label="{{'Vida util' | translate}}" inputType="text"
+                    [formGroup]="performanceForm"></shared-input-field>
 
             </div>
-        </div>
-
-        <div class="flex flex-row space-x-3 justify-end mt-12 font-medium">
-            <button routerLink="/project-manager" class="p-2 rounded-xl bg-line text-darkslategray" i18n="@@signin">
-                {{'regresar' | translate}}
-            </button>
-            <div *ngIf="!performance">
-                <button (click)="onSubmit()" class="p-2 rounded-xl bg-darkslategray text-line hover:bg-hover-darkblue"
-                    i18n="@@signin">
-                    {{'CreatePerformance' | translate}}
-                </button>
-            </div>
-
-            <div *ngIf="performance && modifiedPerformanceBuy != null ">
-                <button (click)="modifyPerformance()" class="p-2 bg-darkslategray text-line rounded-xl">
-                    {{'Modified'|translate}}
-                </button>
-            </div>
-
         </div>
     </form>
+    <div class="flex flex-row space-x-3 justify-end mt-12 font-medium p-3">
+        <button routerLink="/project-manager" class="p-2 rounded-xl bg-line text-darkslategray" i18n="@@signin">
+            {{'regresar' | translate}}
+        </button>
+        <div *ngIf="isCreatePerformance">
+            <button (click)="onSubmit()" class="p-2 rounded-xl bg-darkslategray text-line hover:bg-hover-darkblue"
+                i18n="@@signin">
+                {{'CreatePerformance' | translate}}
+            </button>
+        </div>
+
+        <div *ngIf="!isViewPerformance">
+            <button (click)="modifyPerformance()" class="p-2 bg-darkslategray text-line rounded-xl">
+                {{'Modified'|translate}}
+            </button>
+        </div>
+
+    </div>
 </div>

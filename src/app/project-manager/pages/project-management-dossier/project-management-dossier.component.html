@@ -82,9 +82,9 @@
                 <div class="flex-1 flex items-center justify-end space-x-3"
                     *ngIf="isAdmin || validateCreatePerformance ">
                     <div *ngIf="showOptions" class="animate__animated animate__fadeInRight flex flex-row space-x-3">
-                        <i (click)="cleanPerformance()" routerLink="/project-manager/performance-buy"
+                        <i routerLink="/project-manager/performance-buy"
                             class="cursor-pointer px-2 py-1 fa-solid fa-cart-shopping text-xl bg-line text-darkslategray rounded-full"></i>
-                        <i routerLink="/project-manager/performance-free-professional" (click)="cleanPerformance()"
+                        <i routerLink="/project-manager/performance-free-professional" 
                             class="cursor-pointer px-2 py-1 fa-solid fa-user-tie text-xl bg-line text-darkslategray rounded-full"></i>
                     </div>
                     <button *ngIf="isAdmin" class="flex items-center bg-darkslategray p-2 rounded-lg text-line text-sm"

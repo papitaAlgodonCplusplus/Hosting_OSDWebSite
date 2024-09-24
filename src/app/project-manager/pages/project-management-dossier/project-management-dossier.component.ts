@@ -150,11 +150,7 @@ export class ProjectManagementDossierComponent implements OnDestroy {
   showOptionsPerformance() {
     this.showOptions = !this.showOptions;
   }
-
-  cleanPerformance() {
-    this.store.dispatch(PerformanceActions.setPerformanceBuy({ performanceBuy: this.emptyPerformance }))
-  }
-
+ 
   onPageChange(event: any) {
     const startIndex = event.pageIndex * event.pageSize;
     const endIndex = startIndex + event.pageSize;

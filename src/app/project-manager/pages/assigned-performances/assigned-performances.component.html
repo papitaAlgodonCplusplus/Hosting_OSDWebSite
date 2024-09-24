@@ -33,7 +33,7 @@
                         {{pf.SummaryTypeName}}
                     </th>
                     <td class="border-y px-2 py-2">
-                        <button (click)="selectPerformance(pf)"
+                        <button *ngIf="checkDateIsNotInFuture(pf.End_Date); else close" (click)="selectPerformance(pf)"
                             [routerLink]="'/project-manager/response-to-performance'"
                             class="rounded-xl p-2 bg-darkslategray text-line">
                             {{ 'newAction' | translate }}

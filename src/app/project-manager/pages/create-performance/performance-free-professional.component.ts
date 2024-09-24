@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
 import { PerformanceFreeProfessional } from 'src/app/project-manager/Models/performanceFreeProfessional';
 import { OSDService } from 'src/app/services/osd-event.services';
-import { UiActions } from 'src/app/store/actions';
+import { PerformanceActions, UiActions } from 'src/app/store/actions';
 import { OSDDataService } from 'src/app/services/osd-data.service';
 import { AuthSelectors, PerformanceSelectors } from 'src/app/store/selectors';
 import { DatePipe } from '@angular/common';
@@ -13,6 +13,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { FreeProfessional } from 'src/app/functions/models/FreeProfessional';
 import { FreeProfessionalType } from '../../Models/freeprofessionalType';
 import { Router, ActivatedRoute } from '@angular/router';
+import { AuthenticationService } from 'src/app/services/authentication.service';
 
 @Component({
   selector: 'app-performance-free-professional',
@@ -43,15 +44,15 @@ export class PerformanceFreeProfessionalComponent {
   filteredProfessionalsFree!: FreeProfessional[];
   projectManagerSelected: string = "";
   projectManagerSelectedObservable$: Observable<string> = this.store.select(PerformanceSelectors.projectManagerId)
+  isViewPerformance: boolean = true;
+  isCreatePerformance: boolean = false;
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
     private OSDEventService: OSDService,
     private OSDDataService: OSDDataService,
     private datePipe: DatePipe,
-    private translate: TranslateService,
-    private router: Router,
-    private route: ActivatedRoute,) {
+    private authService: AuthenticationService) {
     this.performanceForm = this.validatePerformanceOnDataService()
   }
 
@@ -60,7 +61,7 @@ export class PerformanceFreeProfessionalComponent {
       this.performanceFP = performance;
     })
 
-    if (this.performanceFP != undefined) {
+    if (Object.keys(this.performanceFP).length > 0) {
       this.justifyingDocument = this.performanceFP.JustifyingDocument;
 
       let originalDate = this.performanceFP.Start_Date;
@@ -84,14 +85,13 @@ export class PerformanceFreeProfessionalComponent {
       return form;
     }
     else {
+      this.isCreatePerformance = true;
+      console.log("Hola")
       return this.createForm()
     }
   }
 
   ngOnInit() {
-    this.route.queryParams.subscribe(params => {
-      this.modifiedPerformanceFP = params['modified'];
-    });
     setTimeout(() => {
       this.store.dispatch(UiActions.hideFooter());
       this.store.dispatch(UiActions.hideLeftSidebar());
@@ -119,6 +119,15 @@ export class PerformanceFreeProfessionalComponent {
     this.OSDEventService.getFreeProfessionalsList().then(freeProfessionals => {
       this.professionalsFree = freeProfessionals;
       this.filteredProfessionalsFree = freeProfessionals;
+
+      if (this.authService.userInfo) {
+        if (this.professionalsFree) {
+          const freeProfessional: FreeProfessional | undefined = this.professionalsFree?.find(fp => fp.Userid === this.authService.userInfo?.Id);
+          if (freeProfessional?.FreeprofessionaltypeAcronym == "DT" || freeProfessional?.FreeprofessionaltypeAcronym == "INFIT") {
+            this.isViewPerformance = false;
+          }
+        }
+      }
     });
 
     this.projectManagerSelectedObservable$.subscribe(id => {
@@ -129,6 +138,7 @@ export class PerformanceFreeProfessionalComponent {
   ngOnDestroy() {
     setTimeout(() => {
       this.store.dispatch(UiActions.showAll());
+      this.store.dispatch(PerformanceActions.setPerformanceFreeProfessional({ performanceFreeProfessional: {} as PerformanceFreeProfessional }))
     }, 0);
   }
 
@@ -161,7 +171,6 @@ export class PerformanceFreeProfessionalComponent {
   }
 
   onSubmit(): void {
-    console.log(this.performanceForm.value)
     if (this.performanceForm.invalid) {
       this.performanceForm.markAllAsTouched();
       return;
@@ -177,7 +186,7 @@ export class PerformanceFreeProfessionalComponent {
     this.OSDEventService.modifyPerformanceFreeProfessional(this.performanceForm.value, this.projectManagerSelected, this.performanceFP.Id);
   }
 
-  verifiedFormat(data: string) {
+  verifiedFormat() {
     const formValues = this.performanceForm.value;
     let travelTime, workHours, transportExpenses;
 
@@ -254,10 +263,13 @@ export class PerformanceFreeProfessionalComponent {
   }
 
   openModal() {
-    this.showModal = true;
+    if (Object.keys(this.performanceFP).length <= 0) {
+      this.showModal = true;
+    }
   }
 
   selectProfessionalFree(professionalsFree: FreeProfessional) {
+    console.log(professionalsFree)
     this.performanceForm.patchValue({
       FreeProfessionalCode: professionalsFree.Code, FreeProfessionalAssignedId: professionalsFree.Id
     })
