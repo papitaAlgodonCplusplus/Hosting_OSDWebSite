@@ -14,6 +14,7 @@ import { TransparencyIncomeExpenses } from '../../models/TransparencyIncomeExpen
 export class OSDRevenueExpenditureEconomicResultReportComponent {
   
   transparencyIncomeExpenses!: TransparencyIncomeExpenses
+  expenses: number = 0.00;
 
   constructor(
     private store : Store,
@@ -30,6 +31,8 @@ export class OSDRevenueExpenditureEconomicResultReportComponent {
     this.osdDataService.TotalOsdIncomeExpenses$.subscribe(item => {
       console.log(item)
       this.transparencyIncomeExpenses = item
+
+      this.calculateExpenses();
     })
   }
 
@@ -37,5 +40,9 @@ export class OSDRevenueExpenditureEconomicResultReportComponent {
     setTimeout(() => {
       this.store.dispatch(UiActions.showAll());
     }, 0);
+  }
+
+  calculateExpenses(){
+   this.expenses = this.transparencyIncomeExpenses.Income * 0.4 + this.transparencyIncomeExpenses.Income * 0.1 + this.transparencyIncomeExpenses.Income * 0.1;
   }
 }

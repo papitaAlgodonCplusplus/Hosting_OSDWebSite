@@ -1,4 +1,5 @@
 export interface ResponseToPerformanceAssignedEvent {
+    Id: string;
     PerformanceAssignedId : string;
     FP_WorkHours: string;
     FP_TravelTime: string;

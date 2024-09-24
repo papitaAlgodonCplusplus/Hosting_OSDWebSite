@@ -9,10 +9,8 @@ export class ResponseToPerformanceFreeProfessional {
   Total_FP: string = "";
   JustifyChangeEstimatedWorkHours: string = "";
   DocumentIncreaseWorkingHours : string = ""
-  TechnicalDirectorDate: string = "";
-  TechnicalDirectorWorkHours: string = "";
-  AcceptIncreaseInHours: string = "";
   TD_Date: string = "";
   TD_WorkHours: string = "";
+  AcceptIncreaseInHours: string = "";
   Revised: string = "";
 }

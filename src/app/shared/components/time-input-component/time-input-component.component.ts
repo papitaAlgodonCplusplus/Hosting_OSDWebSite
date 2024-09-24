@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { ValidationsService } from 'src/app/services/validations.service';
 
 @Component({
   selector: 'shared-time-input-component',
@@ -11,6 +12,9 @@ export class TimeInputComponentComponent {
   @Input() fieldName!: string;
   @Input() readOnly!: boolean;
   @Input() label!: string;
+
+  constructor(private validationsService: ValidationsService) { 
+  }
 
   formatTimeInput(value: string): string {
     let [hoursPart, minutesPart] = value.split(':');
@@ -41,5 +45,13 @@ export class TimeInputComponentComponent {
       const formattedValue = this.formatTimeInput(control.value);
       control.setValue(formattedValue, { emitEvent: false });
     }
+  }
+
+  isValidField(field: string): boolean | null {
+    return this.validationsService.isValidField(this.formGroup, field);
+  }
+
+  getFieldError(field: string): string | null {
+    return this.validationsService.getFieldError(this.formGroup, field);
   }
 }

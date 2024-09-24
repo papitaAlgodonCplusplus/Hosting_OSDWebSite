@@ -3,12 +3,12 @@
     <form [formGroup]="showPerformanceAssignedForm" (ngSubmit)="onSubmit()" autocomplete="off"
         class="h-full px-10 py-2 w-full">
         <div class="flex flex-wrap items-center">
-            <shared-input-field [readOnly]="true" class="w-full md:w-1/2" fieldName="start_date" label="{{'start_date'|translate}}"
-                inputType="date" [formGroup]="showPerformanceAssignedForm"
+            <shared-input-field [readOnly]="true" class="w-full md:w-1/2" fieldName="start_date"
+                label="{{'start_date'|translate}}" inputType="date" [formGroup]="showPerformanceAssignedForm"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-            <shared-input-field [readOnly]="true" class="w-full md:w-1/2" fieldName="end_date" label="{{'end_date'|translate}}"
-                inputType="date" [formGroup]="showPerformanceAssignedForm"
+            <shared-input-field [readOnly]="true" class="w-full md:w-1/2" fieldName="end_date"
+                label="{{'end_date'|translate}}" inputType="date" [formGroup]="showPerformanceAssignedForm"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
             <shared-input-field [readOnly]="true" class="w-full md:w-1/2" fieldName="freeProfessionalCode"
@@ -19,11 +19,11 @@
                 [formGroup]="showPerformanceAssignedForm">
             </shared-input-field>
 
-            <shared-input-field [readOnly]="true" class="w-full md:w-1/2" fieldName="Summary" label="{{'Summary'|translate}}"
-                inputType="text" [formGroup]="showPerformanceAssignedForm"
+            <shared-input-field [readOnly]="true" class="w-full md:w-1/2" fieldName="Summary"
+                label="{{'Summary'|translate}}" inputType="text" [formGroup]="showPerformanceAssignedForm"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-            <div  class="flex flex-col items-center justify-center space-x-2 w-full">
+            <div class="flex flex-col items-center justify-center space-x-2 w-full">
                 <input type="file" id="JustifyingDocument" formControlName="JustifyingDocument" class="hidden"
                     (change)="displayFileName()" [disabled]="true">
                 <label for="JustifyingDocument" class="block text-gray-700 mb-1 cursor-pointer">
@@ -45,26 +45,24 @@
             </h1>
         </div>
         <div class="flex flex-wrap pt-3">
-            <shared-input-field [readOnly]="true" class="w-full md:w-1/3" fieldName="ForecastWorkHours"
+            <shared-input-field [readOnly]="true" class="w-full md:w-1/2" fieldName="ForecastWorkHours"
                 label="{{'ForecastWorkHours'|translate}}" inputType="text" [formGroup]="showPerformanceAssignedForm"
                 [bgColor]="'bg-white-lightbone'" (change)="verifiedFormat('forecast')">
             </shared-input-field>
 
-            <shared-input-field [readOnly]="true" class="w-full md:w-1/3" fieldName="ForecastTravelTime"
+            <shared-input-field [readOnly]="true" class="w-full md:w-1/2" fieldName="ForecastTravelTime"
                 label="{{'ForecastTravelTime'|translate}}" inputType="text" [formGroup]="showPerformanceAssignedForm"
                 [bgColor]="'bg-white-lightbone'" (change)="verifiedFormat('forecast')">
             </shared-input-field>
 
-            <shared-input-field [readOnly]="true" class="w-full md:w-1/3" fieldName="ForecastTravelExpenses"
+            <shared-input-field [readOnly]="true" class="w-full md:w-1/2" fieldName="ForecastTravelExpenses"
                 label="{{'ForecastTravelExpenses'|translate}}" inputType="text"
                 [formGroup]="showPerformanceAssignedForm" [bgColor]="'bg-white-lightbone'"
                 (change)="verifiedFormat('forecast')"></shared-input-field>
 
-            <shared-input-field [readOnly]="true" class="w-full md:w-1/3" fieldName="Totalforecastdata"
+            <shared-input-field [readOnly]="true" class="w-full md:w-1/2" fieldName="Totalforecastdata"
                 label="{{'Total de datos previstos'|translate}}" inputType="text"
-                [formGroup]="showPerformanceAssignedForm" [bgColor]="'bg-white-lightbone'"
-                [readOnly]="true"></shared-input-field>
-
+                [formGroup]="showPerformanceAssignedForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
         </div>
     </form>
 
@@ -73,35 +71,41 @@
             <h1>
                 {{'FreeProfessional' | translate}}
             </h1>
-            <span class="">(Formato de horas deber ser 0:00)</span>
         </div>
         <div class="flex flex-wrap">
-            <shared-input-field (input)="checkWorkHours()" class="w-full md:w-1/2" fieldName="FP_WorkHours" label="{{'WorkHours'|translate}}"
-                inputType="text" [formGroup]="responsePerformanceForm" [bgColor]="'bg-white-lightbone'"
-                (change)="verifiedFormat('freeProfessional')"></shared-input-field>
+            <shared-time-input-component class="w-full md:w-1/2" fieldName="FP_WorkHours"
+                label="{{'WorkHours'|translate}}" [readOnly]="isViewer" inputType="time"
+                [formGroup]="responsePerformanceForm" [bgColor]="'bg-white-lightbone'"
+                (input)="verifiedFormat('freeProfessional')">
+            </shared-time-input-component>
 
-            <shared-input-field class="w-full md:w-1/2" fieldName="FP_TravelTime" label="{{'TravelTime'|translate}}"
-                inputType="text" [formGroup]="responsePerformanceForm" [bgColor]="'bg-white-lightbone'"
-                (change)="verifiedFormat('freeProfessional')"></shared-input-field>
+            <shared-time-input-component class="w-full md:w-1/2" fieldName="FP_TravelTime"
+                label="{{'TravelTime'|translate}}" [readOnly]="isViewer" inputType="time"
+                [formGroup]="responsePerformanceForm" [bgColor]="'bg-white-lightbone'"
+                (input)="verifiedFormat('freeProfessional')">
+            </shared-time-input-component>
 
             <shared-input-field class="w-full md:w-1/2" fieldName="FP_TravelExpenses" inputType="text"
                 label="{{'TravelExpenses'|translate}}" [formGroup]="responsePerformanceForm"
-                [bgColor]="'bg-white-lightbone'" [readOnly]="false"
+                [bgColor]="'bg-white-lightbone'" [readOnly]="isViewer"
                 (change)="verifiedFormat('freeProfessional')"></shared-input-field>
 
             <shared-input-field class="w-full md:w-1/2" fieldName="Total_FP" inputType="text"
-                label="{{'Total'|translate}}" [formGroup]="responsePerformanceForm" [bgColor]="'bg-white-lightbone'"
-                [readOnly]="true"></shared-input-field>
+                label="{{'Total'|translate}}" [readOnly]="isViewer" [formGroup]="responsePerformanceForm"
+                [bgColor]="'bg-white-lightbone'" [readOnly]="true"></shared-input-field>
 
             <div *ngIf="isWorkMore" class="flex flex-wrap items-center justify-center w-full space-y-3">
-                <span class=" px-2 text-red-500 font-medium w-full">*Debes de justificar el aumento de horas</span>
+                <span *ngIf="!isViewer" class=" px-2 text-red-500 font-medium w-full">*Debes de justificar el aumento de
+                    horas</span>
+
                 <shared-input-field class="w-full md:w-1/2" fieldName="JustifyChangeEstimatedWorkHours"
                     label="{{'JustifyIncreaseinHours'|translate}}" inputType="text"
-                    [formGroup]="responsePerformanceForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                    [formGroup]="responsePerformanceForm" [bgColor]="'bg-white-lightbone'"
+                    [readOnly]="isViewer"></shared-input-field>
 
                 <div class="flex flex-wrap items-center justify-center space-x-2 w-full md:w-1/2">
                     <input type="file" id="DocumentIncreaseWorkingHours" formControlName="DocumentIncreaseWorkingHours"
-                        class="hidden" (change)="displayFileName()" [disabled]="false">
+                        class="hidden" (change)="displayFileName()" [disabled]="!isViewer">
                     <label for="DocumentIncreaseWorkingHours" class="block text-gray-700 mb-1 cursor-pointer">
                         {{'justifyingDocument' | translate}}
                     </label>
@@ -115,25 +119,26 @@
                 </div>
             </div>
         </div>
+    </form>
 
-        <div>
+    <form [formGroup]="reviewPerformanceForm" autocomplete="off" class="h-full px-10 py-2 w-full">
+        <div *ngIf="isReviewPerformance">
             <div class="flex flex-row space-x-3 text-darkslategray border-b mt-3 text-start">
                 <h1>
                     {{'TechnicalDirector' | translate}}
                 </h1>
-                <span class="">(Formato de horas deber ser 0:00)</span>
             </div>
-            <div class="flex flex-wrap justify-center">
-
-                <shared-input-field class="w-full md:w-1/2" [readOnly]="!isTechnicalDirector && validatePerformanceFP != null" fieldName="TD_Date" label="{{'Date'|translate}}"
-                    inputType="date" [formGroup]="responsePerformanceForm"
+            <div class="flex flex-wrap justify-center items-center">
+                <shared-input-field class="w-full md:w-1/2" [readOnly]="isViewer" fieldName="TD_Date"
+                    label="{{'Date'|translate}}" inputType="date" [formGroup]="reviewPerformanceForm"
                     [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-                <shared-input-field class="w-full md:w-1/2" [readOnly]="!isTechnicalDirector && validatePerformanceFP != null" fieldName="TD_WorkHours" label="{{'WorkHours'|translate}}"
-                    inputType="text" (change)="verifiedFormat('technicalDirector')"
-                    [formGroup]="responsePerformanceForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                <shared-time-input-component [readOnly]="isViewer" class="w-full md:w-1/2" fieldName="TD_WorkHours"
+                    label="{{'WorkHours'|translate}}" inputType="time" [formGroup]="reviewPerformanceForm"
+                    [bgColor]="'bg-white-lightbone'" (input)="verifiedFormat('technicalDirector')">
+                </shared-time-input-component>
 
-                <div class="flex flex-row-reverse items-center space-x-3">
+                <div class="w-full flex flex-row items-center justify-start space-x-3 py-3">
                     <input type="checkbox" id="AcceptIncreaseInHours" formControlName="AcceptIncreaseInHours">
                     <label class="pr-3" for="AcceptIncreaseInHours"> {{'Aceptar aumento de horas' | translate}}</label>
                 </div>
@@ -142,20 +147,28 @@
     </form>
 
     <div class="flex flex-row justify-end space-x-2 py-3 font-medium">
-        <button routerLink="/project-manager/assigned-performance" class="p-2 bg-line text-darkslategray rounded-xl">
+
+        <button *ngIf="isAdmin || !userInfo" routerLink="/project-manager" class="p-2 bg-line text-darkslategray rounded-xl">
             {{'regresar' | translate}}
         </button>
-        <div *ngIf="visualizePerformanceFP == null && modifiedPerformanceFP == null && validatePerformanceFP == null">
-            <button  (click)="onSubmit()" type="submit" class="p-2 bg-darkslategray text-line rounded-xl">
+
+        <button *ngIf="!isAdmin && userInfo" routerLink="/project-manager/assigned-performance"
+            class="p-2 bg-line text-darkslategray rounded-xl">
+            {{'regresars' | translate}}
+        </button>
+        <div>
+            <button *ngIf="!isViewer && !isAdmin" (click)="onSubmit()"
+                class="p-2 bg-darkslategray text-line rounded-xl">
                 {{'CreatePerformance'|translate}}
             </button>
         </div>
 
-        <button *ngIf=" modifiedPerformanceFP != null && responseToPerformanceFreeProfessional.Revised != 'True'" (click)="modifySubPerformance()" type="submit" class="p-2 bg-darkslategray text-line rounded-xl">
+        <button *ngIf="isAdmin" (click)="modifySubPerformance()" class="p-2 bg-darkslategray text-line rounded-xl">
             {{'Modified'|translate}}
         </button>
 
-        <button *ngIf=" validatePerformanceFP != null && isTechnicalDirector && responseToPerformanceFreeProfessional.Revised != 'True'" (click)="validateSubPerformance()" type="submit" class="p-2 bg-darkslategray text-line rounded-xl">
+        <button *ngIf="isRevisedPerformance" (click)="validateSubPerformance()"
+            class="p-2 bg-darkslategray text-line rounded-xl">
             {{'Review subperformance'|translate}}
         </button>
 

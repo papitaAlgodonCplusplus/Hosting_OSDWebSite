@@ -824,9 +824,8 @@ export class EventFactoryService {
     return event;
   }
 
-  public CreateModifyResponseToPerformancesAssigned(subPerformanceId: string, performance : ResponseToPerformanceAssignedEvent, performanceAssignedId : string): WebBaseEvent {
+  public CreateModifyResponseToPerformancesAssigned(subPerformanceId : string, performance : ResponseToPerformanceAssignedEvent, performanceAssignedId : string): WebBaseEvent {
     let event: WebBaseEvent;
-
     event = new WebBaseEvent();
     event.Action = EventAction.MODIFY_RESPONSE_TO_PERFORMANCE_ASSIGNED;
     event.SessionKey = this.authenticationService.sessionKey;

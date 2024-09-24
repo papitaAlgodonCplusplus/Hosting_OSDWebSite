@@ -82,10 +82,10 @@ export class AssignPLTRClaimsComponent implements OnDestroy {
       if (this.freeProfessionalsTr.length < 0) {
         this.store.dispatch(ModalActions.changeAlertType({ alertType: 'warning' }));
         if (this.translate.currentLang == "en") {
-          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: 'There are no authorized processors' }));
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: 'There are currently no registered processors for this client' }));
         }
         else {
-          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: 'No hay tramitadores autorizados' }));
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: 'Actualmente no hay tramitadores registrados para este cliente' }));
         }
         this.store.dispatch(ModalActions.openAlert());
       }

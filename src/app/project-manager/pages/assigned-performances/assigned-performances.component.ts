@@ -62,14 +62,14 @@ export class AssignedPerformancesComponent implements OnDestroy {
   }
 
   checkDateIsNotInFuture(dateString: string): boolean {
-    const dateToCheck = new Date(dateString);
-    const today = new Date(); 
-    today.setHours(0, 0, 0, 0); 
+    //const dateToCheck = new Date(dateString);
+    // const today = new Date(); 
+    // today.setHours(0, 0, 0, 0); 
 
-    if (dateToCheck >= today) {
-      return true;
-    }
-    return false; 
+    // if (dateToCheck >= today) {
+    //   return true;
+    // }
+     return true; 
   }
    
 }

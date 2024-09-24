@@ -21,19 +21,20 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class ResponseToPerformanceComponent implements OnDestroy {
   showPerformanceAssignedForm!: FormGroup;
-  showPerformanceResponseForm!: FormGroup;
   responsePerformanceForm!: FormGroup;
+  reviewPerformanceForm!: FormGroup;
   DocumentIncreaseWorkingHours!: string;
   justifyingDocument!: string;
-  isTechnicalDirector: boolean = false
+  isAdmin: boolean = false
   userInfo!: UserInfo
-  modifiedPerformanceFP: any;
-  visualizePerformanceFP: any;
-  validatePerformanceFP: any;
   performanceAssigned$: Observable<PerformanceFreeProfessional> = this.store.select(PerformanceSelectors.projectPerformance);
   subPerformance$: Observable<ResponseToPerformanceFreeProfessional> = this.store.select(PerformanceSelectors.projectSubPerformance);
   isWorkMore: boolean = false;
-  responseToPerformanceFreeProfessional = {} as ResponseToPerformanceFreeProfessional;
+  responseToPerformanceFreeProfessional: ResponseToPerformanceFreeProfessional = {} as ResponseToPerformanceFreeProfessional;
+  isViewer: boolean = false;
+  isModifyPerformance: boolean = false
+  isReviewPerformance: boolean = false
+  isRevisedPerformance: boolean = false;
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
@@ -43,13 +44,45 @@ export class ResponseToPerformanceComponent implements OnDestroy {
     private route: ActivatedRoute,
     private translate: TranslateService,) {
     this.showPerformanceAssignedForm = this.ShowForm()
-    this.responsePerformanceForm = this.ShowResponseForm()
+    this.responsePerformanceForm = this.createForm()
+    this.reviewPerformanceForm = this.createReviewForm()
+  }
+
+  ngOnInit(): void {
+    setTimeout(() => {
+      this.store.dispatch(UiActions.hideFooter())
+      this.store.dispatch(UiActions.hideLeftSidebar())
+      this.validateAccount();
+
+      if (this.responseToPerformanceFreeProfessional.Revised == 'True') {
+        if (this.translate.currentLang == "en") {
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "The Subperformance has already been reviewed by the TD" }));
+        }
+        else {
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "La subactuacion ya se encuentra revisada por el DT" }));
+        }
+        this.store.dispatch(ModalActions.openAlert())
+      }
+    }, 0);
+
+    var userInfo = this.authenticationService.userInfo;
+    if (userInfo) {
+      this.userInfo = userInfo;
+    }
+
+    this.subPerformance$.subscribe(performance => {
+      if (Object.keys(performance).length > 0) {
+        this.responseToPerformanceFreeProfessional = performance
+        this.responsePerformanceForm = this.FillResponsePerformanceForm()
+        this.isViewer = true
+      }
+    })
   }
 
   ngOnDestroy(): void {
     setTimeout(() => {
       this.store.dispatch(UiActions.showAll())
-      this.store.dispatch(PerformanceActions.setSubPerformance({subPerformance: {} as ResponseToPerformanceFreeProfessional}));
+      this.store.dispatch(PerformanceActions.setSubPerformance({ subPerformance: {} as ResponseToPerformanceFreeProfessional }));
     }, 0);
   }
 
@@ -60,65 +93,24 @@ export class ResponseToPerformanceComponent implements OnDestroy {
         this.osdEventService.getFreeProfessionalsList()
           .then(freeProfessionals => {
             if (Array.isArray(freeProfessionals)) {
-              freeProfessionals.forEach(item => {
-                var freeProfessional: FreeProfessional = item;
-                if (freeProfessional.Userid == this.userInfo.Id) {
-                  if (freeProfessional.FreeprofessionaltypeAcronym == "TR") {
-                    this.isTechnicalDirector = false;
-                    this.responsePerformanceForm.get('AcceptIncreaseInHours')?.disable();
-                  }
-                  else if (freeProfessional.FreeprofessionaltypeAcronym == "INFIT") {
-                    this.isTechnicalDirector = false;
-                    this.responsePerformanceForm.get('AcceptIncreaseInHours')?.disable();
-                  }
-                  else if (freeProfessional.FreeprofessionaltypeAcronym == "DT") {
-                    this.isTechnicalDirector = true;
-                    this.responsePerformanceForm.get('AcceptIncreaseInHours')?.enable();
-                  }
-                  else if (freeProfessional.FreeprofessionaltypeAcronym == "FC") {
-                    this.isTechnicalDirector = false;
-                    this.responsePerformanceForm.get('AcceptIncreaseInHours')?.disable();
-                  }
+              var findFreeProfessional: FreeProfessional = freeProfessionals.find(fp => fp.Userid == this.userInfo.Id)
+              if (findFreeProfessional.FreeprofessionaltypeAcronym == "DT" || findFreeProfessional.FreeprofessionaltypeAcronym == "INFIT") {
+                this.isAdmin = true;
+                this.isViewer = false;
+                if (this.responseToPerformanceFreeProfessional.Revised == 'True') {
+                  this.isRevisedPerformance = false;
                 }
-              });
-            } else {
-              console.error('freeProfessionals is not an array:', freeProfessionals);
+                else{
+                  this.isRevisedPerformance = true;
+                }
+              }
+              else {
+                this.isAdmin = false;
+              }
             }
-      })}
-    }
-  }
-
-  ngOnInit(): void {
-    var userInfo = this.authenticationService.userInfo;
-    if (userInfo) {
-      this.userInfo = userInfo;
-    }
-    this.validateAccount();
-
-    this.route.queryParams.subscribe(params => {
-      this.modifiedPerformanceFP = params['modified'];
-    });
-    this.route.queryParams.subscribe(params => {
-      this.visualizePerformanceFP = params['visualize'];
-    });
-    this.route.queryParams.subscribe(params => {
-      this.validatePerformanceFP = params['validate'];
-    });
-    setTimeout(() => {
-      this.store.dispatch(UiActions.hideFooter())
-      this.store.dispatch(UiActions.hideLeftSidebar())
-
-      if(this.responseToPerformanceFreeProfessional.Revised == 'True'){
-        if (this.translate.currentLang == "en") {
-          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "The Subperformance has already been reviewed by the TD" }));
-        }
-        else {
-          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "La subactuacion ya se encuentra revisada por el DT" }));
-        }
-        this.store.dispatch(ModalActions.openAlert())
+          })
       }
-    
-    }, 0);
+    }
   }
 
   private createForm(): FormGroup {
@@ -131,7 +123,16 @@ export class ResponseToPerformanceComponent implements OnDestroy {
       DocumentIncreaseWorkingHours: [''],
       TD_Date: [''],
       TD_WorkHours: [''],
-      AcceptIncreaseInHours: [{ value: '', disabled: this.isTechnicalDirector }]
+      AcceptIncreaseInHours: [false]
+    });
+    return form;
+  }
+
+  private createReviewForm(): FormGroup {
+    const form = this.formBuilder.group({
+      TD_Date: ['', [Validators.required]],
+      TD_WorkHours: ['', [Validators.required]],
+      AcceptIncreaseInHours: [false]
     });
     return form;
   }
@@ -165,35 +166,36 @@ export class ResponseToPerformanceComponent implements OnDestroy {
     return form;
   }
 
-  private ShowResponseForm(): FormGroup {
-    if(this.responseToPerformanceFreeProfessional != null ){
-      this.subPerformance$.subscribe(performance => {
-        this.responseToPerformanceFreeProfessional = performance
-      })
+  private FillResponsePerformanceForm(): FormGroup {
+    let originalDate = this.responseToPerformanceFreeProfessional.TD_Date;
+    let [day, month, year] = originalDate.split('/').map(Number);
+    let parsedDate = new Date(year, month - 1, day);
+    let formatedDate = this.datePipe.transform(parsedDate, 'yyyy-MM-dd');
 
-      let TD_Date = this.responseToPerformanceFreeProfessional.TD_Date;
-      let [day, month, year] = TD_Date.split('/');
-      let formattedDate = new Date(`${year}-${month}-${day}`);
-      let formattedDateString = formattedDate.toISOString().split('T')[0];
-      console.log("Fecha Formateada: ", formattedDateString);
-  
-      this.showPerformanceResponseForm = this.formBuilder.group({
-        FP_WorkHours: this.responseToPerformanceFreeProfessional.FP_WorkHours,
-        FP_TravelTime: this.responseToPerformanceFreeProfessional.FP_TravelTime,
-        FP_TravelExpenses: this.responseToPerformanceFreeProfessional.FP_TravelExpenses,
-        Total_FP: this.responseToPerformanceFreeProfessional.Total_FP,
-        JustifyChangeEstimatedWorkHours: this.responseToPerformanceFreeProfessional.JustifyChangeEstimatedWorkHours,
-        DocumentIncreaseWorkingHours: this.responseToPerformanceFreeProfessional.DocumentIncreaseWorkingHours,
-        TD_Date: formattedDateString,
+    if (this.responseToPerformanceFreeProfessional.JustifyChangeEstimatedWorkHours != '') {
+      this.isWorkMore = true
+    }
+
+    if (this.responseToPerformanceFreeProfessional.Revised == 'True') {
+      this.isReviewPerformance = true;
+      this.reviewPerformanceForm = this.formBuilder.group({
+        TD_Date: formatedDate,
         TD_WorkHours: this.responseToPerformanceFreeProfessional.TD_WorkHours,
         AcceptIncreaseInHours: this.responseToPerformanceFreeProfessional.AcceptIncreaseInHours
       });
-
-    }else{
-      this.showPerformanceResponseForm = this.createForm()
     }
-    
-    return this.showPerformanceResponseForm;
+
+    this.DocumentIncreaseWorkingHours = this.responseToPerformanceFreeProfessional.DocumentIncreaseWorkingHours
+    const form = this.formBuilder.group({
+      FP_WorkHours: this.responseToPerformanceFreeProfessional.FP_WorkHours,
+      FP_TravelTime: this.responseToPerformanceFreeProfessional.FP_TravelTime,
+      FP_TravelExpenses: this.responseToPerformanceFreeProfessional.FP_TravelExpenses,
+      Total_FP: this.responseToPerformanceFreeProfessional.Total_FP,
+      JustifyChangeEstimatedWorkHours: this.responseToPerformanceFreeProfessional.JustifyChangeEstimatedWorkHours,
+      DocumentIncreaseWorkingHours: this.responseToPerformanceFreeProfessional.DocumentIncreaseWorkingHours
+    });
+
+    return form;
   }
 
   onSubmit(): void {
@@ -213,34 +215,34 @@ export class ResponseToPerformanceComponent implements OnDestroy {
       this.responsePerformanceForm.markAllAsTouched();
       return;
     }
-    var fillForm = {} as ResponseToPerformanceFreeProfessional;
-    this.subPerformance$.subscribe(performance => {
-      fillForm = performance
-    })
     var performanceAssigned = {} as PerformanceFreeProfessional;
     this.performanceAssigned$.subscribe(performance => {
       performanceAssigned = performance
     })
-    this.osdEventService.modifyResponseToPerformanceAssigned(fillForm.Id ,this.responsePerformanceForm.value, performanceAssigned.Id);
+
+    this.osdEventService.modifyResponseToPerformanceAssigned(this.responseToPerformanceFreeProfessional.Id, this.responsePerformanceForm.value, performanceAssigned.Id);
   }
 
   validateSubPerformance(): void {
-    if (this.responsePerformanceForm.invalid) {
-      this.responsePerformanceForm.markAllAsTouched();
+    this.isReviewPerformance = true;
+
+    if (this.reviewPerformanceForm.invalid) {
+      this.reviewPerformanceForm.markAllAsTouched();
       return;
     }
+
     var fillForm = {} as ResponseToPerformanceFreeProfessional;
     this.subPerformance$.subscribe(performance => {
       fillForm = performance
     })
 
-    this.osdEventService.validateResponseToPerformanceAssigned(fillForm.Id ,this.responsePerformanceForm.value);
+    this.osdEventService.validateResponseToPerformanceAssigned(fillForm.Id, this.reviewPerformanceForm.value);
   }
 
   verifiedFormat(data: string) {
     const formValues = this.responsePerformanceForm.value;
-    console.log(this.responsePerformanceForm.value)
     let travelTime, workHours, professionalFreeTransportExpenses;
+
     switch (data) {
       case "freeProfessional":
         travelTime = formValues.FP_TravelTime;
@@ -261,12 +263,13 @@ export class ResponseToPerformanceComponent implements OnDestroy {
     if (isTravelTimeValid && isWorkHoursValid) {
       if (professionalFreeTransportExpenses != '' && data == "freeProfessional") {
         this.totalExpensesOfFreeProfessional(formValues);
+        this.checkWorkHours()
       }
     } else {
       if (professionalFreeTransportExpenses != '' && data == "freeProfessional") {
         console.log(professionalFreeTransportExpenses);
         this.responsePerformanceForm.patchValue({ Total_FP: '' });
-      }else{
+      } else {
         this.responsePerformanceForm.patchValue({ TD_WorkHours: '' });
       }
     }
@@ -311,7 +314,7 @@ export class ResponseToPerformanceComponent implements OnDestroy {
   checkWorkHours() {
     var form = this.responsePerformanceForm.value;
     var isHourValid = this.validarHora(form.FP_WorkHours);
-
+  
     if (isHourValid) {
       var formPerformanceAssigned = this.showPerformanceAssignedForm.value;
       var totalMinutesFreeProfessional = this.convertTimeToMinutes(form.FP_WorkHours) / 60;
@@ -344,6 +347,4 @@ export class ResponseToPerformanceComponent implements OnDestroy {
       this.responsePerformanceForm.get('DocumentIncreaseWorkingHours')?.updateValueAndValidity();
     }
   }
-
-
 }

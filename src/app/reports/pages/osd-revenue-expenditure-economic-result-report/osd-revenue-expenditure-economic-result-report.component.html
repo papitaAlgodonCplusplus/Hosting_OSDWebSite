@@ -20,9 +20,9 @@
         <tr>
           <td class="p-2 border font-normal text-darkslategray text-center">{{'total' | translate}}</td>
           <td class="p-2 border text-center">€{{transparencyIncomeExpenses.Income}}</td>
-          <td class="p-2 border text-center">€{{ 0.00 }}</td>
-          <td class="p-2 border text-center">€{{0.00}}</td>
-          <td class="p-2 border text-center">€{{ transparencyIncomeExpenses.ClaimsAmount}}</td>
+          <td class="p-2 border text-center">€{{expenses}}</td>
+          <td class="p-2 border text-center">€{{transparencyIncomeExpenses.ClaimsAmount}}</td>
+          <td class="p-2 border text-center">€{{ transparencyIncomeExpenses.CompensationClaimant}}</td>
           <td class="p-2 border text-center">€{{transparencyIncomeExpenses.ImprovementSavings}}</td>
         </tr>
         <tr>
@@ -36,18 +36,18 @@
         <tr>
           <td class="p-2 border font-normal text-darkslategray text-center">{{'PLProfessionals' | translate}} (40%)</td>
           <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.Income * 0.4).toFixed(2) }}</td>
-          <td class="p-2 border text-center">€{{ 0.00}}</td>
-          <td class="p-2 border text-center"><i class="fa-solid fa-minus"></i></td>
+          <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.Income * 0.4).toFixed(2)}}</td>
           <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.ClaimsAmount * 0.4).toFixed(2)}}</td>
+          <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.CompensationClaimant * 0.4).toFixed(2)}}</td>
           <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.ImprovementSavings * 0.4).toFixed(2)}}</td>
         </tr> 
         <tr>
           <td class="p-2 border font-normal text-darkslategray text-center">{{'DTDirecccionTecnica' | translate}} (10%)
           </td>
           <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.Income * 0.1).toFixed(2) }}</td>
-          <td class="p-2 border text-center">€{{ 0.00}}</td>
-          <td class="p-2 border text-center"><i class="fa-solid fa-minus"></i></td>
+          <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.Income * 0.1).toFixed(2) }}</td>
           <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.ClaimsAmount * 0.1).toFixed(2)}}</td>
+          <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.CompensationClaimant * 0.1).toFixed(2)}}</td>
           <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.ImprovementSavings * 0.1).toFixed(2)}}</td>
         </tr>
         <tr>
@@ -55,8 +55,8 @@
           </td>
           <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.Income * 0.05).toFixed(2) }}</td>
           <td class="p-2 border text-center">€{{ 0.00 }}</td>
-          <td class="p-2 border text-center"><i class="fa-solid fa-minus"></i></td>
           <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.ClaimsAmount * 0.05).toFixed(2)}}</td>
+          <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.CompensationClaimant * 0.05).toFixed(2)}}</td>
           <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.ImprovementSavings * 0.05).toFixed(2) }}</td>
         </tr>
         <tr>
@@ -64,8 +64,8 @@
           </td>
           <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.Income * 0.1).toFixed(2) }}</td>
           <td class="p-2 border text-center">€{{ 0.00 }}</td>
-          <td class="p-2 border text-center"><i class="fa-solid fa-minus"></i></td>
           <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.ClaimsAmount * 0.1).toFixed(2)}}</td>
+          <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.CompensationClaimant * 0.1).toFixed(2)}}</td>
           <td class="p-2 border text-center">€{{(transparencyIncomeExpenses.ImprovementSavings * 0.1).toFixed(2)}}</td>
         </tr>
         <tr>
@@ -75,9 +75,9 @@
             </div>
           </td>
           <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.Income * 0.1).toFixed(2) }}</td>
-          <td class="p-2 border text-center">€{{ 0.00 }}</td>
-          <td class="p-2 border text-center"><i class="fa-solid fa-minus"></i></td>
+          <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.Income * 0.1).toFixed(2) }}</td>
           <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.ClaimsAmount * 0.1).toFixed(2)}}</td>
+          <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.CompensationClaimant * 0.1).toFixed(2)}}</td>
           <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.ImprovementSavings * 0.1).toFixed(2)}}</td>
         </tr>
         <tr>
@@ -88,8 +88,8 @@
           </td>
           <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.Income * 0.05).toFixed(2) }}</td>
           <td class="p-2 border text-center">€{{ 0.00 }}</td>
-          <td class="p-2 border text-center"><i class="fa-solid fa-minus"></i></td>
           <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.ClaimsAmount * 0.05).toFixed(2)}}</td>
+          <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.CompensationClaimant * 0.05).toFixed(2)}}</td>
           <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.ImprovementSavings * 0.05).toFixed(2) }}</td>
         </tr>
 
@@ -102,8 +102,8 @@
           </td>
           <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.Income * 0.2).toFixed(2)}}</td>
           <td class="p-2 border text-center">€{{ 0.00 }}</td>
-          <td class="p-2 border text-center"><i class="fa-solid fa-minus"></i></td>
           <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.ClaimsAmount * 0.2).toFixed(2)}}</td>
+          <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.CompensationClaimant * 0.2).toFixed(2)}}</td>
           <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.ImprovementSavings * 0.2).toFixed(2)}}</td>
         </tr>
       </ng-container>
