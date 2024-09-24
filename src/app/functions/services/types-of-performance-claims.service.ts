@@ -40,8 +40,8 @@ export class TypesOfPerformanceClaimsService {
   getTypesTrainer(): DropDownItem[] {
     var typesTrainer: DropDownItem[] = [
       { value: this.translate.instant('Appeal'), key: 'Appeal' }, 
-      { value: this.translate.instant('Complaint-Solution'), key: 'Complaint-Solution' },
-      { value: this.translate.instant('Monitoring/Review'), key: 'Monitoring/Review' }
+      { value: this.translate.instant('Complaint Resolution'), key: 'Complaint Resolution' },
+      { value: this.translate.instant('Monitoring Review'), key: 'Monitoring Review' }
     ];
     return typesTrainer;
   }
