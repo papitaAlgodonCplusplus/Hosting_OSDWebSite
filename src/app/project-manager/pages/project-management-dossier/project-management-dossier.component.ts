@@ -61,10 +61,9 @@ export class ProjectManagementDossierComponent implements OnDestroy {
 
       this.osdEventService.GetProjects();
       this.user = this.authService.userInfo;
-      if(this.user.AccountType == 'FreeProfessional'){
+      if (this.user.AccountType == 'FreeProfessional') {
         this.validateCreatePerformance = true;
       }
-      console.log("Tipo de cuenta: ",this.user)
       if (this.user) {
         this.isUser = true
         if (this.user.Isadmin) {
@@ -77,78 +76,32 @@ export class ProjectManagementDossierComponent implements OnDestroy {
   }
 
   viewPerformance(performance: any) {
-    this.performancesFreeProfessional.forEach(performanceFP => {
-      if(performanceFP.Id === performance.Id){
-        if(performance != undefined){
-          this.store.dispatch(PerformanceActions.setPerformanceFreeProfessional({performanceFreeProfessional: performance}))
-          this.router.navigate(['/project-manager/performance-free-professional']);
-        }
-      }
-    });
-
-    this.performancesBuy.forEach(performanceBuy => {
-      if(performanceBuy.Id === performance.Id){
-        if(performance != undefined){
-          this.store.dispatch(PerformanceActions.setPerformanceBuy({performanceBuy: performance}))
-          this.router.navigate(['/project-manager/performance-buy']);
-        }
-      }
-    });
-    
+    this.store.dispatch(PerformanceActions.setPerformanceFreeProfessional({ performanceFreeProfessional: performance }))
+    this.router.navigate(['/project-manager/performance-free-professional']);
   }
+
+  viewPerformanceBuy(performance: any) {
+    this.store.dispatch(PerformanceActions.setPerformanceBuy({ performanceBuy: performance }))
+    this.router.navigate(['/project-manager/performance-buy']);
+  }
+
 
   viewSubPerformance(subPerformance: any) {
-        if(subPerformance != undefined){
-          this.store.dispatch(PerformanceActions.setSubPerformance({subPerformance: subPerformance}))
-          this.router.navigate(['/project-manager/response-to-performance'], {
-            queryParams: { visualize: 'valid' }
-          });
-        }
+    this.store.dispatch(PerformanceActions.setSubPerformance({ subPerformance: subPerformance }))
+    this.router.navigate(['/project-manager/response-to-performance'])
   }
-
-  modifySubPerformance(subPerformance: any) {
-    if(subPerformance != undefined){
-      this.store.dispatch(PerformanceActions.setSubPerformance({subPerformance: subPerformance}))
-      this.router.navigate(['/project-manager/response-to-performance'], {
-        queryParams: { modified: 'valid' }
-      });
-    }
-  }
-
-  validateSubPerformance(subPerformance: any) {
-    if(subPerformance != undefined){
-      this.store.dispatch(PerformanceActions.setSubPerformance({subPerformance: subPerformance}))
-      this.router.navigate(['/project-manager/response-to-performance'], {
-        queryParams: { validate: 'valid' }
-      });
-    }
-  }
-
 
   modifiedPerformance(performance: any) {
-    this.performancesFreeProfessional.forEach(performanceFP => {
-      if(performanceFP.Id === performance.Id){
-        if(performance != undefined){
-          this.store.dispatch(PerformanceActions.setPerformanceFreeProfessional({performanceFreeProfessional: performance}))
-          this.router.navigate(['/project-manager/performance-free-professional'], {
-            queryParams: { modified: 'valid' }
-          });
-          
-        }
-      }
-    });
-
     this.performancesBuy.forEach(performanceBuy => {
-      if(performanceBuy.Id === performance.Id){
-        if(performance != undefined){
-          this.store.dispatch(PerformanceActions.setPerformanceBuy({performanceBuy: performance}))
+      if (performanceBuy.Id === performance.Id) {
+        if (performance != undefined) {
+          this.store.dispatch(PerformanceActions.setPerformanceBuy({ performanceBuy: performance }))
           this.router.navigate(['/project-manager/performance-buy'], {
             queryParams: { modified: 'valid' }
           });
         }
       }
     });
-    
   }
 
   sortDateLowestHighest(ascending: boolean = true) {
@@ -202,16 +155,6 @@ export class ProjectManagementDossierComponent implements OnDestroy {
     this.store.dispatch(PerformanceActions.setPerformanceBuy({ performanceBuy: this.emptyPerformance }))
   }
 
-  // chargePerformanceFP(performanceId: any) {
-  //   var performance = this.performancesFreeProfesional.find(item => item.Id === performanceId);
-  //   this.osdDataService.setPerformance(performance)
-  // }
-
-  // selectPerformance(id: string) {
-  //   var performance = this.performancesBuys.find(item => item.Id === id);
-  //   this.store.dispatch(PerformanceActions.setPerformanceBuy({ performanceBuy: performance }))
-  // }
-
   onPageChange(event: any) {
     const startIndex = event.pageIndex * event.pageSize;
     const endIndex = startIndex + event.pageSize;
@@ -229,7 +172,6 @@ export class ProjectManagementDossierComponent implements OnDestroy {
   selectProject(event: Event): void {
     this.loadProjectManager = true;
     const id = (event.target as HTMLSelectElement).value;
-    console.log("Id project manager in project management: ", id)
     setTimeout(() => {
       this.allProjects.forEach(element => {
         if (element.Id === id) {
@@ -243,21 +185,25 @@ export class ProjectManagementDossierComponent implements OnDestroy {
   }
 
   async loadProjects(): Promise<void> {
-    this.loadProjectManager = false;
+    this.loadProjectManager = true;
     try {
       this.allProjects = await firstValueFrom(this.Projects$);
+      if (this.allProjects && this.allProjects.length > 0) {
+        this.selectedProject = this.allProjects[0];
+      }
       this.loadProjectManager = false;
     } catch (error) {
-      console.error('Error loading projects:', error);
+      this.loadProjectManager = false;
     }
   }
+
 
   loadPerformance() {
     this.loadProjectManager = true;
     setTimeout(() => {
       this.osdDataService.performanceFreeProfessionalList$.subscribe(performance => {
         this.performances = performance;
-        this.performances.forEach(pf =>{
+        this.performances.forEach(pf => {
           pf.Type = "Performance Free Professional"
         })
         this.performancesFreeProfessional = performance;
@@ -291,19 +237,18 @@ export class ProjectManagementDossierComponent implements OnDestroy {
   }
 
   filterPerformance(type: string) {
-    console.log(type);
-    if (type === 'buy') { 
+    if (type === 'buy') {
       this.performances = this.performancesBuy;
-      this.performances.forEach(pf =>{
+      this.performances.forEach(pf => {
         pf.Type = "Performance Buy"
       })
     } else {
       console.log(this.performancesFreeProfessional);
       this.performances = this.performancesFreeProfessional;
-      this.performances.forEach(pf =>{
+      this.performances.forEach(pf => {
         pf.Type = "Performance Free Professional"
       })
     }
   }
-  
+
 }

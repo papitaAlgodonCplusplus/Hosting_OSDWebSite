@@ -153,7 +153,6 @@ export class OSDDataService {
     this.performanceFreeProfessionalList.next(data);
   }
   emitPerformanceBuyList(data: PerformanceBuy[]) {
-    console.log(data)
     this.performanceBuyList.next(data);
   }
   emitFreeProfessionalId(data: string) {

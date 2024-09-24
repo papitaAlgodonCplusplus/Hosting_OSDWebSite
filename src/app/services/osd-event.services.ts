@@ -822,7 +822,6 @@ export class OSDService {
         const performancesFreeProfessionalsModels = performancesFreeProfessionals;
         const performancesBuyModels = performancesBuy;
 
-        console.log(performancesBuyModels)
         this.osdDataService.emitPerformanceFreeProfessionalList(performancesFreeProfessionalsModels);
         this.osdDataService.emitPerformanceBuyList(performancesBuyModels);
       }
@@ -1127,14 +1126,21 @@ export class OSDService {
 
     try {
       message = webBaseEvent.getBodyProperty(EventConstants.MESSAGE);
-      this.store.dispatch(ModalActions.changeAlertType({ alertType: 'success' }));
-      this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
-      this.store.dispatch(ModalActions.openAlert())
-      if (this.authenticationService.userInfo != null) {
-        this.securityDataService.emitUserAuthenticationSuccess("/project-manager");
-      }
-      else {
-        this.securityDataService.emitUserAuthenticationSuccess("/auth");
+      if (message) {
+        if (this.translate.currentLang == "en") {
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
+        }
+        else {
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "El resumen fue agregado exitosamente" }));
+        }
+        this.store.dispatch(ModalActions.openAlert())
+
+        if (this.authenticationService.userInfo != null) {
+          this.securityDataService.emitUserAuthenticationSuccess("/project-manager");
+        }
+        else {
+          this.securityDataService.emitUserAuthenticationSuccess("/auth");
+        }
       }
     } catch {
 
@@ -1389,7 +1395,6 @@ export class OSDService {
     try {
       subPerformance = webBaseEvent.getBodyProperty(EventConstants.SUB_PERFORMANCE_LIST);
       if (subPerformance) {
-        console.log(subPerformance)
         this.osdDataService.emitSubPerformanceByIdListSuccess(subPerformance)
       }
       else {

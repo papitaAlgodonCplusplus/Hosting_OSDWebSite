@@ -11,6 +11,13 @@
       type="text" 
       (blur)="onTimeInputBlur()"
       placeholder="HH:MM"
+      [readOnly]="readOnly"
     />
+    <p class="mt-2 text-sm text-red-500" *ngIf="isValidField(fieldName); else hidden">
+      {{ getFieldError(fieldName) }}
+    </p>
+    <ng-template #hidden>
+      <p class="text-sm">&nbsp;</p>
+    </ng-template>
   </div>
   

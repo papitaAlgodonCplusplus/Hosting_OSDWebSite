@@ -41,17 +41,18 @@
     </div>
     <div class="w-full flex-1 space-y-3 flex justify-center flex-col">
         <div class="flex flex-col p-3 items-center justify-center space-y-3">
+
             <div class="flex flex-col items-center">
                 <label for="objectivesDropdown">{{"Objective" | translate}}</label>
                 <select (change)="selectProject($event)" class="border rounded-xl bg-white text-black p-2 w-64">
                     <option disabled selected hidden>{{ 'Elegir proyecto..' | translate }}
-                    </option>   
-                    <option *ngFor="let project of (Projects$ | async)" 
-                        [value]="project.Id">
+                    </option>
+                    <option *ngFor="let project of (Projects$ | async)" [value]="project.Id">
                         {{ project.Objective }}
                     </option>
                 </select>
             </div>
+
             <div *ngIf="isAdmin" class="flex flex-row items-center justify-center font-medium">
                 <button class="text-darkslategray p-2 rounded-xl hover:underline"
                     routerLink="/project-manager/create-project"> {{'RegisterProject' | translate}}</button>
@@ -59,7 +60,7 @@
                     {{'Registrar resumen de actuación' | translate}}
                 </button>
             </div>
-            <button *ngIf="isUser" class="bg-darkslategray p-2 rounded-lg text-line text-sm"
+            <button *ngIf="isUser && !isAdmin" class="bg-darkslategray p-2 rounded-lg text-line text-sm"
                 routerLink="/project-manager/assigned-performance">
                 {{'Ver mis actuaciones Asignadas' | translate}}
             </button>
@@ -73,17 +74,20 @@
             </div>
             <div class="text-center flex flex-row items-center space-x-3 px-1 p-2">
                 <div class="flex-1 flex flex-row space-x-3 font-light text-sm text-darkslategray items-center   ">
-                    <span class="underline cursor-pointer" (click)="filterPerformance('buy')"> {{'Mostrar actuaciones de compra' | translate}} </span>
-                    <span class="underline cursor-pointer" (click)="filterPerformance('freeProfessional')"> {{'Mostrar actuaciones de Gestor de proyecto' | translate}} </span>
+                    <span class="underline cursor-pointer" (click)="filterPerformance('buy')"> {{'Mostrar actuaciones de
+                        compra' | translate}} </span>
+                    <span class="underline cursor-pointer" (click)="filterPerformance('freeProfessional')"> {{'Mostrar
+                        actuaciones de Gestor de proyecto' | translate}} </span>
                 </div>
-                <div class="flex-1 flex items-center justify-end space-x-3" *ngIf="isAdmin || validateCreatePerformance ">
+                <div class="flex-1 flex items-center justify-end space-x-3"
+                    *ngIf="isAdmin || validateCreatePerformance ">
                     <div *ngIf="showOptions" class="animate__animated animate__fadeInRight flex flex-row space-x-3">
                         <i (click)="cleanPerformance()" routerLink="/project-manager/performance-buy"
                             class="cursor-pointer px-2 py-1 fa-solid fa-cart-shopping text-xl bg-line text-darkslategray rounded-full"></i>
                         <i routerLink="/project-manager/performance-free-professional" (click)="cleanPerformance()"
                             class="cursor-pointer px-2 py-1 fa-solid fa-user-tie text-xl bg-line text-darkslategray rounded-full"></i>
                     </div>
-                    <button class="flex items-center bg-darkslategray p-2 rounded-lg text-line text-sm"
+                    <button *ngIf="isAdmin" class="flex items-center bg-darkslategray p-2 rounded-lg text-line text-sm"
                         (click)="showOptionsPerformance()">
                         <i class="fas animate-pulse pr-3 "
                             [ngClass]="{'fa-chevron-right' : showOptions, 'fa-chevron-left':!showOptions}"></i>
@@ -102,24 +106,35 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="font-light text-center"
-                        *ngFor="let pf of performances; let i = index">
-                        <td class="border-y px-2 py-2 space-x-3 text-darkslategray"> 
-                            <i class="fa-solid fa-eye" (click)="viewPerformance(pf)"></i>
-                            <i *ngIf="isAdmin" class="fa-solid fa-pen" (click)="modifiedPerformance(pf)"></i>
+                    <tr class="font-light text-center" *ngFor="let pf of performances; let i = index">
+
+                        <td *ngIf="pf.Type.trim() !== 'Performance Free Professional'" class="border-y px-2 py-2">
+                            <i class="fa-solid fa-eye" (click)="viewPerformanceBuy(pf)"></i>
                         </td>
+
+                        <td *ngIf="pf.Type.trim() === 'Performance Free Professional'"
+                            class="border-y px-2 py-2 hover:underline">
+                            <i class="fa-solid fa-eye" (click)="viewPerformance(pf)"></i>
+                        </td>
+
                         <td class="border-y px-2 py-2">{{pf.Type | translate}}</td>
                         <td class="border-y px-2 py-2">{{pf.Code}}</td>
                         <td class="border-y px-2 py-2">{{pf.SummaryTypeName}}</td>
-                        <td class="border-y px-2 py-2 hover:underline" (click)="viewSubPerformances(pf.Id)">
-                            Ver Subactuaciones</td>
+
+                        <td *ngIf="pf.Type.trim() !== 'Performance Free Professional'" class="border-y px-2 py-2">
+                        </td>
+
+                        <td *ngIf="pf.Type.trim() === 'Performance Free Professional'"
+                            class="border-y px-2 py-2 hover:underline" (click)="viewSubPerformances(pf.Id)">
+                            Ver Subactuaciones
+                        </td>
                     </tr>
                 </tbody>
+
             </table>
         </div>
 
-        <mat-paginator [length]="performances.length" [pageSize]="10"
-            (page)="onPageChange($event)"></mat-paginator>
+        <mat-paginator [length]="performances.length" [pageSize]="10" (page)="onPageChange($event)"></mat-paginator>
     </div>
     <div class="flex flex-row space-x-3 justify-end py-3 px-3">
         <button [routerLink]="isUser ? '/home' : '/reports'"
@@ -154,10 +169,9 @@
                     </thead>
                     <tbody>
                         <tr class="font-light text-center" *ngFor="let subPerformance of subPerformance; let i = index">
-                            <td class="border-y px-2 py-2"> 
-                                <i class="text-darkslategray fa-solid fa-eye mr-2" (click)="viewSubPerformance(subPerformance)"></i>
-                                <i *ngIf="isAdmin" class="text-darkslategray fa-solid fa-pen mr-2" (click)="modifySubPerformance(subPerformance)"></i>
-                                <i *ngIf="isAdmin" class="text-darkslategray fa-solid fa-check" (click)="validateSubPerformance(subPerformance)"></i>
+                            <td class="border-y px-2 py-2">
+                                <i class="text-darkslategray fa-solid fa-eye mr-2"
+                                    (click)="viewSubPerformance(subPerformance)"></i>
                             </td>
                             <td class="border-y px-2 py-2">{{subPerformance.Code}}</td>
                         </tr>
