@@ -52,7 +52,7 @@ export class ClaimsTrainerPerformanceComponent implements OnDestroy {
     setTimeout(() => {
       this.store.dispatch(UiActions.hideFooter())
       this.store.dispatch(UiActions.hideLeftSidebar())
-      this.type = this.typesOfPerformanceClaimsService.getTypesProcessor()
+      this.type = this.typesOfPerformanceClaimsService.getTypesTrainer()
     }, 0);
     this.claim$.subscribe(claim => {
       this.claimId = claim.Id;
