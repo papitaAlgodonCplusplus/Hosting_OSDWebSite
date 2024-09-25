@@ -72,7 +72,7 @@
             </button>
         </div>
 
-        <div *ngIf="!isViewPerformance">
+        <div *ngIf="!isViewPerformance && !isCreatePerformance">
             <button (click)="modifyPerformance()" class="p-2 bg-darkslategray text-line rounded-xl">
                 {{'Modified'|translate}}
             </button>

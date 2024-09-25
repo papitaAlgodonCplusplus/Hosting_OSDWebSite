@@ -261,13 +261,12 @@ export class ResponseToPerformanceComponent implements OnDestroy {
     const isWorkHoursValid = this.validarHora(workHours);
 
     if (isTravelTimeValid && isWorkHoursValid) {
-      if (professionalFreeTransportExpenses != '' && data == "freeProfessional") {
+      if (data == "freeProfessional") {
         this.totalExpensesOfFreeProfessional(formValues);
         this.checkWorkHours()
       }
     } else {
-      if (professionalFreeTransportExpenses != '' && data == "freeProfessional") {
-        console.log(professionalFreeTransportExpenses);
+      if (data == "freeProfessional") {
         this.responsePerformanceForm.patchValue({ Total_FP: '' });
       } else {
         this.responsePerformanceForm.patchValue({ TD_WorkHours: '' });
@@ -314,12 +313,13 @@ export class ResponseToPerformanceComponent implements OnDestroy {
   checkWorkHours() {
     var form = this.responsePerformanceForm.value;
     var isHourValid = this.validarHora(form.FP_WorkHours);
-  
+     
     if (isHourValid) {
+
       var formPerformanceAssigned = this.showPerformanceAssignedForm.value;
       var totalMinutesFreeProfessional = this.convertTimeToMinutes(form.FP_WorkHours) / 60;
       var totalMinutesForecastWorkHours = this.convertTimeToMinutes(formPerformanceAssigned.ForecastWorkHours) / 60;
-
+  
       if (totalMinutesFreeProfessional > totalMinutesForecastWorkHours) {
         this.isWorkMore = true;
 

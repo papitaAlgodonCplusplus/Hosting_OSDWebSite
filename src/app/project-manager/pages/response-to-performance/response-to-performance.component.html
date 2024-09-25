@@ -76,13 +76,13 @@
             <shared-time-input-component class="w-full md:w-1/2" fieldName="FP_WorkHours"
                 label="{{'WorkHours'|translate}}" [readOnly]="isViewer" inputType="time"
                 [formGroup]="responsePerformanceForm" [bgColor]="'bg-white-lightbone'"
-                (input)="verifiedFormat('freeProfessional')">
+                (change)="verifiedFormat('freeProfessional')">
             </shared-time-input-component>
 
             <shared-time-input-component class="w-full md:w-1/2" fieldName="FP_TravelTime"
                 label="{{'TravelTime'|translate}}" [readOnly]="isViewer" inputType="time"
                 [formGroup]="responsePerformanceForm" [bgColor]="'bg-white-lightbone'"
-                (input)="verifiedFormat('freeProfessional')">
+                (change)="verifiedFormat('freeProfessional')">
             </shared-time-input-component>
 
             <shared-input-field class="w-full md:w-1/2" fieldName="FP_TravelExpenses" inputType="text"
