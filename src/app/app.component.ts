@@ -36,7 +36,6 @@ export class AppComponent implements OnInit, OnDestroy {
     private eventFactoryService: EventFactoryService,
     private authenticationService: AuthenticationService
   ) {
-    this.initializeApp();
     this.showHeader = false;
     this.initialized = false;
     this.translate.addLangs(['en', 'es']);
@@ -49,6 +48,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.initializeApp();
     this.subscriptions.add(
       this.securityDataService.userAuthenticationSuccess$.subscribe((userAuthenticationSuccess: string) => {
         if (userAuthenticationSuccess !== "") {

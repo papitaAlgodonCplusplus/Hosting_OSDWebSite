@@ -30,13 +30,11 @@ export class ClaimantClaimedOsdReportComponent implements OnDestroy {
   ) { }
 
   ngOnInit(): void{
-    this.osdService.GetTransparencyReportsSubscriberClients();
     setTimeout(() => {
       this.store.dispatch(UiActions.hideAll());
+      this.osdService.GetTransparencyReportsSubscriberClients();
     }, 0);
-    this.assignData();
-  }
-  assignData(){
+
     this.osdDataService.InstitutionsNames$.subscribe(item => {
       this.institutionsNames = item;
     })
@@ -57,13 +55,15 @@ export class ClaimantClaimedOsdReportComponent implements OnDestroy {
     })
     this.osdDataService.OsdRating$.subscribe(item => {
       this.claimedRating = item;
-    })
+    })   
   }
+
   ngOnDestroy(): void {
     setTimeout(() => {
       this.store.dispatch(UiActions.showAll());
     }, 0);
   }
+
   generateStarRating(rating: number): string {
     let starsHTML = '';
     const fullStar = '<i class="fa-solid fa-star text-darkslategray"></i>';
