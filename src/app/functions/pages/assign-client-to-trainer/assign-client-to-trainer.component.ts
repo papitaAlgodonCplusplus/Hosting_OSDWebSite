@@ -1,12 +1,13 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { UiActions } from 'src/app/store/actions';
+import { ModalActions, UiActions } from 'src/app/store/actions';
 import { FreeProfessional } from '../../models/FreeProfessional';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { OSDDataService } from 'src/app/services/osd-data.service';
 import { Subscriber } from '../../models/Subscriber';
 import { Observable } from 'rxjs';
 import { flush } from '@angular/core/testing';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-assign-client-to-trainer',
@@ -24,7 +25,8 @@ export class AssignClientToTrainerComponent implements OnDestroy {
   constructor(
     private store: Store,
     private osdEventService: OSDService,
-    private osdDataService: OSDDataService
+    private osdDataService: OSDDataService,
+    private translate: TranslateService
   ) { }
   ngOnInit(): void {
     setTimeout(() => {
@@ -40,6 +42,7 @@ export class AssignClientToTrainerComponent implements OnDestroy {
   ngOnDestroy(): void {
     setTimeout(() => {
       this.store.dispatch(UiActions.showAll())
+      this.freeProfessionalsTrainers = {} as FreeProfessional[];
     }, 0);
   }
 
@@ -55,13 +58,28 @@ export class AssignClientToTrainerComponent implements OnDestroy {
       this.osdEventService.GetProfessionalFreeTrainers()
     }, 0);
     this.freeProfessionalsTrainersObservable$.subscribe(freeProfessionalsTrainers => {
-      this.freeProfessionalsTrainers = freeProfessionalsTrainers;
+      freeProfessionalsTrainers.forEach(fp => {
+        if(fp.Code != null){
+          this.freeProfessionalsTrainers.push(fp)
+        }
+        else{
+          if (this.translate.currentLang == "en") {
+            this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "There are no authorized trainers" }));
+          }
+          else {
+            this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "No hay formadores autorizados" }));
+          }
+  
+          this.store.dispatch(ModalActions.openAlert())
+        }
+      });
     })
     this.showModal = !this.showModal
     console.log(subscriberId)
   }
 
   selectTrainer(freeProfessionalId: string) {
+    this.store.dispatch(UiActions.toggleConfirmationButton())
     this.showModal = !this.showModal
     this.osdEventService.assignTrainerToSubscriber(this.subscribersSelected,freeProfessionalId)
   }

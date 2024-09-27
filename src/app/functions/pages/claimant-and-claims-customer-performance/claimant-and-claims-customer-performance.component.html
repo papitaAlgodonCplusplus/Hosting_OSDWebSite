@@ -62,18 +62,6 @@
                 (input)="verifiedFormat()">
             </shared-time-input-component>
 
-            <!-- <shared-input-field [readOnly]="isTrainer" class="w-full md:w-1/2" fieldName="Trainer_WorkHours"
-                label="{{ 'WorkHours' | translate }}" inputType="text" (input)="verifiedFormat()"
-                [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"></shared-input-field> -->
-
-            <!-- <shared-input-field [readOnly]="isTrainer" class="w-full md:w-1/2" (input)="verifiedFormat()"
-                fieldName="Trainer_TravelTime" label="{{ 'TravelTime' | translate }}" inputType="text"
-                [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"></shared-input-field> -->
-
-            <!-- <shared-input-field [readOnly]="isTrainer" class="w-full md:w-1/2" fieldName="Trainer_TravelExpenses"
-                label="{{ 'TravelExpenses' | translate }}" inputType="text" [formGroup]="performanceForm"
-                (input)="verifiedFormat()" [bgColor]="'bg-white-lightbone'"></shared-input-field> -->
-
             <shared-input-field [readOnly]="isTrainer" class="w-full md:w-1/2" fieldName="Trainer_Remuneration"
                 label="{{ 'Remuneration' | translate }}" inputType="text" [formGroup]="performanceForm"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>
@@ -83,8 +71,12 @@
         <button class="p-2 bg-line text-darkslategray rounded-lg" routerLink="/functions/file-manager">
             {{'regresar' | translate}}
         </button>
-        <button *ngIf="!isViewPerformance" (click)="onSubmit()" class="p-2 bg-darkslategray text-line rounded-lg">
+        <button *ngIf="!isViewPerformance && !isTrainer" (click)="onSubmit()" class="p-2 bg-darkslategray text-line rounded-lg">
             {{'CreatePerformance' | translate}}
+        </button>
+
+        <button *ngIf="!isViewPerformance  && isTrainer" (click)="modifiedPerformance()" class="p-2 bg-darkslategray text-line rounded-lg">
+            {{'Modified' | translate}}
         </button>
     </div>
 </div>

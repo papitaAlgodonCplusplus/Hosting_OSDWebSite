@@ -66,11 +66,9 @@ export class ClaimsProcessorPerformanceComponent implements OnDestroy {
     })
 
     if(Object.keys(this.performance).length > 0){
-      console.log(this.performance)
       this.isView = true;
     }
     else{
-      console.log("No hay nada ")
       this.isView = false;
     }
 
@@ -79,9 +77,9 @@ export class ClaimsProcessorPerformanceComponent implements OnDestroy {
           .then(freeProfessionals => {
             if (Array.isArray(freeProfessionals)) {
               var freeProfessionalFind: FreeProfessional = freeProfessionals.find(fp => fp.Userid == this.AuthenticationService.userInfo?.Id)
-              if (freeProfessionalFind.FreeprofessionaltypeName == "Trainer") {
-                console.log(freeProfessionalFind)
+              if (freeProfessionalFind.FreeprofessionaltypeName == "Trainer" || freeProfessionalFind.Isadmin) {
                 this.isTrainer = true
+                this.isView = false;
               }
             }
           })
@@ -244,6 +242,19 @@ export class ClaimsProcessorPerformanceComponent implements OnDestroy {
     this.isErrorInForm = false;
     if (this.claimId) {
       this.OSDEventService.createClaimsProcessorPerformance(this.performanceForm.value, this.claimId);
+    }
+  }
+
+  modifiedPerformance(): void {
+    if (this.performanceForm.invalid) {
+      this.performanceForm.markAllAsTouched();
+      this.isErrorInForm = true;
+      return;
+    }
+    
+    this.isErrorInForm = false;
+    if (this.performance) {
+      this.OSDEventService.modifiedClaimsProcessorPerformance(this.performanceForm.value, this.performance.Id);
     }
   }
 }

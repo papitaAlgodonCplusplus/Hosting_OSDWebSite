@@ -16,7 +16,8 @@
 
             <div *ngIf="documentName != ''" class="flex-1 flex flex-col items-center space-y-1">
                 <label for="JustifyingDocument" class="text-center">{{'justifyingDocument' |
-                    translate}} <p *ngIf="!isView" class="text-sm font-medium text-red-500">({{'Optional' | translate}})</p></label>
+                    translate}} <p *ngIf="!isView" class="text-sm font-medium text-red-500">({{'Optional' | translate}})
+                    </p></label>
                 <div class="flex items-center justify-center flex-col space-y-1">
                     <input type="file" id="JustifyingDocument" formControlName="JustifyingDocument" class="hidden"
                         (change)="displayFileName()">
@@ -24,8 +25,7 @@
                         class="cursor-pointer p-2 text-sm bg-darkslategray text-white rounded-xl">
                         {{'seleccionar_archivo' | translate}}
                     </label>
-                    <label *ngIf="isView" 
-                        class="cursor-pointer p-2 text-sm bg-darkslategray text-white rounded-xl">
+                    <label *ngIf="isView" class="cursor-pointer p-2 text-sm bg-darkslategray text-white rounded-xl">
                         {{'Download' | translate}}
                     </label>
                     <span class="ml-2 text-sm text-darkslategray">{{documentName}}</span>
@@ -37,67 +37,74 @@
             <h1 class="font-medium">
                 {{'Processor' | translate}}
             </h1>
-            <span class="text-sm">(Formato de horas deber ser 0:00)</span>
         </div>
 
         <div class="flex flex-wrap justify-center">
-            
-            <shared-time-input-component [readOnly]="isView" class="w-full md:w-1/2" fieldName="Processor_WorkHours" label="{{'WorkHours'|translate}}"
-                inputType="time" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"
-                (input)="verifiedFormat('processor')">
+
+            <shared-time-input-component [readOnly]="isView" class="w-full md:w-1/2" fieldName="Processor_WorkHours"
+                label="{{'WorkHours'|translate}}" inputType="time" [formGroup]="performanceForm"
+                [bgColor]="'bg-white-lightbone'" (input)="verifiedFormat('processor')">
             </shared-time-input-component>
 
-            <shared-time-input-component [readOnly]="isView" class="w-full md:w-1/2" fieldName="Processor_TravelTime" label="{{'TravelTime'|translate}}"
-                inputType="time" [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"
-                (input)="verifiedFormat('processor')">
+            <shared-time-input-component [readOnly]="isView" class="w-full md:w-1/2" fieldName="Processor_TravelTime"
+                label="{{'TravelTime'|translate}}" inputType="time" [formGroup]="performanceForm"
+                [bgColor]="'bg-white-lightbone'" (input)="verifiedFormat('processor')">
             </shared-time-input-component>
 
             <shared-input-field [readOnly]="isView" class="w-full md:w-1/2" fieldName="Processor_TravelExpenses"
-            label="{{ 'TravelExpenses' | translate }}" inputType="text" [formGroup]="performanceForm"
-            (input)="verifiedFormat('processor')" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                label="{{ 'TravelExpenses' | translate }}" inputType="text" [formGroup]="performanceForm"
+                (input)="verifiedFormat('processor')" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
             <shared-input-field [readOnly]="isView" class="w-full md:w-1/2" fieldName="Processor_Remuneration"
                 label="{{ 'Remuneration' | translate }}" inputType="text" [formGroup]="performanceForm"
                 [bgColor]="'bg-white-lightbone'" [readOnly]="true"></shared-input-field>
         </div>
-        <div *ngIf="isTrainer"
-            class="flex flex-row items-center space-x-3 text-darkslategray border-b mt-3 text-start p-2 ">
-            <h1 class="font-medium">
-                {{'Trainer' | translate}}
-            </h1>
-            <span class="text-sm">(Formato de horas deber ser 0:00)</span>
-        </div>
 
-        <div *ngIf="isTrainer" class="flex flex-wrap justify-center">
-            <div class="w-full flex">
-                <shared-input-field [readOnly]="isView" class="w-full md:w-1/2" fieldName="Trainer_Date"
-                    label="{{ 'Date' | translate }}" inputType="date" [formGroup]="performanceForm"
-                    [bgColor]="'bg-white-lightbone'"></shared-input-field>
+        <!-- <div *ngIf="isTrainer" class="flex flex-wrap justify-center"> -->
+        <div *ngIf="false">
+            <div class="flex flex-row items-center space-x-3 text-darkslategray border-b mt-3 text-start p-2">
+                <h1 class="font-medium">
+                    {{'Trainer' | translate}}
+                </h1>
             </div>
 
-            <shared-input-field [readOnly]="isView" class="w-full md:w-1/2" fieldName="Trainer_WorkHours"
-                label="{{ 'WorkHours' | translate }}" inputType="text" (input)="verifiedFormat('trainer')"
-                [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-            <shared-input-field [readOnly]="isView" class="w-full md:w-1/2" (input)="verifiedFormat('trainer')"
-                fieldName="Trainer_TravelTime" label="{{ 'TravelTime' | translate }}" inputType="text"
-                [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+            <div class="flex flex-wrap justify-center">
+                <div class="w-full flex">
+                    <shared-input-field [readOnly]="isView" class="w-full md:w-1/2" fieldName="Trainer_Date"
+                        label="{{ 'Date' | translate }}" inputType="date" [formGroup]="performanceForm"
+                        [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                </div>
 
-            <shared-input-field [readOnly]="isView" class="w-full md:w-1/2" fieldName="Trainer_TravelExpenses"
-                label="{{ 'TravelExpenses' | translate }}" inputType="text" [formGroup]="performanceForm"
-                (input)="verifiedFormat('trainer')" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                <shared-input-field [readOnly]="isView" class="w-full md:w-1/2" fieldName="Trainer_WorkHours"
+                    label="{{ 'WorkHours' | translate }}" inputType="text" (input)="verifiedFormat('trainer')"
+                    [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
-            <shared-input-field [readOnly]="isView" class="w-full md:w-1/2" fieldName="Trainer_Remuneration"
-                label="{{ 'Remuneration' | translate }}" inputType="text" [formGroup]="performanceForm"
-                [bgColor]="'bg-white-lightbone'" [readOnly]="true"></shared-input-field>
+                <shared-input-field [readOnly]="isView" class="w-full md:w-1/2" (input)="verifiedFormat('trainer')"
+                    fieldName="Trainer_TravelTime" label="{{ 'TravelTime' | translate }}" inputType="text"
+                    [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+                <shared-input-field [readOnly]="isView" class="w-full md:w-1/2" fieldName="Trainer_TravelExpenses"
+                    label="{{ 'TravelExpenses' | translate }}" inputType="text" [formGroup]="performanceForm"
+                    (input)="verifiedFormat('trainer')" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+                <shared-input-field [readOnly]="isView" class="w-full md:w-1/2" fieldName="Trainer_Remuneration"
+                    label="{{ 'Remuneration' | translate }}" inputType="text" [formGroup]="performanceForm"
+                    [bgColor]="'bg-white-lightbone'" [readOnly]="true"></shared-input-field>
+            </div>
+
         </div>
     </form>
+
     <div class="font-medium rounded-xl w-full flex items-end justify-end p-3 space-x-3">
         <button class="p-2 bg-line text-darkslategray rounded-lg" routerLink="/functions/file-manager">
             {{'regresar' | translate}}
         </button>
-        <button *ngIf="!isView" (click)="onSubmit()" class="p-2 bg-darkslategray text-line rounded-lg">
+        <button *ngIf="!isView && !isTrainer" (click)="onSubmit()" class="p-2 bg-darkslategray text-line rounded-lg">
             {{'CreatePerformance' | translate}}
+        </button>
+        <button *ngIf="!isView && isTrainer" (click)="modifiedPerformance()" class="p-2 bg-darkslategray text-line rounded-lg">
+            {{'Modified' | translate}}
         </button>
     </div>
 </div>

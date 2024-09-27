@@ -9,6 +9,7 @@ export class FreeProfessional {
     FreeprofessionaltypeAcronym: string = "";
     Isauthorized: string = "";
     Code: string = "";
+    Isadmin: string = "";
 }
 
 

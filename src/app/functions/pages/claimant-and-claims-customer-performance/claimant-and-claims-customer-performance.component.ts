@@ -30,9 +30,10 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
   performance$: Observable<ClaimantAndClaimsCustomerPerformance> = this.store.select(PerformanceSelectors.claimantAndClaimsCustomerPerformance);
   performance!: ClaimantAndClaimsCustomerPerformance;
   isErrorInForm: boolean = false;
-  isTrainer: boolean = true;
+  isTrainer: boolean = false;
   isUnrevised: boolean = false;
   isViewPerformance!: boolean;
+  userTypePerformance: string = ''
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
@@ -51,15 +52,17 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
       this.claim$.subscribe(claim => {
         this.claimId = claim.Id;
       });
-  
+
     }, 0);
 
     if (this.AuthenticationService.userInfo) {
       var accountType = this.AuthenticationService.userInfo.AccountType;
       if (accountType == EventConstants.CLAIMANT) {
         this.type = this.typesOfPerformanceClaimsService.getTypesClaimant()
+        this.userTypePerformance = "CLAIMANT";
       } else if (accountType == EventConstants.SUBSCRIBER_CUSTOMER) {
         this.type = this.typesOfPerformanceClaimsService.getTypesSubscriber()
+        this.userTypePerformance = "SUBSCRIBER";
       }
       else {
         this.OSDEventService.GetFreeProfessionalsDataEvent();
@@ -68,7 +71,8 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
             if (Array.isArray(freeProfessionals)) {
               var freeProfessionalFind: FreeProfessional = freeProfessionals.find(fp => fp.Userid == this.AuthenticationService.userInfo?.Id)
               if (freeProfessionalFind.FreeprofessionaltypeName == "Trainer") {
-                this.isTrainer = false
+                this.isTrainer = true
+                this.isViewPerformance = false;
               }
             }
           })
@@ -84,10 +88,10 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
         }
       }
     })
-    
-    if(this.performance.Id != null){
+
+    if (this.performance.Id != null) {
       this.isViewPerformance = true;
-    }else{
+    } else {
       this.isViewPerformance = false;
     }
   }
@@ -115,17 +119,19 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
   }
 
   private fillForm(performance: ClaimantAndClaimsCustomerPerformance): FormGroup {
-    this.type = [
-      ...this.typesOfPerformanceClaimsService.getTypesSubscriber(),
-      ...this.typesOfPerformanceClaimsService.getTypesClaimant()
-    ];
+    if (performance.UserTypePerformance == "SUBSCRIBER") {
+      this.type = this.typesOfPerformanceClaimsService.getTypesSubscriber()
+    } else {
+      this.type = this.typesOfPerformanceClaimsService.getTypesClaimant()
+    }
+
     let originalDate = performance.Date;
     let formatedStartDate = this.datePipe.transform(originalDate, 'yyyy-MM-dd');
     this.documentName = performance.JustifyingDocument
     const form = this.formBuilder.group({
       Date: [formatedStartDate, [Validators.required]],
       Type: [performance.Type, [Validators.required]],
-      JustifyingDocument: [performance.JustifyingDocument, [Validators.required]],
+      JustifyingDocument: [performance.JustifyingDocument],
       Summary: [performance.Summary, [Validators.required]],
       Trainer_Date: [''],
       Trainer_WorkHours: [''],
@@ -208,10 +214,21 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
     }
 
     this.isErrorInForm = false;
-    console.log(this.claimId)
     if (this.claimId) {
-      console.log("hola")
-      this.OSDEventService.createClaimantAndClaimsCustomerPerformance(this.performanceForm.value, this.claimId);
+      this.OSDEventService.createClaimantAndClaimsCustomerPerformance(this.performanceForm.value, this.claimId, this.userTypePerformance);
+    }
+  }
+
+  modifiedPerformance(): void {
+    if (this.performanceForm.invalid) {
+      this.performanceForm.markAllAsTouched();
+      this.isErrorInForm = true;
+      return;
+    }
+    
+    this.isErrorInForm = false;
+    if (this.performance) {
+      this.OSDEventService.modifiedClaimantAndClaimsCustomerPerformance(this.performanceForm.value, this.performance.Id);
     }
   }
 }
