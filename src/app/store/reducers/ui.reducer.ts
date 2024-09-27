@@ -9,6 +9,7 @@ export interface UiState {
   hideFooter: boolean;
   hideLeftSidebar: boolean;
   reportName: string;
+  toggleConfirmationButton: boolean;
 }
 
 const initialState: UiState = {
@@ -18,7 +19,8 @@ const initialState: UiState = {
   hideHeader: false,
   hideFooter: false,
   hideLeftSidebar: false,
-  reportName: ''
+  reportName: '',
+  toggleConfirmationButton: false
 };
 
 export const uiReducers = createReducer(
@@ -54,5 +56,9 @@ export const uiReducers = createReducer(
   on(UiActions.switchReport, (currentState, { reportName }) => ({
     ...currentState,
     reportName: reportName
+  })),
+  on(UiActions.toggleConfirmationButton, (currentState) => ({
+    ...currentState,
+    toggleConfirmationButton: !currentState.toggleConfirmationButton
   }))
 );

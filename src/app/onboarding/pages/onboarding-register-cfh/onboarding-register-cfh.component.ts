@@ -161,19 +161,15 @@ export class OnboardingRegisterCfhComponent {
   }
 
   onSubmit(): void {
-    console.log(this.accountForm.value)
-    console.log(this.personalForm.value)
     if (this.accountForm.invalid || this.personalForm.invalid) {
       this.accountForm.markAllAsTouched();
       this.personalForm.markAllAsTouched();
       
       if(this.translate.currentLang == "en"){
         this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "There are missing fields to fill out" }));
-        this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
         this.store.dispatch(ModalActions.openAlert());
       }else{
         this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Faltan campos por llenar" }));
-        this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
         this.store.dispatch(ModalActions.openAlert());
       }
 
@@ -185,6 +181,7 @@ export class OnboardingRegisterCfhComponent {
       return;
     }
 
+    this.store.dispatch(UiActions.toggleConfirmationButton())
     const userEmail = this.personalForm.value.email;
     localStorage.setItem('userEmail', userEmail);
     this.OSDEventService.userRegister(this.accountForm.value,this.personalForm.value,EventConstants.APPROVED_TRAINING_CENTER);

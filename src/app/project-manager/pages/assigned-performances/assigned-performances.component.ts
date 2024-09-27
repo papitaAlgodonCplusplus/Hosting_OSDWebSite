@@ -58,7 +58,7 @@ export class AssignedPerformancesComponent implements OnDestroy {
   }
 
   selectPerformance(performanceSelected : PerformanceFreeProfessional){
-    this.store.dispatch(PerformanceActions.setProjectPerformance({performance: performanceSelected}))
+    this.store.dispatch(PerformanceActions.setPerformanceFreeProfessional({performanceFreeProfessional: performanceSelected}))
   }
 
   checkDateIsNotInFuture(dateString: string): boolean {

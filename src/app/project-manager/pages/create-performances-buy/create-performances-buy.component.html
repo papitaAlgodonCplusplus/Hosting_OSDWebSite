@@ -66,10 +66,7 @@
             {{'regresar' | translate}}
         </button>
         <div *ngIf="isCreatePerformance">
-            <button (click)="onSubmit()" class="p-2 rounded-xl bg-darkslategray text-line hover:bg-hover-darkblue"
-                i18n="@@signin">
-                {{'CreatePerformance' | translate}}
-            </button>
+            <shared-confirmation-button (click)="onSubmit()" [ButtonName]="'CreatePerformance'"></shared-confirmation-button>
         </div>
 
         <div *ngIf="!isViewPerformance && !isCreatePerformance">

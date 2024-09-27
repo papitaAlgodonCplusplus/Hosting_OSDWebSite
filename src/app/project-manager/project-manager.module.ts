@@ -7,24 +7,24 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ProjectManagementDossierComponent } from './pages/project-management-dossier/project-management-dossier.component';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { PerformanceBuyComponent } from './pages/performance-buy/performance-buy.component';
-import { PerformanceFreeProfessionalComponent } from './pages/create-performance/performance-free-professional.component';
 import { MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginator';
 import { CustomPaginator } from '../services/custom-paginator.service';
 import { CreateProjectComponent } from './pages/create-project/create-project.component';
 import { SummaryTypeModalComponent } from './shared/summary-type-modal/summary-type-modal.component';
 import { AssignedPerformancesComponent } from './pages/assigned-performances/assigned-performances.component';
 import { ResponseToPerformanceComponent } from './pages/response-to-performance/response-to-performance.component';
+import { CreatePerformancesComponent } from './pages/create-performances/create-performances.component';
+import { CreatePerformancesBuyComponent } from './pages/create-performances-buy/create-performances-buy.component';
 
 @NgModule({
   declarations: [
     ProjectManagementDossierComponent,
-    PerformanceBuyComponent,
-    PerformanceFreeProfessionalComponent,
     CreateProjectComponent,
     SummaryTypeModalComponent,
     AssignedPerformancesComponent,
     ResponseToPerformanceComponent,
+    CreatePerformancesComponent,
+    CreatePerformancesBuyComponent,
   ],
   imports: [
     CommonModule,

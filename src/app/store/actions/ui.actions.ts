@@ -28,3 +28,7 @@ export const switchReport = createAction(
   props<{ reportName: string }>()
 );
 
+export const toggleConfirmationButton = createAction(
+  '[Confirmation Button Component] Toggle Confirmation Button'
+);
+

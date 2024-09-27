@@ -17,6 +17,7 @@ import { SwitchLanguagesComponent } from './components/switch-languages/switch-l
 import { TranslateModule } from '@ngx-translate/core';
 import { LeftSidebarComponent } from './components/left-sidebar/left-sidebar.component';
 import { TimeInputComponentComponent } from './components/time-input-component/time-input-component.component';
+import { ConfirmationButtonComponent } from './components/confirmation-button/confirmation-button.component';
  
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { TimeInputComponentComponent } from './components/time-input-component/t
     SearchDropdownComponent,
     LeftSidebarComponent,
     SwitchLanguagesComponent,
-    TimeInputComponentComponent
+    TimeInputComponentComponent,
+    ConfirmationButtonComponent
   ],
   imports: [
     CommonModule,
@@ -56,7 +58,8 @@ import { TimeInputComponentComponent } from './components/time-input-component/t
     SearchDropdownComponent,
     LeftSidebarComponent,
     SwitchLanguagesComponent,
-    TimeInputComponentComponent
+    TimeInputComponentComponent,
+    ConfirmationButtonComponent
   ],
 })
 export class SharedModule { }

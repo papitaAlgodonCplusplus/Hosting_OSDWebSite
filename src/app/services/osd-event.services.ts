@@ -5,7 +5,7 @@ import { UserLoginEvent } from '../auth/interfaces/login.interface';
 import { WebBaseEvent } from '../models/webBaseEvent';
 import { AuthenticationService } from './authentication.service';
 import { EventConstants } from '../models/eventConstants';
-import { ModalActions, AuthenticationActions, ClaimActions } from '../store/actions';
+import { ModalActions, AuthenticationActions, ClaimActions, UiActions } from '../store/actions';
 import { Store } from '@ngrx/store';
 import { NotificationService } from './notification.service';
 import { SecurityDataService } from './security-data.service';
@@ -765,7 +765,7 @@ export class OSDService {
         this.securityDataService.emitUserAuthenticationSuccess("/project-manager");
         this.store.dispatch(ModalActions.openAlert())
       }
-
+      this.store.dispatch(UiActions.toggleConfirmationButton())
     }
     catch (err) {
       //TODO: create exception event and send to local file or core
@@ -1011,17 +1011,19 @@ export class OSDService {
 
     try {
       message = webBaseEvent.getBodyProperty(EventConstants.PERFORMANCE_FREE_PROFESSIONAL_MESSAGE);
-
-      if (this.translate.currentLang == "en") {
-        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
-      } else {
-        if (message == "Was Successfully Created") {
-          message = "Actuación creada correctamente"
+      if (message != "") {
+        if (this.translate.currentLang == "en") {
           this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
-          this.securityDataService.emitUserAuthenticationSuccess("/project-manager");
+        } else {
+          if (message == "Was Successfully Created") {
+            message = "Actuación creada correctamente"
+            this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
+            this.securityDataService.emitUserAuthenticationSuccess("/project-manager");
+          }
         }
+        this.store.dispatch(ModalActions.openAlert())
       }
-      this.store.dispatch(ModalActions.openAlert())
+      this.store.dispatch(UiActions.toggleConfirmationButton())
     } catch {
 
     }
@@ -1113,6 +1115,8 @@ export class OSDService {
         else {
           this.securityDataService.emitUserAuthenticationSuccess("/auth");
         }
+
+        this.store.dispatch(UiActions.toggleConfirmationButton())
       }
     } catch {
 
@@ -1140,6 +1144,7 @@ export class OSDService {
           this.securityDataService.emitUserAuthenticationSuccess("/auth");
         }
       }
+      this.store.dispatch(UiActions.toggleConfirmationButton())
     } catch {
 
     }
@@ -1167,7 +1172,6 @@ export class OSDService {
           this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: registerResultMessage }));
         }
         this.store.dispatch(ModalActions.openAlert());
-
       }
       else {
         if (registerResultMessage == 'An account already exists with that email.') {
@@ -1177,7 +1181,9 @@ export class OSDService {
         }
         this.store.dispatch(ModalActions.toggleErrorModal());
       }
+
       this.securityDataService.emitUserAuthenticationSuccess("/auth");
+      this.store.dispatch(UiActions.toggleConfirmationButton())
     }
     catch (err) {
       //TODO: create exception event and send to local file or core
@@ -1188,12 +1194,15 @@ export class OSDService {
     let message: string;
     try {
       message = webBaseEvent.getBodyProperty(EventConstants.ACTION_OSD_RESULT_MESSAGE);
-      this.store.dispatch(ModalActions.changeAlertType({ alertType: 'success' }));
-      this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
-      this.store.dispatch(ModalActions.openAlert())
 
-      this.securityDataService.emitUserAuthenticationSuccess("/project-manager");
+      if (message) {
+        this.store.dispatch(ModalActions.changeAlertType({ alertType: 'success' }));
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
+        this.store.dispatch(ModalActions.openAlert())
 
+        this.securityDataService.emitUserAuthenticationSuccess("/project-manager");
+      }
+      this.store.dispatch(UiActions.toggleConfirmationButton())
     } catch {
 
     }
@@ -1334,16 +1343,18 @@ export class OSDService {
     let message: string;
     try {
       message = webBaseEvent.getBodyProperty(EventConstants.ACTION_OSD_RESULT_MESSAGE);
-      if (this.translate.currentLang == "en") {
-        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
-      }
-      else {
-        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Respuesta exitosa a la actuación asignada" }));
-      }
+      if (message) {
+        if (this.translate.currentLang == "en") {
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
+        }
+        else {
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Respuesta exitosa a la actuación asignada" }));
+        }
 
-      this.store.dispatch(ModalActions.openAlert())
-      this.securityDataService.emitUserAuthenticationSuccess("/project-manager/assigned-performance");
-
+        this.store.dispatch(ModalActions.openAlert())
+        this.securityDataService.emitUserAuthenticationSuccess("/project-manager/assigned-performance");
+      }
+      this.store.dispatch(UiActions.toggleConfirmationButton())
     } catch {
 
     }
@@ -1372,16 +1383,18 @@ export class OSDService {
     let message: string;
     try {
       message = webBaseEvent.getBodyProperty(EventConstants.MESSAGE);
-      if (this.translate.currentLang == "en") {
-        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
-      }
-      else {
-        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Subactuacion revisada correctamente" }));
-      }
+      if (message) {
+        if (this.translate.currentLang == "en") {
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
+        }
+        else {
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Subactuacion revisada correctamente" }));
+        }
 
-      this.store.dispatch(ModalActions.openAlert())
-      this.securityDataService.emitUserAuthenticationSuccess("/project-manager");
-
+        this.store.dispatch(ModalActions.openAlert())
+        this.securityDataService.emitUserAuthenticationSuccess("/project-manager");
+      }
+      this.store.dispatch(UiActions.toggleConfirmationButton())
     } catch {
 
     }

@@ -88,7 +88,7 @@
             <shared-input-field class="w-full md:w-1/2" fieldName="FP_TravelExpenses" inputType="text"
                 label="{{'TravelExpenses'|translate}}" [formGroup]="responsePerformanceForm"
                 [bgColor]="'bg-white-lightbone'" [readOnly]="isViewer"
-                (change)="verifiedFormat('freeProfessional')"></shared-input-field>
+                (input)="verifiedFormat('freeProfessional')"></shared-input-field>
 
             <shared-input-field class="w-full md:w-1/2" fieldName="Total_FP" inputType="text"
                 label="{{'Total'|translate}}" [readOnly]="isViewer" [formGroup]="responsePerformanceForm"
@@ -148,7 +148,8 @@
 
     <div class="flex flex-row justify-end space-x-2 py-3 font-medium">
 
-        <button *ngIf="isAdmin || !userInfo" routerLink="/project-manager" class="p-2 bg-line text-darkslategray rounded-xl">
+        <button *ngIf="isAdmin || !userInfo" routerLink="/project-manager"
+            class="p-2 bg-line text-darkslategray rounded-xl">
             {{'regresar' | translate}}
         </button>
 
@@ -156,21 +157,19 @@
             class="p-2 bg-line text-darkslategray rounded-xl">
             {{'regresar' | translate}}
         </button>
-        <div>
-            <button *ngIf="!isViewer && !isAdmin" (click)="onSubmit()"
-                class="p-2 bg-darkslategray text-line rounded-xl">
-                {{'CreatePerformance'|translate}}
-            </button>
+        <div *ngIf="!isViewer && !isAdmin">
+            <shared-confirmation-button (click)="onSubmit()"
+                [ButtonName]="'CreatePerformance'"></shared-confirmation-button>
         </div>
 
         <button *ngIf="isAdmin" (click)="modifySubPerformance()" class="p-2 bg-darkslategray text-line rounded-xl">
             {{'Modified'|translate}}
         </button>
 
-        <button *ngIf="isRevisedPerformance" (click)="validateSubPerformance()"
-            class="p-2 bg-darkslategray text-line rounded-xl">
-            {{'Review subperformance'|translate}}
-        </button>
+        <div *ngIf="isRevisedPerformance">
+            <shared-confirmation-button (click)="validateSubPerformance()"
+                [ButtonName]="'Review subperformance'"></shared-confirmation-button>
+        </div>
 
     </div>
 </div>

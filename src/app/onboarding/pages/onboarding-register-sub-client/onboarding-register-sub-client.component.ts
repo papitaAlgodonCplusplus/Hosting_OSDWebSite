@@ -116,11 +116,9 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
       } else {
         if (this.translate.currentLang == "en") {
           this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "You must insert only PDF files" }));
-          this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
           this.store.dispatch(ModalActions.openAlert());
         } else {
           this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Debe Insertar Solo archivos PDF" }));
-          this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
           this.store.dispatch(ModalActions.openAlert());
         }
         this.documentName = '';
@@ -189,11 +187,9 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
       this.personalForm.markAllAsTouched();
       if (this.translate.currentLang == "en") {
         this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "There are missing fields to fill out" }));
-        this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
         this.store.dispatch(ModalActions.openAlert());
       } else {
         this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Faltan campos por llenar" }));
-        this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
         this.store.dispatch(ModalActions.openAlert());
       }
       return
@@ -202,7 +198,8 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
     if (this.personalForm.value.acceptConditions) {
       this.isAcceptConditions = true;
     }
-
+    
+    this.store.dispatch(UiActions.toggleConfirmationButton())
     const userEmail = this.personalForm.value.email;
     localStorage.setItem('userEmail', userEmail);
     this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.SUBSCRIBER_CUSTOMER);

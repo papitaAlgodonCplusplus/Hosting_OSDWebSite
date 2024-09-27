@@ -203,7 +203,8 @@ export class OnboardingRegisterClaimantComponent {
       this.store.dispatch(ModalActions.openAlert());
       return;
     }
-
+    
+    this.store.dispatch(UiActions.toggleConfirmationButton())
     const subscriberName = this.accountForm.get('subscriberClaimed')?.value;
     this.accountForm.patchValue({
       subscriberClaimed: this.selectedSubscribers

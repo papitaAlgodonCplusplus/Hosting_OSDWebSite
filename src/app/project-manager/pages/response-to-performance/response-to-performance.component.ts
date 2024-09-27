@@ -27,7 +27,7 @@ export class ResponseToPerformanceComponent implements OnDestroy {
   justifyingDocument!: string;
   isAdmin: boolean = false
   userInfo!: UserInfo
-  performanceAssigned$: Observable<PerformanceFreeProfessional> = this.store.select(PerformanceSelectors.projectPerformance);
+  performanceAssigned$: Observable<PerformanceFreeProfessional> = this.store.select(PerformanceSelectors.performanceFreeProfessional);
   subPerformance$: Observable<ResponseToPerformanceFreeProfessional> = this.store.select(PerformanceSelectors.projectSubPerformance);
   isWorkMore: boolean = false;
   responseToPerformanceFreeProfessional: ResponseToPerformanceFreeProfessional = {} as ResponseToPerformanceFreeProfessional;
@@ -83,6 +83,7 @@ export class ResponseToPerformanceComponent implements OnDestroy {
     setTimeout(() => {
       this.store.dispatch(UiActions.showAll())
       this.store.dispatch(PerformanceActions.setSubPerformance({ subPerformance: {} as ResponseToPerformanceFreeProfessional }));
+      this.store.dispatch(PerformanceActions.setPerformanceFreeProfessional({ performanceFreeProfessional: {} as PerformanceFreeProfessional }))
     }, 0);
   }
 
@@ -100,7 +101,7 @@ export class ResponseToPerformanceComponent implements OnDestroy {
                 if (this.responseToPerformanceFreeProfessional.Revised == 'True') {
                   this.isRevisedPerformance = false;
                 }
-                else{
+                else {
                   this.isRevisedPerformance = true;
                 }
               }
@@ -199,6 +200,8 @@ export class ResponseToPerformanceComponent implements OnDestroy {
   }
 
   onSubmit(): void {
+    this.checkWorkHours()
+    
     if (this.responsePerformanceForm.invalid) {
       this.responsePerformanceForm.markAllAsTouched();
       return;
@@ -207,6 +210,7 @@ export class ResponseToPerformanceComponent implements OnDestroy {
     this.performanceAssigned$.subscribe(performance => {
       performanceAssigned = performance
     })
+    this.store.dispatch(UiActions.toggleConfirmationButton())
     this.osdEventService.addResponseToPerformanceAssigned(this.responsePerformanceForm.value, performanceAssigned.Id)
   }
 
@@ -236,6 +240,7 @@ export class ResponseToPerformanceComponent implements OnDestroy {
       fillForm = performance
     })
 
+    this.store.dispatch(UiActions.toggleConfirmationButton())
     this.osdEventService.validateResponseToPerformanceAssigned(fillForm.Id, this.reviewPerformanceForm.value);
   }
 
@@ -263,7 +268,7 @@ export class ResponseToPerformanceComponent implements OnDestroy {
     if (isTravelTimeValid && isWorkHoursValid) {
       if (data == "freeProfessional") {
         this.totalExpensesOfFreeProfessional(formValues);
-        this.checkWorkHours()
+
       }
     } else {
       if (data == "freeProfessional") {
@@ -313,13 +318,13 @@ export class ResponseToPerformanceComponent implements OnDestroy {
   checkWorkHours() {
     var form = this.responsePerformanceForm.value;
     var isHourValid = this.validarHora(form.FP_WorkHours);
-     
+
     if (isHourValid) {
 
       var formPerformanceAssigned = this.showPerformanceAssignedForm.value;
       var totalMinutesFreeProfessional = this.convertTimeToMinutes(form.FP_WorkHours) / 60;
       var totalMinutesForecastWorkHours = this.convertTimeToMinutes(formPerformanceAssigned.ForecastWorkHours) / 60;
-  
+
       if (totalMinutesFreeProfessional > totalMinutesForecastWorkHours) {
         this.isWorkMore = true;
 

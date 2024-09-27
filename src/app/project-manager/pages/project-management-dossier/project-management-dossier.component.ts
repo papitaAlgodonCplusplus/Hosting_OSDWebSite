@@ -11,7 +11,6 @@ import { PerformanceBuy } from '../../Models/performanceBuy';
 import { TranslateService } from '@ngx-translate/core';
 import { Project } from '../../Models/project';
 import { AuthenticationService } from 'src/app/services/authentication.service';
-import { DatePipe } from '@angular/common';
 import { ResponseToPerformanceFreeProfessional } from '../../Models/responseToperformanceFreeProfessional';
 import { showPerformance } from '../../Models/showPerformance';
 import { PerformanceFreeProfessional } from '../../Models/performanceFreeProfessional';
@@ -45,12 +44,12 @@ export class ProjectManagementDossierComponent implements OnDestroy {
   loadProjectManager: boolean = true
   showModalSubPerformance: boolean = false;
   subPerformance!: ResponseToPerformanceFreeProfessional[];
-  validateCreatePerformance: boolean = false
+  validatseCreatePerformance: boolean = false
+  projectSelected : string = ""
 
   constructor(private router: Router, private store: Store, private formBuilder: FormBuilder,
     private osdDataService: OSDDataService, private osdEventService: OSDService,
-    private translate: TranslateService, private authService: AuthenticationService,
-    private datePipe: DatePipe) {
+    private translate: TranslateService, private authService: AuthenticationService) {
     this.formProjectManager = this.createForm({} as Project);
   }
 
@@ -61,47 +60,43 @@ export class ProjectManagementDossierComponent implements OnDestroy {
 
       this.osdEventService.GetProjects();
       this.user = this.authService.userInfo;
-      if (this.user.AccountType == 'FreeProfessional') {
-        this.validateCreatePerformance = true;
-      }
       if (this.user) {
-        this.isUser = true
-        if (this.user.Isadmin) {
-          this.isAdmin = true;
+        if (this.user.AccountType == 'FreeProfessional') {
+          if (this.user.Isadmin) {
+            this.isAdmin = true;
+            this.showOptionsPerformance()
+          }
+          else {
+            this.isUser = true
+          }
         }
       }
     }, 0);
 
-    await this.loadProjects();
+    this.Projects$.subscribe(projects => {
+      this.allProjects = projects;
+      this.loadProjectManager = false
+    })
   }
 
   viewPerformance(performance: any) {
     this.store.dispatch(PerformanceActions.setPerformanceFreeProfessional({ performanceFreeProfessional: performance }))
-    this.router.navigate(['/project-manager/performance-free-professional']);
+    this.router.navigate(['/project-manager/create-performances']);
   }
 
   viewPerformanceBuy(performance: any) {
     this.store.dispatch(PerformanceActions.setPerformanceBuy({ performanceBuy: performance }))
-    this.router.navigate(['/project-manager/performance-buy']);
+    this.router.navigate(['/project-manager/create-performances-buy']);
   }
 
 
   viewSubPerformance(subPerformance: any) {
-    this.store.dispatch(PerformanceActions.setSubPerformance({ subPerformance: subPerformance }))
-    this.router.navigate(['/project-manager/response-to-performance'])
-  }
-
-  modifiedPerformance(performance: any) {
-    this.performancesBuy.forEach(performanceBuy => {
-      if (performanceBuy.Id === performance.Id) {
-        if (performance != undefined) {
-          this.store.dispatch(PerformanceActions.setPerformanceBuy({ performanceBuy: performance }))
-          this.router.navigate(['/project-manager/performance-buy'], {
-            queryParams: { modified: 'valid' }
-          });
-        }
-      }
-    });
+    var performance: PerformanceFreeProfessional | undefined = this.performancesFreeProfessional.find(performance => performance.Id == subPerformance.PerformanceId)
+    if (performance) {
+      this.store.dispatch(PerformanceActions.setPerformanceFreeProfessional({ performanceFreeProfessional: performance }))
+      this.store.dispatch(PerformanceActions.setSubPerformance({ subPerformance: subPerformance }))
+      this.router.navigate(['/project-manager/response-to-performance'])
+    }
   }
 
   sortDateLowestHighest(ascending: boolean = true) {
@@ -150,7 +145,7 @@ export class ProjectManagementDossierComponent implements OnDestroy {
   showOptionsPerformance() {
     this.showOptions = !this.showOptions;
   }
- 
+
   onPageChange(event: any) {
     const startIndex = event.pageIndex * event.pageSize;
     const endIndex = startIndex + event.pageSize;
@@ -173,26 +168,14 @@ export class ProjectManagementDossierComponent implements OnDestroy {
         if (element.Id === id) {
           this.formProjectManager = this.createForm(element);
           this.store.dispatch(PerformanceActions.setProjecTManagerId({ projectManagerId: element.Id }))
+          this.projectSelected = element.Id;
           this.osdEventService.getPerformancesProjectManagerById(id)
           this.loadPerformance();
+          this.openSideBar = false
         }
       });
     }, 0);
   }
-
-  async loadProjects(): Promise<void> {
-    this.loadProjectManager = true;
-    try {
-      this.allProjects = await firstValueFrom(this.Projects$);
-      if (this.allProjects && this.allProjects.length > 0) {
-        this.selectedProject = this.allProjects[0];
-      }
-      this.loadProjectManager = false;
-    } catch (error) {
-      this.loadProjectManager = false;
-    }
-  }
-
 
   loadPerformance() {
     this.loadProjectManager = true;
@@ -239,7 +222,6 @@ export class ProjectManagementDossierComponent implements OnDestroy {
         pf.Type = "Performance Buy"
       })
     } else {
-      console.log(this.performancesFreeProfessional);
       this.performances = this.performancesFreeProfessional;
       this.performances.forEach(pf => {
         pf.Type = "Performance Free Professional"

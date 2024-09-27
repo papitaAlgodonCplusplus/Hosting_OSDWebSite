@@ -153,10 +153,8 @@
         {{'cancelar' | translate}}
     </button>
 
-    <button type="submit" (click)="onSubmit()"
-        class="p-2 bg-darkslategray text-white font-medium animate__animated animate__fadeInDown rounded-xl">
-        {{'registrarse' | translate}}
-    </button>
+    <shared-confirmation-button (click)="onSubmit()" [ButtonName]="'confirm'"></shared-confirmation-button>
+
 </div>
 
 <div *ngIf="showModal" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">

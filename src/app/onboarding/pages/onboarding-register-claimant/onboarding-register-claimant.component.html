@@ -67,9 +67,8 @@
 
             <form [formGroup]="accountForm" autocomplete="off" class="flex flex-wrap items-center">
 
-                <shared-input-field *ngIf="false" fieldName="Date" inputType="text"
-                   [formGroup]="accountForm" [dropdownItems]="claimant"
-                    [selectedItem]="selectedClaimant">
+                <shared-input-field *ngIf="false" fieldName="Date" inputType="text" [formGroup]="accountForm"
+                    [dropdownItems]="claimant" [selectedItem]="selectedClaimant">
                 </shared-input-field>
 
                 <shared-simple-dropdown class="w-full md:w-1/2" fieldName="claimtype"
@@ -161,10 +160,8 @@
                 {{'cancelar' | translate}}
             </button>
 
-            <button (click)="onSubmit()" class="p-2 bg-darkslategray rounded-xl text-white">
-                {{'confirm' | translate}}
-            </button>
-
+            <shared-confirmation-button (click)="onSubmit()" [ButtonName]="'confirm'"></shared-confirmation-button>
+            
             <ng-template #isValidToken>
 
                 <button routerLink="/home" class="p-2 bg-line rounded-xl text-darkslategray" i18n="@@signin">

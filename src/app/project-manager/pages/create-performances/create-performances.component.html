@@ -80,9 +80,7 @@
         </button>
 
         <div *ngIf="isCreatePerformance">
-            <button (click)="onSubmit()" class="p-2 bg-darkslategray text-line rounded-xl">
-                {{'CreatePerformance'|translate}}
-            </button>
+            <shared-confirmation-button (click)="onSubmit()" [ButtonName]="'CreatePerformance'"></shared-confirmation-button>
         </div>
 
         <div>

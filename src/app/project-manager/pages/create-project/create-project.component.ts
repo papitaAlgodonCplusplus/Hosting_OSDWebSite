@@ -45,6 +45,7 @@ export class CreateProjectComponent implements OnDestroy {
       this.projectForm.markAllAsTouched();
       return;
     }
+    this.store.dispatch(UiActions.toggleConfirmationButton())
     this.osdEventService.createProject(this.projectForm.value);
   }
 }

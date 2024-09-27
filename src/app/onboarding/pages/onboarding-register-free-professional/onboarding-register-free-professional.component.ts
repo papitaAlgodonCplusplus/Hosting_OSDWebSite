@@ -241,7 +241,8 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
       this.isAcceptConditions = true;
       return;
     }
-
+    
+    this.store.dispatch(UiActions.toggleConfirmationButton())
     const userEmail = this.personalForm.value.email;
     localStorage.setItem('userEmail', userEmail);
     this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.FREE_PROFESSIONAL);

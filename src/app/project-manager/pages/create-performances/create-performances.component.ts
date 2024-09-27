@@ -16,23 +16,21 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 
 @Component({
-  selector: 'app-performance-free-professional',
-  templateUrl: './performance-free-professional.component.html',
-  styleUrls: ['./performance-free-professional.component.css']
+  selector: 'app-create-performances',
+  templateUrl: './create-performances.component.html',
+  styleUrls: ['./create-performances.component.css']
 })
-export class PerformanceFreeProfessionalComponent {
-  isAuthenticated$: Observable<boolean> = this.store.select(AuthSelectors.authenticationToken)
+
+export class CreatePerformancesComponent {
+  projectManagerSelected: string = "";
+  projectManagerSelectedObservable$: Observable<string> = this.store.select(PerformanceSelectors.projectManagerId)
   performanceFreeProfessional$: Observable<PerformanceFreeProfessional> = this.store.select(PerformanceSelectors.performanceFreeProfessional);
-  modifiedPerformanceFP: any;
   performanceFP!: PerformanceFreeProfessional;
-  editOtherInformation: boolean = true;
   performanceForm: FormGroup;
-  professionalsFree!: FreeProfessional[];
   selectedSummaryType: string | undefined;
   summaryTypes: DropDownItem[] = [];
   justifyingDocument!: string;
   DocumentIncreaseWorkingHours!: string;
-  freeProfessionalId!: string
   incorrectFormat: boolean = false
   showModal: boolean = false;
   professionalTypes: FreeProfessionalType[] = [{ id: '1bfc42c6-0d32-4270-99ed-99567bc7a524', name: 'Accounting Technician' },
@@ -42,8 +40,7 @@ export class PerformanceFreeProfessionalComponent {
   { id: 'afdc95b1-271e-4788-a00a-d40081d7314f', name: 'Citizen service' }];
   selectedType: string = '';
   filteredProfessionalsFree!: FreeProfessional[];
-  projectManagerSelected: string = "";
-  projectManagerSelectedObservable$: Observable<string> = this.store.select(PerformanceSelectors.projectManagerId)
+  professionalsFree!: FreeProfessional[];
   isViewPerformance: boolean = true;
   isCreatePerformance: boolean = false;
 
@@ -53,42 +50,7 @@ export class PerformanceFreeProfessionalComponent {
     private OSDDataService: OSDDataService,
     private datePipe: DatePipe,
     private authService: AuthenticationService) {
-    this.performanceForm = this.validatePerformanceOnDataService()
-  }
-
-  validatePerformanceOnDataService(): FormGroup {
-    this.performanceFreeProfessional$.subscribe(performance => {
-      this.performanceFP = performance;
-    })
-
-    if (Object.keys(this.performanceFP).length > 0) {
-      this.justifyingDocument = this.performanceFP.JustifyingDocument;
-
-      let originalDate = this.performanceFP.Start_Date;
-      let formatedStartDate = this.datePipe.transform(originalDate, 'yyyy-MM-dd');
-
-      let originalDTDate = this.performanceFP.End_Date;
-      let formatedEndDate = this.datePipe.transform(originalDTDate, 'yyyy-MM-dd');
-
-      const form = this.formBuilder.group({
-        Start_Date: formatedStartDate,
-        End_Date: formatedEndDate,
-        JustifyingDocument: this.performanceFP.JustifyingDocument,
-        FreeProfessionalCode: this.performanceFP.FreeProfessionalAssignedCode,
-        SummaryId: this.performanceFP.SummaryId,
-        freeProfessionalId: this.performanceFP.FreeProfessionalId,
-        ForecastTravelExpenses: this.performanceFP.ForecastTravelExpenses,
-        ForecastTravelTime: this.performanceFP.ForecastTravelTime,
-        ForecastWorkHours: this.performanceFP.ForecastWorkHours,
-        TotalForecastData: this.performanceFP.TotalForecastData
-      });
-      return form;
-    }
-    else {
-      this.isCreatePerformance = true;
-      console.log("Hola")
-      return this.createForm()
-    }
+    this.performanceForm = this.createForm()
   }
 
   ngOnInit() {
@@ -106,23 +68,19 @@ export class PerformanceFreeProfessionalComponent {
       });
     });
 
-    this.isAuthenticated$.subscribe((isAuthenticated: boolean) => {
-      if (isAuthenticated === false) {
-        this.editOtherInformation = false
+    this.performanceFreeProfessional$.subscribe(performance => {
+      this.performanceFP = performance;
+      if (Object.keys(this.performanceFP).length > 0) {
+        this.performanceForm = this.fillform(this.performanceFP)
       }
-    });
-
-    this.OSDDataService.freeProfessionalId$.subscribe(id => {
-      this.freeProfessionalId = id;
-    });
+    })
 
     this.OSDEventService.getFreeProfessionalsList().then(freeProfessionals => {
-      this.professionalsFree = freeProfessionals;
       this.filteredProfessionalsFree = freeProfessionals;
-
+      this.professionalsFree = freeProfessionals;
       if (this.authService.userInfo) {
-        if (this.professionalsFree) {
-          const freeProfessional: FreeProfessional | undefined = this.professionalsFree?.find(fp => fp.Userid === this.authService.userInfo?.Id);
+        if (freeProfessionals) {
+          const freeProfessional: FreeProfessional | undefined = freeProfessionals?.find(fp => fp.Userid === this.authService.userInfo?.Id);
           if (freeProfessional?.FreeprofessionaltypeAcronym == "DT" || freeProfessional?.FreeprofessionaltypeAcronym == "INFIT") {
             this.isViewPerformance = false;
           }
@@ -155,6 +113,7 @@ export class PerformanceFreeProfessionalComponent {
   }
 
   private createForm(): FormGroup {
+    this.isCreatePerformance = true
     const form = this.formBuilder.group({
       Start_Date: ['', [Validators.required]],
       End_Date: ['', [Validators.required]],
@@ -170,12 +129,42 @@ export class PerformanceFreeProfessionalComponent {
     return form;
   }
 
+  fillform(performance: PerformanceFreeProfessional): FormGroup {
+
+    this.isCreatePerformance = false;
+
+    this.justifyingDocument = performance.JustifyingDocument;
+
+    let originalDate = this.performanceFP.Start_Date;
+    let formatedStartDate = this.datePipe.transform(originalDate, 'yyyy-MM-dd');
+
+    let originalDTDate = this.performanceFP.End_Date;
+    let formatedEndDate = this.datePipe.transform(originalDTDate, 'yyyy-MM-dd');
+
+    const form = this.formBuilder.group({
+      Start_Date: [formatedStartDate, [Validators.required]],
+      End_Date: [formatedEndDate, [Validators.required]],
+      JustifyingDocument: [performance.JustifyingDocument, [Validators.required]],
+      FreeProfessionalCode: [performance.FreeProfessionalAssignedCode, [Validators.required]],
+      SummaryId: [performance.SummaryId, [Validators.required]],
+      freeProfessionalId: [performance.FreeProfessionalId, [Validators.required]],
+      ForecastTravelExpenses: [performance.ForecastTravelExpenses, [Validators.required]],
+      ForecastTravelTime: [performance.ForecastTravelTime, [Validators.required]],
+      ForecastWorkHours: [performance.ForecastWorkHours, [Validators.required]],
+      TotalForecastData: [performance.TotalForecastData, [Validators.required]]
+    });
+    return form
+  }
+
   onSubmit(): void {
     if (this.performanceForm.invalid) {
       this.performanceForm.markAllAsTouched();
       return;
     }
-    this.OSDEventService.addPerformanceFreeProfessional(this.performanceForm.value, this.projectManagerSelected);
+    this.store.dispatch(UiActions.toggleConfirmationButton())
+    if (this.projectManagerSelected) {
+      this.OSDEventService.addPerformanceFreeProfessional(this.performanceForm.value, this.projectManagerSelected);
+    }
   }
 
   modifyPerformance(): void {
@@ -269,7 +258,6 @@ export class PerformanceFreeProfessionalComponent {
   }
 
   selectProfessionalFree(professionalsFree: FreeProfessional) {
-    console.log(professionalsFree)
     this.performanceForm.patchValue({
       FreeProfessionalCode: professionalsFree.Code, FreeProfessionalAssignedId: professionalsFree.Id
     })

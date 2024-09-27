@@ -1,66 +1,63 @@
 <div class="h-full flex justify-end items-end flex-col">
     <div class="w-full text-darkslategray text-start py-3 text-xl font-medium animate__animated animate__fadeInLeft">
         <span class="pl-8 pr-3 py-1 bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden">
-            {{'transparent_project' | translate}} <i class="fa-solid fa-project-diagram"></i></span>
+            {{ 'transparent_project' | translate }} <i class="fa-solid fa-project-diagram"></i></span>
     </div>
-    <div *ngIf="openSideBar"
-        class="fixed top-0 left-0 flex py-3 pl-1 bg-white w-6 h-full border-r-2 animate__animated animate__fadeInLeft">
-        <div (click)="toggleSideBar()" class="text-darkslategray absolute left-6 top-1/2 transform -translate-y-1/2">
+
+    <div class="fixed top-[3.7rem] left-0 h-full bg-white border-r-2 p-3 animate__animated animate__fadeInRight z-50"
+        [ngClass]="{'w-6': openSideBar, 'w-72': !openSideBar}">
+
+        <div *ngIf="openSideBar" (click)="toggleSideBar()" class="text-darkslategray absolute left-[2rem] top-[5rem] text-xl">
             <i class="fa-solid fa-chevron-right cursor-pointer"></i>
         </div>
-    </div>
 
+        <div *ngIf="!openSideBar" class="overflow-y-auto h-full w-full pl-1 animate__animated animate__fadeInLeft">
+            <div class="text-end text-darkslategray text-xl px-3">
+                <i (click)="toggleSideBar()" class="cursor-pointer animate-pulse fa-solid fa-xmark"></i>
+            </div>
 
-    <div *ngIf="!openSideBar"
-        class="fixed pb-16 top-14 border left-0 overflow-y-auto pl-1 bg-white h-full border-r-2 animate__animated animate__fadeInLeft w-72">
-        <div class="text-end text-darkslategray text-xl px-3">
-            <i (click)="toggleSideBar()" class="cursor-pointer animate-pulse fa-solid fa-xmark"></i>
+            <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="economicBudget"
+                label="{{ 'economicBudget' | translate }}:" inputType="text" [formGroup]="formProjectManager">
+            </shared-input-field>
+
+            <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="expectedTimes"
+                label="{{ 'expectedTimes' | translate }}:" inputType="text" [formGroup]="formProjectManager">
+            </shared-input-field>
+
+            <shared-input-field [readOnly]="readOnly" class="w-full lg:w-full" fieldName="startDate"
+                label="{{ 'start_date' | translate }}:" inputType="text" [formGroup]="formProjectManager">
+            </shared-input-field>
+
+            <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="endDate"
+                label="{{ 'end_date' | translate }}:" inputType="text" [formGroup]="formProjectManager">
+            </shared-input-field>
         </div>
-
-        <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="economicBudget"
-            label="{{'economicBudget' | translate}}:" inputType="text" [formGroup]="formProjectManager"
-            [bgColor]="'bg-white-lightbone'"></shared-input-field>
-        <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="expectedTimes"
-            label="{{'expectedTimes' | translate}}:" inputType="text" [formGroup]="formProjectManager"
-            [bgColor]="'bg-white-lightbone'"></shared-input-field>
-        <shared-input-field [readOnly]="readOnly" class="w-full lg:w-full " fieldName="startDate"
-            label="{{'start_date' | translate}}:" inputType="text" [formGroup]="formProjectManager"
-            [bgColor]="'bg-white-lightbone'"></shared-input-field>
-        <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="endDate"
-            label="{{'end_date' | translate}}:" inputType="text" [formGroup]="formProjectManager"
-            [bgColor]="'bg-white-lightbone'"></shared-input-field>
-        <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="projectAmount"
-            label="{{'project_amount' | translate}}:" inputType="text" [formGroup]="formProjectManager"
-            [bgColor]="'bg-white-lightbone'"></shared-input-field>
-        <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="expensesEmployeesVolunteers"
-            label="{{'expenses_employees_volunteers' | translate}}:" inputType="text" [formGroup]="formProjectManager"
-            [bgColor]="'bg-white-lightbone'"></shared-input-field>
-        <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="supplierExpensesPurchases"
-            label="{{'supplier_purchasing_expenses' | translate}}:" inputType="text" [formGroup]="formProjectManager"
-            [bgColor]="'bg-white-lightbone'"></shared-input-field>
     </div>
-    <div class="w-full flex-1 space-y-3 flex justify-center flex-col">
-        <div class="flex flex-col p-3 items-center justify-center space-y-3">
 
+
+    <div class="w-full flex-1 space-y-3 flex justify-center flex-col">
+
+        <div class="flex flex-col p-3 items-center justify-center space-y-3">
             <div class="flex flex-col items-center">
-                <label for="objectivesDropdown">{{"Objective" | translate}}</label>
+                <label for="objectivesDropdown">{{ "Objective" | translate }}</label>
                 <select (change)="selectProject($event)" class="border rounded-xl bg-white text-black p-2 w-64">
-                    <option disabled selected hidden>{{ 'Elegir proyecto..' | translate }}
-                    </option>
-                    <option *ngFor="let project of (Projects$ | async)" [value]="project.Id">
-                        {{ project.Objective }}
+                    <option disabled selected hidden>{{ 'Elegir proyecto..' | translate }}</option>
+                    <option *ngFor="let project of (Projects$ | async)" [value]="project.Id">{{ project.Objective }}
                     </option>
                 </select>
             </div>
 
+
             <div *ngIf="isAdmin" class="flex flex-row items-center justify-center font-medium">
-                <button class="text-darkslategray p-2 rounded-xl hover:underline"
-                    routerLink="/project-manager/create-project"> {{'RegisterProject' | translate}}</button>
-                <button class="text-darkslategray p-2 rounded-xl hover:underline" (click)="openModal()">
+                <a class="text-darkslategray p-2 rounded-xl hover:underline"
+                    routerLink="/project-manager/create-project">
+                    {{'RegisterProject' | translate}}
+                </a>
+                <a class="text-darkslategray p-2 rounded-xl hover:underline" (click)="openModal()">
                     {{'Registrar resumen de actuación' | translate}}
-                </button>
+                </a>
             </div>
-            <button *ngIf="isUser && !isAdmin" class="bg-darkslategray p-2 rounded-lg text-line text-sm"
+            <button *ngIf="isUser" class="bg-darkslategray p-2 rounded-lg text-line text-sm"
                 routerLink="/project-manager/assigned-performance">
                 {{'Ver mis actuaciones Asignadas' | translate}}
             </button>
@@ -68,61 +65,60 @@
 
         <div class="w-full p-10 flex flex-col justify-center space-y-3">
             <div class="text-darkslategray text-center text-xl mt-3 font-bold">
-                <h1>
-                    {{'performances' | translate}}
-                </h1>
+                <h1>{{'performances' | translate}}</h1>
             </div>
             <div class="text-center flex flex-row items-center space-x-3 px-1 p-2">
-                <div class="flex-1 flex flex-row space-x-3 font-light text-sm text-darkslategray items-center   ">
-                    <span class="underline cursor-pointer" (click)="filterPerformance('buy')"> {{'Mostrar actuaciones de
-                        compra' | translate}} </span>
-                    <span class="underline cursor-pointer" (click)="filterPerformance('freeProfessional')"> {{'Mostrar
-                        actuaciones de Gestor de proyecto' | translate}} </span>
+                <div class="flex-1 flex flex-row space-x-3 font-light text-sm text-darkslategray items-center">
+                    <span class="underline cursor-pointer" (click)="filterPerformance('buy')">
+                        {{'Mostrar actuaciones de compra' | translate}}
+                    </span>
+                    <span class="underline cursor-pointer" (click)="filterPerformance('freeProfessional')">
+                        {{'Mostrar actuaciones de Gestor de proyecto' | translate}}
+                    </span>
                 </div>
-                <div class="flex-1 flex items-center justify-end space-x-3"
-                    *ngIf="isAdmin || validateCreatePerformance ">
+
+                <div class="flex-1 flex items-center justify-end space-x-3" *ngIf="isAdmin && projectSelected != ''">
                     <div *ngIf="showOptions" class="animate__animated animate__fadeInRight flex flex-row space-x-3">
-                        <i routerLink="/project-manager/performance-buy"
-                            class="cursor-pointer px-2 py-1 fa-solid fa-cart-shopping text-xl bg-line text-darkslategray rounded-full"></i>
-                        <i routerLink="/project-manager/performance-free-professional" 
-                            class="cursor-pointer px-2 py-1 fa-solid fa-user-tie text-xl bg-line text-darkslategray rounded-full"></i>
+                        <a routerLink="/project-manager/create-performances-buy"
+                            class="cursor-pointer px-2 py-1 text-xl bg-line text-darkslategray rounded-full">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                        </a>
+                        <a routerLink="/project-manager/create-performances"
+                            class="cursor-pointer px-2 py-1 text-xl bg-line text-darkslategray rounded-full">
+                            <i class="fa-solid fa-user-tie"></i>
+                        </a>
                     </div>
                     <button *ngIf="isAdmin" class="flex items-center bg-darkslategray p-2 rounded-lg text-line text-sm"
                         (click)="showOptionsPerformance()">
-                        <i class="fas animate-pulse pr-3 "
-                            [ngClass]="{'fa-chevron-right' : showOptions, 'fa-chevron-left':!showOptions}"></i>
+                        <i class="fas animate-pulse pr-3"
+                            [ngClass]="{'fa-chevron-right': showOptions, 'fa-chevron-left': !showOptions}"></i>
                         {{'CreatePerformance' | translate}}
                     </button>
                 </div>
             </div>
+
             <table class="table-auto w-full">
                 <thead>
                     <tr class="text-darkslategray font-normal border-b text-start">
                         <th></th>
-                        <th class="">{{'Type' | translate}}</th>
-                        <th class="">{{'Code' | translate}}</th>
-                        <th class="">{{'Summary' | translate}}</th>
-                        <th class=""></th>
+                        <th>{{'Type' | translate}}</th>
+                        <th>{{'Code' | translate}}</th>
+                        <th>{{'Summary' | translate}}</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr class="font-light text-center" *ngFor="let pf of performances; let i = index">
-
                         <td *ngIf="pf.Type.trim() !== 'Performance Free Professional'" class="border-y px-2 py-2">
                             <i class="fa-solid fa-eye" (click)="viewPerformanceBuy(pf)"></i>
                         </td>
-
                         <td *ngIf="pf.Type.trim() === 'Performance Free Professional'"
                             class="border-y px-2 py-2 hover:underline">
                             <i class="fa-solid fa-eye" (click)="viewPerformance(pf)"></i>
                         </td>
-
                         <td class="border-y px-2 py-2">{{pf.Type | translate}}</td>
                         <td class="border-y px-2 py-2">{{pf.Code}}</td>
                         <td class="border-y px-2 py-2">{{pf.SummaryTypeName}}</td>
-
-                        <td *ngIf="pf.Type.trim() !== 'Performance Free Professional'" class="border-y px-2 py-2">
-                        </td>
 
                         <td *ngIf="pf.Type.trim() === 'Performance Free Professional'"
                             class="border-y px-2 py-2 hover:underline" (click)="viewSubPerformances(pf.Id)">
@@ -130,12 +126,12 @@
                         </td>
                     </tr>
                 </tbody>
-
             </table>
         </div>
 
         <mat-paginator [length]="performances.length" [pageSize]="10" (page)="onPageChange($event)"></mat-paginator>
     </div>
+
     <div class="flex flex-row space-x-3 justify-end py-3 px-3">
         <button [routerLink]="isUser ? '/home' : '/reports'"
             class="bg-line font-medium p-2 rounded-xl flex items-center text-darkslategray">
@@ -145,8 +141,8 @@
 </div>
 
 <div *ngIf="loadProjectManager" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
-    <div class="bg-opacity-75 bg-black absolute inset-0 "></div>
-    <div class="relative z-50 space-y-1 ">
+    <div class="bg-opacity-75 bg-black absolute inset-0"></div>
+    <div class="relative z-50 space-y-1">
         <div class="justify-center text-white">
             <i class="fa-solid fa-arrow-rotate-right animate-spin"></i> {{'Loading' | translate}}
         </div>
@@ -163,8 +159,8 @@
                 <table class="table-auto w-full">
                     <thead>
                         <tr class="text-darkslategray font-normal border-b text-start">
-                            <th class=""></th>
-                            <th class="">{{'Code' | translate}}</th>
+                            <th></th>
+                            <th>{{'Code' | translate}}</th>
                         </tr>
                     </thead>
                     <tbody>

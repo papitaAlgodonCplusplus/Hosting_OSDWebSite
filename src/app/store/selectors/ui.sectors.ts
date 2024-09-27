@@ -41,3 +41,8 @@ export const selectSwitchReport = createSelector(
   uiState,
   (uiState) => uiState.reportName
 );
+
+export const toggleConfirmationButton = createSelector(
+  uiState,
+  (uiState) => uiState.toggleConfirmationButton
+);

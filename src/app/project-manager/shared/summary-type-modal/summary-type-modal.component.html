@@ -13,19 +13,13 @@
         <label for="name" class="block text-darkslategray">{{ 'Name' | translate }}:</label>
         <input id="name" type="text" [(ngModel)]="name" name="performanceName"
           class="w-full p-2 border rounded bg-white-lightbone text-darkslategray" required />
-      </div>      
+      </div>
       <div class="mt-4">
         <label for="type" class="block text-darkslategray">{{ 'Type' | translate }}:</label>
         <div class="mt-2 space-y-2">
           <div *ngFor="let type of types" class="flex items-center">
-            <input
-              id="{{ type.key }}"
-              type="radio"
-              name="performanceType"
-              [(ngModel)]="selectedType"
-              [value]="type.key"
-              class="form-radio h-4 w-4 text-blue-600 transition duration-150 ease-in-out"
-            />
+            <input id="{{ type.key }}" type="radio" name="performanceType" [(ngModel)]="selectedType" [value]="type.key"
+              class="form-radio h-4 w-4 text-blue-600 transition duration-150 ease-in-out" />
             <label for="{{ type.key }}" class="ml-2 block text-darkslategray">
               {{ type.value | translate }}
             </label>
@@ -36,10 +30,11 @@
         {{ 'El nombre es requerido.' | translate }}
       </div>
       <div class="mt-6 flex justify-end text-darkslategray">
-        <button type="submit" class="ml-3 bg-darkslategray text-white px-4 py-2 rounded hover:bg-gray-600 cursor-pointer border-lg">
-          {{'guardar' | translate}}
-        </button>
-        <button type="button" (click)="closeModal()" class="ml-3 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 cursor-pointer border-lg">
+
+        <shared-confirmation-button (click)="save()" [ButtonName]="'guardar'"></shared-confirmation-button>
+
+        <button type="button" (click)="closeModal()"
+          class="ml-3 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 cursor-pointer border-lg">
           {{'Close' | translate}}
         </button>
       </div>
