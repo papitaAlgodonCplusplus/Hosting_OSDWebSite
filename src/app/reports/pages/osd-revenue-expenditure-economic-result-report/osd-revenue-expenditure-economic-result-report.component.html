@@ -1,18 +1,31 @@
-<div class="border-b-2 w-full font-normal text-darkslategray text-lg">
+<div class="border-b-2 w-full text-center font-normal text-darkslategray text-lg">
   <h1>{{'osdEconomicResult' | translate}}</h1>
 </div>
 <div class="container mx-auto mt-8 overflow-x-auto">
+  <form [formGroup]="filterForm" autocomplete="off" class="w-full flex justify-end items-end">
+    <shared-simple-dropdown class="w-1/5" fieldName="client" label="{{'SubscriberCustomer' | translate}}"
+    [formGroup]="filterForm" [dropdownItems]="subscribers" [selectedItem]="selectedSubscribers">
+  </shared-simple-dropdown>
+    <shared-simple-dropdown class="w-1/5" fieldName="country" label="{{'pais' | translate}}"
+      [formGroup]="filterForm" [dropdownItems]="countries" [selectedItem]="selectedCountries">
+    </shared-simple-dropdown>
+  </form>
   <table class="min-w-full border-gray-300">
     <thead>
       <tr>
-        <th class="p-2 border font-normal text-yellow-500">
+        <th class="p-2 border font-normal text-darkslategray">
           {{'exercise_2024' | translate}}
         </th>
-        <th class="py-2 px-4 border text-yellow-500 font-normal hidden md:table-cell"> {{'OSDIncome' | translate}}</th>
-        <th class="py-2 px-4 border text-yellow-500 font-normal hidden md:table-cell"> {{'OSDExpenses' | translate}}</th>
-        <th class="py-2 px-4 border text-yellow-500 font-normal hidden md:table-cell"> {{'claimAmount' | translate}}</th>
-        <th class="py-2 px-4 border text-yellow-500 font-normal hidden md:table-cell"> {{'claimantCompensation' | translate}}</th>
-        <th class="py-2 px-4 border text-yellow-500 font-normal hidden md:table-cell"> {{'institutionalImprovementSavings' | translate}}</th>
+        <th class="py-2 px-4 border text-darkslategray font-normal hidden md:table-cell"> {{'OSDIncome' | translate}}
+        </th>
+        <th class="py-2 px-4 border text-darkslategray font-normal hidden md:table-cell"> {{'OSDExpenses' | translate}}
+        </th>
+        <th class="py-2 px-4 border text-darkslategray font-normal hidden md:table-cell"> {{'claimAmount' | translate}}
+        </th>
+        <th class="py-2 px-4 border text-darkslategray font-normal hidden md:table-cell"> {{'claimantCompensation' |
+          translate}}</th>
+        <th class="py-2 px-4 border text-darkslategray font-normal hidden md:table-cell">
+          {{'institutionalImprovementSavings' | translate}}</th>
       </tr>
     </thead>
     <tbody>
@@ -30,7 +43,7 @@
           <td class="p-2 border text-center"></td>
           <td class="p-2 border text-center"></td>
           <td class="p-2 border text-center"></td>
-          <td class="p-2 border text-center"></td> 
+          <td class="p-2 border text-center"></td>
           <td class="p-2 border text-center"></td>
         </tr>
         <tr>
@@ -38,16 +51,18 @@
           <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.Income * 0.4).toFixed(2) }}</td>
           <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.Income * 0.4).toFixed(2)}}</td>
           <td class="p-2 border text-center">€{{0}}</td>
-          <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.CompensationClaimant * 0.4).toFixed(2)}}</td>
+          <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.CompensationClaimant * 0.4).toFixed(2)}}
+          </td>
           <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.ImprovementSavings * 0.4).toFixed(2)}}</td>
-        </tr> 
+        </tr>
         <tr>
           <td class="p-2 border font-normal text-darkslategray text-center">{{'DTDirecccionTecnica' | translate}} (10%)
           </td>
           <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.Income * 0.1).toFixed(2) }}</td>
           <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.Income * 0.1).toFixed(2) }}</td>
           <td class="p-2 border text-center">€{{0}}</td>
-          <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.CompensationClaimant * 0.1).toFixed(2)}}</td>
+          <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.CompensationClaimant * 0.1).toFixed(2)}}
+          </td>
           <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.ImprovementSavings * 0.1).toFixed(2)}}</td>
         </tr>
         <tr>
@@ -56,8 +71,10 @@
           <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.Income * 0.05).toFixed(2) }}</td>
           <td class="p-2 border text-center">€{{ 0.00 }}</td>
           <td class="p-2 border text-center">€{{ 0 }}</td>
-          <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.CompensationClaimant * 0.05).toFixed(2)}}</td>
-          <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.ImprovementSavings * 0.05).toFixed(2) }}</td>
+          <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.CompensationClaimant * 0.05).toFixed(2)}}
+          </td>
+          <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.ImprovementSavings * 0.05).toFixed(2) }}
+          </td>
         </tr>
         <tr>
           <td class="p-2 border font-normal text-darkslategray text-center">{{'MKMarketing' | translate}} (10%)
@@ -65,7 +82,8 @@
           <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.Income * 0.1).toFixed(2) }}</td>
           <td class="p-2 border text-center">€{{ 0.00 }}</td>
           <td class="p-2 border text-center">€{{ 0 }}</td>
-          <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.CompensationClaimant * 0.1).toFixed(2)}}</td>
+          <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.CompensationClaimant * 0.1).toFixed(2)}}
+          </td>
           <td class="p-2 border text-center">€{{(transparencyIncomeExpenses.ImprovementSavings * 0.1).toFixed(2)}}</td>
         </tr>
         <tr>
@@ -77,7 +95,8 @@
           <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.Income * 0.1).toFixed(2) }}</td>
           <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.Income * 0.1).toFixed(2) }}</td>
           <td class="p-2 border text-center">€{{ 0 }}</td>
-          <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.CompensationClaimant * 0.1).toFixed(2)}}</td>
+          <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.CompensationClaimant * 0.1).toFixed(2)}}
+          </td>
           <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.ImprovementSavings * 0.1).toFixed(2)}}</td>
         </tr>
         <tr>
@@ -89,8 +108,10 @@
           <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.Income * 0.05).toFixed(2) }}</td>
           <td class="p-2 border text-center">€{{ 0.00 }}</td>
           <td class="p-2 border text-center">€{{ 0 }}</td>
-          <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.CompensationClaimant * 0.05).toFixed(2)}}</td>
-          <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.ImprovementSavings * 0.05).toFixed(2) }}</td>
+          <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.CompensationClaimant * 0.05).toFixed(2)}}
+          </td>
+          <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.ImprovementSavings * 0.05).toFixed(2) }}
+          </td>
         </tr>
 
 
@@ -103,7 +124,8 @@
           <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.Income * 0.2).toFixed(2)}}</td>
           <td class="p-2 border text-center">€{{ 0.00 }}</td>
           <td class="p-2 border text-center">€{{ 0 }}</td>
-          <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.CompensationClaimant * 0.2).toFixed(2)}}</td>
+          <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.CompensationClaimant * 0.2).toFixed(2)}}
+          </td>
           <td class="p-2 border text-center">€{{ (transparencyIncomeExpenses.ImprovementSavings * 0.2).toFixed(2)}}</td>
         </tr>
       </ng-container>

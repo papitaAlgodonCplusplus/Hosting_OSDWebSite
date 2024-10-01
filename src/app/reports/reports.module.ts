@@ -11,6 +11,7 @@ import { CFHResultReportComponent } from './pages/cfhresult-report/cfhresult-rep
 import { SharedModule } from '../shared/shared.module';
 import { MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginator';
 import { DatePipe } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,9 @@ import { DatePipe } from '@angular/common';
     ReportsRoutingModule,
     TranslateModule,
     SharedModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    ReactiveFormsModule,
+    FormsModule,
   ],
   providers:[
     DatePipe,
