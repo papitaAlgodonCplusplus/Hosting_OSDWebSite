@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { OSDRevenueExpenditureEconomicResultReportItems } from '../../interface/OSDRevenueExpenditureEconomicResultReportItems.interface';
 import { Store } from '@ngrx/store';
-import { UiActions } from 'src/app/store/actions';
+import { ModalActions, UiActions } from 'src/app/store/actions';
 import { OSDDataService } from 'src/app/services/osd-data.service';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { TransparencyIncomeExpenses } from '../../models/TransparencyIncomeExpenses.interface';
@@ -9,6 +9,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
 import { CountryService } from 'src/app/services/country.service';
 import { TranslateService } from '@ngx-translate/core';
+import { Subscriber } from 'src/app/functions/models/Subscriber';
 
 @Component({
   selector: 'app-osd-revenue-expenditure-economic-result-report',
@@ -16,27 +17,28 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./osd-revenue-expenditure-economic-result-report.component.css']
 })
 export class OSDRevenueExpenditureEconomicResultReportComponent {
-  filterForm : FormGroup;
+  filterForm: FormGroup;
   transparencyIncomeExpenses!: TransparencyIncomeExpenses
   expenses: number = 0.00;
   countries: DropDownItem[] = [];
   selectedCountries: string | undefined;
   subscribers: DropDownItem[] = [];
   selectedSubscribers: string | undefined;
+  allSubscribers: Subscriber[] = [];
 
   constructor(
-    private store : Store,
-    private osdService :OSDService,
+    private store: Store,
+    private osdService: OSDService,
     private osdDataService: OSDDataService,
-    private formBuilder : FormBuilder,
+    private formBuilder: FormBuilder,
     private countryService: CountryService,
     private translate: TranslateService
-  ) {this.filterForm = this.createForm() }
+  ) { this.filterForm = this.createForm() }
 
-  ngOnInit(): void{
+  ngOnInit(): void {
     setTimeout(() => {
       this.store.dispatch(UiActions.hideAll());
-      this.osdService.GetTransparencyReportsIncomeExpenses();
+      this.osdService.GetTransparencyReportsIncomeExpenses("", "");
       this.osdService.GetSubscribers();
 
       this.countryService.getCountries().subscribe((data: any[]) => {
@@ -75,18 +77,13 @@ export class OSDRevenueExpenditureEconomicResultReportComponent {
       });
     }, 0);
 
-    this.osdDataService.TotalOsdIncomeExpenses$.subscribe(item => {
-      console.log(item)
-      this.transparencyIncomeExpenses = item
-
-      this.calculateExpenses();
+    this.osdDataService.getSubscribersSuccess$.subscribe(item => {
+      this.allSubscribers = item;
     })
 
-    this.osdDataService.getSubscribersSuccess$.subscribe(item =>{
-      item.forEach(subscriber => {
-        var itemDropdown : DropDownItem = {value: subscriber.companyName, key: subscriber.id};
-        this.subscribers.push(itemDropdown)
-      });
+    this.osdDataService.TotalOsdIncomeExpenses$.subscribe(item => {
+      this.transparencyIncomeExpenses = item
+      this.calculateExpenses();
     })
   }
 
@@ -96,15 +93,55 @@ export class OSDRevenueExpenditureEconomicResultReportComponent {
     }, 0);
   }
 
-  calculateExpenses(){
-   this.expenses = this.transparencyIncomeExpenses.Income * 0.4 + this.transparencyIncomeExpenses.Income * 0.1 + this.transparencyIncomeExpenses.Income * 0.1;
+  calculateExpenses() {
+    this.expenses = this.transparencyIncomeExpenses.Income * 0.4 + this.transparencyIncomeExpenses.Income * 0.1 + this.transparencyIncomeExpenses.Income * 0.1;
   }
 
-  createForm(): FormGroup{
+  createForm(): FormGroup {
     const form = this.formBuilder.group({
       country: [''],
       client: ['']
     });
     return form;
+  }
+
+  filterReport() {
+    var country = this.filterForm.value.country
+    var client = this.filterForm.value.client
+
+    if (country != undefined && client == undefined) {
+      console.log(country)
+      this.osdService.GetTransparencyReportsIncomeExpenses("", country);
+    } else if (country != undefined && client != undefined) {
+      this.osdService.GetTransparencyReportsIncomeExpenses(client, country);
+    } else {
+      this.osdService.GetTransparencyReportsIncomeExpenses("", "");
+
+    }
+  }
+
+  filterClients() {
+    var country = this.filterForm.value.country
+    var foundClients = 0;
+
+    if (country != undefined) {
+      console.log(country)
+      this.allSubscribers.forEach(subscriber => {
+        if (subscriber.country == country) {
+          foundClients ++;
+          var itemDropdown: DropDownItem = { value: subscriber.companyName, key: subscriber.id };
+          this.subscribers.push(itemDropdown)
+        }
+      })
+    }
+
+    if(foundClients <= 0){
+      this.subscribers = [];
+    }
+  }
+
+  deleteFilter(){
+    this.osdService.GetTransparencyReportsIncomeExpenses("", "");
+    this.filterForm = this.createForm() 
   }
 }

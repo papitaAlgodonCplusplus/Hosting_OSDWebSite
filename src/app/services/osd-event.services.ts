@@ -307,8 +307,8 @@ export class OSDService {
     });
   }
 
-  public GetTransparencyReportsIncomeExpenses() {
-    const performanceBuyEvent: WebBaseEvent = this.eventFactoryService.CreateGetTransparencyReportsIncomeExpenses();
+  public GetTransparencyReportsIncomeExpenses(subscriberId: string, country: string) {
+    const performanceBuyEvent: WebBaseEvent = this.eventFactoryService.CreateGetTransparencyReportsIncomeExpenses(subscriberId, country);
     this.restApiService.SendOSDEvent(performanceBuyEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
@@ -575,7 +575,12 @@ export class OSDService {
           this.osdDataService.emitUsersFreeProfessionalTR(usersFreeProfessionalsTR)
         }
         else {
-          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: 'No hay tramitdores autorizados' }));
+          if (this.translate.currentLang == "en") {
+            this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: 'There are currently no registered processors for this client' }));
+          }
+          else {
+            this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: 'Actualmente no hay tramitadores registrados para este cliente' }));
+          }
           this.store.dispatch(ModalActions.openAlert());
         }
       }

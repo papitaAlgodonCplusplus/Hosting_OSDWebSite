@@ -291,7 +291,7 @@ export class EventFactoryService {
 
     return event;
   }
-  public CreateGetTransparencyReportsIncomeExpenses(): WebBaseEvent {
+  public CreateGetTransparencyReportsIncomeExpenses(subscriberId: string, country: string): WebBaseEvent {
     let event: WebBaseEvent;
     event = new WebBaseEvent();
     event.SessionKey = this.authenticationService.sessionKey;
@@ -301,6 +301,9 @@ export class EventFactoryService {
     event.Action = EventAction.GET_TRANSPARENCY_REPORTS_INCOME_EXPENSES;
     event.Date = new Date().toUTCString();
     event.ApplicationIdentifier = 'WebClient'; //TODO: change to use an application identifier
+
+    event.setBodyProperty(EventConstants.COUNTRY, country);
+    event.setBodyProperty(EventConstants.SUBSCRIBER_ID, subscriberId);
 
     return event;
   }
