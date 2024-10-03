@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, ViewChild, ElementRef, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
@@ -25,7 +25,8 @@ export class SimpleDropdownComponent {
   isDropdownUp = false;
   isDropdownVisible = false;
   private previousDropdownItems: DropDownItem[] = [];
-
+  @Output() change = new EventEmitter<void>();
+  
   constructor(private changeDetectorRef: ChangeDetectorRef,
     private validationsService: ValidationsService) {}
 
@@ -42,7 +43,11 @@ export class SimpleDropdownComponent {
     this.selectedItem = item?.value;
     this.formGroup.get(this.fieldName)?.setValue(item?.key);
     this.isDropdownOpen = !this.isDropdownOpen;
-
+  
+    if (item) {
+      this.change.emit(); // Emitir el cambio
+    }
+  
     if (item === null) {
       this.formGroup.get(this.fieldName)?.setErrors({ required: true });
       this.dropdownError = true;
@@ -50,7 +55,7 @@ export class SimpleDropdownComponent {
       this.formGroup.get(this.fieldName)?.setErrors(null);
       this.dropdownError = false;
     }
-
+  
     setTimeout(() => {
       if (this.isDropdownOpen) {
         this.setDropdownPosition();
@@ -60,7 +65,6 @@ export class SimpleDropdownComponent {
         this.isDropdownVisible = true;
       }
     });
-
   }
 
   private setDropdownPosition() {

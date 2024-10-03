@@ -1,14 +1,29 @@
 <div class="border-b-2 w-full text-center font-normal text-darkslategray text-lg">
   <h1>{{'osdEconomicResult' | translate}}</h1>
 </div>
-<div class="container mx-auto mt-8 overflow-x-auto">
+<div class="container mx-auto mt-8 overflow-x-auto space-y-3">
   <form [formGroup]="filterForm" autocomplete="off" class="w-full flex justify-end items-end">
-    <shared-simple-dropdown class="w-1/5" fieldName="client" label="{{'SubscriberCustomer' | translate}}"
-    [formGroup]="filterForm" [dropdownItems]="subscribers" [selectedItem]="selectedSubscribers">
-  </shared-simple-dropdown>
-    <shared-simple-dropdown class="w-1/5" fieldName="country" label="{{'pais' | translate}}"
-      [formGroup]="filterForm" [dropdownItems]="countries" [selectedItem]="selectedCountries">
-    </shared-simple-dropdown>
+    <div class="flex flex-col w-1/2 h-1/2">
+      <span class="text-center text-darkslategray font-medium border-b">Filtrar Clientes:</span>
+      <div class="flex flex-wrap">
+        <shared-simple-dropdown class="w-full md:w-1/2" fieldName="client" label="{{'SubscriberCustomer' | translate}}"
+          [formGroup]="filterForm" [dropdownItems]="subscribers" [selectedItem]="selectedSubscribers">
+        </shared-simple-dropdown>
+        <shared-simple-dropdown (change)="filterClients()" class="w-full md:w-1/2" fieldName="country"
+          label="{{'pais' | translate}}" [formGroup]="filterForm" [dropdownItems]="countries"
+          [selectedItem]="selectedCountries">
+        </shared-simple-dropdown>
+      </div>
+      <div class="flex w-full justify-end space-x-3 ">
+        <button (click)="deleteFilter()" class="rounded-xl font-medium text-darkslategray bg-line p-2">
+          {{'cancelar' | translate}}
+        </button>
+        <button (click)="filterReport()" class="rounded-xl font-medium text-line bg-darkslategray p-2">
+          {{'Filter' | translate}}
+        </button>
+      </div>
+    </div>
+
   </form>
   <table class="min-w-full border-gray-300">
     <thead>

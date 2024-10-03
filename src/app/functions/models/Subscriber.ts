@@ -4,6 +4,7 @@ export class Subscriber {
     clientType: string = "";
     companyName: string = "";
     trainerAssigned: string = "";
+    country: string = "";
 }
 
 
