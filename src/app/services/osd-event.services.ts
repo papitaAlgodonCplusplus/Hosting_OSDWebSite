@@ -161,8 +161,8 @@ export class OSDService {
     });
   }
 
-  public createPerformanceClaimTrainer(performanceTrainer: ClaimsTrainerPerformance, claimId: string) {
-    const event: WebBaseEvent = this.eventFactoryService.CreateClaimTrainerEvent(performanceTrainer, claimId);
+  public createPerformanceClaimTrainer(performanceTrainer: ClaimsTrainerPerformance, claimId: string, documentBase64: string) {
+    const event: WebBaseEvent = this.eventFactoryService.CreateClaimTrainerEvent(performanceTrainer, claimId, documentBase64);
     this.restApiService.SendOSDEvent(event).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
@@ -645,8 +645,9 @@ export class OSDService {
     });
   }
 
-  public createClaimsProcessorPerformance(performance: ClaimsProcessorPerformance, claimId: string) {
-    const createClaimsProcessorPerformanceEvent: WebBaseEvent = this.eventFactoryService.createClaimsProcessorPerformance(performance, claimId);
+  public createClaimsProcessorPerformance(performance: ClaimsProcessorPerformance, claimId: string, documentBytes: string) {
+    console.log("Formato del documento en bytes");
+    const createClaimsProcessorPerformanceEvent: WebBaseEvent = this.eventFactoryService.createClaimsProcessorPerformance(performance, claimId, documentBytes);
     this.restApiService.SendOSDEvent(createClaimsProcessorPerformanceEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);

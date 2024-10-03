@@ -31,6 +31,9 @@ export class ClaimsProcessorPerformanceComponent implements OnDestroy {
   isUnrevised! : boolean;
   isView! : boolean;
   isTrainer: boolean = false
+  documentFile: File | null = null;
+  documentBytes: Uint8Array | null = null;
+  documentUrl: string | null = null;
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
@@ -135,13 +138,30 @@ export class ClaimsProcessorPerformanceComponent implements OnDestroy {
       Trainer_TravelExpenses: [performance.Trainer_TravelExpenses],
       Trainer_Remuneration: [performance.Trainer_Remuneration]
     });
+
+    if (performance.JustifyingDocumentBytes) {
+      const documentBlob = new Blob([performance.JustifyingDocumentBytes], { type: 'application/pdf' });
+      this.documentUrl = URL.createObjectURL(documentBlob);
+      this.documentName = performance.JustifyingDocument;
+  }
+
     return form;
   }
 
-  displayFileName(): void {
-    const justifyingDocument = document.getElementById('JustifyingDocument') as HTMLInputElement;
-    if (justifyingDocument.value !== null) {
-      this.documentName = justifyingDocument.value;
+  displayFileName(event: Event): void {
+    const input = event.target as HTMLInputElement;
+  
+    if (input?.files && input.files.length > 0) {
+      this.documentFile = input.files[0];  // Almacena el archivo en la variable
+      this.documentName = this.documentFile.name;  // Muestra el nombre del archivo
+  
+      // Convertir el archivo a bytes
+      const reader = new FileReader();
+      reader.onload = () => {
+        const arrayBuffer = reader.result as ArrayBuffer;
+        this.documentBytes = new Uint8Array(arrayBuffer);  // Almacena los bytes del archivo
+      };
+      reader.readAsArrayBuffer(this.documentFile);  // Lee el archivo como un ArrayBuffer
     }
   }
 
@@ -238,10 +258,50 @@ export class ClaimsProcessorPerformanceComponent implements OnDestroy {
       this.isErrorInForm = true;
       return;
     }
-
+  
     this.isErrorInForm = false;
     if (this.claimId) {
-      this.OSDEventService.createClaimsProcessorPerformance(this.performanceForm.value, this.claimId);
+      if(this.documentBytes != null){
+        const documentBase64 = this.convertUint8ArrayToBase64(this.documentBytes);
+        this.OSDEventService.createClaimsProcessorPerformance(this.performanceForm.value, this.claimId, documentBase64);
+      }
+    }
+  }
+  
+  convertUint8ArrayToBase64(uint8Array: Uint8Array): string {
+    let binary = '';
+    const len = uint8Array.byteLength;
+    for (let i = 0; i < len; i++) {
+      binary += String.fromCharCode(uint8Array[i]);
+    }
+    return window.btoa(binary);
+  }
+
+  convertBase64ToBlob(base64: string, contentType: string = 'application/pdf'): Blob {
+    const byteCharacters = atob(base64); 
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    return new Blob([byteArray], { type: contentType }); 
+  }
+  
+  downloadPdf(base64String: string) {
+  
+    try {
+      const blob = this.convertBase64ToBlob(base64String, 'application/pdf');
+
+      const url = window.URL.createObjectURL(blob);
+  
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'document.pdf';
+      a.click();
+
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error al descargar el PDF:', error);
     }
   }
 

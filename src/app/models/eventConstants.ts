@@ -101,6 +101,7 @@ export class EventConstants {
   public static FREE_PROFESSIONAL_TYPE_ID: string = "FreeProfessionalTypeId";
   public static PROJECT_MANAGER_ID: string = 'ProjectManagerId';
   public static JUSTIFYING_DOCUMENT: string = 'JustifyingDocument';
+  public static JUSTIFYING_DOCUMENT_BYTES: string = 'JustifyingDocumentBytes';
   public static SUMMARY_ID: string = "SummaryId";
   public static FREE_PROFESSIONAL_WORK_HOURS: string = 'FP_WorkHours';
   public static FREE_PROFESSIONAL_TRAVEL_HOURS: string = 'FP_TravelTime';

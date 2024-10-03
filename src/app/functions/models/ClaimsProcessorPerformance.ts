@@ -6,6 +6,7 @@ export interface ClaimsProcessorPerformance{
     Type: string ;
     Summary: string;
     JustifyingDocument: string;
+    JustifyingDocumentBytes: string;
     Processor_WorkHours: string;
     Processor_TravelTime: string;
     Processor_TravelExpenses: string;

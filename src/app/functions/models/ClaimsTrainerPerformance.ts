@@ -6,6 +6,7 @@ export interface ClaimsTrainerPerformance{
     Type: string ;
     Summary: string;
     JustifyingDocument: string;
+    JustifyingDocumentBytes: string;
     TrainerWorkHours: string;
     TrainerTravelHours: string;
     TrainerTravelExpenses: string;

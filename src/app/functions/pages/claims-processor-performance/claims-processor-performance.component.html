@@ -20,7 +20,7 @@
                     </p></label>
                 <div class="flex items-center justify-center flex-col space-y-1">
                     <input type="file" id="JustifyingDocument" formControlName="JustifyingDocument" class="hidden"
-                        (change)="displayFileName()">
+                    (change)="displayFileName($event)">
                     <label *ngIf="!isView" for="JustifyingDocument"
                         class="cursor-pointer p-2 text-sm bg-darkslategray text-white rounded-xl">
                         {{'seleccionar_archivo' | translate}}

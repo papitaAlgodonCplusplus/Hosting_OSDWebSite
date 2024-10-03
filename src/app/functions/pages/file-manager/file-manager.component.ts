@@ -176,6 +176,7 @@ export class FileManagerComponent implements OnDestroy {
   }
 
   viewPerformance(performance: any) {
+    console.log("Performance seteada: ", performance)
     if (performance.typePerformance == "ClaimantCustomer") {
       this.router.navigate(["/functions/claimant-and-claims-customer-performance"]);
       this.store.dispatch(PerformanceActions.setClaimantAndClaimsCustomerPerformance({ performanceClaim: performance }))

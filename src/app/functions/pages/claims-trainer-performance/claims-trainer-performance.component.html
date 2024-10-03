@@ -17,18 +17,18 @@
                         translate}} <p *ngIf="!isView" class="text-sm font-medium text-red-500">({{'Optional' | translate}})</p></label>
                     <div class="flex items-center justify-center flex-col space-y-1">
                         <input type="file" id="JustifyingDocument" formControlName="JustifyingDocument" class="hidden"
-                            (change)="displayFileName()">
+                        (change)="displayFileName($event)">
                         <label *ngIf="!isView" for="JustifyingDocument"
                             class="cursor-pointer p-2 text-sm bg-darkslategray text-white rounded-xl">
                             {{'seleccionar_archivo' | translate}}
                         </label>
-                        <label *ngIf="isView" 
-                            class="cursor-pointer p-2 text-sm bg-darkslategray text-white rounded-xl">
+                        <label (click)="downloadPdf(performance.JustifyingDocumentBytes)" *ngIf="isView" 
+                            class=" cursor-pointer p-2 text-sm bg-darkslategray text-white rounded-xl">
                             {{'Download' | translate}}
                         </label>
                         <span class="ml-2 text-sm text-darkslategray">{{documentName}}</span>
                     </div>
-                </div>
+                </div>                                
         </div>
 
         <div class="text-darkslategray text-base pl-1 mt-3 text-start font-medium">
