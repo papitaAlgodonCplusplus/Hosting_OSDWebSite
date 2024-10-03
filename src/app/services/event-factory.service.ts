@@ -380,8 +380,8 @@ export class EventFactoryService {
 
     event.setBodyProperty(EventConstants.DATE_PERFORMANCE, performance.Date);
     event.setBodyProperty(EventConstants.TYPE_PERFORMANCE, performance.Type);
-    event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, documentBytes);
-    event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT_BYTES, performance.JustifyingDocument);
+    event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, performance.JustifyingDocument);
+    event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT_BYTES, documentBytes);
     event.setBodyProperty(EventConstants.PROCESSOR_WORK_HOURS, performance.Processor_WorkHours);
     event.setBodyProperty(EventConstants.PROCESSOR_TRAVEL_HOURS, performance.Processor_TravelTime);
     event.setBodyProperty(EventConstants.PROCESSOR_TRAVEL_EXPENSES, performance.Processor_TravelExpenses);
@@ -391,7 +391,7 @@ export class EventFactoryService {
     return event;
   }
 
-  public modifiedClaimsProcessorPerformance(performance: ClaimsProcessorPerformance, performanceId: string): WebBaseEvent {
+  public modifiedClaimsProcessorPerformance(performance: ClaimsProcessorPerformance, performanceId: string, documentBase64: string): WebBaseEvent {
     let event: WebBaseEvent;
     event = new WebBaseEvent();
     event.SessionKey = this.authenticationService.sessionKey;
@@ -405,6 +405,7 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.DATE_PERFORMANCE, performance.Date);
     event.setBodyProperty(EventConstants.TYPE_PERFORMANCE, performance.Type);
     event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, performance.JustifyingDocument);
+    event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT_BYTES, documentBase64);
     event.setBodyProperty(EventConstants.PROCESSOR_WORK_HOURS, performance.Processor_WorkHours);
     event.setBodyProperty(EventConstants.PROCESSOR_TRAVEL_HOURS, performance.Processor_TravelTime);
     event.setBodyProperty(EventConstants.PROCESSOR_TRAVEL_EXPENSES, performance.Processor_TravelExpenses);

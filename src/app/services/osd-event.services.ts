@@ -651,7 +651,6 @@ export class OSDService {
   }
 
   public createClaimsProcessorPerformance(performance: ClaimsProcessorPerformance, claimId: string, documentBytes: string) {
-    console.log("Formato del documento en bytes");
     const createClaimsProcessorPerformanceEvent: WebBaseEvent = this.eventFactoryService.createClaimsProcessorPerformance(performance, claimId, documentBytes);
     this.restApiService.SendOSDEvent(createClaimsProcessorPerformanceEvent).subscribe({
       next: (response) => {
@@ -664,8 +663,8 @@ export class OSDService {
     });
   }
 
-  public modifiedClaimsProcessorPerformance(performance: ClaimsProcessorPerformance, performanceId: string) {
-    const modifiedClaimsProcessorPerformanceEvent: WebBaseEvent = this.eventFactoryService.modifiedClaimsProcessorPerformance(performance, performanceId);
+  public modifiedClaimsProcessorPerformance(performance: ClaimsProcessorPerformance, performanceId: string, documentBase64: string) {
+    const modifiedClaimsProcessorPerformanceEvent: WebBaseEvent = this.eventFactoryService.modifiedClaimsProcessorPerformance(performance, performanceId, documentBase64);
     this.restApiService.SendOSDEvent(modifiedClaimsProcessorPerformanceEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
