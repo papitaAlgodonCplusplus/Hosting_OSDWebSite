@@ -26,6 +26,7 @@ export class FileManagerComponent implements OnDestroy {
   fileManager!: FormGroup;
   closeClaimfileForm!: FormGroup;
   claim$: Observable<Claim> = this.store.select(ClaimSelectors.claim);
+  claim !: Claim;
   claimId!: string;
   displayedItems: any[] = [];
   isSubscriber: boolean = false;
@@ -59,6 +60,7 @@ export class FileManagerComponent implements OnDestroy {
       this.claim$.subscribe(claim => {
         this.fileManager = this.fillForm(claim);
         this.claimId = claim.Id;
+        this.claim = claim;
         if (claim.Status == "Running") {
           this.isAssignedClaim = true;
           this.isTerminatedPerformance = true;
@@ -131,6 +133,33 @@ export class FileManagerComponent implements OnDestroy {
     if (this.fileManager.invalid) {
       this.fileManager.markAllAsTouched();
       return;
+    }
+  }
+
+  convertBase64ToBlob(base64: string, contentType: string = 'application/pdf'): Blob {
+    const byteCharacters = atob(base64); 
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    return new Blob([byteArray], { type: contentType }); 
+  }
+  
+  downloadPdf(base64String: string) {
+    try {
+      const blob = this.convertBase64ToBlob(base64String, 'application/pdf');
+
+      const url = window.URL.createObjectURL(blob);
+  
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'document.pdf';
+      a.click();
+
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error al descargar el PDF:', error);
     }
   }
 

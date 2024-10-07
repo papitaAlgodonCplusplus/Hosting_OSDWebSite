@@ -9,6 +9,7 @@ export class PerformanceBuy {
     UnitaryCost : string = "";
     ShelfLife : string = "";
     JustifyingDocument: string = "";
+    JustifyingDocumentBytes: string = "";
     SummaryTypeId: string = "";
     SummaryTypeName: string = "";
     Type: string = "buy"

@@ -36,10 +36,17 @@ export class OnboardingRegisterClaimantComponent {
   selectedSubscribers: string | undefined;
   selectedSubscriberId: string = '';
   subscribers: any[] = [];
-  documentNames: string[] = new Array(2);
+  documentName1: string | null = null;
+  documentName2: string | null = null;
   isAcceptConditions!: boolean;
   registration: boolean = false;
   openModal: boolean = false;
+  documentBytes1: Uint8Array | null = null;
+  documentBytes2: Uint8Array | null = null;
+  documentFile: File | null = null;
+  documentFile2: File | null = null;
+  fileBytes: string | null = null;
+  fileBytes2: string | null = null;
 
   filteredSubscribers: any[] = [];
   filterCountry = '';
@@ -62,6 +69,7 @@ export class OnboardingRegisterClaimantComponent {
   }
 
   ngOnInit(): void {
+    this.store.dispatch(UiActions.toggleConfirmationButton())
     this.osdEventService.GetSubscribers();
     this.selectorRegistry = this.route.snapshot.params['selectorRegistry'] === 'true';
 
@@ -176,13 +184,35 @@ export class OnboardingRegisterClaimantComponent {
     this.showPersonalInfo = !this.showPersonalInfo;
   }
 
-  displayFileName(): void {
-    const fileNameDocument1 = document.getElementById('supportingDocument1') as HTMLInputElement;
-    const fileNameDocument2 = document.getElementById('supportingDocument2') as HTMLInputElement;
+  displayFileName(event: Event): void {
+    const input = event.target as HTMLInputElement;
+  
+    if (input?.files && input.files.length > 0) {
+      this.documentFile = input.files[0];  
+      this.documentName1 = this.documentFile.name;
 
-    if (fileNameDocument1.value !== null || fileNameDocument2.value !== null) {
-      this.documentNames[0] = fileNameDocument1.value;
-      this.documentNames[1] = fileNameDocument2.value;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const arrayBuffer = reader.result as ArrayBuffer;
+        this.documentBytes1 = new Uint8Array(arrayBuffer); 
+      };
+      reader.readAsArrayBuffer(this.documentFile);  
+    }
+  }
+
+  displayFileName2(event: Event): void {
+    const input = event.target as HTMLInputElement;
+  
+    if (input?.files && input.files.length > 0) {
+      this.documentFile2 = input.files[0];  
+      this.documentName2 = this.documentFile2.name;  
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        const arrayBuffer = reader.result as ArrayBuffer;
+        this.documentBytes2 = new Uint8Array(arrayBuffer); 
+      };
+      reader.readAsArrayBuffer(this.documentFile2);  
     }
   }
 
@@ -221,12 +251,34 @@ export class OnboardingRegisterClaimantComponent {
         const claimantIdControl = new FormControl(this.authenticationService.userInfo.Id);
         this.accountForm.addControl(EventConstants.CLAIMANT_ID, claimantIdControl);
       }
+
+      if(this.documentBytes1 != null){
+        this.fileBytes =  this.convertUint8ArrayToBase64(this.documentBytes1);
+      }
+      else if(this.documentBytes2 != null){
+        this.fileBytes2 = this.convertUint8ArrayToBase64(this.documentBytes2)
+      }
+
+      // this.accountForm.patchValue({
+      //   JustifyingDocumentBytes: this.fileBytes || null,
+      //   JustifyingDocumentBytes2: this.fileBytes2 || null
+      // });
+
       this.osdEventService.addClaim(this.accountForm.value);
     }
 
     this.accountForm.patchValue({
       subscriberClaimed: subscriberName
     });
+  }
+
+  convertUint8ArrayToBase64(uint8Array: Uint8Array): string {
+    let binary = '';
+    const len = uint8Array.byteLength;
+    for (let i = 0; i < len; i++) {
+      binary += String.fromCharCode(uint8Array[i]);
+    }
+    return window.btoa(binary);
   }
 
   showModal() {

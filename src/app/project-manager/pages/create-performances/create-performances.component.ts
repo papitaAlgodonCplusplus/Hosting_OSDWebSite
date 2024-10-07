@@ -33,6 +33,11 @@ export class CreatePerformancesComponent {
   DocumentIncreaseWorkingHours!: string;
   incorrectFormat: boolean = false
   showModal: boolean = false;
+  documentFile: File | null = null;
+  documentBytes: Uint8Array | null = null;
+  documentUrl: string | null = null;
+  documentName!: string;
+
   professionalTypes: FreeProfessionalType[] = [{ id: '1bfc42c6-0d32-4270-99ed-99567bc7a524', name: 'Accounting Technician' },
   { id: '2fc2a06a-69ca-4832-a90e-1ff590b80d24', name: 'Processor' },
   { id: 'eea2312e-6a85-4ab6-85ff-0864547e3870', name: 'Trainer' },
@@ -54,6 +59,7 @@ export class CreatePerformancesComponent {
   }
 
   ngOnInit() {
+    this.store.dispatch(UiActions.toggleConfirmationButton())
     setTimeout(() => {
       this.store.dispatch(UiActions.hideFooter());
       this.store.dispatch(UiActions.hideLeftSidebar());
@@ -100,15 +106,19 @@ export class CreatePerformancesComponent {
     }, 0);
   }
 
-  displayFileName(): void {
-    const justifyingDocument = document.getElementById('JustifyingDocument') as HTMLInputElement;
-    const DocumentIncreaseWorkingHours = document.getElementById('DocumentIncreaseWorkingHours') as HTMLInputElement;
-    if (justifyingDocument.value !== null) {
-      this.justifyingDocument = justifyingDocument.value;
-    }
-
-    if (DocumentIncreaseWorkingHours.value !== null) {
-      this.DocumentIncreaseWorkingHours = DocumentIncreaseWorkingHours.value;
+  displayFileName(event: Event): void {
+    const input = event.target as HTMLInputElement;
+  
+    if (input?.files && input.files.length > 0) {
+      this.documentFile = input.files[0];  
+      this.documentName = this.documentFile.name;  
+  
+      const reader = new FileReader();
+      reader.onload = () => {
+        const arrayBuffer = reader.result as ArrayBuffer;
+        this.documentBytes = new Uint8Array(arrayBuffer); 
+      };
+      reader.readAsArrayBuffer(this.documentFile);  
     }
   }
 
@@ -162,8 +172,51 @@ export class CreatePerformancesComponent {
       return;
     }
     this.store.dispatch(UiActions.toggleConfirmationButton())
-    if (this.projectManagerSelected) {
-      this.OSDEventService.addPerformanceFreeProfessional(this.performanceForm.value, this.projectManagerSelected);
+    
+    if(this.documentBytes != null){
+      const documentBase64 = this.convertUint8ArrayToBase64(this.documentBytes);
+      
+      if (this.projectManagerSelected) {
+        this.OSDEventService.addPerformanceFreeProfessional(this.performanceForm.value, this.projectManagerSelected, documentBase64);
+      }
+    }
+    
+  }
+
+  convertUint8ArrayToBase64(uint8Array: Uint8Array): string {
+    let binary = '';
+    const len = uint8Array.byteLength;
+    for (let i = 0; i < len; i++) {
+      binary += String.fromCharCode(uint8Array[i]);
+    }
+    return window.btoa(binary);
+  }
+
+  convertBase64ToBlob(base64: string, contentType: string = 'application/pdf'): Blob {
+    const byteCharacters = atob(base64); 
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    return new Blob([byteArray], { type: contentType }); 
+  }
+  
+  downloadPdf(base64String: string) {
+  
+    try {
+      const blob = this.convertBase64ToBlob(base64String, 'application/pdf');
+
+      const url = window.URL.createObjectURL(blob);
+  
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'document.pdf';
+      a.click();
+
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error al descargar el PDF:', error);
     }
   }
 

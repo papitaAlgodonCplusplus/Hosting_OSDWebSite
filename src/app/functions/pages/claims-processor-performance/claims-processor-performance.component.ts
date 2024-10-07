@@ -152,16 +152,15 @@ export class ClaimsProcessorPerformanceComponent implements OnDestroy {
     const input = event.target as HTMLInputElement;
   
     if (input?.files && input.files.length > 0) {
-      this.documentFile = input.files[0];  // Almacena el archivo en la variable
-      this.documentName = this.documentFile.name;  // Muestra el nombre del archivo
+      this.documentFile = input.files[0];  
+      this.documentName = this.documentFile.name;  
   
-      // Convertir el archivo a bytes
       const reader = new FileReader();
       reader.onload = () => {
         const arrayBuffer = reader.result as ArrayBuffer;
-        this.documentBytes = new Uint8Array(arrayBuffer);  // Almacena los bytes del archivo
+        this.documentBytes = new Uint8Array(arrayBuffer); 
       };
-      reader.readAsArrayBuffer(this.documentFile);  // Lee el archivo como un ArrayBuffer
+      reader.readAsArrayBuffer(this.documentFile);  
     }
   }
 

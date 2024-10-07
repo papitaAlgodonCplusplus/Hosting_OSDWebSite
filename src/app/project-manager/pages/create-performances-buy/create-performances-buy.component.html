@@ -17,9 +17,9 @@
                 [bgColor]="'bg-white-lightbone'"></shared-simple-dropdown>
         </div>
 
-        <div class="flex flex-col items-center justify-center space-x-2 w-full">
+        <div *ngIf="documentName != ''" class="flex flex-col items-center justify-center space-x-2 w-full">
             <input type="file" id="JustifyingDocument" formControlName="JustifyingDocument" class="hidden"
-                (change)="displayFileName()">
+                (change)="displayFileName($event)">
             <label for="JustifyingDocument" class="block text-gray-700 mb-1 cursor-pointer">
                 {{'justifyingDocument' | translate}}
             </label>
@@ -27,6 +27,9 @@
                 <label for="JustifyingDocument"
                     class="cursor-pointer py-2 px-4 border hover:bg-gray-100 focus:outline-none focus:ring focus:border-blue-300">
                     {{'seleccionar_archivo' | translate}}
+                </label>
+                <label (click)="downloadPdf(performance.JustifyingDocumentBytes)" *ngIf="!isViewPerformance" class="cursor-pointer p-2 text-sm bg-darkslategray text-white rounded-xl">
+                    {{'Download' | translate}}
                 </label>
             </div>
             <span class="ml-2 text-darkslategray">{{this.documentName}}</span>

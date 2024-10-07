@@ -100,13 +100,13 @@
                         </label>
                         <div class="flex items-center justify-center flex-col space-y-1">
                             <input type="file" id="supportingDocument1" formControlName="supportingDocument1"
-                                class="hidden" (change)="displayFileName()">
+                                class="hidden" (change)="displayFileName($event)">
                             <label for="supportingDocument1"
                                 class="cursor-pointer p-2 bg-darkslategray text-white rounded-xl">
                                 {{'seleccionar_archivo' | translate}}
                             </label>
                         </div>
-                        <span class="ml-2 text-sm text-darkslategray">{{this.documentNames[0]}}</span>
+                        <span class="ml-2 text-sm text-darkslategray">{{this.documentName1}}</span>
                     </div>
 
                     <div class="flex-1 flex flex-col items-center space-y-1 ">
@@ -115,13 +115,13 @@
                         </label>
                         <div class="flex items-center justify-center flex-col space-y-1">
                             <input type="file" id="supportingDocument2" formControlName="supportingDocument2"
-                                class="hidden" (change)="displayFileName()">
+                                class="hidden" (change)="displayFileName2($event)">
                             <label for="supportingDocument2"
                                 class="cursor-pointer p-2 bg-darkslategray text-white rounded-xl">
                                 {{'seleccionar_archivo' | translate}}
                             </label>
                         </div>
-                        <span class="ml-2 text-sm text-darkslategray">{{this.documentNames[1]}}</span>
+                        <span class="ml-2 text-sm text-darkslategray">{{this.documentName2}}</span>
                     </div>
 
                 </div>

@@ -102,6 +102,7 @@ export class EventConstants {
   public static PROJECT_MANAGER_ID: string = 'ProjectManagerId';
   public static JUSTIFYING_DOCUMENT: string = 'JustifyingDocument';
   public static JUSTIFYING_DOCUMENT_BYTES: string = 'JustifyingDocumentBytes';
+  public static JUSTIFYING_DOCUMENT_BYTES2: string = 'JustifyingDocumentBytes2';
   public static SUMMARY_ID: string = "SummaryId";
   public static FREE_PROFESSIONAL_WORK_HOURS: string = 'FP_WorkHours';
   public static FREE_PROFESSIONAL_TRAVEL_HOURS: string = 'FP_TravelTime';

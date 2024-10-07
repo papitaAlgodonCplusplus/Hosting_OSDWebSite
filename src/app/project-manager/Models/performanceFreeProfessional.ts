@@ -10,6 +10,7 @@ export class PerformanceFreeProfessional {
   Start_Date: string = "";
   End_Date: string = "";
   JustifyingDocument: string = "";
+  JustifyingDocumentBytes: string = "";
   ForecastWorkHours: string = "";
   ForecastTravelTime: string = "";
   ForecastTravelExpenses: string = "";

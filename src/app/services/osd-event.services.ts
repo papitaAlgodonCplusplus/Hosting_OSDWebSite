@@ -135,8 +135,8 @@ export class OSDService {
     });
   }
 
-  public addPerformanceFreeProfessional(performanceFP: PerformanceFreeProfessional, projectManagerSelectedId: string) {
-    const event: WebBaseEvent = this.eventFactoryService.CreateAddPerformanceFreeProfessionalEvent(performanceFP, projectManagerSelectedId);
+  public addPerformanceFreeProfessional(performanceFP: PerformanceFreeProfessional, projectManagerSelectedId: string, documentBase64: string) {
+    const event: WebBaseEvent = this.eventFactoryService.CreateAddPerformanceFreeProfessionalEvent(performanceFP, projectManagerSelectedId, documentBase64);
     this.restApiService.SendOSDEvent(event).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
@@ -240,7 +240,6 @@ export class OSDService {
   }
 
   public addClaim(claimForm: Form) {
-    console.log(claimForm)
     const addClaimEvent: WebBaseEvent = this.eventFactoryService.CreateAddClaimEvent(claimForm);
     this.restApiService.SendOSDEvent(addClaimEvent).subscribe({
       next: (response) => {
@@ -266,8 +265,8 @@ export class OSDService {
     });
   }
 
-  public performanceBuy(performanceForm: PerformanceBuy, projectManagerId: string) {
-    const performanceBuyEvent: WebBaseEvent = this.eventFactoryService.CreatePerformanceBuyEvent(performanceForm, projectManagerId);
+  public performanceBuy(performanceForm: PerformanceBuy, projectManagerId: string, documentBase64: string) {
+    const performanceBuyEvent: WebBaseEvent = this.eventFactoryService.CreatePerformanceBuyEvent(performanceForm, projectManagerId, documentBase64);
     console.log(performanceBuyEvent)
     this.restApiService.SendOSDEvent(performanceBuyEvent).subscribe({
       next: (response) => {

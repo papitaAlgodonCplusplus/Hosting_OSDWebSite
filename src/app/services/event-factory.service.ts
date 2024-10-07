@@ -112,7 +112,7 @@ export class EventFactoryService {
     return event;
   }
 
-  public CreateAddPerformanceFreeProfessionalEvent(performanceFP: PerformanceFreeProfessional, projectManagerSelectedId : string): WebBaseEvent {
+  public CreateAddPerformanceFreeProfessionalEvent(performanceFP: PerformanceFreeProfessional, projectManagerSelectedId : string, documentBase64: string): WebBaseEvent {
     let event: WebBaseEvent;
     event = new WebBaseEvent();
     event.SessionKey = this.authenticationService.sessionKey;
@@ -129,6 +129,7 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_ASSIGNED_ID, performanceFP.FreeProfessionalAssignedId);
     event.setBodyProperty(EventConstants.SUMMARY_ID, performanceFP.SummaryId);
     event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, performanceFP.JustifyingDocument);
+    event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT_BYTES, documentBase64);
 
     event.setBodyProperty(EventConstants.FORECAST_TRAVEL_EXPENSES, performanceFP.ForecastTravelExpenses);
     event.setBodyProperty(EventConstants.FORECAST_TRAVEL_TIME, performanceFP.ForecastTravelTime);
@@ -421,7 +422,7 @@ export class EventFactoryService {
     return event;
   }
 
-  public CreatePerformanceBuyEvent(performanceForm: PerformanceBuy, projectManagerId: string): WebBaseEvent {
+  public CreatePerformanceBuyEvent(performanceForm: PerformanceBuy, projectManagerId: string, documentBase64: string): WebBaseEvent {
     let event: WebBaseEvent;
     event = new WebBaseEvent();
     event.SessionKey = this.authenticationService.sessionKey;
@@ -440,6 +441,7 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.UNITARY_COST, performanceForm.UnitaryCost);
     event.setBodyProperty(EventConstants.SHELF_LIFE, performanceForm.ShelfLife);
     event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, performanceForm.JustifyingDocument);
+    event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT_BYTES, documentBase64);
     event.setBodyProperty(EventConstants.SUMMARY_ID, performanceForm.SummaryTypeId);
     return event;
   }

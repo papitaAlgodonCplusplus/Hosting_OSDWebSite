@@ -32,6 +32,9 @@ export class CreatePerformancesBuyComponent implements OnDestroy {
   modifiedPerformanceBuy: any;
   isCreatePerformance: boolean = false;
   isViewPerformance: boolean = true;
+  documentFile: File | null = null;
+  documentBytes: Uint8Array | null = null;
+  documentUrl: string | null = null;
 
   constructor(private store: Store,
     private osdEventService: OSDService,
@@ -45,6 +48,7 @@ export class CreatePerformancesBuyComponent implements OnDestroy {
   }
 
   ngOnInit() {
+    this.store.dispatch(UiActions.toggleConfirmationButton())
     setTimeout(() => {
       this.store.dispatch(UiActions.hideLeftSidebar());
       this.store.dispatch(UiActions.hideFooter());
@@ -130,9 +134,52 @@ export class CreatePerformancesBuyComponent implements OnDestroy {
     }
     
     this.store.dispatch(UiActions.toggleConfirmationButton())
-    if (this.projectManagerSelected) {
-      this.OSDEventService.performanceBuy(this.performanceForm.value, this.projectManagerSelected);
-    }  }
+
+    if(this.documentBytes != null){
+      const documentBase64 = this.convertUint8ArrayToBase64(this.documentBytes);
+      
+      if (this.projectManagerSelected) {
+        this.OSDEventService.performanceBuy(this.performanceForm.value, this.projectManagerSelected, documentBase64);
+      }
+    }
+  }
+
+  convertUint8ArrayToBase64(uint8Array: Uint8Array): string {
+    let binary = '';
+    const len = uint8Array.byteLength;
+    for (let i = 0; i < len; i++) {
+      binary += String.fromCharCode(uint8Array[i]);
+    }
+    return window.btoa(binary);
+  }
+
+  convertBase64ToBlob(base64: string, contentType: string = 'application/pdf'): Blob {
+    const byteCharacters = atob(base64); 
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    return new Blob([byteArray], { type: contentType }); 
+  }
+  
+  downloadPdf(base64String: string) {
+  
+    try {
+      const blob = this.convertBase64ToBlob(base64String, 'application/pdf');
+
+      const url = window.URL.createObjectURL(blob);
+  
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'document.pdf';
+      a.click();
+
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error al descargar el PDF:', error);
+    }
+  }
 
   modifyPerformance(): void {
     if (this.performanceForm.invalid) {
@@ -142,10 +189,19 @@ export class CreatePerformancesBuyComponent implements OnDestroy {
     this.OSDEventService.modifyPerformanceBuy(this.performanceForm.value, this.projectManagerSelected, this.performance.Id);
   }
 
-  displayFileName(): void {
-    const fileNameDocument1 = document.getElementById('JustifyingDocument') as HTMLInputElement;
-    if (fileNameDocument1.value !== null) {
-      this.documentName = fileNameDocument1.value;
+  displayFileName(event: Event): void {
+    const input = event.target as HTMLInputElement;
+  
+    if (input?.files && input.files.length > 0) {
+      this.documentFile = input.files[0];  
+      this.documentName = this.documentFile.name;  
+  
+      const reader = new FileReader();
+      reader.onload = () => {
+        const arrayBuffer = reader.result as ArrayBuffer;
+        this.documentBytes = new Uint8Array(arrayBuffer); 
+      };
+      reader.readAsArrayBuffer(this.documentFile);  
     }
   }
 }
