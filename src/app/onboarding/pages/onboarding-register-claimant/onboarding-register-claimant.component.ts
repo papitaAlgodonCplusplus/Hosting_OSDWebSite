@@ -229,10 +229,23 @@ export class OnboardingRegisterClaimantComponent {
     }
 
     this.store.dispatch(UiActions.toggleConfirmationButton())
+    
     const subscriberName = this.accountForm.get('subscriberClaimed')?.value;
     this.accountForm.patchValue({
       subscriberClaimed: this.selectedSubscribers
     });
+
+    if (this.documentBytes1 != null) {
+      this.fileBytes = this.convertUint8ArrayToBase64(this.documentBytes1);
+    }
+    else if (this.documentBytes2 != null) {
+      this.fileBytes2 = this.convertUint8ArrayToBase64(this.documentBytes2)
+    }
+
+    const JustifyingDocumentBytesControl = new FormControl(this.fileBytes);
+    this.accountForm.addControl("JustifyingDocumentBytes", JustifyingDocumentBytesControl);
+    const JustifyingDocumentBytesControl2 = new FormControl(this.fileBytes2);
+    this.accountForm.addControl("JustifyingDocumentBytes2", JustifyingDocumentBytesControl2);
 
     if (this.selectorRegistry === true) {
       if (!this.personalForm.value.acceptConditions) {
@@ -245,19 +258,6 @@ export class OnboardingRegisterClaimantComponent {
         const claimantIdControl = new FormControl(this.authenticationService.userInfo.Id);
         this.accountForm.addControl(EventConstants.CLAIMANT_ID, claimantIdControl);
       }
-
-      if (this.documentBytes1 != null) {
-        this.fileBytes = this.convertUint8ArrayToBase64(this.documentBytes1);
-      }
-      else if (this.documentBytes2 != null) {
-        this.fileBytes2 = this.convertUint8ArrayToBase64(this.documentBytes2)
-      }
-
-      const JustifyingDocumentBytesControl = new FormControl(this.fileBytes);
-      this.accountForm.addControl("JustifyingDocumentBytes", JustifyingDocumentBytesControl);
-      const JustifyingDocumentBytesControl2 = new FormControl(this.fileBytes2);
-      this.accountForm.addControl("JustifyingDocumentBytes2", JustifyingDocumentBytesControl2);
-
       this.osdEventService.addClaim(this.accountForm.value);
     }
 
