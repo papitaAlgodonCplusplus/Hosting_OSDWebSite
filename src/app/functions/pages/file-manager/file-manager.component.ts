@@ -58,6 +58,7 @@ export class FileManagerComponent implements OnDestroy {
       this.store.dispatch(UiActions.hideFooter());
       this.store.dispatch(UiActions.hideLeftSidebar());
       this.claim$.subscribe(claim => {
+        console.log(claim)
         this.fileManager = this.fillForm(claim);
         this.claimId = claim.Id;
         this.claim = claim;
@@ -67,7 +68,6 @@ export class FileManagerComponent implements OnDestroy {
         } else if (claim.Status == "Completed") {
           this.isAssignedClaim = false;
           this.assignValuation(claim)
-          console.log(claim)
           this.closeClaimfileForm = this.fillFormCloseClaimFile(claim);
         }
 
@@ -110,7 +110,6 @@ export class FileManagerComponent implements OnDestroy {
       subscriber: [claim.NameCompanySubscriberclaimed],
       amountClaimed: ['€ ' + claim.Amountclaimed],
       facts: [claim.Facts],
-      //freeProfessional: [''],
       valuationSubscriber: [claim.Valuationsubscriber || 0],
       valuationClaimant: [claim.Valuationclaimant || 0],
       valuationFreeProfessionals: [claim.Valuationfreeprofessionals || 0],

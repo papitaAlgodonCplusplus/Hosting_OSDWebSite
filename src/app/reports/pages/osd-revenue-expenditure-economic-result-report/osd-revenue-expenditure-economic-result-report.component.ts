@@ -77,8 +77,12 @@ export class OSDRevenueExpenditureEconomicResultReportComponent {
       });
     }, 0);
 
-    this.osdDataService.getSubscribersSuccess$.subscribe(item => {
-      this.allSubscribers = item;
+    this.osdDataService.getSubscribersSuccess$.subscribe(items => {
+      this.allSubscribers = items;
+      items.forEach(subscriber => {
+        var itemDropdown: DropDownItem = { value: subscriber.companyName, key: subscriber.id };
+        this.subscribers.push(itemDropdown)
+      })
     })
 
     this.osdDataService.TotalOsdIncomeExpenses$.subscribe(item => {
@@ -128,20 +132,20 @@ export class OSDRevenueExpenditureEconomicResultReportComponent {
       console.log(country)
       this.allSubscribers.forEach(subscriber => {
         if (subscriber.country == country) {
-          foundClients ++;
+          foundClients++;
           var itemDropdown: DropDownItem = { value: subscriber.companyName, key: subscriber.id };
           this.subscribers.push(itemDropdown)
         }
       })
     }
 
-    if(foundClients <= 0){
+    if (foundClients <= 0) {
       this.subscribers = [];
     }
   }
 
-  deleteFilter(){
+  deleteFilter() {
     this.osdService.GetTransparencyReportsIncomeExpenses("", "");
-    this.filterForm = this.createForm() 
+    this.filterForm = this.createForm()
   }
 }

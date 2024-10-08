@@ -18,11 +18,12 @@
       <div class="flex flex-col items-center space-y-3 p-3">
         <button type="submit" class=" w-full bg-darkslategray text-line rounded-xl py-2 px-3 text-lg font-medium">
           {{'iniciar_sesion' | translate}}
-        </button>  
-         <a class="text-sm underline cursor-pointer" routerLink="/onboarding">
-        {{'nuevo_en_OSD' | translate}}</a>
+        </button>
+        <a class="text-sm underline cursor-pointer" routerLink="/onboarding">
+          {{'nuevo_en_OSD' | translate}}</a>
+        <a class="text-xl underline cursor-pointer text-darkslategray" (click)="redirectLink()">
+          {{'aboutUs' | translate}}</a>
       </div>
-   
     </form>
   </div>
 
@@ -36,7 +37,7 @@
       </button>
       <button routerLink="/reports"
         class="flex flex-row items-center justify-center p-2 space-x-3 rounded-xl hover:bg-line hover:text-darkslategray transition duration-300 ease-in-out">
-        {{'transparencia' | translate}}  </button>
+        {{'transparencia' | translate}} </button>
     </div>
   </div>
 </div>

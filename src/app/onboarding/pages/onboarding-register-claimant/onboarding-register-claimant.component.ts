@@ -69,7 +69,6 @@ export class OnboardingRegisterClaimantComponent {
   }
 
   ngOnInit(): void {
-    this.store.dispatch(UiActions.toggleConfirmationButton())
     this.osdEventService.GetSubscribers();
     this.selectorRegistry = this.route.snapshot.params['selectorRegistry'] === 'true';
 
@@ -84,13 +83,13 @@ export class OnboardingRegisterClaimantComponent {
             .map(country => {
               if (country.name?.common && country.cca2) {
                 return {
-                  value: country.name.common, 
-                  key: country.name.common          
+                  value: country.name.common,
+                  key: country.name.common
                 } as DropDownItem;
               }
               return undefined;
             })
-            .filter(country => country !== undefined) 
+            .filter(country => country !== undefined)
             .sort((a, b) => (a && b) ? a.value.localeCompare(b.value) : 0);
         }
         else if (this.translate.currentLang === "es") {
@@ -99,8 +98,8 @@ export class OnboardingRegisterClaimantComponent {
             .map(country => {
               if (country.translations?.spa?.common && country.cca2) {
                 return {
-                  value: country.translations.spa.common, 
-                  key: country.name.common                    
+                  value: country.translations.spa.common,
+                  key: country.name.common
                 } as DropDownItem;
               }
               return undefined;
@@ -168,7 +167,7 @@ export class OnboardingRegisterClaimantComponent {
   private createAccountForm(): FormGroup {
     const currentDate = new Date().toISOString().split('T')[0];
     const form = this.formBuilder.group({
-      Date:[currentDate],
+      Date: [currentDate],
       claimtype: ['', [Validators.required]],
       subscriberClaimed: ['', [Validators.required]],
       serviceProvided: ['', [Validators.required]],
@@ -186,42 +185,37 @@ export class OnboardingRegisterClaimantComponent {
 
   displayFileName(event: Event): void {
     const input = event.target as HTMLInputElement;
-  
+
     if (input?.files && input.files.length > 0) {
-      this.documentFile = input.files[0];  
+      this.documentFile = input.files[0];
       this.documentName1 = this.documentFile.name;
 
       const reader = new FileReader();
       reader.onload = () => {
         const arrayBuffer = reader.result as ArrayBuffer;
-        this.documentBytes1 = new Uint8Array(arrayBuffer); 
+        this.documentBytes1 = new Uint8Array(arrayBuffer);
       };
-      reader.readAsArrayBuffer(this.documentFile);  
+      reader.readAsArrayBuffer(this.documentFile);
     }
   }
 
   displayFileName2(event: Event): void {
     const input = event.target as HTMLInputElement;
-  
+
     if (input?.files && input.files.length > 0) {
-      this.documentFile2 = input.files[0];  
-      this.documentName2 = this.documentFile2.name;  
+      this.documentFile2 = input.files[0];
+      this.documentName2 = this.documentFile2.name;
 
       const reader = new FileReader();
       reader.onload = () => {
         const arrayBuffer = reader.result as ArrayBuffer;
-        this.documentBytes2 = new Uint8Array(arrayBuffer); 
+        this.documentBytes2 = new Uint8Array(arrayBuffer);
       };
-      reader.readAsArrayBuffer(this.documentFile2);  
+      reader.readAsArrayBuffer(this.documentFile2);
     }
   }
 
   onSubmit(): void {
-    if (this.translate.currentLang == "en") {
-      this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "There are missing fields to fill out" }));
-    } else {
-      this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Faltan campos por llenar" }));
-    }
 
     if (this.accountForm.invalid && this.personalForm.invalid && this.selectorRegistry === true) {
       this.accountForm.markAllAsTouched();
@@ -233,7 +227,7 @@ export class OnboardingRegisterClaimantComponent {
       this.store.dispatch(ModalActions.openAlert());
       return;
     }
-    
+
     this.store.dispatch(UiActions.toggleConfirmationButton())
     const subscriberName = this.accountForm.get('subscriberClaimed')?.value;
     this.accountForm.patchValue({
@@ -252,17 +246,17 @@ export class OnboardingRegisterClaimantComponent {
         this.accountForm.addControl(EventConstants.CLAIMANT_ID, claimantIdControl);
       }
 
-      if(this.documentBytes1 != null){
-        this.fileBytes =  this.convertUint8ArrayToBase64(this.documentBytes1);
+      if (this.documentBytes1 != null) {
+        this.fileBytes = this.convertUint8ArrayToBase64(this.documentBytes1);
       }
-      else if(this.documentBytes2 != null){
+      else if (this.documentBytes2 != null) {
         this.fileBytes2 = this.convertUint8ArrayToBase64(this.documentBytes2)
       }
 
-      // this.accountForm.patchValue({
-      //   JustifyingDocumentBytes: this.fileBytes || null,
-      //   JustifyingDocumentBytes2: this.fileBytes2 || null
-      // });
+      const JustifyingDocumentBytesControl = new FormControl(this.fileBytes);
+      this.accountForm.addControl("JustifyingDocumentBytes", JustifyingDocumentBytesControl);
+      const JustifyingDocumentBytesControl2 = new FormControl(this.fileBytes2);
+      this.accountForm.addControl("JustifyingDocumentBytes2", JustifyingDocumentBytesControl2);
 
       this.osdEventService.addClaim(this.accountForm.value);
     }

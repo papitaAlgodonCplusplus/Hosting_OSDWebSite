@@ -26,10 +26,10 @@ export class ClaimsProcessorPerformanceComponent implements OnDestroy {
   claimId!: string;
   claim$: Observable<Claim> = this.store.select(ClaimSelectors.claim);
   isErrorInForm: boolean = false;
-  performanceObservable$ : Observable<ClaimsProcessorPerformance> = this.store.select(PerformanceSelectors.claimsProcessorPerformance)
-  performance! : ClaimsProcessorPerformance;
-  isUnrevised! : boolean;
-  isView! : boolean;
+  performanceObservable$: Observable<ClaimsProcessorPerformance> = this.store.select(PerformanceSelectors.claimsProcessorPerformance)
+  performance!: ClaimsProcessorPerformance;
+  isUnrevised!: boolean;
+  isView!: boolean;
   isTrainer: boolean = false
   documentFile: File | null = null;
   documentBytes: Uint8Array | null = null;
@@ -56,36 +56,36 @@ export class ClaimsProcessorPerformanceComponent implements OnDestroy {
       this.claimId = claim.Id;
     });
 
-    this.performanceObservable$.subscribe(performance =>{
+    this.performanceObservable$.subscribe(performance => {
       this.performance = performance
-      if(this.performance){
+      if (this.performance) {
         this.performanceForm = this.fillForm(performance)
-        if(this.performance.Status == "Running"){
+        if (this.performance.Status == "Running") {
           this.isUnrevised = false;
-        }else{
+        } else {
           this.isUnrevised = true;
         }
       }
     })
 
-    if(Object.keys(this.performance).length > 0){
+    if (Object.keys(this.performance).length > 0) {
       this.isView = true;
     }
-    else{
+    else {
       this.isView = false;
     }
 
     this.OSDEventService.GetFreeProfessionalsDataEvent();
-        this.OSDEventService.getFreeProfessionalsList()
-          .then(freeProfessionals => {
-            if (Array.isArray(freeProfessionals)) {
-              var freeProfessionalFind: FreeProfessional = freeProfessionals.find(fp => fp.Userid == this.AuthenticationService.userInfo?.Id)
-              if (freeProfessionalFind.FreeprofessionaltypeName == "Trainer" || freeProfessionalFind.Isadmin) {
-                this.isTrainer = true
-                this.isView = false;
-              }
-            }
-          })
+    this.OSDEventService.getFreeProfessionalsList()
+      .then(freeProfessionals => {
+        if (Array.isArray(freeProfessionals)) {
+          var freeProfessionalFind: FreeProfessional = freeProfessionals.find(fp => fp.Userid == this.AuthenticationService.userInfo?.Id)
+          if (freeProfessionalFind.FreeprofessionaltypeName == "Trainer" || freeProfessionalFind.Isadmin) {
+            this.isTrainer = true
+            this.isView = false;
+          }
+        }
+      })
   }
 
   ngOnDestroy(): void {
@@ -115,7 +115,7 @@ export class ClaimsProcessorPerformanceComponent implements OnDestroy {
     return form;
   }
 
-  private fillForm(performance : ClaimsProcessorPerformance): FormGroup {
+  private fillForm(performance: ClaimsProcessorPerformance): FormGroup {
     let originalDate = performance.Date;
     let formatedDate = this.datePipe.transform(originalDate, 'yyyy-MM-dd');
 
@@ -143,18 +143,18 @@ export class ClaimsProcessorPerformanceComponent implements OnDestroy {
       const documentBlob = new Blob([performance.JustifyingDocumentBytes], { type: 'application/pdf' });
       this.documentUrl = URL.createObjectURL(documentBlob);
       this.documentName = performance.JustifyingDocument;
-  }
+    }
 
     return form;
   }
 
   displayFileName(event: Event): void {
     const input = event.target as HTMLInputElement;
-  
+
     if (input?.files && input.files.length > 0) {
       this.documentFile = input.files[0];  
-      this.documentName = this.documentFile.name;  
-  
+      this.documentName = this.documentFile.name; 
+
       const reader = new FileReader();
       reader.onload = () => {
         const arrayBuffer = reader.result as ArrayBuffer;
@@ -257,16 +257,16 @@ export class ClaimsProcessorPerformanceComponent implements OnDestroy {
       this.isErrorInForm = true;
       return;
     }
-  
+
     this.isErrorInForm = false;
     if (this.claimId) {
-      if(this.documentBytes != null){
+      if (this.documentBytes != null) {
         const documentBase64 = this.convertUint8ArrayToBase64(this.documentBytes);
         this.OSDEventService.createClaimsProcessorPerformance(this.performanceForm.value, this.claimId, documentBase64);
       }
     }
   }
-  
+
   convertUint8ArrayToBase64(uint8Array: Uint8Array): string {
     let binary = '';
     const len = uint8Array.byteLength;
@@ -277,22 +277,22 @@ export class ClaimsProcessorPerformanceComponent implements OnDestroy {
   }
 
   convertBase64ToBlob(base64: string, contentType: string = 'application/pdf'): Blob {
-    const byteCharacters = atob(base64); 
+    const byteCharacters = atob(base64);
     const byteNumbers = new Array(byteCharacters.length);
     for (let i = 0; i < byteCharacters.length; i++) {
       byteNumbers[i] = byteCharacters.charCodeAt(i);
     }
     const byteArray = new Uint8Array(byteNumbers);
-    return new Blob([byteArray], { type: contentType }); 
+    return new Blob([byteArray], { type: contentType });
   }
-  
+
   downloadPdf(base64String: string) {
-  
+
     try {
       const blob = this.convertBase64ToBlob(base64String, 'application/pdf');
 
       const url = window.URL.createObjectURL(blob);
-  
+
       const a = document.createElement('a');
       a.href = url;
       a.download = 'document.pdf';
@@ -310,12 +310,15 @@ export class ClaimsProcessorPerformanceComponent implements OnDestroy {
       this.isErrorInForm = true;
       return;
     }
-    
+
     this.isErrorInForm = false;
     if (this.performance) {
-      if(this.documentBytes != null){
+      if (this.documentBytes != null) {
         const documentBase64 = this.convertUint8ArrayToBase64(this.documentBytes);
         this.OSDEventService.modifiedClaimsProcessorPerformance(this.performanceForm.value, this.performance.Id, documentBase64);
+      }
+      else {
+        this.OSDEventService.modifiedClaimsProcessorPerformance(this.performanceForm.value, this.performance.Id, "");
       }
     }
   }

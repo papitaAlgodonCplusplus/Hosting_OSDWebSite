@@ -6,7 +6,6 @@ import { ModalSelectors, UiSelectors } from './store/selectors';
 import { SecurityDataService } from './services/security-data.service';
 import { TranslateService } from '@ngx-translate/core';
 import { RestAPIService } from './services/rest-api.service';
-import { EventFactoryService } from './services/event-factory.service';
 import { AuthenticationService } from './services/authentication.service';
 import { UiActions } from './store/actions';
 
@@ -24,7 +23,8 @@ export class AppComponent implements OnInit, OnDestroy {
   hideFooter$: Observable<boolean> = this.store.select(UiSelectors.hideFooter);
   alertOpen$: Observable<boolean> = this.store.select(ModalSelectors.alertOpen);
   hideLeftSidebar$: Observable<boolean> = this.store.select(UiSelectors.hideLeftSidebar);
-
+  buttonStateObservable$: Observable<boolean> = this.store.select(UiSelectors.toggleConfirmationButton);
+  confirmationButtonState!: boolean;
   private subscriptions: Subscription = new Subscription();
 
   constructor(
@@ -33,7 +33,6 @@ export class AppComponent implements OnInit, OnDestroy {
     private restApiService: RestAPIService,
     private securityDataService: SecurityDataService,
     private translate: TranslateService,
-    private eventFactoryService: EventFactoryService,
     private authenticationService: AuthenticationService
   ) {
     this.showHeader = false;
@@ -48,6 +47,14 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.buttonStateObservable$.subscribe(buttonState => {
+      this.confirmationButtonState = buttonState;
+    });
+
+    if (this.confirmationButtonState == true) {
+      this.store.dispatch(UiActions.toggleConfirmationButton())
+    }
+
     this.initializeApp();
     this.subscriptions.add(
       this.securityDataService.userAuthenticationSuccess$.subscribe((userAuthenticationSuccess: string) => {

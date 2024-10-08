@@ -6,13 +6,13 @@
     <div class="flex flex-col w-1/2 h-1/2">
       <span class="text-center text-darkslategray font-medium border-b">Filtrar Clientes:</span>
       <div class="flex flex-wrap">
-        <shared-simple-dropdown class="w-full md:w-1/2" fieldName="client" label="{{'SubscriberCustomer' | translate}}"
-          [formGroup]="filterForm" [dropdownItems]="subscribers" [selectedItem]="selectedSubscribers">
-        </shared-simple-dropdown>
         <shared-simple-dropdown (change)="filterClients()" class="w-full md:w-1/2" fieldName="country"
           label="{{'pais' | translate}}" [formGroup]="filterForm" [dropdownItems]="countries"
           [selectedItem]="selectedCountries">
         </shared-simple-dropdown>
+        <shared-simple-dropdown class="w-full md:w-1/2" fieldName="client" label="{{'SubscriberCustomer' | translate}}"
+        [formGroup]="filterForm" [dropdownItems]="subscribers" [selectedItem]="selectedSubscribers">
+      </shared-simple-dropdown>
       </div>
       <div class="flex w-full justify-end space-x-3 ">
         <button (click)="deleteFilter()" class="rounded-xl font-medium text-darkslategray bg-line p-2">

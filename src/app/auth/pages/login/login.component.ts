@@ -13,6 +13,7 @@ import { OSDDataService } from 'src/app/services/osd-data.service';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { MenuOption } from 'src/app/models/menuOptions';
 import { AuthenticationService } from 'src/app/services/authentication.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'auth-login',
@@ -33,7 +34,9 @@ export class LoginComponent implements OnDestroy {
     public eventFactoryService: EventFactoryService,
     private osdEventService: OSDService,
     private router: Router,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private translate: TranslateService,
+
   ) {
     this.loginForm = this.createLoginForm();
   }
@@ -65,4 +68,16 @@ export class LoginComponent implements OnDestroy {
       password: ['']
     });
   }
+
+  redirectLink() {
+    if (this.translate.currentLang == "en") {
+      window.open("https://www.canva.com/design/DAGS4Ehqdhc/JCnX9GAwuWRyk0s3R_0TIA/edit?utm_content=DAGS4Ehqdhc&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton", "_blank");
+    } else {
+      window.open("https://www.canva.com/design/DAGSj7FuRjM/N8O1JuATCUXV8pyD7IM6iw/view?utm_content=DAGSj7FuRjM&utm_campaign=share_your_design&utm_medium=link&utm_source=shareyourdesignpanel", "_blank");
+    }
+    
+    
+    
+  }
+
 }

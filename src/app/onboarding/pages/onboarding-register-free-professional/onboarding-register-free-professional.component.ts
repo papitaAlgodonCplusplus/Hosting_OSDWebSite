@@ -223,7 +223,6 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
 
 
   onSubmit(): void {
-    console.log(this.accountForm.value)
     if (this.accountForm.invalid || this.personalForm.invalid) {
       this.accountForm.markAllAsTouched();
       this.personalForm.markAllAsTouched();

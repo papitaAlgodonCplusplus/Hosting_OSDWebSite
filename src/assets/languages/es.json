@@ -149,7 +149,7 @@
     "claimantCompensation": "Indemnización obtenida por el Reclamante",
     "institutionEntitySavings": "Ahorro Inst/Entidad Mejora",
     "entityRating": "Valoración Reclamante",
-    "defendantRating": "Valoración Reclamado",
+    "defendantRating": "Valoración Cliente",
     "OSDRating": "Valoración OSD",
     "osdEconomicResult": "OSD: Ingresos-Gastos/ Resultado Económico",
     "OSDIncome": "OSD INGRESOS",
@@ -334,5 +334,6 @@
     "Cambiar contraseña": "Cambiar contraseña",
     "Appeal":"Apelación",
     "Monitoring Review":"Monitorización/Revisión Expediente",
-    "Assigned free professional" : "Profesional libre asignado"
+    "Assigned free professional" : "Profesional libre asignado",
+    "aboutUs": "Sobre nosotros"
 }
