@@ -152,13 +152,7 @@ export class EventConstants {
   public static APPROVED_TRAINING_CENTER: string = 'ApprovedTrainingCenter';
   public static UNREGISTERED: string = 'Unregistered';
 
-  public static INSTITUTIONS_NAMES: string = "InstitutionsNames";
-  public static CLAIMS_AMOUNT: string = "ClaimsAmount";
-  public static COMPENASTION_OBTAINED_BY_CLAIMANT: string = "CompensationObtainedByClaimant";
-  public static SAVINGS_IMPROVEMENT: string = "SavingsImprovement";
-  public static CLAIMANTS_RATING: string = "ClaimantsRating";
-  public static CLAIMED_RATING: string = "ClaimedRating";
-  public static OSD_RATING: string = "OsdRating";
+  public static TRANSPARENCY_REPORTS_SUBSCRIBER_CLIENT_LIST: string = "TransparencyReportsSubscriberClientList";
 
   public static TRANSPARENCY_INCOME_EXPENSES: string = "TransparencyIncomeExpenses";
   public static COMPENSATION_OF_CLAIMANT: string = "CompensationOfClaimant";

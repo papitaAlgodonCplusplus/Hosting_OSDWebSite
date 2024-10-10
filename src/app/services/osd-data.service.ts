@@ -13,6 +13,7 @@ import { ClaimantAndClaimsCustomerPerformance } from '../functions/models/Claima
 import { ClaimsProcessorPerformance } from '../functions/models/ClaimsProcessorPerformance';
 import { ClaimsTrainerPerformance } from '../functions/models/ClaimsTrainerPerformance';
 import { TransparencyIncomeExpenses } from '../reports/models/TransparencyIncomeExpenses.interface';
+import { TransparencyReportsSubscriberClientList } from '../reports/models/TransparencyReportsSubscriberClient.model';
 
 @Injectable({
   providedIn: 'root'
@@ -30,13 +31,7 @@ export class OSDDataService {
   private freeProfessionalTypeId = new Subject<string>();
   private freeProfessionalTR = new Subject<any[]>();
   private usersFreeProfessionalTR = new Subject<any[]>();
-  private InstitutionsNames = new Subject<any[]>();
-  private ClaimsAmount = new Subject<any[]>();
-  private CompensationObtainedByClaimant = new Subject<any[]>();
-  private SavingsImprovement = new Subject<any[]>();
-  private ClaimantsRating = new Subject<any[]>();
-  private ClaimedRating = new Subject<any[]>();
-  private OsdRating = new Subject<any[]>();
+  private TransparencyReportsSubscriberClientList = new Subject<TransparencyReportsSubscriberClientList[]>();
 
   private TransparencyIncomeExpenses = new Subject<TransparencyIncomeExpenses>();
 
@@ -89,13 +84,7 @@ export class OSDDataService {
   freeProfessionalTR$ = this.freeProfessionalTR.asObservable();
   usersFreeProfessionalTR$ = this.usersFreeProfessionalTR.asObservable();
 
-  InstitutionsNames$ = this.InstitutionsNames.asObservable();
-  ClaimsAmount$ = this.ClaimsAmount.asObservable();
-  CompensationObtainedByClaimant$ = this.CompensationObtainedByClaimant.asObservable();
-  SavingsImprovement$ = this.SavingsImprovement.asObservable();
-  ClaimantsRating$ = this.ClaimantsRating.asObservable();
-  ClaimedRating$ = this.ClaimedRating.asObservable();
-  OsdRating$ = this.OsdRating.asObservable();
+  TransparencyReportsSubscriberClientList$ = this.TransparencyReportsSubscriberClientList.asObservable();
 
   TotalOsdIncomeExpenses$ = this.TransparencyIncomeExpenses.asObservable();
 
@@ -170,28 +159,10 @@ export class OSDDataService {
     this.usersFreeProfessionalTR.next(data);
   }
 
-  emitInstitutionsNames(data: any[]) {
-    this.InstitutionsNames.next(data);
+  emitTransparencyReportsSubscriberClientList(data: any[]) {
+    this.TransparencyReportsSubscriberClientList.next(data);
   }
-  emitClaimsAmount(data: any[]) {
-    this.ClaimsAmount.next(data);
-  }
-  emitCompensationObtainedByClaimant(data: any[]) {
-    this.CompensationObtainedByClaimant.next(data);
-  }
-  emitSavingsImprovement(data: any[]) {
-    this.SavingsImprovement.next(data);
-  }
-  emitClaimantsRating(data: any[]) {
-    this.ClaimantsRating.next(data);
-  }
-  emitClaimedRating(data: any[]) {
-    this.ClaimedRating.next(data);
-  }
-  emitOsdRating(data: any[]) {
-    this.OsdRating.next(data);
-  }
-  
+
   emitTotalOsdIncomeExpenses(data: TransparencyIncomeExpenses) {
     this.TransparencyIncomeExpenses.next(data);
   }

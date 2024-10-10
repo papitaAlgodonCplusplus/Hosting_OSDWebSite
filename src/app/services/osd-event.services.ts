@@ -835,23 +835,10 @@ export class OSDService {
 
   public GetTransparencyReportsSubscriberClientsResponse(webBaseEvent: WebBaseEvent) {
     try {
-      var institutionsNames = webBaseEvent.getBodyProperty(EventConstants.INSTITUTIONS_NAMES);
-      var claimsAmount = webBaseEvent.getBodyProperty(EventConstants.CLAIMS_AMOUNT);
-      var compensationObtainedByClaimant = webBaseEvent.getBodyProperty(EventConstants.COMPENASTION_OBTAINED_BY_CLAIMANT);
-      var savingsImprovement = webBaseEvent.getBodyProperty(EventConstants.SAVINGS_IMPROVEMENT);
-      var claimantsRating = webBaseEvent.getBodyProperty(EventConstants.CLAIMANTS_RATING);
-      var claimedRating = webBaseEvent.getBodyProperty(EventConstants.CLAIMED_RATING);
-      var osdRating = webBaseEvent.getBodyProperty(EventConstants.OSD_RATING);
-
-
-      if (institutionsNames != null && claimsAmount != null && compensationObtainedByClaimant != null && savingsImprovement != null && claimantsRating != null && claimedRating != null && osdRating != null) {
-        this.osdDataService.emitInstitutionsNames(institutionsNames);
-        this.osdDataService.emitClaimsAmount(claimsAmount);
-        this.osdDataService.emitCompensationObtainedByClaimant(compensationObtainedByClaimant);
-        this.osdDataService.emitSavingsImprovement(savingsImprovement);
-        this.osdDataService.emitClaimantsRating(claimantsRating);
-        this.osdDataService.emitClaimedRating(claimedRating);
-        this.osdDataService.emitOsdRating(osdRating);
+      var TransparencyReportsSubscriberClientList = webBaseEvent.getBodyProperty(EventConstants.TRANSPARENCY_REPORTS_SUBSCRIBER_CLIENT_LIST);
+      
+      if (TransparencyReportsSubscriberClientList.length > 0 ) {
+        this.osdDataService.emitTransparencyReportsSubscriberClientList(TransparencyReportsSubscriberClientList);
       }
 
     }

@@ -2,6 +2,20 @@
     <h1>{{'claimantRating' | translate}}</h1>
 </div>
 <div class="container mt-1 mx-auto">
+    <form [formGroup]="filterForm" autocomplete="off" class="w-full flex justify-end items-end">
+        <div class="flex flex-col w-1/2 h-1/2">
+          <span class="text-center text-darkslategray font-medium border-b">Filtrar Clientes:</span>
+          <div class="flex flex-wrap">
+            <shared-simple-dropdown (change)="filterClients()" class="w-full md:w-1/2" fieldName="country"
+              label="{{'pais' | translate}}" [formGroup]="filterForm" [dropdownItems]="countries"
+              [selectedItem]="selectedCountries">
+            </shared-simple-dropdown>
+            <shared-simple-dropdown (change)="selectClientReports()" (click)="selectClientReports()" class="w-full md:w-1/2" fieldName="client" label="{{'SubscriberCustomer' | translate}}"
+            [formGroup]="filterForm" [dropdownItems]="subscribers" [selectedItem]="selectedSubscribers">
+          </shared-simple-dropdown>
+          </div>
+        </div>
+      </form>
     <div class="overflow-x-auto">
         <table class="bg-white shadow-xl max-w-auto">
             <thead>
@@ -29,19 +43,19 @@
                     </th>
                 </tr>
             </thead>
-            <tbody class="text-center" *ngIf="institutionsNames">
-                <tr *ngFor="let index of institutionsNames; let i = index">
-                    <td class="py-2 px-4 border-y">{{ institutionsNames[i] || 0 }}</td>
-                    <td class="py-2 px-4 border-y">€{{ claimsAmount[i] != null ? claimsAmount[i] : 0 }}</td>
-                    <td class="py-2 px-4 border-y">€{{ compensationObtainedByClaimant[i] != null ? compensationObtainedByClaimant[i] : 0 }}</td>
-                    <td class="py-2 px-4 border-y">€{{ savingsImprovement[i] != null ? savingsImprovement[i] : 0 }}</td>
-                    <td class="py-2 px-4 border-y whitespace-nowrap" [innerHTML]="claimantsRating[i] != null ? generateStarRating(claimantsRating[i]) : generateStarRating(0)"></td>
-                    <td class="py-2 px-4 border-y whitespace-nowrap" [innerHTML]="claimedRating[i] != null ? generateStarRating(claimedRating[i]) : generateStarRating(0)"></td>
-                    <td class="py-2 px-4 border-y whitespace-nowrap" [innerHTML]="osdRating[i] != null ? generateStarRating(osdRating[i]) : generateStarRating(0)"></td>
+            <tbody class="text-center" *ngIf="reports">
+                <tr *ngFor="let items of reports">
+                    <td class="py-2 px-4 border-y">{{ items.InstitutionsNames }}</td>
+                    <td class="py-2 px-4 border-y">€{{ items.ClaimsAmount != null ? items.ClaimsAmount : 0 }}</td>
+                    <td class="py-2 px-4 border-y">€{{ items.CompensationObtainedByClaimant != null ? items.CompensationObtainedByClaimant : 0 }}</td>
+                    <td class="py-2 px-4 border-y">€{{ items.SavingsImprovement != null ? items.SavingsImprovement : 0 }}</td>
+                    <td class="py-2 px-4 border-y whitespace-nowrap" [innerHTML]="items.ClaimantsRating != null ? generateStarRating(items.ClaimantsRating) : generateStarRating(0)"></td>
+                    <td class="py-2 px-4 border-y whitespace-nowrap" [innerHTML]="items.ClaimedRating != null ? generateStarRating(items.ClaimedRating) : generateStarRating(0)"></td>
+                    <td class="py-2 px-4 border-y whitespace-nowrap" [innerHTML]="items.OsdRating != null ? generateStarRating(items.OsdRating) : generateStarRating(0)"></td>
                 </tr>                
             </tbody>
             
-            <tbody *ngIf="institutionsNames.length === 0" class="text-center">
+            <tbody *ngIf="reports.length === 0" class="text-center">
                 <tr>
                     <td class="py-2 px-4 border-y"><i class="fa-solid fa-minus"></i></td>
                     <td class="py-2 px-4 border-y"><i class="fa-solid fa-minus"></i></td>
