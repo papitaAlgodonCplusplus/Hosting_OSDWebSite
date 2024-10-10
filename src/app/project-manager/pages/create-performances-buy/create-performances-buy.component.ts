@@ -48,7 +48,6 @@ export class CreatePerformancesBuyComponent implements OnDestroy {
   }
 
   ngOnInit() {
-    this.store.dispatch(UiActions.toggleConfirmationButton())
     setTimeout(() => {
       this.store.dispatch(UiActions.hideLeftSidebar());
       this.store.dispatch(UiActions.hideFooter());

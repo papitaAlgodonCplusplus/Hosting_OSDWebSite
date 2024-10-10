@@ -59,7 +59,6 @@ export class CreatePerformancesComponent {
   }
 
   ngOnInit() {
-    this.store.dispatch(UiActions.toggleConfirmationButton())
     setTimeout(() => {
       this.store.dispatch(UiActions.hideFooter());
       this.store.dispatch(UiActions.hideLeftSidebar());
