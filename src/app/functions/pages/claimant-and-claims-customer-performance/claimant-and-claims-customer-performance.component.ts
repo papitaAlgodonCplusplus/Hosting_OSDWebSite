@@ -281,7 +281,13 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
     
     this.isErrorInForm = false;
     if (this.performance) {
-      this.OSDEventService.modifiedClaimantAndClaimsCustomerPerformance(this.performanceForm.value, this.performance.Id);
+
+      if(this.documentBytes != null){
+        const documentBase64 = this.convertUint8ArrayToBase64(this.documentBytes);
+        this.OSDEventService.modifiedClaimantAndClaimsCustomerPerformance(this.performanceForm.value, this.claimId, documentBase64);
+      }else{
+        this.OSDEventService.modifiedClaimantAndClaimsCustomerPerformance(this.performanceForm.value, this.claimId, "");
+      }
     }
   }
 }

@@ -346,7 +346,7 @@ export class EventFactoryService {
     return event;
   }
 
-  public modifiedClaimantAndClaimsCustomerPerformance(performance: ClaimantAndClaimsCustomerPerformance, performanceId: string): WebBaseEvent {
+  public modifiedClaimantAndClaimsCustomerPerformance(performance: ClaimantAndClaimsCustomerPerformance, performanceId: string, documentBase64: string): WebBaseEvent {
     let event: WebBaseEvent;
     event = new WebBaseEvent();
     event.SessionKey = this.authenticationService.sessionKey;
@@ -360,6 +360,7 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.DATE_PERFORMANCE, performance.Date);
     event.setBodyProperty(EventConstants.TYPE_PERFORMANCE, performance.Type);
     event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, performance.JustifyingDocument);
+    event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT_BYTES, documentBase64);
     event.setBodyProperty(EventConstants.TRAINER_DATE, performance.TrainerDate);
     event.setBodyProperty(EventConstants.TRAINER_WORK_HOURS, performance.TrainerWorkHours);
     event.setBodyProperty(EventConstants.TRAINER_TRAVEL_HOURS, performance.TrainerTravelHours);
