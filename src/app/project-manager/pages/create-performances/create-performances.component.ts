@@ -174,10 +174,15 @@ export class CreatePerformancesComponent {
     this.store.dispatch(UiActions.toggleConfirmationButton())
     
     if(this.documentBytes != null){
-      const documentBase64 = this.convertUint8ArrayToBase64(this.documentBytes);
+      
       
       if (this.projectManagerSelected) {
-        this.OSDEventService.addPerformanceFreeProfessional(this.performanceForm.value, this.projectManagerSelected, documentBase64);
+        if(this.documentBytes != null){
+          const documentBase64 = this.convertUint8ArrayToBase64(this.documentBytes);
+          this.OSDEventService.addPerformanceFreeProfessional(this.performanceForm.value, this.projectManagerSelected, documentBase64);
+        }else{
+          this.OSDEventService.addPerformanceFreeProfessional(this.performanceForm.value, this.projectManagerSelected, "");
+        }
       }
     }
     

@@ -6,6 +6,7 @@ export interface ClaimantAndClaimsCustomerPerformance{
     Type: string ;
     Summary: string;
     JustifyingDocument: string;
+    JustifyingDocumentBytes: string;
     TrainerDate: string;
     TrainerWorkHours: string;
     TrainerTravelHours: string;

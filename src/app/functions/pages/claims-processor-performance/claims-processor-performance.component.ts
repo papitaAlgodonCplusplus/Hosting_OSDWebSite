@@ -263,6 +263,8 @@ export class ClaimsProcessorPerformanceComponent implements OnDestroy {
       if (this.documentBytes != null) {
         const documentBase64 = this.convertUint8ArrayToBase64(this.documentBytes);
         this.OSDEventService.createClaimsProcessorPerformance(this.performanceForm.value, this.claimId, documentBase64);
+      }else{
+        this.OSDEventService.createClaimsProcessorPerformance(this.performanceForm.value, this.claimId, "");
       }
     }
   }

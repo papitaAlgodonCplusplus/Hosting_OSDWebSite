@@ -162,7 +162,6 @@ export class FileManagerComponent implements OnDestroy {
     }
   }
 
-
   async openPerformanceClaimsModal() {
     this.showModalPerformances = true;
 

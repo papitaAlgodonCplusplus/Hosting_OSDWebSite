@@ -257,6 +257,8 @@ export class ClaimsTrainerPerformanceComponent implements OnDestroy {
       if(this.documentBytes != null){
         const documentBase64 = this.convertUint8ArrayToBase64(this.documentBytes);
         this.OSDEventService.createPerformanceClaimTrainer(this.performanceForm.value, this.claimId, documentBase64);
+      }else{
+        this.OSDEventService.createPerformanceClaimTrainer(this.performanceForm.value, this.claimId, "");
       }
     }
   }
