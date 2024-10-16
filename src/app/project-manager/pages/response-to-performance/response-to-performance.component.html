@@ -162,7 +162,7 @@
                 [ButtonName]="'CreatePerformance'"></shared-confirmation-button>
         </div>
 
-        <button *ngIf="isAdmin" (click)="modifySubPerformance()" class="p-2 bg-darkslategray text-line rounded-xl">
+        <button *ngIf="userInfo" (click)="modifySubPerformance()" class="p-2 bg-darkslategray text-line rounded-xl">
             {{'Modified'|translate}}
         </button>
 

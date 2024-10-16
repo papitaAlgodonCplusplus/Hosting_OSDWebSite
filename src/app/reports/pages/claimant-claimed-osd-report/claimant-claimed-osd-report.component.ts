@@ -1,6 +1,5 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { claimantClaimedOsdReportItems } from '../../interface/claimantClaimedOsdReportItems.interface copy';
 import { Store } from '@ngrx/store';
 import { UiActions } from 'src/app/store/actions';
 import { OSDService } from 'src/app/services/osd-event.services';
@@ -10,21 +9,22 @@ import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
 import { CountryService } from 'src/app/services/country.service';
 import { TransparencyReportsSubscriberClientList } from '../../models/TransparencyReportsSubscriberClient.model';
 import { Subscriber } from 'src/app/functions/models/Subscriber';
-
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-claimant-claimed-osd-report',
   templateUrl: './claimant-claimed-osd-report.component.html',
   styleUrls: ['./claimant-claimed-osd-report.component.css']
 })
-export class ClaimantClaimedOsdReportComponent implements OnDestroy {
+export class ClaimantClaimedOsdReportComponent implements OnInit, OnDestroy {
   filterForm: FormGroup;
   countries: DropDownItem[] = [];
-  selectedCountries: string | undefined;
+  selectedCountries?: string;
   subscribers: DropDownItem[] = [];
-  selectedSubscribers: string | undefined;
-  reports!: TransparencyReportsSubscriberClientList[]
-  allReports!: TransparencyReportsSubscriberClientList[];
+  selectedSubscribers?: string;
+  reports: TransparencyReportsSubscriberClientList[] = [];
+  allReports: TransparencyReportsSubscriberClientList[] = [];
   allSubscribers: Subscriber[] = [];
 
   constructor(
@@ -33,124 +33,118 @@ export class ClaimantClaimedOsdReportComponent implements OnDestroy {
     private osdService: OSDService,
     private formBuilder: FormBuilder,
     private osdDataService: OSDDataService,
-    private countryService: CountryService,
-  ) { this.filterForm = this.createForm() }
+    private countryService: CountryService
+  ) {
+    this.filterForm = this.createForm();
+  }
 
   ngOnInit(): void {
-    setTimeout(() => {
-      this.store.dispatch(UiActions.hideAll());
-      this.osdService.GetTransparencyReportsSubscriberClients();
-      this.osdService.GetSubscribers();
-
-      this.countryService.getCountries().subscribe((data: any[]) => {
-        let countriesList;
-        if (this.translate.currentLang === "en") {
-          countriesList = data
-            .map(country => {
-              if (country.name?.common && country.cca2) {
-                return {
-                  value: country.name.common,
-                  key: country.name.common
-                } as DropDownItem;
-              }
-              return undefined;
-            })
-            .filter(country => country !== undefined)
-            .sort((a, b) => (a && b) ? a.value.localeCompare(b.value) : 0);
-        }
-        else if (this.translate.currentLang === "es") {
-          countriesList = data
-            .filter(country => country.translations?.spa)
-            .map(country => {
-              if (country.translations?.spa?.common && country.cca2) {
-                return {
-                  value: country.translations.spa.common,
-                  key: country.name.common
-                } as DropDownItem;
-              }
-              return undefined;
-            })
-            .filter(country => country !== undefined)
-            .sort((a, b) => (a && b) ? a.value.localeCompare(b.value) : 0);
-        }
-        this.countries = countriesList as DropDownItem[];
-        this.countries.sort((a, b) => a.value.localeCompare(b.value));
-      });
-    }, 0);
-
-    this.osdDataService.TransparencyReportsSubscriberClientList$.subscribe(item => {
-      this.reports = item;
-      this.allReports = item;
-    })
-
-    this.osdDataService.getSubscribersSuccess$.subscribe(items => {
-      this.allSubscribers = items;
-      items.forEach(subscriber => {
-        var itemDropdown: DropDownItem = { value: subscriber.companyName, key: subscriber.companyName };
-        this.subscribers.push(itemDropdown)
-      })
-    })
+    this.initializeData();
   }
 
   ngOnDestroy(): void {
-    setTimeout(() => {
-      this.store.dispatch(UiActions.showAll());
-    }, 0);
+    setTimeout(() => this.store.dispatch(UiActions.showAll()), 0);
   }
 
-  generateStarRating(rating: number): string {
-    let starsHTML = '';
-    const fullStar = '<i class="fa-solid fa-star text-darkslategray"></i>';
-    const regularStar = '<i class="fa-regular fa-star text-darkslategray"></i>';
+  private initializeData(): void {
+    this.store.dispatch(UiActions.hideAll());
+    this.osdService.GetTransparencyReportsSubscriberClients();
+    this.osdService.GetSubscribers();
 
-    for (let i = 0; i < rating; i++) {
-      starsHTML += fullStar;
-    }
+    this.loadCountries();
+    this.osdDataService.TransparencyReportsSubscriberClientList$
+      .subscribe(reports => {
+        this.reports = reports;
+        this.allReports = reports;
+      });
 
-    for (let i = rating; i < 5; i++) {
-      starsHTML += regularStar;
-    }
+    this.osdDataService.getSubscribersSuccess$
+      .subscribe(subscribers => {
+        this.allSubscribers = subscribers;
+        this.subscribers = subscribers.map(subscriber => ({
+          value: subscriber.companyName,
+          key: subscriber.companyName
+        }));
+      });
+  }
 
-    return starsHTML;
+  private loadCountries(): void {
+    this.countryService.getCountries()
+      .pipe(
+        map((countries: any[]) => this.mapCountriesToDropdown(countries))
+      )
+      .subscribe(countries => {
+        this.countries = countries;
+        this.sortCountries();
+      });
+  }
+
+  private mapCountriesToDropdown(countries: any[]): DropDownItem[] {
+    return countries
+      .map(country => this.getCountryDropdownItem(country))
+      .filter(item => item !== undefined) as DropDownItem[];
+  }
+
+  private getCountryDropdownItem(country: any): DropDownItem | undefined {
+    const name = this.translate.currentLang === 'en'
+      ? country.name?.common
+      : country.translations?.spa?.common;
+
+    return name && country.cca2 ? { value: name, key: country.name.common } : undefined;
+  }
+
+  private sortCountries(): void {
+    this.countries.sort((a, b) => a.value.localeCompare(b.value));
   }
 
   createForm(): FormGroup {
-    const form = this.formBuilder.group({
+    return this.formBuilder.group({
       country: [''],
       client: ['']
     });
-    return form;
   }
 
-  filterClients() {
-    var country = this.filterForm.value.country
-    var foundClients = 0;
+  filterClients(): void {
+    const country = this.filterForm.value.country;
 
-    if (country != undefined) {
-      console.log(country)
-      this.allSubscribers.forEach(reports => {
-        if (reports.country == country) {
-          foundClients++;
-          var itemDropdown: DropDownItem = { value: reports.companyName, key: reports.companyName };
-          this.subscribers.push(itemDropdown)
-        }
-      })
-    }
+    if (country) {
+      this.reports = this.allReports.filter(report => report.Country === country);
+      this.subscribers = this.allSubscribers
+        .filter(subscriber => subscriber.country === country)
+        .map(subscriber => ({ value: subscriber.companyName, key: subscriber.companyName }));
 
-    if (foundClients <= 0) {
-      this.subscribers = [];
-    }
-  }
-
-  selectClientReports() {
-    if (this.filterForm.value.client != undefined) {
-      var filterReport = this.reports.filter(report => report.InstitutionsNames == this.filterForm.value.client)
-      if (filterReport) {
-        this.reports = filterReport;
+      if (this.subscribers.length === 0) {
+        this.subscribers = [];
       }
-    }
-    else {
+    } else {
       this.reports = this.allReports;
+      this.subscribers = [];
+      this.subscribers = this.allSubscribers
+        .map(subscriber => ({ value: subscriber.companyName, key: subscriber.companyName }));
     }
+  }
+
+  selectClientReports(): void {
+    const client = this.filterForm.value.client;
+    const country = this.filterForm.value.country;
+
+    let filteredReports = this.allReports;
+
+    if (country) {
+      filteredReports = filteredReports.filter(report => report.Country === country);
+    }
+
+    if (client) {
+      filteredReports = filteredReports.filter(report => report.InstitutionsNames === client);
+    }
+
+    this.reports = filteredReports;
+  }
+
+
+  generateStarRating(rating: number): string {
+    const fullStar = '<i class="fa-solid fa-star text-darkslategray"></i>';
+    const regularStar = '<i class="fa-regular fa-star text-darkslategray"></i>';
+    return fullStar.repeat(rating) + regularStar.repeat(5 - rating);
   }
 }
