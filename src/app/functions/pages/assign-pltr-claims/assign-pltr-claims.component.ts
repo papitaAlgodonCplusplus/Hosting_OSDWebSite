@@ -63,7 +63,12 @@ export class AssignPLTRClaimsComponent implements OnDestroy {
 
     if (this.authenticationService.userInfo) {
       this.user = this.authenticationService.userInfo
-      this.osdEventService.gettingClaimsData(this.user.Id, this.user.AccountType)
+      if (this.user.Isadmin) {
+        this.osdEventService.gettingClaimsData(this.user.Id, "")
+
+      } else {
+        this.osdEventService.gettingClaimsData(this.user.Id, this.user.AccountType)
+      }
     }
 
     this.osdDataService.ClaimsList$.subscribe(claims => {
