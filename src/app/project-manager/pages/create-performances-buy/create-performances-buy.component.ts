@@ -4,13 +4,14 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { OSDDataService } from 'src/app/services/osd-data.service';
 import { OSDService } from 'src/app/services/osd-event.services';
-import { PerformanceActions, UiActions } from 'src/app/store/actions';
+import { ModalActions, PerformanceActions, UiActions } from 'src/app/store/actions';
 import { AuthSelectors, PerformanceSelectors } from 'src/app/store/selectors';
 import { PerformanceBuy } from '../../Models/performanceBuy';
 import { DatePipe } from '@angular/common';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { FreeProfessional } from 'src/app/functions/models/FreeProfessional';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-create-performances-buy',
@@ -42,7 +43,8 @@ export class CreatePerformancesBuyComponent implements OnDestroy {
     private datePipe: DatePipe,
     private OSDEventService: OSDService,
     private OSDDataService: OSDDataService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private translate: TranslateService,
   ) {
     this.performanceForm = this.createForm();
   }
@@ -195,15 +197,45 @@ export class CreatePerformancesBuyComponent implements OnDestroy {
     const input = event.target as HTMLInputElement;
   
     if (input?.files && input.files.length > 0) {
-      this.documentFile = input.files[0];  
-      this.documentName = this.documentFile.name;  
+      this.documentFile = input.files[0];
+  
+      if (this.documentFile.type !== 'application/pdf') {
+        if (this.translate.currentLang == "en"){
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "The document must be in PDF format" }));
+          this.store.dispatch(ModalActions.openAlert());
+        }else{
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "El documento debe de estar en formato PDF" }));
+          this.store.dispatch(ModalActions.openAlert());
+        }
+        this.documentFile = null;
+        this.documentName = '';
+        return;
+      }
+  
+      const maxSizeInKB = 1000;
+      const maxSizeInBytes = maxSizeInKB * 1024;
+      if (this.documentFile.size > maxSizeInBytes) {
+        if (this.translate.currentLang == "en"){
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "The document exceeds 1000kb" }));
+          this.store.dispatch(ModalActions.openAlert());
+        }else{
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "El documento sobrepasa los 1000kb" }));
+          this.store.dispatch(ModalActions.openAlert());
+        }
+
+        this.documentFile = null;
+        this.documentName = '';
+        return;
+      }
+  
+      this.documentName = this.documentFile.name;
   
       const reader = new FileReader();
       reader.onload = () => {
         const arrayBuffer = reader.result as ArrayBuffer;
-        this.documentBytes = new Uint8Array(arrayBuffer); 
+        this.documentBytes = new Uint8Array(arrayBuffer);
       };
-      reader.readAsArrayBuffer(this.documentFile);  
+      reader.readAsArrayBuffer(this.documentFile);
     }
   }
 }

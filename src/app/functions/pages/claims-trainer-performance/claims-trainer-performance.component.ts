@@ -2,7 +2,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
-import { PerformanceActions, UiActions } from 'src/app/store/actions';
+import { ModalActions, PerformanceActions, UiActions } from 'src/app/store/actions';
 import { TypesOfPerformanceClaimsService } from '../../services/types-of-performance-claims.service';
 import { Observable } from 'rxjs';
 import { Claim } from 'src/app/models/claim';
@@ -11,6 +11,9 @@ import { OSDService } from 'src/app/services/osd-event.services';
 import { ActivatedRoute } from '@angular/router';
 import { ClaimsTrainerPerformance } from '../../models/ClaimsTrainerPerformance';
 import { DatePipe } from '@angular/common';
+import { FreeProfessional } from '../../models/FreeProfessional';
+import { AuthenticationService } from 'src/app/services/authentication.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-claims-trainer-performance',
@@ -31,9 +34,11 @@ export class ClaimsTrainerPerformanceComponent implements OnDestroy {
   performance! : ClaimsTrainerPerformance;
   isUnrevised! : boolean;
   isView! : boolean;
+  isModify! : boolean;
   documentFile: File | null = null;
   documentBytes: Uint8Array | null = null;
   documentUrl: string | null = null;
+  accountTypeFreeProfessional: string | null = null;
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
@@ -41,6 +46,8 @@ export class ClaimsTrainerPerformanceComponent implements OnDestroy {
     private OSDEventService: OSDService,
     private route: ActivatedRoute,
     private datePipe: DatePipe,
+    private AuthenticationService: AuthenticationService,
+    private translate: TranslateService,
   ) {
     this.performanceForm = this.createRegisterForm();
   }
@@ -48,9 +55,6 @@ export class ClaimsTrainerPerformanceComponent implements OnDestroy {
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.reviewPerformance = params['review'];
-    });
-    this.route.queryParams.subscribe(params => {
-      this.modifyPerformanceTrainer = params['modify'];
     });
     setTimeout(() => {
       this.store.dispatch(UiActions.hideFooter())
@@ -72,6 +76,18 @@ export class ClaimsTrainerPerformanceComponent implements OnDestroy {
         }
       }
     })
+
+    this.OSDEventService.getFreeProfessionalsList()
+      .then(freeProfessionals => {
+        if (Array.isArray(freeProfessionals)) {
+          var freeProfessionalFind: FreeProfessional = freeProfessionals.find(fp => fp.Userid == this.AuthenticationService.userInfo?.Id)
+          this.accountTypeFreeProfessional = freeProfessionalFind.FreeprofessionaltypeName;
+          if(this.accountTypeFreeProfessional == "Trainer"){
+            this.isView = false;
+            this.isModify = false;
+          }
+        }
+      })
 
     if(Object.keys(this.performance).length > 0){
       this.isView = true;
@@ -143,20 +159,50 @@ export class ClaimsTrainerPerformanceComponent implements OnDestroy {
   }
 
   displayFileName(event: Event): void {
-  const input = event.target as HTMLInputElement;
+    const input = event.target as HTMLInputElement;
+  
+    if (input?.files && input.files.length > 0) {
+      this.documentFile = input.files[0];
+  
+      if (this.documentFile.type !== 'application/pdf') {
+        if (this.translate.currentLang == "en"){
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "The document must be in PDF format" }));
+          this.store.dispatch(ModalActions.openAlert());
+        }else{
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "El documento debe de estar en formato PDF" }));
+          this.store.dispatch(ModalActions.openAlert());
+        }
+        this.documentFile = null;
+        this.documentName = '';
+        return;
+      }
+  
+      const maxSizeInKB = 1000;
+      const maxSizeInBytes = maxSizeInKB * 1024;
+      if (this.documentFile.size > maxSizeInBytes) {
+        if (this.translate.currentLang == "en"){
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "The document exceeds 1000kb" }));
+          this.store.dispatch(ModalActions.openAlert());
+        }else{
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "El documento sobrepasa los 1000kb" }));
+          this.store.dispatch(ModalActions.openAlert());
+        }
 
-  if (input?.files && input.files.length > 0) {
-    this.documentFile = input.files[0]; 
-    this.documentName = this.documentFile.name; 
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      const arrayBuffer = reader.result as ArrayBuffer;
-      this.documentBytes = new Uint8Array(arrayBuffer);
-    };
-    reader.readAsArrayBuffer(this.documentFile);
+        this.documentFile = null;
+        this.documentName = '';
+        return;
+      }
+  
+      this.documentName = this.documentFile.name;
+  
+      const reader = new FileReader();
+      reader.onload = () => {
+        const arrayBuffer = reader.result as ArrayBuffer;
+        this.documentBytes = new Uint8Array(arrayBuffer);
+      };
+      reader.readAsArrayBuffer(this.documentFile);
+    }
   }
-}
 
   verifiedFormat(data: string) {
     const formValues = this.performanceForm.value;
@@ -307,8 +353,15 @@ export class ClaimsTrainerPerformanceComponent implements OnDestroy {
       return;
     }
 
-    this.isErrorInForm = false;
-      this.OSDEventService.ModifyPerformanceClaimTrainer(this.performanceForm.value, this.claimId);
+    if (this.documentBytes != null) {
+      const documentBase64 = this.convertUint8ArrayToBase64(this.documentBytes);
+      this.isErrorInForm = false;
+      this.OSDEventService.ModifyPerformanceClaimTrainer(this.performanceForm.value, this.performance.Id, documentBase64);
+    }
+    else {
+      this.isErrorInForm = false;
+      this.OSDEventService.ModifyPerformanceClaimTrainer(this.performanceForm.value, this.performance.Id, "");
+    }
   }
 
 }

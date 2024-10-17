@@ -185,11 +185,41 @@ export class OnboardingRegisterClaimantComponent {
 
   displayFileName(event: Event): void {
     const input = event.target as HTMLInputElement;
-
+  
     if (input?.files && input.files.length > 0) {
       this.documentFile = input.files[0];
-      this.documentName1 = this.documentFile.name;
+  
+      if (this.documentFile.type !== 'application/pdf') {
+        if (this.translate.currentLang == "en"){
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "The document must be in PDF format" }));
+          this.store.dispatch(ModalActions.openAlert());
+        }else{
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "El documento debe de estar en formato PDF" }));
+          this.store.dispatch(ModalActions.openAlert());
+        }
+        this.documentFile = null;
+        this.documentName1 = '';
+        return;
+      }
+  
+      const maxSizeInKB = 1000;
+      const maxSizeInBytes = maxSizeInKB * 1024;
+      if (this.documentFile.size > maxSizeInBytes) {
+        if (this.translate.currentLang == "en"){
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "The document exceeds 1000kb" }));
+          this.store.dispatch(ModalActions.openAlert());
+        }else{
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "El documento sobrepasa los 1000kb" }));
+          this.store.dispatch(ModalActions.openAlert());
+        }
 
+        this.documentFile = null;
+        this.documentName1 = '';
+        return;
+      }
+  
+      this.documentName1 = this.documentFile.name;
+  
       const reader = new FileReader();
       reader.onload = () => {
         const arrayBuffer = reader.result as ArrayBuffer;
@@ -201,11 +231,41 @@ export class OnboardingRegisterClaimantComponent {
 
   displayFileName2(event: Event): void {
     const input = event.target as HTMLInputElement;
-
+  
     if (input?.files && input.files.length > 0) {
       this.documentFile2 = input.files[0];
-      this.documentName2 = this.documentFile2.name;
+  
+      if (this.documentFile2.type !== 'application/pdf') {
+        if (this.translate.currentLang == "en"){
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "The document must be in PDF format" }));
+          this.store.dispatch(ModalActions.openAlert());
+        }else{
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "El documento debe de estar en formato PDF" }));
+          this.store.dispatch(ModalActions.openAlert());
+        }
+        this.documentFile2 = null;
+        this.documentName2 = '';
+        return;
+      }
+  
+      const maxSizeInKB = 1000;
+      const maxSizeInBytes = maxSizeInKB * 1024;
+      if (this.documentFile2.size > maxSizeInBytes) {
+        if (this.translate.currentLang == "en"){
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "The document exceeds 1000kb" }));
+          this.store.dispatch(ModalActions.openAlert());
+        }else{
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "El documento sobrepasa los 1000kb" }));
+          this.store.dispatch(ModalActions.openAlert());
+        }
 
+        this.documentFile2 = null;
+        this.documentName2 = '';
+        return;
+      }
+  
+      this.documentName2 = this.documentFile2.name;
+  
       const reader = new FileReader();
       reader.onload = () => {
         const arrayBuffer = reader.result as ArrayBuffer;

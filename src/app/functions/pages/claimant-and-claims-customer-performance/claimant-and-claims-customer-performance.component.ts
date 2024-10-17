@@ -2,7 +2,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
-import { ClaimActions, PerformanceActions, UiActions } from 'src/app/store/actions';
+import { ClaimActions, ModalActions, PerformanceActions, UiActions } from 'src/app/store/actions';
 import { TypesOfPerformanceClaimsService } from '../../services/types-of-performance-claims.service';
 import { Observable } from 'rxjs';
 import { Claim } from 'src/app/models/claim';
@@ -14,6 +14,7 @@ import { EventConstants } from 'src/app/models/eventConstants';
 import { FreeProfessional } from '../../models/FreeProfessional';
 import { ClaimantAndClaimsCustomerPerformance } from '../../models/ClaimantAndClaimsCustomerPerformance';
 import { DatePipe } from '@angular/common';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-claimant-and-claims-customer-performance',
@@ -31,6 +32,8 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
   performance!: ClaimantAndClaimsCustomerPerformance;
   isErrorInForm: boolean = false;
   isTrainer: boolean = false;
+  isClaimant: boolean = false;
+  isModify!: boolean;
   isUnrevised: boolean = false;
   isViewPerformance!: boolean;
   userTypePerformance: string = ''
@@ -43,7 +46,8 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
     private typesOfPerformanceClaimsService: TypesOfPerformanceClaimsService,
     private OSDEventService: OSDService,
     private AuthenticationService: AuthenticationService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private translate: TranslateService,
   ) {
     this.performanceForm = this.createForm();
   }
@@ -75,6 +79,9 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
               var freeProfessionalFind: FreeProfessional = freeProfessionals.find(fp => fp.Userid == this.AuthenticationService.userInfo?.Id)
               if (freeProfessionalFind.FreeprofessionaltypeName == "Trainer") {
                 this.isTrainer = true
+                this.isViewPerformance = false;
+              }else if(accountType == "Claimant"){
+                this.isClaimant = true;
                 this.isViewPerformance = false;
               }
             }
@@ -147,17 +154,47 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
 
   displayFileName(event: Event): void {
     const input = event.target as HTMLInputElement;
-
+  
     if (input?.files && input.files.length > 0) {
-      this.documentFile = input.files[0];  
-      this.documentName = this.documentFile.name; 
+      this.documentFile = input.files[0];
+  
+      if (this.documentFile.type !== 'application/pdf') {
+        if (this.translate.currentLang == "en"){
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "The document must be in PDF format" }));
+          this.store.dispatch(ModalActions.openAlert());
+        }else{
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "El documento debe de estar en formato PDF" }));
+          this.store.dispatch(ModalActions.openAlert());
+        }
+        this.documentFile = null;
+        this.documentName = '';
+        return;
+      }
+  
+      const maxSizeInKB = 1000;
+      const maxSizeInBytes = maxSizeInKB * 1024;
+      if (this.documentFile.size > maxSizeInBytes) {
+        if (this.translate.currentLang == "en"){
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "The document exceeds 1000kb" }));
+          this.store.dispatch(ModalActions.openAlert());
+        }else{
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "El documento sobrepasa los 1000kb" }));
+          this.store.dispatch(ModalActions.openAlert());
+        }
 
+        this.documentFile = null;
+        this.documentName = '';
+        return;
+      }
+  
+      this.documentName = this.documentFile.name;
+  
       const reader = new FileReader();
       reader.onload = () => {
         const arrayBuffer = reader.result as ArrayBuffer;
-        this.documentBytes = new Uint8Array(arrayBuffer); 
+        this.documentBytes = new Uint8Array(arrayBuffer);
       };
-      reader.readAsArrayBuffer(this.documentFile);  
+      reader.readAsArrayBuffer(this.documentFile);
     }
   }
 
@@ -284,9 +321,9 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
 
       if(this.documentBytes != null){
         const documentBase64 = this.convertUint8ArrayToBase64(this.documentBytes);
-        this.OSDEventService.modifiedClaimantAndClaimsCustomerPerformance(this.performanceForm.value, this.claimId, documentBase64);
+        this.OSDEventService.modifiedClaimantAndClaimsCustomerPerformance(this.performanceForm.value, this.performance.Id, documentBase64);
       }else{
-        this.OSDEventService.modifiedClaimantAndClaimsCustomerPerformance(this.performanceForm.value, this.claimId, "");
+        this.OSDEventService.modifiedClaimantAndClaimsCustomerPerformance(this.performanceForm.value, this.performance.Id, "");
       }
     }
   }

@@ -14,7 +14,7 @@
                 label="{{ 'Summary' | translate }}" inputType="text" [formGroup]="performanceForm"
                 [bgColor]="'bg-white-lightbone'"></shared-text-area>
 
-            <div *ngIf="documentName != ''" class="flex-1 flex flex-col items-center space-y-1">
+            <div class="flex-1 flex flex-col items-center space-y-1">
                 <label for="JustifyingDocument" class="text-center">{{'justifyingDocument' |
                     translate}} <p *ngIf="!isView" class="text-sm font-medium text-red-500">({{'Optional' | translate}})
                     </p></label>
@@ -25,7 +25,7 @@
                         class="cursor-pointer p-2 text-sm bg-darkslategray text-white rounded-xl">
                         {{'seleccionar_archivo' | translate}}
                     </label>
-                    <label (click)="downloadPdf(performance.JustifyingDocumentBytes)" *ngIf="isView" class="cursor-pointer p-2 text-sm bg-darkslategray text-white rounded-xl">
+                    <label (click)="downloadPdf(performance.JustifyingDocumentBytes)" class="cursor-pointer p-2 text-sm bg-darkslategray text-white rounded-xl">
                         {{'Download' | translate}}
                     </label>
                     <span class="ml-2 text-sm text-darkslategray">{{documentName}}</span>
@@ -100,10 +100,10 @@
         <button class="p-2 bg-line text-darkslategray rounded-lg" routerLink="/functions/file-manager">
             {{'regresar' | translate}}
         </button>
-        <button *ngIf="!isView && !isTrainer" (click)="onSubmit()" class="p-2 bg-darkslategray text-line rounded-lg">
+        <button *ngIf="!isView && !isTrainer && isModify" (click)="onSubmit()" class="p-2 bg-darkslategray text-line rounded-lg">
             {{'CreatePerformance' | translate}}
         </button>
-        <button *ngIf="!isView && isTrainer" (click)="modifiedPerformance()" class="p-2 bg-darkslategray text-line rounded-lg">
+        <button *ngIf="this.accountTypeFreeProfessional == 'Processor' || this.accountTypeFreeProfessional == 'Trainer' && !isModify" (click)="modifyPerformance()" class="p-2 bg-darkslategray text-line rounded-lg">
             {{'Modified' | translate}}
         </button>
     </div>

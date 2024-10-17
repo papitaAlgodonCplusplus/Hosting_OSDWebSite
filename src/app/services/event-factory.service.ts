@@ -186,11 +186,10 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.TRAINER_TRAVEL_EXPENSES, claimTrainer.TrainerTravelExpenses);
     event.setBodyProperty(EventConstants.TRAINER_REMUNERATION, claimTrainer.TrainerRemuneration);
 
-    console.log("Evento: ",event)
     return event;
   }
 
-  public ModifyPerformanceTrainerEvent(claimTrainer: ClaimsTrainerPerformance, performanceId : string): WebBaseEvent {
+  public ModifyPerformanceTrainerEvent(claimTrainer: ClaimsTrainerPerformance, performanceId : string, documentBase64: string): WebBaseEvent {
     let event: WebBaseEvent;
     event = new WebBaseEvent();
     event.SessionKey = this.authenticationService.sessionKey;
@@ -206,6 +205,7 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.TYPE_PERFORMANCE, claimTrainer.Type);
     event.setBodyProperty(EventConstants.SUMMARY, claimTrainer.Summary);
     event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, claimTrainer.JustifyingDocument);
+    event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT_BYTES, documentBase64);
     event.setBodyProperty(EventConstants.TRAINER_WORK_HOURS, claimTrainer.TrainerWorkHours);
     event.setBodyProperty(EventConstants.TRAINER_TRAVEL_HOURS, claimTrainer.TrainerTravelHours);
     event.setBodyProperty(EventConstants.TRAINER_TRAVEL_EXPENSES, claimTrainer.TrainerTravelExpenses);

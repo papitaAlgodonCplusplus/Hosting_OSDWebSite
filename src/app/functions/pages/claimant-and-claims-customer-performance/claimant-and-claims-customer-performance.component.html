@@ -14,7 +14,7 @@
                 label="{{ 'Summary' | translate }}" inputType="text" [formGroup]="performanceForm"
                 [bgColor]="'bg-white-lightbone'"></shared-text-area>
 
-            <div *ngIf="documentName != ''" class="flex-1 flex flex-col items-center space-y-1">
+            <div class="flex-1 flex flex-col items-center space-y-1">
                 <label for="JustifyingDocument" class="text-center">{{'justifyingDocument' |
                     translate}} <p *ngIf="!isViewPerformance" class="text-sm font-medium text-red-500">({{'Optional' | translate}})</p></label> 
                 <div class="flex items-center justify-center flex-col space-y-1">
@@ -24,7 +24,7 @@
                         class="cursor-pointer p-2 text-sm bg-darkslategray text-white rounded-xl">
                         {{'seleccionar_archivo' | translate}}
                     </label>
-                    <label (click)="downloadPdf(performance.JustifyingDocumentBytes)" *ngIf="isViewPerformance" for="JustifyingDocument"
+                    <label (click)="downloadPdf(performance.JustifyingDocumentBytes)" for="JustifyingDocument"
                         class="cursor-pointer p-2 text-sm bg-darkslategray text-white rounded-xl">
                         {{'Download' | translate}}
                     </label>
@@ -75,7 +75,7 @@
             {{'CreatePerformance' | translate}}
         </button>
 
-        <button *ngIf="!isViewPerformance  && isTrainer" (click)="modifiedPerformance()" class="p-2 bg-darkslategray text-line rounded-lg">
+        <button *ngIf="!isViewPerformance  && isTrainer || isClaimant" (click)="modifiedPerformance()" class="p-2 bg-darkslategray text-line rounded-lg">
             {{'Modified' | translate}}
         </button>
     </div>

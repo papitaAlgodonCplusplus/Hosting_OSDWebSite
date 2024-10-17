@@ -2,7 +2,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
-import { PerformanceActions, UiActions } from 'src/app/store/actions';
+import { ModalActions, PerformanceActions, UiActions } from 'src/app/store/actions';
 import { TypesOfPerformanceClaimsService } from '../../services/types-of-performance-claims.service';
 import { Observable } from 'rxjs';
 import { Claim } from 'src/app/models/claim';
@@ -12,6 +12,7 @@ import { ClaimsProcessorPerformance } from '../../models/ClaimsProcessorPerforma
 import { DatePipe } from '@angular/common';
 import { FreeProfessional } from '../../models/FreeProfessional';
 import { AuthenticationService } from 'src/app/services/authentication.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-claims-processor-performance',
@@ -30,10 +31,12 @@ export class ClaimsProcessorPerformanceComponent implements OnDestroy {
   performance!: ClaimsProcessorPerformance;
   isUnrevised!: boolean;
   isView!: boolean;
+  isModify!: boolean;
   isTrainer: boolean = false
   documentFile: File | null = null;
   documentBytes: Uint8Array | null = null;
   documentUrl: string | null = null;
+  accountTypeFreeProfessional: string | null = null;
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
@@ -41,6 +44,7 @@ export class ClaimsProcessorPerformanceComponent implements OnDestroy {
     private OSDEventService: OSDService,
     private datePipe: DatePipe,
     private AuthenticationService: AuthenticationService,
+    private translate: TranslateService,
   ) {
     this.performanceForm = this.createRegisterForm();
   }
@@ -82,6 +86,11 @@ export class ClaimsProcessorPerformanceComponent implements OnDestroy {
           var freeProfessionalFind: FreeProfessional = freeProfessionals.find(fp => fp.Userid == this.AuthenticationService.userInfo?.Id)
           if (freeProfessionalFind.FreeprofessionaltypeName == "Trainer" || freeProfessionalFind.Isadmin) {
             this.isTrainer = true
+            this.isView = false;
+          }
+          this.accountTypeFreeProfessional = freeProfessionalFind.FreeprofessionaltypeName
+          if(this.accountTypeFreeProfessional == "Processor"){
+            this.isModify = false;
             this.isView = false;
           }
         }
@@ -150,17 +159,47 @@ export class ClaimsProcessorPerformanceComponent implements OnDestroy {
 
   displayFileName(event: Event): void {
     const input = event.target as HTMLInputElement;
-
+  
     if (input?.files && input.files.length > 0) {
-      this.documentFile = input.files[0];  
-      this.documentName = this.documentFile.name; 
+      this.documentFile = input.files[0];
+  
+      if (this.documentFile.type !== 'application/pdf') {
+        if (this.translate.currentLang == "en"){
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "The document must be in PDF format" }));
+          this.store.dispatch(ModalActions.openAlert());
+        }else{
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "El documento debe de estar en formato PDF" }));
+          this.store.dispatch(ModalActions.openAlert());
+        }
+        this.documentFile = null;
+        this.documentName = '';
+        return;
+      }
+  
+      const maxSizeInKB = 1000;
+      const maxSizeInBytes = maxSizeInKB * 1024;
+      if (this.documentFile.size > maxSizeInBytes) {
+        if (this.translate.currentLang == "en"){
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "The document exceeds 1000kb" }));
+          this.store.dispatch(ModalActions.openAlert());
+        }else{
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "El documento sobrepasa los 1000kb" }));
+          this.store.dispatch(ModalActions.openAlert());
+        }
 
+        this.documentFile = null;
+        this.documentName = '';
+        return;
+      }
+  
+      this.documentName = this.documentFile.name;
+  
       const reader = new FileReader();
       reader.onload = () => {
         const arrayBuffer = reader.result as ArrayBuffer;
-        this.documentBytes = new Uint8Array(arrayBuffer); 
+        this.documentBytes = new Uint8Array(arrayBuffer);
       };
-      reader.readAsArrayBuffer(this.documentFile);  
+      reader.readAsArrayBuffer(this.documentFile);
     }
   }
 
@@ -306,7 +345,7 @@ export class ClaimsProcessorPerformanceComponent implements OnDestroy {
     }
   }
 
-  modifiedPerformance(): void {
+  modifyPerformance(): void {
     if (this.performanceForm.invalid) {
       this.performanceForm.markAllAsTouched();
       this.isErrorInForm = true;
