@@ -5,7 +5,7 @@ import { UserInfo } from 'src/app/models/userInfo';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { ClaimActions, PerformanceActions, UiActions } from 'src/app/store/actions';
-import { Router, ActivatedRoute  } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { OSDDataService } from 'src/app/services/osd-data.service';
 
 @Component({
@@ -34,9 +34,14 @@ export class ClaimsFileComponent {
 
     if (this.authenticationService.userInfo) {
       this.user = this.authenticationService.userInfo
-      this.osdEventService.gettingClaimsData(this.user.Id, this.user.AccountType)
+      if (this.user.Isadmin) {
+        this.osdEventService.gettingClaimsData(this.user.Id, "")
+
+      } else {
+        this.osdEventService.gettingClaimsData(this.user.Id, this.user.AccountType)
+      }
     }
-    
+
     this.osdDataService.ClaimsList$.subscribe(claims => {
       this.claims = claims;
       this.updateDisplayedItems();
@@ -62,5 +67,5 @@ export class ClaimsFileComponent {
   updateDisplayedItems(startIndex: number = 0, endIndex: number = 5) {
     this.displayedItems = this.claims.slice(startIndex, endIndex);
   }
-  
+
 }
