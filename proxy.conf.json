@@ -1,0 +1,8 @@
+{
+  "/b2api": {
+    "target": "https://api.backblazeb2.com",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}

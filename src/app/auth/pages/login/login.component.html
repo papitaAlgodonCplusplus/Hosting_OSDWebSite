@@ -23,6 +23,10 @@
           {{'nuevo_en_OSD' | translate}}</a>
         <a class="text-sm underline cursor-pointer text-darkslategray" (click)="redirectLink()">
           {{'aboutUs' | translate}}</a>
+
+          <input type="file" (change)="onFileSelected($event)" />
+          <button (click)="uploadFile()">Subir archivo</button>
+          
       </div>
     </form>
   </div>

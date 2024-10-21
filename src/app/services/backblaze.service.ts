@@ -1,137 +1,122 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { AuthenticationService } from './authentication.service';
-
-export interface BackblazeUploadResponse {
-  name: string;
-  fileId: string;
-}
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
-
 export class BackblazeService {
 
-  private apiUrl = 'http://localhost:5001/media_api';
-  private traceIdentifier: string = "";
-  private securityToken: string = "";
+  private apiUrl = '/b2api/v2';  // Cambiado para que utilice el proxy
+  private authUrl = '/b2api/v3/b2_authorize_account'; // Cambiado para que utilice el proxy
+  private accountId = '0055738d4931ced000000000d';  // Tu accountId
+  private applicationKey = 'K005vHrgizyOMTX4aOalnxVUcICyb+Q';  // Tu applicationKey
+  private authToken!: string;
+  private bucketId = 'b51703b85d4409a3911c0e1d'; // El bucketId de tu bucket
 
-  constructor(private http: HttpClient,
-              private authenticationService : AuthenticationService
-  ) { }
+  constructor(private http: HttpClient) { }
 
-  public startBackblazeService(traceIdentifier: string, securityToken: string) {
-    this.traceIdentifier = traceIdentifier;
-    this.securityToken = securityToken;
-  }
+  // Método para autorizarse y subir el archivo
+  async authorizeAndUploadFile(file: File): Promise<any> {
+    try {
+      // Primero autorizamos
+      await this.authorizeAccount();
+      console.log('Autorización completada, preparando para subir archivo...');
 
-  getFileFromBackBlaze(fileId: string): Observable<any> {
-    const url = `${this.apiUrl}/getKuarcWebFile`;
-
-    const body = {
-      SessionKey: this.authenticationService.sessionKey,
-      SecurityToken: this.securityToken,
-      TraceIdentifier: this.traceIdentifier,
-      Date: new Date().toISOString(),
-      Body: {
-        Fguid: fileId
-      }
-    };
-
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-
-    return this.http.post(url, body, { headers });
-  }
-
-  uploadFile(byteArray: Uint8Array, fileName: string): Observable<BackblazeUploadResponse> {
-    const url = `${this.apiUrl}/uploadFileToKuarc`;
-    
-    const body = {
-      SessionKey: this.authenticationService.sessionKey,
-      SecurityToken: this.securityToken,
-      TraceIdentifier: this.traceIdentifier,
-      Date: new Date().toISOString(),
-      Body: {
-        FileName: fileName,
-        FileContent: Array.from(byteArray)
-      }
-    };
-  
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-  
-    return this.http.post<BackblazeUploadResponse>(url, body, { headers });
-  }
-
-  inferFileExtension(fileBytes: string): string {
-    const mimeTypes: { [key: string]: string } = {
-      '/9j/': 'jpeg',
-      'iVBORw0KGgo': 'png',
-      'JVBERi0xL': 'pdf',
-      'R0lGODdh': 'gif',
-      'UklGR': 'webp',
-      'AAABAAEAEBA': 'ico',
-      'SUQz': 'mp3',
-      'OggS': 'ogg',
-      'fLaC': 'flac',
-      'MThd': 'midi',
-      '4oCw': 'doc',
-      'UEsDBBQAAAA': 'docx',
-      'PK': 'zip'
-    };
-  
-    const keys = Object.keys(mimeTypes);
-    let index = 0;
-    let extension = 'octet-stream';
-    
-    while (index < keys.length) {
-      const key = keys[index];
-      if (fileBytes.startsWith(key)) {
-        extension = mimeTypes[key];
-        index = key.length
-      }
-      index++;
+      // Luego subimos el archivo
+      const response = await this.uploadFile(file);
+      console.log('Archivo subido exitosamente:', response);
+      return response;
+    } catch (error) {
+      console.error('Error durante el proceso de autorización o subida:', error);
+      throw error;
     }
-  
-    return extension;
   }
-  
-  loadDocument(documentBytes: string, extension: string): string {
-    const mimeTypes: { [key: string]: string } = {
-      'pdf': 'application/pdf',
-      'jpeg': 'image/jpeg',
-      'png': 'image/png',
-      'gif': 'image/gif',
-      'webp': 'image/webp',
-      'ico': 'image/x-icon',
-      'mp3': 'audio/mpeg',
-      'ogg': 'audio/ogg',
-      'flac': 'audio/flac',
-      'midi': 'audio/midi',
-      'doc': 'application/msword',
-      'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      'zip': 'application/zip'
-    };
-  
-    const mimeType = mimeTypes[extension] || 'application/octet-stream';
-    return `data:${mimeType};base64,${documentBytes}`;
-  }
-  
-  convertFileToByteArray(file: File): Promise<Uint8Array> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const arrayBuffer = reader.result as ArrayBuffer;
-        const byteArray = new Uint8Array(arrayBuffer);
-        resolve(byteArray);
-      };
-      reader.onerror = (error) => reject(error);
-      reader.readAsArrayBuffer(file);
+
+  // Método privado para autorizarse en Backblaze y obtener el token
+  private async authorizeAccount(): Promise<void> {
+    const credentials = `${this.accountId}:${this.applicationKey}`;
+    const encodedCredentials = btoa(credentials);
+
+    const headers = new HttpHeaders({
+      'Authorization': 'Basic ' + encodedCredentials
     });
-  } 
+
+    console.log('Iniciando autorización...');
+
+    try {
+      const response: any = await this.http.get(this.authUrl, { headers }).toPromise();
+      if (!response.authorizationToken) {
+        throw new Error('No se recibió un token de autorización');
+      }
+      this.authToken = response.authorizationToken;
+      console.log('Token de autorización recibido:', this.authToken);
+    } catch (error) {
+      console.error('Error en la autorización:', error);
+      throw error;
+    }
+  }
+
+  private async getUploadUrl(): Promise<any> {
+    // Cambiamos a la versión correcta v2 de la API
+    const url = `${this.apiUrl}/b2_get_upload_url`;  // La URL debe ser para POST
+    const body = { bucketId: this.bucketId };  // El bucketId se pasa en el cuerpo cuando usamos POST
+    const headers = new HttpHeaders({ 'Authorization': this.authToken });
+    
+    console.log('AuthToken:', this.authToken);
+    console.log('bucketId:', this.bucketId);
+    console.log('Solicitando URL de subida...');
+  
+    try {
+      // Realizamos la solicitud POST
+      const response: any = await this.http.post(url, body, { headers }).toPromise();
+      if (!response.uploadUrl || !response.authorizationToken) {
+        throw new Error('No se pudo obtener la URL de subida');
+      }
+      console.log('URL de subida obtenida:', response.uploadUrl);
+      return response;
+    } catch (error: any) {  
+      if (error.status) {
+        console.error(`Error HTTP: ${error.status} - ${error.statusText}`);
+        console.error('Detalles del error:', error.error);
+      } else if (error instanceof Error) {
+        console.error('Error estándar:', error.message);
+      } else {
+        console.error('Error desconocido:', error);
+      }
+  
+      // Lanzamos nuevamente el error para que pueda ser manejado más adelante
+      throw error;
+    }
+  }
+  
+
+  // Método privado para subir el archivo
+  private async uploadFile(file: File): Promise<any> {
+    console.log('Preparando para subir el archivo...');
+
+    try {
+      const uploadResponse = await this.getUploadUrl();
+      const uploadUrl = uploadResponse.uploadUrl;
+      const uploadAuthToken = uploadResponse.authorizationToken;
+
+      console.log('Subiendo archivo a la URL:', uploadUrl);
+
+      const headers = new HttpHeaders({
+        'Authorization': uploadAuthToken,
+        'X-Bz-File-Name': encodeURIComponent(file.name),
+        'Content-Type': file.type,
+        'X-Bz-Content-Sha1': 'do_not_verify'  // Puedes calcular el SHA1 real si es necesario
+      });
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await this.http.post(uploadUrl, formData, { headers }).toPromise();
+      console.log('Respuesta recibida de la subida del archivo:', response);
+      return response;
+    } catch (error) {
+      console.error('Error subiendo el archivo:', error);
+      throw error;
+    }
+  }
 }

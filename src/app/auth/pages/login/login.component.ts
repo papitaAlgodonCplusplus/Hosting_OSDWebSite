@@ -2,7 +2,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, switchMap } from 'rxjs';
 
 import { AuthenticationActions, ModalActions, UiActions } from 'src/app/store/actions';
 import { EventFactoryService } from 'src/app/services/event-factory.service';
@@ -14,6 +14,7 @@ import { OSDService } from 'src/app/services/osd-event.services';
 import { MenuOption } from 'src/app/models/menuOptions';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { TranslateService } from '@ngx-translate/core';
+import { BackblazeService } from 'src/app/services/backblaze.service';
 
 @Component({
   selector: 'auth-login',
@@ -26,17 +27,16 @@ export class LoginComponent implements OnDestroy {
 
   errorModalOpen$: Observable<boolean> = this.store.select(ModalSelectors.errorModalOpen);
   errorMessage$: Observable<string> = this.store.select(ModalSelectors.errorMessage);
+  selectedFile!: File; // Almacenar el archivo seleccionado
 
   constructor(
     private formBuilder: FormBuilder,
     private store: Store,
-    private validationsService: ValidationsService,
     public eventFactoryService: EventFactoryService,
     private osdEventService: OSDService,
-    private router: Router,
     private authenticationService: AuthenticationService,
     private translate: TranslateService,
-
+    private backblazeService: BackblazeService
   ) {
     this.loginForm = this.createLoginForm();
   }
@@ -75,9 +75,29 @@ export class LoginComponent implements OnDestroy {
     } else {
       window.open("https://www.canva.com/design/DAGSj7FuRjM/N8O1JuATCUXV8pyD7IM6iw/view?utm_content=DAGSj7FuRjM&utm_campaign=share_your_design&utm_medium=link&utm_source=shareyourdesignpanel", "_blank");
     }
-    
-    
-    
   }
 
+  onFileSelected(event: any) {
+    const file: File = event.target.files[0]; // Obtener el archivo seleccionado
+    if (file) {
+      this.selectedFile = file;
+      console.log('Archivo seleccionado:', file);
+    }
+  }
+
+  async uploadFile(): Promise<void> {
+    if (!this.selectedFile) {
+      console.error('No hay archivo seleccionado');
+      return;
+    }
+
+    console.log('Subiendo archivo seleccionado:', this.selectedFile);
+
+    try {
+      const response = await this.backblazeService.authorizeAndUploadFile(this.selectedFile);
+      console.log('Archivo subido exitosamente:', response);
+    } catch (error) {
+      console.error('Error durante el proceso de subida:', error);
+    }
+  }
 }
