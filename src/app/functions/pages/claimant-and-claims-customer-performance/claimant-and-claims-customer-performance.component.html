@@ -71,11 +71,11 @@
         <button class="p-2 bg-line text-darkslategray rounded-lg" routerLink="/functions/file-manager">
             {{'regresar' | translate}}
         </button>
-        <button *ngIf="!isViewPerformance && !isTrainer" (click)="onSubmit()" class="p-2 bg-darkslategray text-line rounded-lg">
+        <button *ngIf="!isViewPerformance && !isTrainer && !isHidden" (click)="onSubmit()" class="p-2 bg-darkslategray text-line rounded-lg">
             {{'CreatePerformance' | translate}}
         </button>
 
-        <button *ngIf="!isViewPerformance  && isTrainer || isClaimant" (click)="modifiedPerformance()" class="p-2 bg-darkslategray text-line rounded-lg">
+        <button *ngIf="this.accountType == 'Claimant' &&  !this.isModify && isHidden" (click)="modifyPerformance()" class="p-2 bg-darkslategray text-line rounded-lg">
             {{'Modified' | translate}}
         </button>
     </div>
