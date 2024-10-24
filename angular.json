@@ -6,7 +6,9 @@
     "osdcwebapp": {
       "i18n": {
         "sourceLocale": "en-US",
-        "locales": {"es-CR": "src/locale/messages.es.xlf"}
+        "locales": {
+          "es-CR": "src/locale/messages.es.xlf"
+        }
       },
       "projectType": "application",
       "schematics": {},
@@ -39,8 +41,10 @@
             "ngswConfigPath": "ngsw-config.json"
           },
           "configurations": {
-            "es-CR":{
-              "localize": ["es-CR"]
+            "es-CR": {
+              "localize": [
+                "es-CR"
+              ]
             },
             "production": {
               "budgets": [
@@ -70,9 +74,6 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {
-            "proxyConfig": "proxy.conf.json"
-          },
           "configurations": {
             "production": {
               "browserTarget": "osdcwebapp:build:production"

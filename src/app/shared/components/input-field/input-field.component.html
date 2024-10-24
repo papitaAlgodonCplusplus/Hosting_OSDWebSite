@@ -3,23 +3,13 @@
     <label for="">{{ label }}</label>
   </div>
 
-  <div class="input-container" *ngIf="inputType === 'time'; else standardInput">
+  <div class="input-container">
     <input [ngClass]="[
-            bgColor,
-            'placeholder:text-darkgray text-black block border-solid border w-full p-2 pr-3 focus:outline-none focus:border-blue-950'
-        ]" [formControlName]="fieldName" [name]="fieldName" [id]="fieldName" type="text" placeholder="HH:MM"
-      maxlength="5" (input)="onTimeInput($event)" (click)="onClickEvent()" />
-  </div>
-
-  <ng-template #standardInput>
-    <div class="input-container">
-      <input [ngClass]="[
           bgColor,
           'placeholder:text-darkgray text-black block border-solid border w-full p-2 pr-3 focus:outline-none focus:border-blue-950'
         ]" [formControlName]="fieldName" [name]="fieldName" [id]="fieldName" [type]="inputType" [readOnly]="readOnly"
-        (blur)="blurEvent.emit()" (input)="inputChange.emit()" />
-    </div>
-  </ng-template>
+      (blur)="blurEvent.emit()" (input)="inputChange.emit()" />
+  </div>
 
   <p class="mt-2 text-sm text-red-500" *ngIf="isValidField(fieldName); else hidden">
     {{ getFieldError(fieldName) }}

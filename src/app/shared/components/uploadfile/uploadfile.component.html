@@ -1,0 +1,26 @@
+<div class="relative w-full my-1 px-1 justify-center flex flex-col items-center">
+    <div>
+        <label for="">{{ label | translate }}</label>
+    </div>
+
+    <div class="flex flex-col space-y-3 items-center">
+        <input [ngClass]="[
+                    bgColor,
+                    'placeholder:text-darkgray text-black block border-solid border w-full rounded-xl p-2 pr-3 focus:outline-none focus:border-blue-950'
+                ]" type="file" [readOnly]="readOnly" (blur)="blurEvent.emit()" (input)="inputChange.emit()"
+            (change)="onFileSelected($event)" />
+
+        <button type="button" class="cursor-pointer p-2 text-sm bg-darkslategray text-white rounded-xl" (click)="uploadSelectedFile()"> {{'Subir archivo' | translate}}
+        </button>
+
+        <button *ngIf="fileId != ''" type="button" class="cursor-pointer p-2 text-sm bg-darkslategray text-white rounded-xl" (click)="downloadSelectedFile()"> {{'Subir archivo' | translate}}
+        </button>
+    </div>
+
+    <!-- <p class="mt-2 text-sm text-red-500" *ngIf="isValidField(fieldName); else hidden">
+        {{ getFieldError(fieldName) }}
+    </p> -->
+    <ng-template #hidden>
+        <p class="text-sm">&nbsp;</p>
+    </ng-template>
+</div>

@@ -29,6 +29,8 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   osdUsersSubscribersObservable$: Observable<UserInfo[]> = this.osdDataService.getOsdUsersSubscribersSuccess$
   subscribersObservable$: Observable<Subscriber[]> = this.osdDataService.getSubscribersSuccess$
   subscribers: Subscriber[] = [];
+  fileId: string = "4_zb51703b85d4409a3911c0e1d_f1116452e3cd2a2d3_d20241023_m222337_c005_v0501011_t0057_u01729722217988"
+  fileName: string = "20 -6-24 Contrato Suscriptor-Cliente.pdf"
 
   workspace: DropDownItem[] = [
     { value: this.translate.instant('DT'), key: '87db7d48-ee2a-4494-8627-9cb9e377de21' },
@@ -81,13 +83,13 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
             .map(country => {
               if (country.name?.common && country.cca2) {
                 return {
-                  value: country.name.common, 
-                  key: country.name.common          
+                  value: country.name.common,
+                  key: country.name.common
                 } as DropDownItem;
               }
               return undefined;
             })
-            .filter(country => country !== undefined) 
+            .filter(country => country !== undefined)
             .sort((a, b) => (a && b) ? a.value.localeCompare(b.value) : 0);
         }
         else if (this.translate.currentLang === "es") {
@@ -96,8 +98,8 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
             .map(country => {
               if (country.translations?.spa?.common && country.cca2) {
                 return {
-                  value: country.translations.spa.common, 
-                  key: country.name.common                    
+                  value: country.translations.spa.common,
+                  key: country.name.common
                 } as DropDownItem;
               }
               return undefined;
@@ -154,7 +156,6 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     const accountForm = this.formBuilder.group({
       workspace: ['', [Validators.required]],
       otherWorspace: [''],
-      identificationDocument: ['', [Validators.required]],
       curriculumVitae: ['', [Validators.required]],
       lastReceiptCLI: [''],
       servicerates: [''],
@@ -240,11 +241,12 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
       this.isAcceptConditions = true;
       return;
     }
-    
+
     this.store.dispatch(UiActions.toggleConfirmationButton())
     const userEmail = this.personalForm.value.email;
     localStorage.setItem('userEmail', userEmail);
-    this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.FREE_PROFESSIONAL);
+    console.log(this.accountForm.value)
+    //this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.FREE_PROFESSIONAL);
   }
 
   CheckIfIsTr() {
@@ -261,4 +263,17 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     }
   }
 
+  handleFileUploaded(event: {  typeFile: string  ,fileName: string, fileId: string}): void {
+    if (!this.accountForm.contains('documentName')) {
+      this.accountForm.addControl('documentName', this.formBuilder.control('', Validators.required));
+    }
+    if (!this.accountForm.contains('documentId')) {
+      this.accountForm.addControl('documentId', this.formBuilder.control(''));
+    }
+    console.log(event.typeFile)
+    this.accountForm.get('documentName')?.setValue(event.fileName);
+    this.accountForm.get('documentId')?.setValue(event.fileId);
+    this.fileId = event.fileId
+    this.fileName = event.fileName
+  }
 }

@@ -35,29 +35,4 @@ export class InputFieldComponent {
     return this.validationsService.getFieldError(this.formGroup, field);
   }
 
-  onTimeInput(event: Event) {
-    if (this.inputType === 'time') {
-        const input = event.target as HTMLInputElement;
-        let value = input.value.replace(/\D/g, '');  
-        
-        if (value.length >= 3) {
-            value = `${value.slice(0, 2)}:${value.slice(2, 4)}`;
-        }
-
-        const [hours, minutes] = value.split(':').map(Number);
-
-        if ((hours > 23 || hours < 0) || (minutes > 59 || minutes < 0)) {
-            value = '';
-        }
-
-        input.value = value;
-        this.formGroup.get(this.fieldName)?.setValue(value, { emitEvent: true });
-    }
-  }
-
-  onClickEvent() {
-      if (this.inputType === 'time') {
-          this.formGroup.get(this.fieldName)?.setValue('', { emitEvent: true });
-      }
-  }
 }

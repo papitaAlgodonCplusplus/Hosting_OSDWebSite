@@ -35,8 +35,7 @@ export class LoginComponent implements OnDestroy {
     public eventFactoryService: EventFactoryService,
     private osdEventService: OSDService,
     private authenticationService: AuthenticationService,
-    private translate: TranslateService,
-    private backblazeService: BackblazeService
+    private translate: TranslateService
   ) {
     this.loginForm = this.createLoginForm();
   }
@@ -74,30 +73,6 @@ export class LoginComponent implements OnDestroy {
       window.open("https://www.canva.com/design/DAGS4Ehqdhc/JCnX9GAwuWRyk0s3R_0TIA/edit?utm_content=DAGS4Ehqdhc&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton", "_blank");
     } else {
       window.open("https://www.canva.com/design/DAGSj7FuRjM/N8O1JuATCUXV8pyD7IM6iw/view?utm_content=DAGSj7FuRjM&utm_campaign=share_your_design&utm_medium=link&utm_source=shareyourdesignpanel", "_blank");
-    }
-  }
-
-  onFileSelected(event: any) {
-    const file: File = event.target.files[0]; // Obtener el archivo seleccionado
-    if (file) {
-      this.selectedFile = file;
-      console.log('Archivo seleccionado:', file);
-    }
-  }
-
-  async uploadFile(): Promise<void> {
-    if (!this.selectedFile) {
-      console.error('No hay archivo seleccionado');
-      return;
-    }
-
-    console.log('Subiendo archivo seleccionado:', this.selectedFile);
-
-    try {
-      const response = await this.backblazeService.authorizeAndUploadFile(this.selectedFile);
-      console.log('Archivo subido exitosamente:', response);
-    } catch (error) {
-      console.error('Error durante el proceso de subida:', error);
     }
   }
 }

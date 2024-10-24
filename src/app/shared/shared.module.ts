@@ -18,7 +18,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { LeftSidebarComponent } from './components/left-sidebar/left-sidebar.component';
 import { TimeInputComponentComponent } from './components/time-input-component/time-input-component.component';
 import { ConfirmationButtonComponent } from './components/confirmation-button/confirmation-button.component';
- 
+import { UploadfileComponent } from './components/uploadfile/uploadfile.component';
+
 @NgModule({
   declarations: [
     HeaderComponent,
@@ -36,7 +37,8 @@ import { ConfirmationButtonComponent } from './components/confirmation-button/co
     LeftSidebarComponent,
     SwitchLanguagesComponent,
     TimeInputComponentComponent,
-    ConfirmationButtonComponent
+    ConfirmationButtonComponent,
+    UploadfileComponent
   ],
   imports: [
     CommonModule,
@@ -59,7 +61,8 @@ import { ConfirmationButtonComponent } from './components/confirmation-button/co
     LeftSidebarComponent,
     SwitchLanguagesComponent,
     TimeInputComponentComponent,
-    ConfirmationButtonComponent
+    ConfirmationButtonComponent,
+    UploadfileComponent
   ],
 })
 export class SharedModule { }

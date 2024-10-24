@@ -1,6 +1,15 @@
 {
-  "/b2api": {
+  "/authorize": {
     "target": "https://api.backblazeb2.com",
+    "secure": true,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/authorize": "/b2api/v2/b2_authorize_account"
+    },
+    "logLevel": "debug"
+  },
+  "/b2api": {
+    "target": "https://{api005}.backblazeb2.com",
     "secure": true,
     "changeOrigin": true,
     "logLevel": "debug"
