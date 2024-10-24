@@ -636,9 +636,9 @@ export class OSDService {
     });
   }
 
-  public modifiedClaimantAndClaimsCustomerPerformance(performance: ClaimantAndClaimsCustomerPerformance, performanceId: string, documentBase64: string) {
-    const modifiedPerformanceClaimEvent: WebBaseEvent = this.eventFactoryService.modifiedClaimantAndClaimsCustomerPerformance(performance, performanceId, documentBase64);
-    this.restApiService.SendOSDEvent(modifiedPerformanceClaimEvent).subscribe({
+  public modifyClaimantAndClaimsCustomerPerformance(performance: ClaimantAndClaimsCustomerPerformance, performanceId: string, documentBase64: string) {
+    const modifyPerformanceClaimEvent: WebBaseEvent = this.eventFactoryService.modifyClaimantAndClaimsCustomerPerformance(performance, performanceId, documentBase64);
+    this.restApiService.SendOSDEvent(modifyPerformanceClaimEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
         this.HandleModifiedPerformanceClaimResponse(osdEvent);

@@ -40,6 +40,8 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
   documentFile: File | null = null;
   documentBytes: Uint8Array | null = null;
   documentUrl: string | null = null;
+  accountType: string | null = null;
+  isHidden!: boolean;
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
@@ -63,6 +65,7 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
     }, 0);
 
     if (this.AuthenticationService.userInfo) {
+      this.accountType = this.AuthenticationService.userInfo.AccountType;
       var accountType = this.AuthenticationService.userInfo.AccountType;
       if (accountType == EventConstants.CLAIMANT) {
         this.type = this.typesOfPerformanceClaimsService.getTypesClaimant()
@@ -70,22 +73,6 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
       } else if (accountType == EventConstants.SUBSCRIBER_CUSTOMER) {
         this.type = this.typesOfPerformanceClaimsService.getTypesSubscriber()
         this.userTypePerformance = "SUBSCRIBER";
-      }
-      else {
-        this.OSDEventService.GetFreeProfessionalsDataEvent();
-        this.OSDEventService.getFreeProfessionalsList()
-          .then(freeProfessionals => {
-            if (Array.isArray(freeProfessionals)) {
-              var freeProfessionalFind: FreeProfessional = freeProfessionals.find(fp => fp.Userid == this.AuthenticationService.userInfo?.Id)
-              if (freeProfessionalFind.FreeprofessionaltypeName == "Trainer") {
-                this.isTrainer = true
-                this.isViewPerformance = false;
-              }else if(accountType == "Claimant"){
-                this.isClaimant = true;
-                this.isViewPerformance = false;
-              }
-            }
-          })
       }
     }
 
@@ -100,7 +87,13 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
     })
 
     if (this.performance.Id != null) {
-      this.isViewPerformance = true;
+      if(this.accountType == "Claimant"){
+        this.isViewPerformance = false;
+        this.isModify = false;
+        this.isHidden = true;
+      }else{
+        this.isViewPerformance = true;
+      }
     } else {
       this.isViewPerformance = false;
     }
@@ -309,7 +302,7 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
     }
   }
 
-  modifiedPerformance(): void {
+  modifyPerformance(): void {
     if (this.performanceForm.invalid) {
       this.performanceForm.markAllAsTouched();
       this.isErrorInForm = true;
@@ -321,9 +314,9 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
 
       if(this.documentBytes != null){
         const documentBase64 = this.convertUint8ArrayToBase64(this.documentBytes);
-        this.OSDEventService.modifiedClaimantAndClaimsCustomerPerformance(this.performanceForm.value, this.performance.Id, documentBase64);
+        this.OSDEventService.modifyClaimantAndClaimsCustomerPerformance(this.performanceForm.value, this.performance.Id, documentBase64);
       }else{
-        this.OSDEventService.modifiedClaimantAndClaimsCustomerPerformance(this.performanceForm.value, this.performance.Id, "");
+        this.OSDEventService.modifyClaimantAndClaimsCustomerPerformance(this.performanceForm.value, this.performance.Id, "");
       }
     }
   }
