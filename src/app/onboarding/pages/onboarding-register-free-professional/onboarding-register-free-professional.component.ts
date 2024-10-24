@@ -23,14 +23,13 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   personalForm: FormGroup;
   selectedSubscriberCustomer: string | undefined;
   isDropdownOpen = true;
-  documentName: string = '';
   showDocument!: boolean;
   subscriberCustomers: DropDownItem[] = [];
   osdUsersSubscribersObservable$: Observable<UserInfo[]> = this.osdDataService.getOsdUsersSubscribersSuccess$
   subscribersObservable$: Observable<Subscriber[]> = this.osdDataService.getSubscribersSuccess$
   subscribers: Subscriber[] = [];
-  fileId: string = "4_zb51703b85d4409a3911c0e1d_f1116452e3cd2a2d3_d20241023_m222337_c005_v0501011_t0057_u01729722217988"
-  fileName: string = "20 -6-24 Contrato Suscriptor-Cliente.pdf"
+  fileId: string = "";
+  fileName!: string;
 
   workspace: DropDownItem[] = [
     { value: this.translate.instant('DT'), key: '87db7d48-ee2a-4494-8627-9cb9e377de21' },
@@ -52,11 +51,11 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     { value: this.translate.instant('formador_consultor'), key: 'Key2' }
   ];
   subcribersList: DropDownItem[] = [];
-  documentNames: string[] = new Array(2);
   isAcceptConditions!: boolean;
   isProcessor: boolean = false;
   countries: DropDownItem[] = [];
   selectedCountries: string | undefined;
+  uploadFile: boolean = false;
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
@@ -155,11 +154,13 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   private createAccountForm(): FormGroup {
     const accountForm = this.formBuilder.group({
       workspace: ['', [Validators.required]],
-      otherWorspace: [''],
-      curriculumVitae: ['', [Validators.required]],
-      lastReceiptCLI: [''],
-      servicerates: [''],
-      SubscriberId: ['']
+      SubscriberId: [''],
+      IdentificationName: ['', [Validators.required]],
+      IdentificationId: [''],
+      CurriculumVitaeName: ['', [Validators.required]],
+      CurriculumVitaeId: [''],
+      CivilLiabilityInsuranceName: [''],
+      CivilLiabilityInsuranceId: ['']
     });
     return accountForm;
   }
@@ -186,43 +187,6 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     return personalForm;
   }
 
-
-  displayFileContract(event: any): void {
-    const fileInput = event.target as HTMLInputElement;
-
-    if (fileInput.files && fileInput.files.length > 0) {
-      const file = fileInput.files[0];
-      const fileName = file.name.toLowerCase();
-      const fileExtension = fileName.split('.').pop();
-
-      if (fileExtension === 'pdf') {
-        this.documentName = fileName;
-      } else {
-        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Debe Insertar Solo archivos PDF" }));
-        this.store.dispatch(ModalActions.changeAlertType({ alertType: "warning" }));
-        this.store.dispatch(ModalActions.openAlert());
-        this.documentName = '';
-      }
-    } else {
-      this.documentName = '';
-    }
-  }
-
-  displayFileName(event: any, index: number): void {
-    let file = event.target.files[0];
-    if (file) {
-      if (index === 0) {
-        this.documentNames[0] = file.name;
-      } else if (index === 1) {
-        this.documentNames[1] = file.name;
-      }
-      else {
-        this.documentNames[2] = file.name;
-      }
-    }
-  }
-
-
   onSubmit(): void {
     if (this.accountForm.invalid || this.personalForm.invalid) {
       this.accountForm.markAllAsTouched();
@@ -245,8 +209,9 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     this.store.dispatch(UiActions.toggleConfirmationButton())
     const userEmail = this.personalForm.value.email;
     localStorage.setItem('userEmail', userEmail);
-    console.log(this.accountForm.value)
-    //this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.FREE_PROFESSIONAL);
+    setTimeout(() => {
+      this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.FREE_PROFESSIONAL);
+    }, 5000);
   }
 
   CheckIfIsTr() {
@@ -263,17 +228,24 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     }
   }
 
-  handleFileUploaded(event: {  typeFile: string  ,fileName: string, fileId: string}): void {
-    if (!this.accountForm.contains('documentName')) {
-      this.accountForm.addControl('documentName', this.formBuilder.control('', Validators.required));
+  handleFileUploaded(event: { typeFile: string, fileName: string, fileId: string }): void {
+    if (event.typeFile == "Identification") {
+      this.accountForm.patchValue({
+        IdentificationId: event.fileId,
+        IdentificationName: event.fileName
+      })
     }
-    if (!this.accountForm.contains('documentId')) {
-      this.accountForm.addControl('documentId', this.formBuilder.control(''));
+    else if (event.typeFile == "CurriculumVitae") {
+      this.accountForm.patchValue({
+        CurriculumVitaeId: event.fileId,
+        CurriculumVitaeName: event.fileName
+      })
     }
-    console.log(event.typeFile)
-    this.accountForm.get('documentName')?.setValue(event.fileName);
-    this.accountForm.get('documentId')?.setValue(event.fileId);
-    this.fileId = event.fileId
-    this.fileName = event.fileName
+    else {
+      this.accountForm.patchValue({
+        CivilLiabilityInsuranceId: event.fileId,
+        CivilLiabilityInsuranceName: event.fileName
+      })
+    }
   }
 }

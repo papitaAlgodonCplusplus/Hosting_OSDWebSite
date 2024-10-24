@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { BackblazeService } from 'src/app/services/backblaze.service';
 import { ValidationsService } from 'src/app/services/validations.service';
@@ -14,7 +14,11 @@ export class UploadfileComponent {
   @Input() bgColor: string = 'bg-white';
   @Input() readOnly!: boolean;
   @Input() fileId!: string;
-  @Input() fileName!: string;
+  @Input() isModified!: boolean;
+  @Input() uploadFile!: boolean;
+  @Input() isMandatory!: boolean;
+  @Input() formGroup!: FormGroup;
+  @Input() fieldName!: string;
   @Output() blurEvent: EventEmitter<void> = new EventEmitter<void>();
   @Output() inputChange: EventEmitter<any> = new EventEmitter();
   selectedFile!: File;
@@ -25,8 +29,14 @@ export class UploadfileComponent {
     private backblazeService: BackblazeService
   ) { }
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['uploadFile'] && changes['uploadFile'].currentValue === true) {
+      this.uploadSelectedFile();
+    }
+  }
+
   onInputChange() {
-    this.inputChange.emit();
+    this.inputChange.emit()
   }
 
   onFileSelected(event: any): void {
@@ -48,12 +58,8 @@ export class UploadfileComponent {
         const uploadAuthToken = uploadResponse.authorizationToken;
 
         this.backblazeService.uploadFile(uploadUrl, uploadAuthToken, this.selectedFile.name, this.selectedFile).subscribe(uploadResult => {
-          // Obtener el fileId desde la respuesta
           const fileId = uploadResult.fileId || uploadResult.fileId;
-          this.fileId = fileId;  // Guardar el fileId para uso posterior
-          console.log(this.typeFile);
-
-          // Emitir el evento con el nombre del archivo y el ID
+  
           this.fileUploaded.emit({ typeFile: this.typeFile, fileName: this.selectedFile.name, fileId: fileId });
 
         }, error => {
@@ -68,8 +74,7 @@ export class UploadfileComponent {
   }
 
   downloadSelectedFile() {
-    const fileId = this.fileId; // Asegúrate de que fileId esté guardado
-    const bucketId = 'b51703b85d4409a3911c0e1d';
+    const fileId = this.fileId;
 
     if (!fileId) {
       console.error('No se ha subido ningún archivo para descargar.');
@@ -80,24 +85,20 @@ export class UploadfileComponent {
       const apiUrl = response.apiUrl;
       const authorizationToken = response.authorizationToken;
 
-      // Obtener la URL de descarga y el nombre del archivo a partir del fileId
       this.backblazeService.getDownloadUrl(apiUrl, authorizationToken, fileId).subscribe(downloadResponse => {
         const downloadUrl = downloadResponse.downloadUrl;
-        const fileName = downloadResponse.fileName || this.fileName; // Usa el nombre devuelto o el que ya tengas
+        const fileName = downloadResponse.fileName
 
         if (!downloadUrl || !fileName) {
           console.error('URL de descarga o nombre del archivo indefinidos.');
           return;
         }
 
-        console.log("URL de descarga obtenida:", downloadUrl);
-
-        // Descargar el archivo usando la URL de descarga
         this.backblazeService.downloadFile(downloadUrl, fileName, authorizationToken).subscribe(blob => {
           const downloadURL = window.URL.createObjectURL(blob);
           const link = document.createElement('a');
           link.href = downloadURL;
-          link.download = fileName; // Nombre que se usará para guardar el archivo
+          link.download = fileName;
           link.click();
         }, error => {
           console.error('Error al descargar el archivo:', error);
@@ -111,6 +112,5 @@ export class UploadfileComponent {
       console.error('Error al autorizar la cuenta:', error);
     });
   }
-
 
 }

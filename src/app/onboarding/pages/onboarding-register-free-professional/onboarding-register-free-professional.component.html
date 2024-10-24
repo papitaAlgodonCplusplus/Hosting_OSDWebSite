@@ -50,39 +50,25 @@
                 </shared-simple-dropdown>
             </div>
 
-            <div class="w-full flex flex-col p-3 space-y-6 lg:flex-row md:flex-row md:space-y-0 lg:space-y-0">
-                <shared-uploadfile [fileId]="fileId" [fileName]="fileName" typeFile="Identification" [formGroup]="accountForm" [fieldName]="'identificationDocument'" label="Identification"
-                (fileUploaded)="handleFileUploaded($event)">
-              </shared-uploadfile>
+            <div
+                class="w-full flex flex-wrap items-center justify-center space-x-3 p-3  lg:space-y-0 md:space-y-0 space-y-6">
+                <shared-uploadfile [isMandatory]="true" [uploadFile]="uploadFile" [isModified]="false" [fileId]="fileId"
+                    typeFile="Identification" [formGroup]="accountForm" label="Identification"
+                    fieldName="IdentificationName" 
+                    (fileUploaded)="handleFileUploaded($event)">
+                </shared-uploadfile>
 
-                <div class="flex-1 flex flex-col items-center space-y-1 ">
-                    <label for="curriculumVitae" class="text-center">{{'CurriculumVitae' |
-                        translate}}<p class="text-sm font-medium text-red-500">({{'Mandatory' | translate}})</p></label>
-                    <div class="flex items-center justify-center flex-col space-y-1">
-                        <input type="file" id="curriculumVitae" formControlName="curriculumVitae" class="hidden"
-                            (change)="displayFileName($event,0)">
-                        <label for="curriculumVitae"
-                            class="cursor-pointer p-2 text-sm bg-darkslategray text-white rounded-xl">
-                            {{'seleccionar_archivo' | translate}}
-                        </label>
-                        <span class="ml-2 text-sm text-darkslategray">{{this.documentNames[0]}}</span>
-                    </div>
-                </div>
+                <shared-uploadfile [isMandatory]="true" [uploadFile]="uploadFile" [isModified]="false" [fileId]="fileId"
+                    typeFile="CurriculumVitae" [formGroup]="accountForm" label="CurriculumVitae"
+                    fieldName="CurriculumVitaeName" 
+                    (fileUploaded)="handleFileUploaded($event)">
+                </shared-uploadfile>
 
-                <div class="flex-1 flex flex-col items-center space-y-1">
-                    <label for="lastReceiptCLI" class="text-center">{{'seguro_responsabilidad_civil' |
-                        translate}} <p class="text-sm font-medium text-red-500">({{'Optional' | translate}})</p>
-                    </label>
-                    <div class="flex items-center justify-center flex-col space-y-1">
-                        <input type="file" id="lastReceiptCLI" formControlName="lastReceiptCLI" class="hidden"
-                            (change)="displayFileName($event,1)">
-                        <label for="lastReceiptCLI"
-                            class="cursor-pointer p-2 text-sm bg-darkslategray text-white rounded-xl">
-                            {{'seleccionar_archivo' | translate}}
-                        </label>
-                        <span class="ml-2 text-sm text-darkslategray">{{this.documentNames[1]}}</span>
-                    </div>
-                </div>
+                <shared-uploadfile [isMandatory]="false" [uploadFile]="uploadFile" [isModified]="false"
+                    [fileId]="fileId" typeFile="CivilLiabilityInsurance" [formGroup]="accountForm"
+                    label="seguro_responsabilidad_civil" fieldName="CivilLiabilityInsuranceName"
+                    (fileUploaded)="handleFileUploaded($event)">
+                </shared-uploadfile>
             </div>
 
         </form>

@@ -1,26 +1,28 @@
-<div class="relative w-full my-1 px-1 justify-center flex flex-col items-center">
-    <div>
-        <label for="">{{ label | translate }}</label>
-    </div>
-
-    <div class="flex flex-col space-y-3 items-center">
-        <input [ngClass]="[
-                    bgColor,
-                    'placeholder:text-darkgray text-black block border-solid border w-full rounded-xl p-2 pr-3 focus:outline-none focus:border-blue-950'
-                ]" type="file" [readOnly]="readOnly" (blur)="blurEvent.emit()" (input)="inputChange.emit()"
-            (change)="onFileSelected($event)" />
-
-        <button type="button" class="cursor-pointer p-2 text-sm bg-darkslategray text-white rounded-xl" (click)="uploadSelectedFile()"> {{'Subir archivo' | translate}}
-        </button>
-
-        <button *ngIf="fileId != ''" type="button" class="cursor-pointer p-2 text-sm bg-darkslategray text-white rounded-xl" (click)="downloadSelectedFile()"> {{'Subir archivo' | translate}}
-        </button>
-    </div>
-
-    <!-- <p class="mt-2 text-sm text-red-500" *ngIf="isValidField(fieldName); else hidden">
-        {{ getFieldError(fieldName) }}
-    </p> -->
+<div class="relative w-full my-1 px-1 justify-center flex flex-col items-center" [formGroup]="formGroup">
+    <div class=" flex flex-row space-x-3 items-center">
+    <label for="">{{ label | translate }}</label>
+    <p class="text-base font-bold text-red-500" *ngIf="isMandatory == true; else hidden">
+        ({{'Mandatory' | translate}})
+    </p>
     <ng-template #hidden>
         <p class="text-sm">&nbsp;</p>
     </ng-template>
+</div>
+
+<div class="flex flex-col space-y-3 items-center">
+    <input [ngClass]="[
+                    bgColor,
+                    'placeholder:text-darkgray text-black block border-solid border w-full rounded-xl p-2 pr-3 focus:outline-none focus:border-blue-950'
+                ]" type="file" [readOnly]="readOnly" [formControlName]="fieldName" [name]="fieldName"
+        (blur)="blurEvent.emit()" (input)="inputChange.emit()" (change)="onFileSelected($event)" />
+
+    <div class="flex flex-row space-x-3">
+        <button *ngIf="fileId != '' && isModified == true" type="button"
+            class="cursor-pointer p-2 text-sm bg-darkslategray text-white rounded-xl" (click)="downloadSelectedFile()">
+            {{'Download' | translate}}
+        </button>
+    </div>
+
+</div>
+
 </div>
