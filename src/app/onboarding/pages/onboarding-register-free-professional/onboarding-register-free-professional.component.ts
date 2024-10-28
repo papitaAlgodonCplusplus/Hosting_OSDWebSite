@@ -28,9 +28,6 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   osdUsersSubscribersObservable$: Observable<UserInfo[]> = this.osdDataService.getOsdUsersSubscribersSuccess$
   subscribersObservable$: Observable<Subscriber[]> = this.osdDataService.getSubscribersSuccess$
   subscribers: Subscriber[] = [];
-  fileId: string = "";
-  fileName: string = "";
-  
   workspace: DropDownItem[] = [
     { value: this.translate.instant('DT'), key: '87db7d48-ee2a-4494-8627-9cb9e377de21' },
     { value: this.translate.instant('FC'), key: 'eea2312e-6a85-4ab6-85ff-0864547e3870' },
@@ -190,9 +187,6 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   }
 
   onSubmit(): void {
-    console.log(this.accountForm.value)
-    console.log(this.personalForm.value)
-
     if (this.accountForm.invalid || this.personalForm.invalid) {
       this.accountForm.markAllAsTouched();
       this.personalForm.markAllAsTouched();

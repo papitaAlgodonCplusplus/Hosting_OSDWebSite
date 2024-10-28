@@ -54,8 +54,6 @@ export class OnboardingRegisterClaimantComponent {
   countries: DropDownItem[] = [];
   selectedCountries: string | undefined;
   uploadFile: boolean = false;
-  fileId: string = "4_zb51703b85d4409a3911c0e1d_f118e91002b4c59d5_d20241024_m230636_c005_v0501016_t0004_u01729811196044";
-  fileName: string = "actuaciones free professional.csv";
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
@@ -176,9 +174,9 @@ export class OnboardingRegisterClaimantComponent {
       serviceProvided: ['', [Validators.required]],
       amountClaimed: ['', [Validators.required]],
       facts: ['', [Validators.required]],
-      supportingDocumentName1: ['', [Validators.required]],
+      supportingDocumentFileName1: ['', [Validators.required]],
       supportingDocumentFile1Id: [''],
-      supportingDocumentName2: [''],
+      supportingDocumentFileName2: [''],
       supportingDocumentFile2Id: ['']
     });
     return form;
@@ -202,25 +200,29 @@ export class OnboardingRegisterClaimantComponent {
     }
 
     this.store.dispatch(UiActions.toggleConfirmationButton())
+    this.uploadFile = true;
 
     const subscriberName = this.accountForm.get('subscriberClaimed')?.value;
     this.accountForm.patchValue({
       subscriberClaimed: this.selectedSubscribers
     });
 
-    if (this.selectorRegistry === true) {
-      if (!this.personalForm.value.acceptConditions) {
-        this.isAcceptConditions = true;
-        return;
+    setTimeout(() => {
+      if (this.selectorRegistry === true) {
+        if (!this.personalForm.value.acceptConditions) {
+          this.isAcceptConditions = true;
+          return;
+        }
+        this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, "Claimant");
+      } else {
+        if (this.authenticationService.userInfo?.Id) {
+          const claimantIdControl = new FormControl(this.authenticationService.userInfo.Id);
+          this.accountForm.addControl(EventConstants.CLAIMANT_ID, claimantIdControl);
+        }
+        console.log(this.accountForm.value)
+        //this.osdEventService.addClaim(this.accountForm.value);
       }
-      this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, "Claimant");
-    } else {
-      if (this.authenticationService.userInfo?.Id) {
-        const claimantIdControl = new FormControl(this.authenticationService.userInfo.Id);
-        this.accountForm.addControl(EventConstants.CLAIMANT_ID, claimantIdControl);
-      }
-      this.osdEventService.addClaim(this.accountForm.value);
-    }
+    }, 5000);
 
     this.accountForm.patchValue({
       subscriberClaimed: subscriberName
@@ -252,17 +254,11 @@ export class OnboardingRegisterClaimantComponent {
   }
 
   handleFileUploaded(event: { typeFile: string, fileName: string, fileId: string }): void {
-    if (event.typeFile == "supportingDocument1") {
-      this.accountForm.patchValue({
-        supportingDocumentFile1Id: event.fileId,
-        supportingDocumentName1: event.fileName
-      })
-    }
-    else {
-      this.accountForm.patchValue({
-        supportingDocumentFile2Id: event.fileId,
-        supportingDocumentName2: event.fileName
-      })
-    }
+    console.log("Evento recibido:", event); // Verifica si este log aparece
+    this.accountForm.patchValue({
+      supportingDocumentFileName1: event.fileName
+    });
+    console.log("Form actual:", this.accountForm.value); // Verifica si este log aparece
   }
+  
 }

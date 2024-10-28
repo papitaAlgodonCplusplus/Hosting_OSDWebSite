@@ -95,14 +95,14 @@
                 <div
                     class="w-full flex flex-wrap items-center justify-center space-x-3 p-3  lg:space-y-0 md:space-y-0 space-y-6">
 
-                    <shared-uploadfile [isMandatory]="true" [uploadFile]="uploadFile" [fileName]="fileName"
-                        [fileId]="fileId" typeFile="supportingDocument1" [formGroup]="accountForm" label="documento1"
-                        fieldName="supportingDocumentName1" (fileUploaded)="handleFileUploaded($event)">
+                    <shared-uploadfile [isMandatory]="true" [uploadFile]="uploadFile" [fileName]="''" [fileId]="''"
+                        typeFile="supportingDocument1" [formGroup]="accountForm" label="documento1"
+                        fieldName="supportingDocumentFileName1" (fileUploaded)="handleFileUploaded($event)">
                     </shared-uploadfile>
 
-                    <shared-uploadfile [isMandatory]="false" [uploadFile]="uploadFile" [fileId]="fileId"
+                    <shared-uploadfile [isMandatory]="false" [uploadFile]="uploadFile" [fileId]="''" [fileName]="''"
                         typeFile="supportingDocument2" [formGroup]="accountForm" label="documento2"
-                        fieldName="supportingDocumentName2" (fileUploaded)="handleFileUploaded($event)">
+                        fieldName="supportingDocumentFileName2" (fileUploaded)="handleFileUploaded($event)">
                     </shared-uploadfile>
                 </div>
             </form>
