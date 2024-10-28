@@ -114,7 +114,8 @@ export class UploadfileComponent {
 
   modifySelectedFile() {
     const fileId = this.fileId;
-    this.fieldName = "";
+    this.fileName = "";
+    
     if (!fileId) {
       console.error('No hay archivo para moodificar.');
       return;

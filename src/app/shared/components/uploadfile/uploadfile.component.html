@@ -10,7 +10,7 @@
     </div>
 
     <div class="flex flex-col space-y-3 items-center">
-        <div *ngIf="fieldName == '' ; else existsFile">
+        <div *ngIf="fileName === ''; else existsFile">
             <input [ngClass]="[
                     bgColor,
                     'placeholder:text-darkgray text-black block border-solid border w-full rounded-xl p-2 pr-3 focus:outline-none focus:border-blue-950'
