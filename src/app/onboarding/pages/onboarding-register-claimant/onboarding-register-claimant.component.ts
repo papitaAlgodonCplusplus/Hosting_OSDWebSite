@@ -53,6 +53,9 @@ export class OnboardingRegisterClaimantComponent {
   filterCompanyName = '';
   countries: DropDownItem[] = [];
   selectedCountries: string | undefined;
+  uploadFile: boolean = false;
+  fileId: string = "4_zb51703b85d4409a3911c0e1d_f118e91002b4c59d5_d20241024_m230636_c005_v0501016_t0004_u01729811196044";
+  fileName: string = "actuaciones free professional.csv";
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
@@ -173,106 +176,16 @@ export class OnboardingRegisterClaimantComponent {
       serviceProvided: ['', [Validators.required]],
       amountClaimed: ['', [Validators.required]],
       facts: ['', [Validators.required]],
-      supportingDocument1: ['', [Validators.required]],
-      supportingDocument2: ['']
+      supportingDocumentName1: ['', [Validators.required]],
+      supportingDocumentFile1Id: [''],
+      supportingDocumentName2: [''],
+      supportingDocumentFile2Id: ['']
     });
     return form;
   }
 
   toggleForm(): void {
     this.showPersonalInfo = !this.showPersonalInfo;
-  }
-
-  displayFileName(event: Event): void {
-    const input = event.target as HTMLInputElement;
-  
-    if (input?.files && input.files.length > 0) {
-      this.documentFile = input.files[0];
-  
-      if (this.documentFile.type !== 'application/pdf') {
-        if (this.translate.currentLang == "en"){
-          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "The document must be in PDF format" }));
-          this.store.dispatch(ModalActions.openAlert());
-        }else{
-          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "El documento debe de estar en formato PDF" }));
-          this.store.dispatch(ModalActions.openAlert());
-        }
-        this.documentFile = null;
-        this.documentName1 = '';
-        return;
-      }
-  
-      const maxSizeInKB = 1000;
-      const maxSizeInBytes = maxSizeInKB * 1024;
-      if (this.documentFile.size > maxSizeInBytes) {
-        if (this.translate.currentLang == "en"){
-          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "The document exceeds 1000kb" }));
-          this.store.dispatch(ModalActions.openAlert());
-        }else{
-          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "El documento sobrepasa los 1000kb" }));
-          this.store.dispatch(ModalActions.openAlert());
-        }
-
-        this.documentFile = null;
-        this.documentName1 = '';
-        return;
-      }
-  
-      this.documentName1 = this.documentFile.name;
-  
-      const reader = new FileReader();
-      reader.onload = () => {
-        const arrayBuffer = reader.result as ArrayBuffer;
-        this.documentBytes1 = new Uint8Array(arrayBuffer);
-      };
-      reader.readAsArrayBuffer(this.documentFile);
-    }
-  }
-
-  displayFileName2(event: Event): void {
-    const input = event.target as HTMLInputElement;
-  
-    if (input?.files && input.files.length > 0) {
-      this.documentFile2 = input.files[0];
-  
-      if (this.documentFile2.type !== 'application/pdf') {
-        if (this.translate.currentLang == "en"){
-          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "The document must be in PDF format" }));
-          this.store.dispatch(ModalActions.openAlert());
-        }else{
-          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "El documento debe de estar en formato PDF" }));
-          this.store.dispatch(ModalActions.openAlert());
-        }
-        this.documentFile2 = null;
-        this.documentName2 = '';
-        return;
-      }
-  
-      const maxSizeInKB = 1000;
-      const maxSizeInBytes = maxSizeInKB * 1024;
-      if (this.documentFile2.size > maxSizeInBytes) {
-        if (this.translate.currentLang == "en"){
-          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "The document exceeds 1000kb" }));
-          this.store.dispatch(ModalActions.openAlert());
-        }else{
-          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "El documento sobrepasa los 1000kb" }));
-          this.store.dispatch(ModalActions.openAlert());
-        }
-
-        this.documentFile2 = null;
-        this.documentName2 = '';
-        return;
-      }
-  
-      this.documentName2 = this.documentFile2.name;
-  
-      const reader = new FileReader();
-      reader.onload = () => {
-        const arrayBuffer = reader.result as ArrayBuffer;
-        this.documentBytes2 = new Uint8Array(arrayBuffer);
-      };
-      reader.readAsArrayBuffer(this.documentFile2);
-    }
   }
 
   onSubmit(): void {
@@ -289,23 +202,11 @@ export class OnboardingRegisterClaimantComponent {
     }
 
     this.store.dispatch(UiActions.toggleConfirmationButton())
-    
+
     const subscriberName = this.accountForm.get('subscriberClaimed')?.value;
     this.accountForm.patchValue({
       subscriberClaimed: this.selectedSubscribers
     });
-
-    if (this.documentBytes1 != null) {
-      this.fileBytes = this.convertUint8ArrayToBase64(this.documentBytes1);
-    }
-    else if (this.documentBytes2 != null) {
-      this.fileBytes2 = this.convertUint8ArrayToBase64(this.documentBytes2)
-    }
-
-    const JustifyingDocumentBytesControl = new FormControl(this.fileBytes);
-    this.accountForm.addControl("JustifyingDocumentBytes", JustifyingDocumentBytesControl);
-    const JustifyingDocumentBytesControl2 = new FormControl(this.fileBytes2);
-    this.accountForm.addControl("JustifyingDocumentBytes2", JustifyingDocumentBytesControl2);
 
     if (this.selectorRegistry === true) {
       if (!this.personalForm.value.acceptConditions) {
@@ -324,15 +225,6 @@ export class OnboardingRegisterClaimantComponent {
     this.accountForm.patchValue({
       subscriberClaimed: subscriberName
     });
-  }
-
-  convertUint8ArrayToBase64(uint8Array: Uint8Array): string {
-    let binary = '';
-    const len = uint8Array.byteLength;
-    for (let i = 0; i < len; i++) {
-      binary += String.fromCharCode(uint8Array[i]);
-    }
-    return window.btoa(binary);
   }
 
   showModal() {
@@ -357,5 +249,20 @@ export class OnboardingRegisterClaimantComponent {
 
     this.selectedSubscribers = id;
     this.openModal = false;
+  }
+
+  handleFileUploaded(event: { typeFile: string, fileName: string, fileId: string }): void {
+    if (event.typeFile == "supportingDocument1") {
+      this.accountForm.patchValue({
+        supportingDocumentFile1Id: event.fileId,
+        supportingDocumentName1: event.fileName
+      })
+    }
+    else {
+      this.accountForm.patchValue({
+        supportingDocumentFile2Id: event.fileId,
+        supportingDocumentName2: event.fileName
+      })
+    }
   }
 }

@@ -1,5 +1,5 @@
-<div class="flex flex-col justify-center px-10 py-2 space-y-3">
-    <div class="flex flex-col bg-white ">
+<div class="flex flex-col justify-end px-10 py-2 space-y-3 h-full">
+    <div class="flex flex-col bg-white h-full">
         <div [ngClass]="{'show': showPersonalInfo, 'hide': !showPersonalInfo}">
             <form [formGroup]="personalForm" autocomplete="off" class="flex flex-wrap items-center">
 
@@ -92,38 +92,18 @@
                 <shared-text-area class="w-full" fieldName="facts" label="{{'hechos' | translate}}" inputType="text"
                     [formGroup]="accountForm" [bgColor]="'bg-white-lightbone'"></shared-text-area>
 
-                <div class="w-full flex flex-col p-3 space-y-4 lg:flex-row md:flex-row md:space-y-0 lg:space-y-0">
+                <div
+                    class="w-full flex flex-wrap items-center justify-center space-x-3 p-3  lg:space-y-0 md:space-y-0 space-y-6">
 
-                    <div class="flex-1 flex flex-col items-center space-y-1 ">
-                        <label for="supportingDocument1" class="text-center">{{'documento1' |
-                            translate}}<p class="text-sm font-medium text-red-500">({{'Mandatory' | translate}})</p>
-                        </label>
-                        <div class="flex items-center justify-center flex-col space-y-1">
-                            <input type="file" id="supportingDocument1" formControlName="supportingDocument1"
-                                class="hidden" (change)="displayFileName($event)">
-                            <label for="supportingDocument1"
-                                class="cursor-pointer p-2 bg-darkslategray text-white rounded-xl">
-                                {{'seleccionar_archivo' | translate}}
-                            </label>
-                        </div>
-                        <span class="ml-2 text-sm text-darkslategray">{{this.documentName1}}</span>
-                    </div>
+                    <shared-uploadfile [isMandatory]="true" [uploadFile]="uploadFile" [fileName]="fileName"
+                        [fileId]="fileId" typeFile="supportingDocument1" [formGroup]="accountForm" label="documento1"
+                        fieldName="supportingDocumentName1" (fileUploaded)="handleFileUploaded($event)">
+                    </shared-uploadfile>
 
-                    <div class="flex-1 flex flex-col items-center space-y-1 ">
-                        <label for="supportingDocument2" class="text-center"> {{'documento2' |
-                            translate}}<p class="text-sm font-medium text-red-500">({{'Optional' | translate}})</p>
-                        </label>
-                        <div class="flex items-center justify-center flex-col space-y-1">
-                            <input type="file" id="supportingDocument2" formControlName="supportingDocument2"
-                                class="hidden" (change)="displayFileName2($event)">
-                            <label for="supportingDocument2"
-                                class="cursor-pointer p-2 bg-darkslategray text-white rounded-xl">
-                                {{'seleccionar_archivo' | translate}}
-                            </label>
-                        </div>
-                        <span class="ml-2 text-sm text-darkslategray">{{this.documentName2}}</span>
-                    </div>
-
+                    <shared-uploadfile [isMandatory]="false" [uploadFile]="uploadFile" [fileId]="fileId"
+                        typeFile="supportingDocument2" [formGroup]="accountForm" label="documento2"
+                        fieldName="supportingDocumentName2" (fileUploaded)="handleFileUploaded($event)">
+                    </shared-uploadfile>
                 </div>
             </form>
         </div>
@@ -154,25 +134,25 @@
             </div>
         </form>
 
-        <div class="flex-1 flex flex-row justify-end w-full space-x-2 p-3 font-medium mt-10">
-            <button *ngIf="!(isValidToken$ | async) else isValidToken" routerLink="/onboarding/onboarding-register"
-                class="p-2 bg-line rounded-xl text-darkslategray">
+
+
+    </div>
+    <div class="flex flex-row justify-end w-full space-x-2 p-3 font-medium mt-10">
+        <button *ngIf="!(isValidToken$ | async) else isValidToken" routerLink="/onboarding/onboarding-register"
+            class="p-2 bg-line rounded-xl text-darkslategray">
+            {{'cancelar' | translate}}
+        </button>
+
+        <shared-confirmation-button (click)="onSubmit()" [ButtonName]="'confirm'"></shared-confirmation-button>
+
+        <ng-template #isValidToken>
+
+            <button routerLink="/home" class="p-2 bg-line rounded-xl text-darkslategray" i18n="@@signin">
                 {{'cancelar' | translate}}
             </button>
 
-            <shared-confirmation-button (click)="onSubmit()" [ButtonName]="'confirm'"></shared-confirmation-button>
-            
-            <ng-template #isValidToken>
-
-                <button routerLink="/home" class="p-2 bg-line rounded-xl text-darkslategray" i18n="@@signin">
-                    {{'cancelar' | translate}}
-                </button>
-
-            </ng-template>
-        </div>
-
+        </ng-template>
     </div>
-
 
 </div>
 

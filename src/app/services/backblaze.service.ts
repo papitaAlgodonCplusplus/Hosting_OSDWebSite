@@ -29,18 +29,16 @@ export class BackblazeService {
     return this.http.post(`${this.backendUrl}/upload-file`, formData);
   }
 
-
   getDownloadUrl(apiUrl: string, authorizationToken: string, fileId: string): Observable<any> {
     const params = new HttpParams()
       .set('fileId', fileId)
       .set('authorizationToken', authorizationToken)
       .set('apiUrl', apiUrl)
-      .set('downloadUrl', 'https://f005.backblazeb2.com'); // Asegúrate de pasar la downloadUrl correcta
+      .set('downloadUrl', 'https://f005.backblazeb2.com');
 
     return this.http.get(`${this.backendUrl}/get-download-url`, { params });
   }
 
-  // Descargar el archivo con la URL generada y el nombre del archivo
   downloadFile(downloadUrl: string, fileName: string, authorizationToken: string): Observable<Blob> {
     const params = new HttpParams()
       .set('downloadUrl', downloadUrl)
@@ -49,8 +47,17 @@ export class BackblazeService {
 
     return this.http.get(`${this.backendUrl}/download-file`, {
       params,
-      responseType: 'blob' // Para manejar la respuesta como archivo
+      responseType: 'blob'
     });
   }
 
+  modifyFile(apiUrl: string, fileId: string, authorizationToken: string): Observable<any> {
+    const body = {
+      fileId: fileId,
+      authorizationToken: authorizationToken,
+      apiUrl: apiUrl
+    };
+
+    return this.http.post(`${this.backendUrl}/delete-file`, body);
+  }
 }

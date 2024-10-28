@@ -14,7 +14,7 @@ export class UploadfileComponent {
   @Input() bgColor: string = 'bg-white';
   @Input() readOnly!: boolean;
   @Input() fileId!: string;
-  @Input() isModified!: boolean;
+  @Input() fileName!: string;
   @Input() uploadFile!: boolean;
   @Input() isMandatory!: boolean;
   @Input() formGroup!: FormGroup;
@@ -23,6 +23,7 @@ export class UploadfileComponent {
   @Output() inputChange: EventEmitter<any> = new EventEmitter();
   selectedFile!: File;
   @Output() fileUploaded: EventEmitter<{ typeFile: string, fileName: string, fileId: string }> = new EventEmitter();
+  bucketId: string = 'b51703b85d4409a3911c0e1d';
 
   constructor(
     private validationsService: ValidationsService,
@@ -47,19 +48,17 @@ export class UploadfileComponent {
   }
 
   uploadSelectedFile() {
-    const bucketId = 'b51703b85d4409a3911c0e1d';
-
     this.backblazeService.authorizeAccount().subscribe(response => {
       const apiUrl = response.apiUrl;
       const authorizationToken = response.authorizationToken;
 
-      this.backblazeService.getUploadUrl(apiUrl, authorizationToken, bucketId).subscribe(uploadResponse => {
+      this.backblazeService.getUploadUrl(apiUrl, authorizationToken, this.bucketId).subscribe(uploadResponse => {
         const uploadUrl = uploadResponse.uploadUrl;
         const uploadAuthToken = uploadResponse.authorizationToken;
 
         this.backblazeService.uploadFile(uploadUrl, uploadAuthToken, this.selectedFile.name, this.selectedFile).subscribe(uploadResult => {
           const fileId = uploadResult.fileId || uploadResult.fileId;
-  
+
           this.fileUploaded.emit({ typeFile: this.typeFile, fileName: this.selectedFile.name, fileId: fileId });
 
         }, error => {
@@ -113,4 +112,41 @@ export class UploadfileComponent {
     });
   }
 
+  modifySelectedFile() {
+    const fileId = this.fileId;
+    this.fieldName = "";
+    if (!fileId) {
+      console.error('No hay archivo para moodificar.');
+      return;
+    }
+
+    // this.backblazeService.authorizeAccount().subscribe(response => {
+    //   const apiUrl = response.apiUrl;
+    //   const authorizationToken = response.authorizationToken;
+
+    //   this.backblazeService.modifyFile(apiUrl, authorizationToken, fileId).subscribe(modifyResponse => {
+    //     const isDeletedFile = modifyResponse;
+
+    //     if (isDeletedFile == true) {
+    //       this.backblazeService.getUploadUrl(apiUrl, authorizationToken, this.bucketId).subscribe(uploadResponse => {
+    //         const uploadUrl = uploadResponse.uploadUrl;
+    //         const uploadAuthToken = uploadResponse.authorizationToken;
+
+    //         this.backblazeService.uploadFile(uploadUrl, uploadAuthToken, this.selectedFile.name, this.selectedFile).subscribe(uploadResult => {
+    //           const fileId = uploadResult.fileId || uploadResult.fileId;
+
+    //           this.fileUploaded.emit({ typeFile: this.typeFile, fileName: this.selectedFile.name, fileId: fileId });
+
+    //         }, error => {
+    //           console.error('Error al subir el archivo:', error);
+    //         });
+    //       }, error => {
+    //         console.error('Error al obtener la URL de subida:', error);
+    //       });
+    //     }
+    //   })
+    // }, error => {
+    //   console.error('Error al autorizar la cuenta:', error);
+    // });
+  }
 }

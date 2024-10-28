@@ -29,8 +29,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   subscribersObservable$: Observable<Subscriber[]> = this.osdDataService.getSubscribersSuccess$
   subscribers: Subscriber[] = [];
   fileId: string = "";
-  fileName!: string;
-
+ 
   workspace: DropDownItem[] = [
     { value: this.translate.instant('DT'), key: '87db7d48-ee2a-4494-8627-9cb9e377de21' },
     { value: this.translate.instant('FC'), key: 'eea2312e-6a85-4ab6-85ff-0864547e3870' },
@@ -156,11 +155,13 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
       workspace: ['', [Validators.required]],
       SubscriberId: [''],
       IdentificationName: ['', [Validators.required]],
-      IdentificationId: [''],
+      IdentificationFileId: [''],
       CurriculumVitaeName: ['', [Validators.required]],
-      CurriculumVitaeId: [''],
+      CurriculumVitaeFileId: [''],
       CivilLiabilityInsuranceName: [''],
-      CivilLiabilityInsuranceId: ['']
+      CivilLiabilityInsuranceFileId: [''],
+      servicerates: [''],
+      payTPV: ['']
     });
     return accountForm;
   }
@@ -205,7 +206,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
       this.isAcceptConditions = true;
       return;
     }
-
+    this.uploadFile = true;
     this.store.dispatch(UiActions.toggleConfirmationButton())
     const userEmail = this.personalForm.value.email;
     localStorage.setItem('userEmail', userEmail);
@@ -231,19 +232,19 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   handleFileUploaded(event: { typeFile: string, fileName: string, fileId: string }): void {
     if (event.typeFile == "Identification") {
       this.accountForm.patchValue({
-        IdentificationId: event.fileId,
+        IdentificationFileId: event.fileId,
         IdentificationName: event.fileName
       })
     }
     else if (event.typeFile == "CurriculumVitae") {
       this.accountForm.patchValue({
-        CurriculumVitaeId: event.fileId,
+        CurriculumVitaeFileId: event.fileId,
         CurriculumVitaeName: event.fileName
       })
     }
     else {
       this.accountForm.patchValue({
-        CivilLiabilityInsuranceId: event.fileId,
+        CivilLiabilityInsuranceFileId: event.fileId,
         CivilLiabilityInsuranceName: event.fileName
       })
     }
