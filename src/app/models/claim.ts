@@ -14,10 +14,10 @@ export interface Claim {
     Valuationclaimant: string;
     Valuationfreeprofessionals: string;
     Valuationsubscriber: string;
-    Document1: string;
-    Document2: string;
-    JustifyingDocumentBytes1: string;
-    JustifyingDocumentBytes2: string;
+    DocumentFile1Id: string;
+    DocumentFile1Name: string;
+    DocumentFile2Id: string;
+    DocumentFile2Name: string;
     CreditingDate: string;
     AmountPaid: string;
     ImprovementSavings: string;

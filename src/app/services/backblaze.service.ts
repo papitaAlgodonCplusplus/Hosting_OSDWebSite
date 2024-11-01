@@ -7,7 +7,8 @@ import { Observable } from 'rxjs';
 })
 export class BackblazeService {
   private backendUrl = 'http://localhost:3000';
-
+  //private backendUrl = 'https://localhost:3000';
+  
   constructor(private http: HttpClient) { }
 
   authorizeAccount(): Observable<any> {

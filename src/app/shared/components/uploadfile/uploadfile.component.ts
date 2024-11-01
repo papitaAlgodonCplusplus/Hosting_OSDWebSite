@@ -12,22 +12,23 @@ export class UploadfileComponent {
   @Input() typeFile!: string;
   @Input() label!: string;
   @Input() bgColor: string = 'bg-white';
-  @Input() readOnly!: boolean;
-  @Input() fileId!: string;
-  @Input() fileName!: string;
-  @Input() uploadFile!: boolean;
-  @Input() isMandatory!: boolean;
+  @Input() readOnly: boolean = false;
+  @Input() fileId: string = '';
+  @Input() fileName: string = '';
+  @Input() uploadFile: boolean = false;
   @Input() formGroup!: FormGroup;
   @Input() fieldName!: string;
+  @Input() isModified: boolean = false;
   @Output() blurEvent: EventEmitter<void> = new EventEmitter<void>();
   @Output() inputChange: EventEmitter<any> = new EventEmitter();
+  @Output() fileUploaded: EventEmitter<{ typeFile: string, fileId: string }> = new EventEmitter();
+
   selectedFile!: File;
-  @Output() fileUploaded: EventEmitter<{ typeFile: string, fileName: string, fileId: string }> = new EventEmitter();
   bucketId: string = 'b51703b85d4409a3911c0e1d';
 
   constructor(
-    private validationsService: ValidationsService,
-    private backblazeService: BackblazeService
+    private backblazeService: BackblazeService,
+    private validationsService: ValidationsService
   ) { }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -43,34 +44,51 @@ export class UploadfileComponent {
   onFileSelected(event: any): void {
     const file: File = event.target.files[0];
     if (file) {
-      this.selectedFile = file;
+      this.selectedFile = file
+      // Actualizar el formulario con el nombre del archivo
+      this.formGroup.patchValue({
+        [this.fieldName]: file.name
+      });
     }
   }
 
+  isValidField(field: string): boolean | null {
+    return this.validationsService.isValidField(this.formGroup, field);
+  }
+
+  getFieldError(field: string): string | null {
+    return this.validationsService.getFieldError(this.formGroup, field);
+  }
+
   uploadSelectedFile() {
-    this.backblazeService.authorizeAccount().subscribe(response => {
-      const apiUrl = response.apiUrl;
-      const authorizationToken = response.authorizationToken;
+    if (this.selectedFile) {
+      this.backblazeService.authorizeAccount().subscribe(response => {
+        const apiUrl = response.apiUrl;
+        const authorizationToken = response.authorizationToken;
 
-      this.backblazeService.getUploadUrl(apiUrl, authorizationToken, this.bucketId).subscribe(uploadResponse => {
-        const uploadUrl = uploadResponse.uploadUrl;
-        const uploadAuthToken = uploadResponse.authorizationToken;
+        this.backblazeService.getUploadUrl(apiUrl, authorizationToken, this.bucketId).subscribe(uploadResponse => {
+          const uploadUrl = uploadResponse.uploadUrl;
+          const uploadAuthToken = uploadResponse.authorizationToken;
 
-        this.backblazeService.uploadFile(uploadUrl, uploadAuthToken, this.selectedFile.name, this.selectedFile).subscribe(uploadResult => {
-          const fileId = uploadResult.fileId || uploadResult.fileId;
+          this.backblazeService.uploadFile(uploadUrl, uploadAuthToken, this.selectedFile.name, this.selectedFile).subscribe(uploadResult => {
+            const fileId = uploadResult.fileId
 
-          this.fileUploaded.emit({ typeFile: this.typeFile, fileName: this.selectedFile.name, fileId: fileId });
+            this.fileUploaded.emit({ typeFile: this.typeFile, fileId: fileId });
 
+          }, error => {
+            console.error('Error al subir el archivo:', error);
+          });
         }, error => {
-          console.error('Error al subir el archivo:', error);
+          console.error('Error al obtener la URL de subida:', error);
         });
       }, error => {
-        console.error('Error al obtener la URL de subida:', error);
+        console.error('Error al autorizar la cuenta:', error);
       });
-    }, error => {
-      console.error('Error al autorizar la cuenta:', error);
-    });
+    } else {
+      console.error('No se ha seleccionado un archivo');
+    }
   }
+
 
   downloadSelectedFile() {
     const fileId = this.fileId;
@@ -115,7 +133,7 @@ export class UploadfileComponent {
   modifySelectedFile() {
     const fileId = this.fileId;
     this.fileName = "";
-    
+
     if (!fileId) {
       console.error('No hay archivo para moodificar.');
       return;

@@ -36,8 +36,6 @@ export class FileManagerComponent implements OnDestroy {
   showModalRatings: boolean = false;
   showModalPerformances: boolean = false;
   user!: UserInfo
-  document1!: string;
-  document2!: string;
   allPerformances!: any[];
   isTerminatedPerformance: boolean = false;
 
@@ -100,9 +98,6 @@ export class FileManagerComponent implements OnDestroy {
   }
 
   private fillForm(claim: Claim): FormGroup {
-    this.document1 = claim.Document1;
-    this.document2 = claim.Document2;
-
     const form = this.formBuilder.group({
       code: [claim.Code],
       claimant: [this.translate.instant(claim.Claimtype)],
@@ -132,33 +127,6 @@ export class FileManagerComponent implements OnDestroy {
     if (this.fileManager.invalid) {
       this.fileManager.markAllAsTouched();
       return;
-    }
-  }
-
-  convertBase64ToBlob(base64: string, contentType: string = 'application/pdf'): Blob {
-    const byteCharacters = atob(base64); 
-    const byteNumbers = new Array(byteCharacters.length);
-    for (let i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt(i);
-    }
-    const byteArray = new Uint8Array(byteNumbers);
-    return new Blob([byteArray], { type: contentType }); 
-  }
-  
-  downloadPdf(base64String: string) {
-    try {
-      const blob = this.convertBase64ToBlob(base64String, 'application/pdf');
-
-      const url = window.URL.createObjectURL(blob);
-  
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'document.pdf';
-      a.click();
-
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error('Error al descargar el PDF:', error);
     }
   }
 
@@ -298,12 +266,11 @@ export class FileManagerComponent implements OnDestroy {
   }
 
   private fillFormCloseClaimFile(claim: Claim): FormGroup {
-    console.log(claim)
-    let originalDate = claim.Date; 
+    let originalDate = claim.Date;
     let parts = originalDate.split("/");
     let formattedDate = new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0])); // Create a valid Date object
     let formatedStartDate = this.datePipe.transform(formattedDate, 'yyyy-MM-dd');
-    
+
     const form = this.formBuilder.group({
       AAsavingsPP: ['€ ' + claim.ImprovementSavings, [Validators.required]],
       creditingDate: [formatedStartDate, [Validators.required]],

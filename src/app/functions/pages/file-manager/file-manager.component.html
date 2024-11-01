@@ -55,23 +55,18 @@
                 [bgColor]="'bg-white-lightbone'">
             </shared-input-field>
 
-            <div class="w-full flex flex-col space-y-3 font-medium">
-                <div class="text-center text-darkslategray">
-                    <span>{{'EvidenceDocuments' | translate}}</span>
-                </div>
-                <div class="flex flex-row space-x-3 items-center justify-center">
-                    <div class="flex flex-col space-y-3">
-                        <button (click)="downloadPdf(claim.JustifyingDocumentBytes1)" class="p-2 bg-darkslategray text-line rounded-xl">{{'Downloadevidentiarydocument1' |
-                            translate}}</button>
-                        <span>{{document1}}</span>
-                    </div>
-                    <div *ngIf="document2" class="flex flex-col space-y-3">
-                        <button (click)="downloadPdf(claim.JustifyingDocumentBytes2)" class="p-2 bg-darkslategray text-line rounded-xl">{{'Downloadevidentiarydocument2' |
-                            translate}}</button>
-                        <span>{{document2}}</span>
-                    </div>
-                </div>
+            <div class="flex flex-wrap  w-full justify-center py-3 space-x-3 lg:space-y-0 md:space-y-0 space-y-6 ">
+                <shared-uploadfile  [isMandatory]="true" [uploadFile]="false" [fileId]="this.claim.DocumentFile1Id"
+                    [fileName]="this.claim.DocumentFile1Name" [formGroup]="fileManager" label="documento1"
+                    fieldName="amountClaimed">
+                </shared-uploadfile>
+
+                <shared-uploadfile [isMandatory]="true" [uploadFile]="false" [fileId]="this.claim.DocumentFile2Id"
+                    [fileName]="this.claim.DocumentFile2Name" [formGroup]="fileManager" label="documento2"
+                    fieldName="amountClaimed">
+                </shared-uploadfile>
             </div>
+
         </form>
 
         <form [formGroup]="closeClaimfileForm" (ngSubmit)="closeClaimFile()" autocomplete="off"
@@ -84,8 +79,9 @@
                 inputType="text" [formGroup]="closeClaimfileForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
             <shared-input-field [readOnly]="user.AccountType != 'FreeProfessional'  || !isTerminatedPerformance"
-                class="w-full lg:w-1/2" fieldName="AAsavingsPP" label="{{'institutionalImprovementSavings' | translate}}"
-                inputType="text" [formGroup]="closeClaimfileForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                class="w-full lg:w-1/2" fieldName="AAsavingsPP"
+                label="{{'institutionalImprovementSavings' | translate}}" inputType="text"
+                [formGroup]="closeClaimfileForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
             <shared-input-field [readOnly]="user.AccountType != 'FreeProfessional'  || !isTerminatedPerformance"
                 class="w-full lg:w-1/2" fieldName="creditingDate" label="{{'creditingDate' | translate}}"

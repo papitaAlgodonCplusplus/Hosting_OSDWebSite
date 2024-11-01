@@ -11,7 +11,7 @@ import { CountryService } from 'src/app/services/country.service';
 import { OSDDataService } from 'src/app/services/osd-data.service';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { ValidationsService } from 'src/app/services/validations.service';
-import { ModalActions, UiActions } from 'src/app/store/actions';
+import { UiActions } from 'src/app/store/actions';
 import { AuthSelectors } from 'src/app/store/selectors';
 
 @Component({
@@ -19,13 +19,14 @@ import { AuthSelectors } from 'src/app/store/selectors';
   templateUrl: './onboarding-register-claimant.component.html',
   styleUrls: ['./onboarding-register-claimant.component.css']
 })
+
 export class OnboardingRegisterClaimantComponent {
   selectorRegistry!: boolean;
   displayedItems: any[] = [];
   isValidToken$: Observable<boolean> = this.store.select(AuthSelectors.authenticationToken);
-  accountForm: FormGroup;
-  personalForm: FormGroup;
-  showPersonalInfo!: boolean;
+  accountForm!: FormGroup;
+  personalForm!: FormGroup;
+  showPersonalInfo = false;
   selectedClaimant: string | undefined;
   claimant: DropDownItem[] = [
     { value: this.translate.instant('SimpleClaim'), key: 'SimpleClaim' },
@@ -36,26 +37,18 @@ export class OnboardingRegisterClaimantComponent {
   selectedSubscribers: string | undefined;
   selectedSubscriberId: string = '';
   subscribers: any[] = [];
-  documentName1: string | null = null;
-  documentName2: string | null = null;
-  isAcceptConditions!: boolean;
-  registration: boolean = false;
-  openModal: boolean = false;
-  documentBytes1: Uint8Array | null = null;
-  documentBytes2: Uint8Array | null = null;
-  documentFile: File | null = null;
-  documentFile2: File | null = null;
-  fileBytes: string | null = null;
-  fileBytes2: string | null = null;
-
+  isAcceptConditions = false;
+  registration = false;
+  openModal = false;
   filteredSubscribers: any[] = [];
   filterCountry = '';
   filterCompanyName = '';
   countries: DropDownItem[] = [];
   selectedCountries: string | undefined;
-  uploadFile: boolean = false;
+  uploadFile = false;
 
-  constructor(private store: Store,
+  constructor(
+    private store: Store,
     private formBuilder: FormBuilder,
     private validationsService: ValidationsService,
     private translate: TranslateService,
@@ -63,77 +56,52 @@ export class OnboardingRegisterClaimantComponent {
     private osdDataService: OSDDataService,
     private authenticationService: AuthenticationService,
     private route: ActivatedRoute,
-    private countryService: CountryService
+    private countryService: CountryService,
   ) {
     this.personalForm = this.createPersonalForm();
     this.accountForm = this.createAccountForm();
   }
 
   ngOnInit(): void {
-    this.osdEventService.GetSubscribers();
-    this.selectorRegistry = this.route.snapshot.params['selectorRegistry'] === 'true';
-
     setTimeout(() => {
       this.store.dispatch(UiActions.hideFooter());
       this.store.dispatch(UiActions.hideLeftSidebar());
 
-      this.countryService.getCountries().subscribe((data: any[]) => {
-        let countriesList;
-        if (this.translate.currentLang === "en") {
-          countriesList = data
-            .map(country => {
-              if (country.name?.common && country.cca2) {
-                return {
-                  value: country.name.common,
-                  key: country.name.common
-                } as DropDownItem;
-              }
-              return undefined;
-            })
-            .filter(country => country !== undefined)
-            .sort((a, b) => (a && b) ? a.value.localeCompare(b.value) : 0);
-        }
-        else if (this.translate.currentLang === "es") {
-          countriesList = data
-            .filter(country => country.translations?.spa)
-            .map(country => {
-              if (country.translations?.spa?.common && country.cca2) {
-                return {
-                  value: country.translations.spa.common,
-                  key: country.name.common
-                } as DropDownItem;
-              }
-              return undefined;
-            })
-            .filter(country => country !== undefined)
-            .sort((a, b) => (a && b) ? a.value.localeCompare(b.value) : 0);
-        }
-        this.countries = countriesList as DropDownItem[];
-        this.countries.sort((a, b) => a.value.localeCompare(b.value));
-      });
-
-      if (this.selectorRegistry === true) {
-        this.showPersonalInfo = true;
-      }
-      else {
-        this.showPersonalInfo = false;
-      }
-
-      this.osdDataService.getOsdUsersSubscribersSuccess$.subscribe(osdUsersSubscribers => {
-        this.subscribers = osdUsersSubscribers;
-        this.applyFilters()
-      });
+      this.osdEventService.GetSubscribers();
+      this.selectorRegistry = this.route.snapshot.params['selectorRegistry'] === 'true';
+      this.showPersonalInfo = this.selectorRegistry;
     }, 0);
+
+
+    this.countryService.getCountries().subscribe((data: any[]) => {
+      let countriesList;
+      if (this.translate.currentLang === "en") {
+        countriesList = data
+          .map(country => country.name?.common && country.cca2 ? { value: country.name.common, key: country.name.common } as DropDownItem : undefined)
+          .filter(country => country !== undefined)
+          .sort((a, b) => (a && b) ? a.value.localeCompare(b.value) : 0);
+      } else if (this.translate.currentLang === "es") {
+        countriesList = data
+          .filter(country => country.translations?.spa)
+          .map(country => country.translations?.spa?.common && country.cca2 ? { value: country.translations.spa.common, key: country.name.common } as DropDownItem : undefined)
+          .filter(country => country !== undefined)
+          .sort((a, b) => (a && b) ? a.value.localeCompare(b.value) : 0);
+      }
+      this.countries = countriesList as DropDownItem[];
+    });
+
+    this.osdDataService.getOsdUsersSubscribersSuccess$.subscribe(osdUsersSubscribers => {
+      this.subscribers = osdUsersSubscribers;
+      this.applyFilters();
+    });
   }
 
   ngOnDestroy(): void {
-    setTimeout(() => {
-      this.store.dispatch(UiActions.showAll());
-    }, 0);
+    this.store.dispatch(UiActions.showAll());
   }
 
   private createPersonalForm(): FormGroup {
-    const form = this.formBuilder.group({
+    return this.formBuilder.group({
       identity: ['', [Validators.required]],
       name: ['', [Validators.required]],
       firstSurname: ['', [Validators.required]],
@@ -144,7 +112,7 @@ export class OnboardingRegisterClaimantComponent {
       landline: [''],
       mobilePhone: ['', [Validators.required]],
       email: ['', [Validators.required, this.validationsService.isValidEmail]],
-      password: ['', [Validators.required, this.validationsService.isValidPassword, Validators.minLength(6)], []],
+      password: ['', [Validators.required, this.validationsService.isValidPassword, Validators.minLength(6)]],
       web: [''],
       registrationOption: [, [Validators.required]],
       accountType: ['7b04ef6e-b6b6-4b4c-98e5-3008512f610e'],
@@ -152,7 +120,6 @@ export class OnboardingRegisterClaimantComponent {
       city: [''],
       companyName: ['']
     });
-    return form;
   }
 
   onPageChange(event: any) {
@@ -167,66 +134,57 @@ export class OnboardingRegisterClaimantComponent {
 
   private createAccountForm(): FormGroup {
     const currentDate = new Date().toISOString().split('T')[0];
-    const form = this.formBuilder.group({
+    return this.formBuilder.group({
       Date: [currentDate],
       claimtype: ['', [Validators.required]],
       subscriberClaimed: ['', [Validators.required]],
       serviceProvided: ['', [Validators.required]],
       amountClaimed: ['', [Validators.required]],
       facts: ['', [Validators.required]],
-      supportingDocumentFileName1: ['', [Validators.required]],
-      supportingDocumentFile1Id: [''],
-      supportingDocumentFileName2: [''],
-      supportingDocumentFile2Id: ['']
+      firstSupportingDocumentFileName: ['', [Validators.required]],
+      firstSupportingDocumentFileId: [''],
+      secondSupportingDocumentFileName: [''],
+      secondSupportingDocumentFileId: ['']
     });
-    return form;
   }
+
 
   toggleForm(): void {
     this.showPersonalInfo = !this.showPersonalInfo;
   }
 
   onSubmit(): void {
-
     if (this.accountForm.invalid && this.personalForm.invalid && this.selectorRegistry === true) {
-      this.accountForm.markAllAsTouched();
       this.personalForm.markAllAsTouched();
-      this.store.dispatch(ModalActions.openAlert());
+      this.accountForm.markAllAsTouched();
       return;
     } else if (this.accountForm.invalid && this.selectorRegistry === false) {
       this.accountForm.markAllAsTouched();
-      this.store.dispatch(ModalActions.openAlert());
       return;
     }
 
-    this.store.dispatch(UiActions.toggleConfirmationButton())
-    this.uploadFile = true;
+    if (!this.personalForm.value.acceptConditions) {
+      this.isAcceptConditions = true;
+      return;
+    }
 
-    const subscriberName = this.accountForm.get('subscriberClaimed')?.value;
+    this.uploadFile = true;
+    this.store.dispatch(UiActions.toggleConfirmationButton());
     this.accountForm.patchValue({
       subscriberClaimed: this.selectedSubscribers
     });
 
     setTimeout(() => {
-      if (this.selectorRegistry === true) {
-        if (!this.personalForm.value.acceptConditions) {
-          this.isAcceptConditions = true;
-          return;
-        }
+      if (this.selectorRegistry) {
         this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, "Claimant");
       } else {
         if (this.authenticationService.userInfo?.Id) {
           const claimantIdControl = new FormControl(this.authenticationService.userInfo.Id);
           this.accountForm.addControl(EventConstants.CLAIMANT_ID, claimantIdControl);
         }
-        console.log(this.accountForm.value)
-        //this.osdEventService.addClaim(this.accountForm.value);
+        this.osdEventService.addClaim(this.accountForm.value);
       }
     }, 5000);
-
-    this.accountForm.patchValue({
-      subscriberClaimed: subscriberName
-    });
   }
 
   showModal() {
@@ -248,17 +206,21 @@ export class OnboardingRegisterClaimantComponent {
     this.accountForm.patchValue({
       subscriberClaimed: name
     });
-
     this.selectedSubscribers = id;
     this.openModal = false;
   }
 
-  handleFileUploaded(event: { typeFile: string, fileName: string, fileId: string }): void {
-    console.log("Evento recibido:", event); // Verifica si este log aparece
-    this.accountForm.patchValue({
-      supportingDocumentFileName1: event.fileName
-    });
-    console.log("Form actual:", this.accountForm.value); // Verifica si este log aparece
+  handleFileUploaded(event: { typeFile: string, fileId: string }): void {
+    if (event.typeFile == "firstSupportingDocument") {
+      this.accountForm.patchValue({
+        firstSupportingDocumentFileId: event.fileId
+      });
+    }
+    else {
+      this.accountForm.patchValue({
+        secondSupportingDocumentFileId: event.fileId
+      });
+    }
   }
-  
+
 }

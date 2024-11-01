@@ -90,22 +90,20 @@ export class SimpleDropdownComponent {
 
   filter(event: Event) {
     if (!this.oldDropdownItems) {
-      this.oldDropdownItems = this.dropdownItems;
+      this.oldDropdownItems = [...this.dropdownItems]; 
     }
-
+  
     const input = event.target as HTMLInputElement;
     const inputValue = input.value.toLowerCase();
-
+  
     if (inputValue === '') {
-      this.dropdownItems = this.oldDropdownItems;
+      this.dropdownItems = [...this.oldDropdownItems]; 
     } else {
-
-      var filteredItems: DropDownItem[] = this.oldDropdownItems.filter(item =>
+      this.dropdownItems = this.oldDropdownItems.filter(item =>
         item.value.toLowerCase().includes(inputValue)
       );
-
-      this.dropdownItems = filteredItems;
     }
   }
+  
 
 }

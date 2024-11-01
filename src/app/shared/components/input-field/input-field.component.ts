@@ -3,7 +3,6 @@ import { FormGroup } from '@angular/forms';
 
 import { ValidationsService } from 'src/app/services/validations.service';
 
-
 @Component({
   selector: 'shared-input-field',
   templateUrl: './input-field.component.html',

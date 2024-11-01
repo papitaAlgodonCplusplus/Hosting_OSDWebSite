@@ -227,23 +227,20 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     }
   }
 
-  handleFileUploaded(event: { typeFile: string, fileName: string, fileId: string }): void {
-    if (event.typeFile == "Identification") {
+  handleFileUploaded(event: { typeFile: string, fileId: string }): void {
+    if (event.typeFile === "Identification") {
       this.accountForm.patchValue({
-        IdentificationFileId: event.fileId,
-        IdentificationFileName: event.fileName
+        IdentificationFileId: event.fileId
       })
     }
-    else if (event.typeFile == "CurriculumVitae") {
+    else if (event.typeFile === "CurriculumVitae") {
       this.accountForm.patchValue({
-        CurriculumVitaeFileId: event.fileId,
-        CurriculumVitaeFileName: event.fileName
+        CurriculumVitaeFileId: event.fileId
       })
     }
     else {
       this.accountForm.patchValue({
-        CivilLiabilityInsuranceFileId: event.fileId,
-        CivilLiabilityInsuranceFileName: event.fileName
+        CivilLiabilityInsuranceFileId: event.fileId
       })
     }
   }
