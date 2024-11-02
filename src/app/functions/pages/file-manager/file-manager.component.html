@@ -61,7 +61,7 @@
                     fieldName="amountClaimed">
                 </shared-uploadfile>
 
-                <shared-uploadfile [isMandatory]="true" [uploadFile]="false" [fileId]="this.claim.DocumentFile2Id"
+                <shared-uploadfile *ngIf="this.claim.DocumentFile2Id" [isMandatory]="true" [uploadFile]="false" [fileId]="this.claim.DocumentFile2Id"
                     [fileName]="this.claim.DocumentFile2Name" [formGroup]="fileManager" label="documento2"
                     fieldName="amountClaimed">
                 </shared-uploadfile>

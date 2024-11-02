@@ -65,7 +65,7 @@
 
         <div class="w-full" [ngClass]="{'show': !showPersonalInfo, 'hide': showPersonalInfo}">
 
-            <form [formGroup]="accountForm" autocomplete="off" class="flex flex-wrap items-center">
+            <form [formGroup]="accountForm" autocomplete="off" class="flex flex-wrap items-center w-full">
 
                 <shared-input-field *ngIf="false" fieldName="Date" inputType="text" [formGroup]="accountForm"
                     [dropdownItems]="claimant" [selectedItem]="selectedClaimant">
@@ -76,8 +76,13 @@
                     [selectedItem]="selectedClaimant">
                 </shared-simple-dropdown>
 
-                <shared-input-field [readOnly]="false" (click)="showModal()" class="w-full md:w-1/2"
+                <shared-input-field *ngIf="false" [readOnly]="false" (click)="showModal()" class="w-full md:w-1/2"
                     fieldName="subscriberClaimed" inputType="text" label="{{'suscriptor_reclamado' | translate}}"
+                    [formGroup]="accountForm">
+                </shared-input-field>
+
+                <shared-input-field [readOnly]="false" (click)="showModal()" class="w-full md:w-1/2"
+                    fieldName="subscriberClaimedName" inputType="text" label="{{'suscriptor_reclamado' | translate}}"
                     [formGroup]="accountForm">
                 </shared-input-field>
 
@@ -93,17 +98,17 @@
                     [formGroup]="accountForm" [bgColor]="'bg-white-lightbone'"></shared-text-area>
 
                 <div
-                    class="w-full flex flex-wrap items-center justify-center space-x-3 p-3  lg:space-y-0 md:space-y-0 space-y-6">
+                    class="w-full flex flex-wrap items-center justify-center space-x-3 p-3 lg:space-y-0 md:space-y-0 space-y-6">
 
-                    <shared-uploadfile [isMandatory]="true" [uploadFile]="uploadFile" [fileId]="''" [fileName]="''"
+                    <shared-uploadfile [isModified]="false" [uploadFile]="uploadFile" [fileId]="''" [fileName]="''"
                         typeFile="firstSupportingDocument" [formGroup]="accountForm" label="documento1"
                         fieldName="firstSupportingDocumentFileName" (fileUploaded)="handleFileUploaded($event)">
                     </shared-uploadfile>
 
-                    <shared-uploadfile [isMandatory]="false" [uploadFile]="uploadFile" [fileId]="''" [fileName]="''"
+                    <shared-uploadfile [isModified]="false" [uploadFile]="uploadFile" [fileId]="''" [fileName]="''"
                         typeFile="secondSupportingDocument" [formGroup]="accountForm" label="documento2"
                         fieldName="secondSupportingDocumentFileName" (fileUploaded)="handleFileUploaded($event)">
-                    </shared-uploadfile> 
+                    </shared-uploadfile>
                 </div>
             </form>
         </div>

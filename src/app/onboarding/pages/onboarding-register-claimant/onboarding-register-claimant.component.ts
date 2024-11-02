@@ -34,8 +34,6 @@ export class OnboardingRegisterClaimantComponent {
     { value: this.translate.instant('ExtrajudicialClaimSustainability'), key: 'ExtrajudicialClaimSustainability' },
     { value: this.translate.instant('MediationArbitration'), key: 'MediationArbitration' }
   ];
-  selectedSubscribers: string | undefined;
-  selectedSubscriberId: string = '';
   subscribers: any[] = [];
   isAcceptConditions = false;
   registration = false;
@@ -138,6 +136,7 @@ export class OnboardingRegisterClaimantComponent {
       Date: [currentDate],
       claimtype: ['', [Validators.required]],
       subscriberClaimed: ['', [Validators.required]],
+      subscriberClaimedName: ['', [Validators.required]],
       serviceProvided: ['', [Validators.required]],
       amountClaimed: ['', [Validators.required]],
       facts: ['', [Validators.required]],
@@ -170,10 +169,7 @@ export class OnboardingRegisterClaimantComponent {
 
     this.uploadFile = true;
     this.store.dispatch(UiActions.toggleConfirmationButton());
-    this.accountForm.patchValue({
-      subscriberClaimed: this.selectedSubscribers
-    });
-
+   
     setTimeout(() => {
       if (this.selectorRegistry) {
         this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, "Claimant");
@@ -204,9 +200,9 @@ export class OnboardingRegisterClaimantComponent {
 
   selectSubscriber(id: string, name: string) {
     this.accountForm.patchValue({
-      subscriberClaimed: name
+      subscriberClaimed: id,
+      subscriberClaimedName: name
     });
-    this.selectedSubscribers = id;
     this.openModal = false;
   }
 

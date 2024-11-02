@@ -41,16 +41,19 @@ export class UploadfileComponent {
     this.inputChange.emit()
   }
 
-  onFileSelected(event: any): void {
-    const file: File = event.target.files[0];
-    if (file) {
-      this.selectedFile = file
-      // Actualizar el formulario con el nombre del archivo
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedFile = input.files[0]
+      this.fileName = input.files[0].name
       this.formGroup.patchValue({
-        [this.fieldName]: file.name
+        [this.fieldName]: input.files[0].name
       });
+    } else {
+      this.fileName = '';
     }
   }
+
 
   isValidField(field: string): boolean | null {
     return this.validationsService.isValidField(this.formGroup, field);
