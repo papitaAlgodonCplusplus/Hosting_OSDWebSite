@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { RestAPIService } from 'src/app/services/rest-api.service';
 import { EventFactoryService } from './event-factory.service';
 import { UserLoginEvent } from '../auth/interfaces/login.interface';
@@ -122,17 +124,16 @@ export class OSDService {
     });
   }
 
-  public userLogin(loginForm: UserLoginEvent) {
-    const userLoginEvent: WebBaseEvent = this.eventFactoryService.CreateUserLoginEvent(loginForm);
-    this.restApiService.SendOSDEvent(userLoginEvent).subscribe({
-      next: (response) => {
-        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+  public userLogin(loginForm: UserLoginEvent): Observable<any> {
+    const userLoginEvent: WebBaseEvent =
+      this.eventFactoryService.CreateUserLoginEvent(loginForm);
+    return this.restApiService.SendOSDEvent(userLoginEvent).pipe(
+      map((response) => {
+        const osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
         this.HandleAuthenticationResponse(osdEvent);
-      },
-      error: (error) => {
-        //TODO: Pending implementation
-      }
-    });
+        return response;
+      })
+    );
   }
 
   public addPerformanceFreeProfessional(performanceFP: PerformanceFreeProfessional, projectManagerSelectedId: string, documentBase64: string) {
@@ -226,18 +227,11 @@ export class OSDService {
     });
   }
 
-  public userRegister(accountForm: Form, personalForm: Form, accountType: string) {
+  public userRegister(accountForm: Form, personalForm: Form, accountType: string): Observable<any> {
     const registerUserEvent: WebBaseEvent = this.eventFactoryService.CreateRegisterUserEvent(accountForm, personalForm, accountType);
-    this.restApiService.SendOSDEvent(registerUserEvent).subscribe({
-      next: (response) => {
-        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
-        this.HandleRegisterUserResponse(osdEvent);
-      },
-      error: (error) => {
-        //TODO: Pending implementation
-      }
-    });
+    return this.restApiService.SendOSDEvent(registerUserEvent);
   }
+  
 
   public addClaim(claimForm: Form) {
     const addClaimEvent: WebBaseEvent = this.eventFactoryService.CreateAddClaimEvent(claimForm);
@@ -311,6 +305,7 @@ export class OSDService {
     this.restApiService.SendOSDEvent(performanceBuyEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        console.log("OSD EVENT", osdEvent)
         this.GetTransparencyReportsIncomeExpensesResponse(osdEvent);
       },
       error: (error) => {

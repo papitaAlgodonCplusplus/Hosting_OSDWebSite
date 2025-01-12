@@ -4,82 +4,205 @@
         <img src="/./assets/img/OSD_2.png" alt="Logo OSD" class="w-36" routerLink="/home">
     </div>
 </div>
+
 <div class="flex px-10 py-2 space-y-3">
     <div class="flex bg-white text-black flex-col">
+        <!-- FIRST FORM: accountForm & partial personalForm fields -->
         <form [formGroup]="personalForm" (ngSubmit)="onSubmit()" autocomplete="off"
             class="flex-1 flex flex-wrap items-center">
-            <!-- <div class="w-full">
-                <h1 class="border-b text-darkslategray text-lg font-medium">{{'CFH' | translate }}</h1>
-            </div> -->
 
-            <shared-input-field class="w-full md:w-1/2" fieldName="identity" label="{{'DNI' | translate}}"
-                inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+            <form [formGroup]="accountForm" (ngSubmit)="onSubmit()" autocomplete="off" class="flex-1 flex flex-col">
+                <shared-simple-dropdown class="w-full md:w-1/2" fieldName="clientType"
+                    label="{{ 'clientType' | translate }}" [formGroup]="accountForm" [dropdownItems]="entity"
+                    [selectedItem]="selectedEntity">
+                </shared-simple-dropdown>
+            </form>
+
+            <shared-input-field class="w-full md:w-1/2" fieldName="identity" label="{{'Identity' | translate}}"
+                inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'">
+            </shared-input-field>
 
             <shared-input-field class="w-full md:w-1/2" fieldName="companyName" label="{{'RazonSocial' | translate}}"
-                inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-            <shared-input-field class="w-full md:w-1/2" fieldName="name" label="{{'Name' | translate}}" inputType="text"
-                [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'">
+            </shared-input-field>
 
             <shared-input-field class="w-full md:w-1/2" fieldName="firstSurname"
                 label="{{'primer_apellido' | translate}}" inputType="text" [formGroup]="personalForm"
-                [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                [bgColor]="'bg-white-lightbone'">
+            </shared-input-field>
 
             <shared-input-field class="w-full md:w-1/2" fieldName="middleSurname"
                 label="{{'segundo_apellido' | translate}}" inputType="text" [formGroup]="personalForm"
-                [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                [bgColor]="'bg-white-lightbone'">
+            </shared-input-field>
 
             <shared-input-field class="w-full md:w-1/2" fieldName="zipCode" label="{{'cod_postal' | translate}}"
-                inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'">
+            </shared-input-field>
 
             <shared-input-field class="w-full md:w-1/2" fieldName="landline" label="{{'tel_fijo' | translate}}"
-                inputType="tel" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                inputType="tel" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'">
+            </shared-input-field>
 
             <shared-input-field class="w-full md:w-1/2" fieldName="mobilePhone" label="{{'tel_movil' | translate}}"
-                inputType="tel" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-            <shared-input-field class="w-full md:w-1/2" fieldName="web" label="{{'pagina_web' | translate}}"
-                inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                inputType="tel" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'">
+            </shared-input-field>
 
             <shared-input-field class="w-full md:w-1/2" fieldName="city" label="{{'Ciudad' | translate}}"
-                inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'">
+            </shared-input-field>
+
+            <shared-input-field class="w-full md:w-1/2" fieldName="web" label="{{'pagina_web' | translate}}"
+                inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'">
+            </shared-input-field>
 
             <shared-simple-dropdown class="w-full md:w-1/2" fieldName="country" label="{{'pais' | translate}}"
                 [formGroup]="personalForm" [dropdownItems]="countries" [selectedItem]="selectedCountries">
             </shared-simple-dropdown>
-            
-            <shared-text-area class="w-full" fieldName="address" label="{{'direccion' | translate}}"
-                inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-text-area>
 
-        </form>
-        <form [formGroup]="accountForm" (ngSubmit)="onSubmit()" autocomplete="off" class=" flex-1 flex flex-col ">
-            <shared-simple-dropdown class="w-full md:w-1/2" fieldName="clientType" label="{{'clientType' | translate}}"
-                [formGroup]="accountForm" [dropdownItems]="entity" [selectedItem]="selectedEntity">
-            </shared-simple-dropdown>
-            <!-- <div class="flex flex-col items-start space-y-3 ">
-                <div class="bg-white flex flex-row items-center space-x-1">
-
-                </div>
-            </div> -->
+            <shared-text-area class="w-full" fieldName="address" label="{{'direccion' | translate}}" inputType="text"
+                [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'">
+            </shared-text-area>
         </form>
 
+        <!-- SECOND FORM: personalForm continued -->
         <form [formGroup]="personalForm" (ngSubmit)="onSubmit()" autocomplete="off">
-            <div class="flex flex-col lg:flex-row items-center">
-                <div class="flex flex-wrap text-black w-full my-2 py-3 ">
+
+            <!-- COURSES TABLE (FormArray) -->
+            <div class="mt-5 w-full" formArrayName="courses">
+                <h2 class="text-base font-semibold text-darkslategray mb-2">
+                    {{ 'Cursos Disponibles' | translate }}
+                </h2>
+
+                <div class="overflow-x-auto border rounded shadow-sm">
+                    <table class="min-w-full text-left border-collapse">
+                        <thead class="border-b bg-gray-100">
+                            <tr>
+                                <th class="px-4 py-2">{{ 'nombre_curso' | translate }}</th>
+                                <th class="px-4 py-2">{{ 'coste_en_euros' | translate }}</th>
+                                <th class="px-4 py-2">{{ 'acciones' | translate }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- MAIN ROW FOR EACH COURSE -->
+                            <tr class="border-b" *ngFor="let courseCtrl of coursesControls; let i = index"
+                                [formGroup]="courseCtrl">
+
+                                <!-- courseName -->
+                                <td class="px-4 py-2 align-top">
+                                    <shared-input-field fieldName="courseName" label="" inputType="text"
+                                        [formGroup]="courseCtrl" [bgColor]="'bg-white-lightbone'">
+                                    </shared-input-field>
+                                </td>
+
+                                <!-- cost -->
+                                <td class="px-4 py-2 align-top">
+                                    <shared-input-field fieldName="cost" label="" inputType="number"
+                                        [formGroup]="courseCtrl" [bgColor]="'bg-white-lightbone'">
+                                    </shared-input-field>
+                                </td>
+
+                                <!-- remove course button -->
+                                <td class="px-4 py-2 align-top">
+                                    <button type="button" class="px-3 py-1 bg-red-500 text-white rounded"
+                                        (click)="removeCourse(i)">
+                                        {{ 'eliminar' | translate }}
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <!-- SUB-ROW: nested table for modules of each course -->
+                            <tr class="border-b" *ngFor="let courseCtrl of coursesControls; let i = index"
+                                [formGroup]="courseCtrl">
+
+                                <td colspan="3" class="px-4 py-2 bg-gray-50">
+                                    <!-- Sub-table for modules in this course -->
+                                    <div formArrayName="modules">
+                                        <h3 class="font-medium mb-1">
+                                            {{ 'Módulos para este curso' | translate }}
+                                        </h3>
+                                        <div class="overflow-x-auto border rounded shadow-sm">
+                                            <table class="min-w-full text-left border-collapse">
+                                                <thead class="border-b bg-gray-100">
+                                                    <tr>
+                                                        <th class="px-4 py-2">Módulo</th>
+                                                        <th class="px-4 py-2">Duración</th>
+                                                        <th class="px-4 py-2">Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <!-- For each module in this course -->
+                                                    <tr class="border-b"
+                                                        *ngFor="let moduleCtrl of getModulesControls(i); let m = index"
+                                                        [formGroup]="moduleCtrl">
+
+                                                        <td class="px-4 py-2">
+                                                            <shared-input-field fieldName="moduleName" label=""
+                                                                inputType="text" [formGroup]="moduleCtrl"
+                                                                [bgColor]="'bg-white-lightbone'">
+                                                            </shared-input-field>
+                                                        </td>
+
+                                                        <td class="px-4 py-2">
+                                                            <shared-input-field fieldName="duration" label=""
+                                                                inputType="number" [formGroup]="moduleCtrl"
+                                                                [bgColor]="'bg-white-lightbone'">
+                                                            </shared-input-field>
+                                                        </td>
+
+                                                        <td class="px-4 py-2">
+                                                            <button type="button"
+                                                                class="px-3 py-1 bg-red-500 text-white rounded"
+                                                                (click)="removeModule(i, m)">
+                                                                Eliminar módulo
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <!-- Add Module button -->
+                                        <div class="flex justify-end mt-2">
+                                            <button type="button" class="p-2 bg-blue-500 text-white rounded"
+                                                (click)="addModule(i)">
+                                                + Añadir Módulo
+                                            </button>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Add Course button -->
+                <div class="flex justify-end mt-2">
+                    <button type="button" class="p-2 bg-green-500 text-white rounded" (click)="addCourse()">
+                        {{ 'agregar_curso' | translate }}
+                    </button>
+                </div>
+            </div>
+            <!-- END of COURSES TABLE -->
+
+            <div class="flex flex-col lg:flex-row items-center mt-5">
+                <div class="flex flex-wrap text-black w-full my-2 py-3">
                     <div class="flex-1 flex flex-col p-2 text-black space-y-4">
-                        <h1 class="text-lg font-bold text-darkslategray">{{'iniciar_sesion' | translate}}:
-                        </h1>
-                        <span class="">{{'loginInRegister' | translate}}</span>
+                        <h1 class="text-lg font-bold text-darkslategray">{{'iniciar_sesion' | translate}}:</h1>
+                        <span class="w-82 text-justify mr-4">{{'loginInRegister' | translate}}</span>
                     </div>
                 </div>
+
                 <shared-input-field class="w-full" fieldName="email" label="{{'email' | translate}}" inputType="email"
-                    [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                    [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'">
+                </shared-input-field>
+
                 <auth-input-password class="w-full px-1" [formGroup]="personalForm" fieldName="password"
-                    label="{{'contraseña' | translate}}"></auth-input-password>
+                    label="{{'contraseña' | translate}}">
+                </auth-input-password>
             </div>
 
             <div class="p-2 flex flex-col space-y-3">
-                <div class=" bg-white flex flex-col lg:flex-row lg:items-center lg:space-x-3">
+                <div class="bg-white flex flex-col lg:flex-row lg:items-center lg:space-x-3">
                     <div class="flex flex-row items-center space-x-3">
                         <button
                             class="p-2 bg-darkslategray text-line rounded-lg font-medium animate__animated animate__fadeInDown"
@@ -87,23 +210,26 @@
                             {{'Video_CFH' | translate}}
                         </button>
                         <a *ngIf="!showDocument"
-                            class="p-2  bg-darkslategray text-line rounded-lg font-normal animate__animated animate__fadeInDown"
-                            href="assets/contracts/8-4-24-Contrato-CFH-Centro-Formacion-Homologado.pdf" download><i
-                                class="fa-solid fa-download animate-pulse"></i>
+                            class="p-2 bg-darkslategray text-line rounded-lg font-normal animate__animated animate__fadeInDown"
+                            href="assets/contracts/8-4-24-Contrato-CFH-Centro-Formacion-Homologado.pdf" download>
+                            <i class="fa-solid fa-download animate-pulse"></i>
                             {{'Contract'| translate }}
                         </a>
                         <a *ngIf="showDocument"
-                            class="p-2  bg-darkslategray text-line rounded-lg font-normal animate__animated animate__fadeInDown"
-                            href="assets/contracts/8-4-24-DSO-Training-Center-Agreement-.pdf" download><i
-                                class="fa-solid fa-download animate-pulse"></i>
+                            class="p-2 bg-darkslategray text-line rounded-lg font-normal animate__animated animate__fadeInDown"
+                            href="assets/contracts/8-4-24-DSO-Training-Center-Agreement-.pdf" download>
+                            <i class="fa-solid fa-download animate-pulse"></i>
                             {{'Contract'| translate }}
                         </a>
                     </div>
                 </div>
+
                 <div class="flex flex-col space-x-1 w-full">
                     <div>
                         <input type="checkbox" id="acceptConditions" formControlName="acceptConditions">
                         <label for="acceptConditions"> {{'aceptar_condiciones' | translate}}</label>
+                        <a href="https://www.google.com" target="_blank" class="text-blue-500 underline ml-2">Texto LOR
+                            (Por Hacer)</a>
                     </div>
 
                     <div *ngIf="!personalForm.value.acceptConditions" class="text-red-700 pl-1">

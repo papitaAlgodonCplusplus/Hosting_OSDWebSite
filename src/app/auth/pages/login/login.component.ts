@@ -35,7 +35,8 @@ export class LoginComponent implements OnDestroy {
     public eventFactoryService: EventFactoryService,
     private osdEventService: OSDService,
     private authenticationService: AuthenticationService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private router: Router
   ) {
     this.loginForm = this.createLoginForm();
   }
@@ -53,12 +54,25 @@ export class LoginComponent implements OnDestroy {
     }, 0);
   }
 
+
   onSubmit(): void {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
       return;
     }
-    this.osdEventService.userLogin(this.loginForm.value);
+  
+    this.osdEventService.userLogin(this.loginForm.value).subscribe({
+      next: (response: any) => {
+        // We have the response here. For example:
+        const userInfo = response?.Body?.USER_INFO;
+        this.authenticationService.userInfo = userInfo;
+  
+        this.router.navigate(['/home']);
+      },
+      error: (error: any) => {
+        console.error('Login error:', error);
+      },
+    });
   }
 
   private createLoginForm(): FormGroup {

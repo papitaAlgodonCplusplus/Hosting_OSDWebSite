@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  restAPIUrl: 'https://digitalsolutionoffice.com:5000/api'
-  //restAPIUrl: 'http://localhost:5000/api'
+  //restAPIUrl: 'https://digitalsolutionoffice.com:5000/api'
+  restAPIUrl: 'http://localhost:5000/api'
 };
 
 /*
