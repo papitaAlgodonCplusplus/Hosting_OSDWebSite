@@ -12,6 +12,9 @@ import { Observable } from 'rxjs';
 import { Subscriber } from 'src/app/functions/models/Subscriber';
 import { UserInfo } from 'src/app/models/userInfo';
 import { CountryService } from 'src/app/services/country.service';
+import { HttpClient } from '@angular/common/http';
+import { ChangeDetectorRef } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register-free-professional',
@@ -32,6 +35,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     { value: this.translate.instant('DT'), key: '87db7d48-ee2a-4494-8627-9cb9e377de21' },
     { value: this.translate.instant('FC'), key: 'eea2312e-6a85-4ab6-85ff-0864547e3870' },
     { value: this.translate.instant('TR'), key: '2fc2a66a-69ca-4832-a90e-1ff590b80d24' },
+    { value: this.translate.instant('TK'), key: 'f7a8c9d3-6e2b-4a5f-9bcd-2e4d9f3a7b21' },
     { value: this.translate.instant('TC'), key: '1bfc42c6-0d32-4270-99ed-99567bc7a562' },
     { value: this.translate.instant('TM'), key: '4fbeb4e3-a284-44ef-ac65-a70a0620b1c9' },
     { value: this.translate.instant('TS'), key: 'afdc95b1-271e-4788-a00a-d40081d7314f' },
@@ -53,6 +57,9 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   countries: DropDownItem[] = [];
   selectedCountries: string | undefined;
   uploadFile: boolean = false;
+  courses: DropDownItem[] = [];
+  selectedCourse: string | undefined;
+  showCourseDropdown: boolean = false;
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
@@ -60,7 +67,10 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     private osdEventService: OSDService,
     private translate: TranslateService,
     private osdDataService: OSDDataService,
-    private countryService: CountryService
+    private countryService: CountryService,
+    private cdr: ChangeDetectorRef,
+    private router: Router,
+    private http: HttpClient
   ) {
     this.accountForm = this.createAccountForm();
     this.personalForm = this.createPersonalForm();
@@ -70,8 +80,59 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     this.isDropdownOpen = !this.isDropdownOpen;
   }
 
+  onWorkspaceChange() {
+    this.selectedWorkspace = this.accountForm.value.workspace;
+    if (this.selectedWorkspace === 'eea2312e-6a85-4ab6-85ff-0864547e3870') {
+      this.fetchCourses();
+      this.showCourseDropdown = true;
+    } else {
+      this.showCourseDropdown = false;
+    }
+  }
+
+  onCourseChange = () => {
+    this.selectedCourse = this.accountForm.value.course;
+  }
+
+  fetchCourses() {
+    this.http.get<any>('http://localhost:5000/api/courses').subscribe(
+      (response) => {
+        if (response.success && response.courses.length) {
+          this.courses = response.courses.map((course: any) => ({
+            value: course.title,
+            key: course.id
+          }));
+          this.cdr.detectChanges();
+        }
+      },
+      (error) => {
+        console.error('Error fetching courses:', error);
+      }
+    );
+  }
+
+  trackByKey(index: number, item: any): string {
+    return item.key;
+  }
+
   ngOnInit(): void {
     setTimeout(() => {
+      this.translate.get([
+        'DT', 'FC', 'TR', 'TK', 'TC', 'TM', 'TS', 'OSDSystemsEngineer'
+      ]).subscribe(translations => {
+        this.workspace = [
+          { value: translations['DT'], key: '87db7d48-ee2a-4494-8627-9cb9e377de21' },
+          { value: translations['FC'], key: 'eea2312e-6a85-4ab6-85ff-0864547e3870' },
+          { value: translations['TR'], key: '2fc2a66a-69ca-4832-a90e-1ff590b80d24' },
+          { value: translations['TK'], key: 'f7a8c9d3-6e2b-4a5f-9bcd-2e4d9f3a7b21' },
+          { value: translations['TC'], key: '1bfc42c6-0d32-4270-99ed-99567bc7a562' },
+          { value: translations['TM'], key: '4fbeb4e3-a284-44ef-ac65-a70a0620b1c9' },
+          { value: translations['TS'], key: 'afdc95b1-271e-4788-a00a-d40081d7314f' },
+          { value: translations['OSDSystemsEngineer'], key: '4e1477bf-e13c-084b-3bff-1149f3ab3f3b' },
+        ];
+      });
+      this.onWorkspaceChange();
+      this.onCourseChange();
       this.countryService.getCountries().subscribe((data: any[]) => {
         let countriesList;
         if (this.translate.currentLang === "en") {
@@ -159,7 +220,8 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
       CivilLiabilityInsuranceFileName: [''],
       CivilLiabilityInsuranceFileId: [''],
       servicerates: [''],
-      payTPV: ['']
+      payTPV: [''],
+      course: [''],
     });
     return accountForm;
   }
@@ -208,9 +270,19 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     this.store.dispatch(UiActions.toggleConfirmationButton())
     const userEmail = this.personalForm.value.email;
     localStorage.setItem('userEmail', userEmail);
-    setTimeout(() => {
-      this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.FREE_PROFESSIONAL);
-    }, 5000);
+    this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.FREE_PROFESSIONAL).subscribe({
+      next: (response: any) => {
+        console.log("User registered successfully:", response);
+        this.router.navigate(['/auth']);
+      },
+      error: (error: any) => {
+        console.error("Registration failed:", error);
+        this.store.dispatch(
+          ModalActions.addAlertMessage({ alertMessage: "Registration failed. Please try again." })
+        );
+        this.store.dispatch(ModalActions.openAlert());
+      }
+    });
   }
 
   CheckIfIsTr() {

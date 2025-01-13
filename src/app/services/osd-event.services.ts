@@ -231,7 +231,6 @@ export class OSDService {
     const registerUserEvent: WebBaseEvent = this.eventFactoryService.CreateRegisterUserEvent(accountForm, personalForm, accountType);
     return this.restApiService.SendOSDEvent(registerUserEvent);
   }
-  
 
   public addClaim(claimForm: Form) {
     const addClaimEvent: WebBaseEvent = this.eventFactoryService.CreateAddClaimEvent(claimForm);

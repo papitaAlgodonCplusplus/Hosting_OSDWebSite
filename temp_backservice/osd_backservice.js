@@ -10,7 +10,6 @@ const port = 5000;
 app.use(cors());
 app.use(bodyParser.json());
 
-// PostgreSQL Connection
 const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
@@ -19,7 +18,6 @@ const pool = new Pool({
   port: 5432,
 });
 
-// Helper to create WebBaseEvent
 const createWebBaseEvent = (body, sessionKey = null, securityToken = null, action = 'Response') => ({
   Body: body,
   TraceIdentifier: uuidv4(),
@@ -30,8 +28,6 @@ const createWebBaseEvent = (body, sessionKey = null, securityToken = null, actio
   SessionKey: sessionKey,
   SecurityToken: securityToken,
 });
-
-
 
 app.post('/api/control/connect', async (req, res) => {
   try {
@@ -57,6 +53,7 @@ app.post('/api/control/connect', async (req, res) => {
 
 // Unified Event Handler
 app.post('/api/events/processOSDEvent', async (req, res) => {
+  console.log('📡 Processing OSD Event');
   const event = req.body;
   const action = event.Body?.Action;
   console.log(`🔔 Body: ${JSON.stringify(event.Body, null, 2)} Action: ${action}`);
@@ -75,8 +72,12 @@ app.post('/api/events/processOSDEvent', async (req, res) => {
         await handleGetFreeProfessionals(event, res);
         break;
 
+      case 'GetSubscribers':
+        await handleGetSubscribers(event, res);
+        console.log('📧 GetSubscribers event processed');
+        break;
+
       default:
-        // returns 400
         res.status(400).json(createWebBaseEvent({
           SUCCESS: false,
           MESSAGE: `Invalid event action: ${action}`
@@ -158,6 +159,211 @@ const handleUserLogin = async (event, res) => {
   );
 };
 
+const handleUserRegistration = async (event, res) => {
+  try {
+    const accountForm = event.Body?.AccountForm;
+    const personalForm = event.Body?.PersonalForm;
+
+    // Check required fields
+    if (!personalForm?.email || !personalForm?.password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email and password are required for registration.'
+      });
+    }
+
+    // See if user exists by email
+    const userExists = await pool.query(
+      'SELECT * FROM osduser WHERE email = $1',
+      [personalForm.email]
+    );
+
+    let userId;
+
+    // If user does not exist, create it
+    if (userExists.rows.length === 0) {
+      userId = uuidv4();
+
+      // 1) Retrieve the UUID of the account type by matching the `type` column
+      //    with event.Body?.AccountType, e.g. "FreeProfessional", "Claimant", etc.
+      const accountTypeResult = await pool.query(
+        'SELECT id FROM accounttype WHERE type = $1',
+        [event.Body?.AccountType] // e.g. "FreeProfessional"
+      );
+
+      if (accountTypeResult.rows.length === 0) {
+        // If no match found, respond accordingly
+        return res.status(400).json({
+          success: false,
+          message: `Unknown account type: ${event.Body?.AccountType}`
+        });
+      }
+      const accountTypeId = accountTypeResult.rows[0].id; // a valid UUID
+
+      // 2) Insert new user into osduser
+      const insertOsdUserQuery = `
+        INSERT INTO osduser (
+          id,
+          code,
+          accounttype,
+          identity,
+          name,
+          firstsurname,
+          middlesurname,
+          city,
+          companyname,
+          address,
+          zipcode,
+          country,
+          landline,
+          mobilephone,
+          email,
+          password,
+          web,
+          isauthorized,
+          isadmin
+        ) VALUES (
+          $1, $2, $3, $4, $5,
+          $6, $7, $8, $9, $10,
+          $11, $12, $13, $14, $15,
+          $16, $17, $18, $19
+        )
+        RETURNING id;
+      `;
+
+      console.log('🔐 Inserting user into osduser:', personalForm.email);
+
+      const osdUserResult = await pool.query(insertOsdUserQuery, [
+        userId,
+        `${personalForm.country}/IT/1/2025`, // code: adjust as needed
+        accountTypeId,                      // <- use the retrieved UUID
+        personalForm.identity,
+        personalForm.name,
+        personalForm.firstSurname,
+        personalForm.middleSurname,
+        personalForm.city,
+        personalForm.companyName || '',
+        personalForm.address,
+        personalForm.zipCode,
+        personalForm.country,
+        personalForm.landline || '',
+        personalForm.mobilePhone,
+        personalForm.email,
+        personalForm.password,
+        personalForm.web,
+        true,   // isauthorized
+        false   // isadmin
+      ]);
+
+      userId = osdUserResult.rows[0].id;
+    } else {
+      // If user already exists, reuse its ID
+      userId = userExists.rows[0].id;
+      console.log('✅ User already exists in osduser with ID:', userId);
+    }
+
+    // Insert courses/modules if provided
+    if (Array.isArray(personalForm.courses) && personalForm.courses.length > 0) {
+      for (const course of personalForm.courses) {
+        const courseId = uuidv4();
+        const insertCourseQuery = `
+          INSERT INTO Courses (id, osduser_id, title)
+          VALUES ($1, $2, $3)
+        `;
+        await pool.query(insertCourseQuery, [
+          courseId,
+          userId,
+          course.courseName
+        ]);
+
+        console.log('📚 Inserting modules for course:', course.courseName);
+
+        // Insert modules for this course
+        if (Array.isArray(course.modules) && course.modules.length > 0) {
+          for (const module of course.modules) {
+            if (!module.moduleName || !module.duration) {
+              console.error('❌ Incomplete module data:', module);
+              continue;
+            }
+            const moduleId = uuidv4();
+            const insertModuleQuery = `
+              INSERT INTO Modules (id, course_id, title, duration)
+              VALUES ($1, $2, $3, $4)
+            `;
+            await pool.query(insertModuleQuery, [
+              moduleId,
+              courseId,
+              module.moduleName,
+              module.duration
+            ]);
+            console.log(`✅ Module '${module.moduleName}' inserted for course '${course.courseName}'`);
+          }
+        }
+      }
+    }
+
+    // If AccountType is 'FreeProfessional', insert into freeprofessional
+    if (event.Body?.AccountType === 'FreeProfessional') {
+      const insertFreeProfessionalQuery = `
+        INSERT INTO freeprofessional (
+          id,
+          userid,
+          freeprofessionaltypeid,
+          identificationfileid,
+          identificationfilename,
+          curriculumvitaefileid,
+          curriculumvitaefilename,
+          civilliabilityinsurancefileid,
+          civilliabilityinsurancefilename,
+          servicerates,
+          paytpv,
+          course_id
+        ) VALUES (
+          $1, $2, $3, $4, $5,
+          $6, $7, $8, $9, $10,
+          $11, $12
+        )
+        RETURNING id, userid, freeprofessionaltypeid, course_id;
+      `;
+
+      console.log('🔐 Inserting FreeProfessional user:', personalForm.email);
+
+      await pool.query(insertFreeProfessionalQuery, [
+        uuidv4(),
+        userId,
+        accountForm.workspace, // e.g., freeprofessionaltypeid
+        accountForm.IdentificationFileId,
+        accountForm.IdentificationFileName,
+        accountForm.CurriculumVitaeFileId,
+        accountForm.CurriculumVitaeFileName,
+        accountForm.CivilLiabilityInsuranceFileId,
+        accountForm.CivilLiabilityInsuranceFileName,
+        accountForm.servicerates,
+        accountForm.payTPV,
+        accountForm.course
+      ]);
+
+      return res.json({
+        success: true,
+        message: 'Your account has been created successfully!'
+      });
+    }
+
+    // Otherwise, no special handling needed
+    return res.json({
+      success: true,
+      message: 'Your account has been created successfully!'
+    });
+
+  } catch (error) {
+    console.error(`❌ Error processing action 'RegisterCustomer':`, error);
+    return res.status(500).json({
+      success: false,
+      message: `Internal server error: ${error.message}`
+    });
+  }
+};
+
 async function handleGetFreeProfessionals(event, res) {
   try {
     const result = await pool.query(`
@@ -205,104 +411,36 @@ async function handleGetFreeProfessionals(event, res) {
   }
 }
 
-const handleUserRegistration = async (event, res) => {
-  const accountForm = event.Body?.AccountForm;
-  const personalForm = event.Body?.PersonalForm;
-  const accountTypeInput = event.Body?.AccountType || 'FreeProfessional';
+const handleGetSubscribers = async (event, res) => {
+  try {
+    res.status(200).json(createWebBaseEvent({
+      GET_SUBSCRIBERS_SUCCESS: true,
+    }, event.SessionKey, event.SecurityToken, 'GetSubscribers'));
+  } catch (error) {
+    console.error('❌ Error fetching subscribers:', error);
 
-  console.log('📄 Processing Registration:', accountForm, personalForm, accountTypeInput);
-
-  if (!personalForm?.email || !personalForm?.password) {
-    console.log('❌ Email and password are required for registration.');
-    return res.status(400).json(createWebBaseEvent({
-      REGISTER_USER_SUCCESS: false,
-      REGISTER_USER_RESULT_MESSAGE: 'Email and password are required for registration.'
-    }, event.SessionKey, event.SecurityToken));
+    res.status(500).json(createWebBaseEvent({
+      GET_SUBSCRIBERS_SUCCESS: false,
+      GET_SUBSCRIBERS_MESSAGE: 'Server error fetching subscribers.',
+    }, event.SessionKey, event.SecurityToken, 'GetSubscribers'));
   }
-
-  const userExists = await pool.query('SELECT * FROM osduser WHERE email = $1', [personalForm.email]);
-  console.log('🔍 Checking if user exists:', userExists.rows);
-
-  if (userExists.rows.length > 0) {
-    return res.json(createWebBaseEvent({
-      REGISTER_USER_SUCCESS: false,
-      REGISTER_USER_RESULT_MESSAGE: 'An account already exists with that email.'
-    }, event.SessionKey, event.SecurityToken));
-  }
-
-  const userId = uuidv4();
-
-  const insertUserQuery = `
-    INSERT INTO osduser (
-      id, code, accounttype, identity, name, firstsurname, 
-      middlesurname, city, companyname, address, zipcode, country, 
-      landline, mobilephone, email, password, web, isauthorized, isadmin
-    ) VALUES (
-      $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 
-      $11, $12, $13, $14, $15, $16, $17, $18, $19
-    )
-    RETURNING id, email, name, country;
-  `;
-
-  console.log('🔐 Inserting user:', personalForm.email);
-  await pool.query(insertUserQuery, [
-    userId, `${personalForm.country}/IT/1/2025`, personalForm.accountType, personalForm.identity,
-    personalForm.firstSurname, personalForm.firstSurname, personalForm.middleSurname,
-    personalForm.city, personalForm.companyName || '', personalForm.address,
-    personalForm.zipCode, personalForm.country, personalForm.landline || '',
-    personalForm.mobilePhone, personalForm.email, personalForm.password,
-    personalForm.web, true, false
-  ]);
-  if (Array.isArray(personalForm.courses) && personalForm.courses.length > 0) {
-    for (const course of personalForm.courses) {
-      const courseId = uuidv4();
-
-      const insertCourseQuery = `
-        INSERT INTO Courses (id, osduser_id, title)
-        VALUES ($1, $2, $3)
-      `;
-
-      await pool.query(insertCourseQuery, [
-        courseId, userId, course.courseName
-      ]);
-
-      console.log('📚 Inserting modules for course:', course);
-
-      // Insert Modules for the current course
-      if (Array.isArray(course.modules) && course.modules.length > 0) {
-        for (const module of course.modules) {
-          console.log('📦 Inserting module:', module);
-
-          // Validate the module fields
-          if (!module.moduleName || !module.duration) {
-            console.error(`❌ Module data is incomplete:`, module);
-            continue;  // Skip this module if required fields are missing
-          }
-
-          const moduleId = uuidv4();
-
-          const insertModuleQuery = `
-            INSERT INTO Modules (id, course_id, title, duration)
-            VALUES ($1, $2, $3, $4)
-          `;
-
-          await pool.query(insertModuleQuery, [
-            moduleId, courseId, module.moduleName, module.duration  // Changed from module.title to module.moduleName
-          ]);
-
-          console.log(`✅ Module '${module.moduleName}' inserted for course '${course.courseName}'`);
-        }
-      }
-    }
-  }
-
-  res.json(createWebBaseEvent({
-    REGISTER_USER_SUCCESS: true,
-    REGISTER_USER_RESULT_MESSAGE: 'Your account has been created along with courses and modules.'
-  }, event.SessionKey, event.SecurityToken));
-
-  console.log('✅ Registration successful');
 };
+
+app.get('/api/courses', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT id, title FROM Courses');
+    res.status(200).json({
+      success: true,
+      courses: result.rows
+    });
+  } catch (error) {
+    console.error('❌ Error fetching courses:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching courses'
+    });
+  }
+});
 
 app.listen(port, () => {
   console.log(`🚀 Server running at http://localhost:${port}/api`);
