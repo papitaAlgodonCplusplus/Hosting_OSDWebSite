@@ -2,7 +2,7 @@ const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
 const app = express();
-
+ 
 // Habilitar CORS para que el frontend pueda hacer solicitudes
 app.use(cors());
 

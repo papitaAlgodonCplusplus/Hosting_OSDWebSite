@@ -15,6 +15,7 @@ import { CountryService } from 'src/app/services/country.service';
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-register-free-professional',
@@ -22,6 +23,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./onboarding-register-free-professional.component.css']
 })
 export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
+  private apiUrl = environment.restAPIUrl;
   accountForm: FormGroup;
   personalForm: FormGroup;
   selectedSubscriberCustomer: string | undefined;
@@ -94,8 +96,8 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     this.selectedCourse = this.accountForm.value.course;
   }
 
-  fetchCourses() {
-    this.http.get<any>('http://localhost:5000/api/courses').subscribe(
+  fetchCourses() { 
+    this.http.get<any>(`${this.apiUrl}/courses`).subscribe(
       (response) => {
         if (response.success && response.courses.length) {
           this.courses = response.courses.map((course: any) => ({
