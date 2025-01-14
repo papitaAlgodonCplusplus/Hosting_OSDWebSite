@@ -72,6 +72,7 @@ export class HomeComponent implements OnDestroy {
                   }
                   else if (freeProfessional.FreeprofessionaltypeAcronym == "FC") {
                     this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuService.getMenuOptionFreeProfessionalTrainer() }));
+                    this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuService.getMenuOptionStudentsManagement() }));
                   }
                   else{
                     this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuService.getMenuOptionAllFreeProfessional() }));

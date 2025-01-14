@@ -39,6 +39,18 @@ export class MenuService implements OnInit {
         ];
     }
 
+    getMenuOptionStudentsManagement(): MenuOption[] {
+        return [
+            { name: 'transparent_project', path: '/project-manager', icon: 'fa-project-diagram' },
+            { name: 'Assign_client_to_Trainer', path: '/functions/assign-client-to-Trainer', icon: 'fa-user' },
+            { name: 'authorizeCustomers', path: '/functions/sub-authorized', icon: 'fa-check-circle' },
+            { name: 'authorizeFreeProfessionals', path: '/functions/autorization-pl', icon: 'fa-check-circle' },
+            { name: 'CFH', path: '/home', icon: 'fa-school' },
+            { name: 'file_claim', path: '/functions/claims-file', icon: 'fa-file' },
+            { name: 'Assign_Processor_to_Claim', path: '/functions/assign-pltr-claims', icon: 'fa-user' }
+        ];
+    }
+
     getMenuOptionAdmin(): MenuOption[] {
         return [
             { name: 'transparent_project', path: '/project-manager', icon: 'fa-project-diagram' },
