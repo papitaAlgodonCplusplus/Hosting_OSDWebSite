@@ -11,11 +11,14 @@ app.use(cors());
 app.use(bodyParser.json());
 
 const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'osdlogic',
-  password: 'sapwd2023', 
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
   port: 5432,
+  ssl: {
+    rejectUnauthorized: false  // Required for AWS RDS SSL connections
+  }
 });
 
 const createWebBaseEvent = (body, sessionKey = null, securityToken = null, action = 'Response') => ({
