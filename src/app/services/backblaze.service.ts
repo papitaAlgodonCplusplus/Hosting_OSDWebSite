@@ -6,8 +6,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class BackblazeService {
-  private backendUrl = 'http://localhost:3000';
-  //private backendUrl = 'https://digitalsolutionoffice.com:3000';
+  //private backendUrl = 'http://localhost:3000';
+  private backendUrl = 'https://hosting-osdwebsite-1.onrender.com';
 
   constructor(private http: HttpClient) { }
 
