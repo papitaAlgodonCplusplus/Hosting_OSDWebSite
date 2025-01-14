@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  restAPIUrl: 'https://hosting-osdwebsite.onrender.com'
+  restAPIUrl: 'https://hosting-osdwebsite.onrender.com/api'
   //restAPIUrl: 'http://localhost:5000/api'
 };
 

@@ -17,7 +17,7 @@ const pool = new Pool({
   password: process.env.DB_PASSWORD,
   port: 5432,
   ssl: {
-    rejectUnauthorized: false  // Required for AWS RDS SSL connections
+    rejectUnauthorized: false
   }
 });
 
