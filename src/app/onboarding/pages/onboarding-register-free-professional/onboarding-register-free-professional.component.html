@@ -1,57 +1,64 @@
-<div class="flex flex-col justify-center items-center md:px-10 lg:px-10 py-2 space-y-3">
-
-    <div class="flex flex-col w-full space-y-3">
-        <div class="flex-1 items-center flex flex-col font-medium px-3">
-            <div class="flex">
-                <h2 class=" text-darkslategray">
-                    {{'Trainer_&_Consultant_250€'| translate }}</h2>
-            </div>
-            <div class="flex flex-col pt-3 space-y-3">
-                <button class="font-medium rounded-xl p-2 bg-darkslategray text-line"
+<div class="flex flex-col justify-center items-center md:px-10 lg:px-10 py-6 space-y-6 bg-gray-50 rounded-lg shadow-md">
+    <div class="flex flex-row w-full space-x-6 justify-center">
+        <div class="flex flex-col items-center font-semibold px-3 text-center">
+            <h2 class="text-xl text-darkslategray">
+                {{'Trainer_&_Consultant_250€'| translate }}
+            </h2>
+            <div class="flex flex-row pt-4 space-x-3">
+                <button
+                    class="font-medium rounded-lg px-5 py-3 bg-darkslategray text-white hover:bg-gray-800 transition"
                     (click)="openVideoTrainerConsultant()">
                     {{'Video_Trainer_Consultant'| translate }}
                 </button>
-
-                <button class="font-medium rounded-xl p-2 bg-darkslategray text-line"
+                <button
+                    class="font-medium rounded-lg px-5 py-3 bg-darkslategray text-white hover:bg-gray-800 transition"
                     (click)="makeAPurchaseTrainerConsultant()">
                     {{'Payment_TPV'| translate }}
                 </button>
             </div>
         </div>
 
-        <div class="flex-1 items-center flex flex-col font-medium px-3">
-            <div class="flex">
-                <h2 class="text-darkslategray ">
-                    {{'Tecnic_OSD_(Mk Co,SAC)_100€'| translate }}</h2>
-            </div>
-            <div class="flex flex-col space-y-3 pt-3">
-                <button class="font-medium rounded-xl p-2 bg-darkslategray text-line" (click)="openVideoTecnicOSD()">
-                    {{'Video_Tecnic_OSD'| translate }}
+        <div class="flex flex-col items-center font-semibold px-3 text-center">
+            <h2 class="text-xl text-darkslategray">
+                {{'Tecnic_OSD_(Mk Co,SAC)_100€' | translate}}
+            </h2>
+            <div class="flex flex-row pt-4 space-x-3">
+                <button
+                    class="font-medium rounded-lg px-5 py-3 bg-darkslategray text-white hover:bg-gray-800 transition"
+                    (click)="openVideoTecnicOSD()">
+                    {{'Video_Tecnic_OSD' | translate}}
                 </button>
-
-                <button class="font-medium rounded-xl p-2 bg-darkslategray text-line"
+                <button
+                    class="font-medium rounded-lg px-5 py-3 bg-darkslategray text-white hover:bg-gray-800 transition"
                     (click)="makeAPurchaseTecnicOSDLink()">
-                    {{'Payment_TPV'| translate }}
+                    {{'Payment_TPV' | translate}}
                 </button>
             </div>
         </div>
     </div>
-    <div class="flex flex-wrap space-y-3 p-2">
-        <form [formGroup]="accountForm" autocomplete="off" class="flex flex-col items-center w-full justify-center">
-            <div class="flex flex-wrap w-full">
-                <!-- Workspace Dropdown -->
+
+    <div class="flex flex-wrap space-y-6 p-4 w-full">
+        <form [formGroup]="accountForm" autocomplete="off" class="flex flex-col items-center w-full space-y-4">
+            <div class="flex flex-wrap w-full gap-4">
                 <shared-simple-dropdown (change)="onWorkspaceChange()" [input]="CheckIfIsTr()" class="w-full md:w-1/2"
                     fieldName="workspace" label="{{'Workspace' | translate}}" [formGroup]="accountForm"
                     [dropdownItems]="workspace" [selectedItem]="selectedWorkspace">
                 </shared-simple-dropdown>
 
-                <!-- Select Course Dropdown (Properly Styled and Aligned) -->
-                <div *ngIf="showCourseDropdown" class="w-full md:w-1/2 flex flex-col">
-                    <label for="course" class="text-darkgray mt-2">
+                <div *ngIf="showCourseCheckbox && selectedWorkspace !== 'eea2312e-6a85-4ab6-85ff-0864547e3870'" class="w-full md:w-1/2 flex items-center">
+                    <input type="checkbox" id="courseCheckbox" formControlName="courseCheckbox"
+                        (change)="onCheckBoxChange()"
+                        [disabled]="selectedWorkspace === 'eea2312e-6a85-4ab6-85ff-0864547e3870'">
+                    <label for="courseCheckbox" class="ml-2">
+                        {{ 'i_would_like_to_do_a_course' | translate }}
+                    </label>
+                </div>
+
+                <div *ngIf="showCourseDropdown" class="w-full md:w-1/2">
+                    <label for="course" class="text-darkgray">
                         {{ 'select_course' | translate }}
                     </label>
-                    <select id="course" class="w-full p-2 border border-gray-300" formControlName="course"
-                        style="height: 41px;" (change)="onCourseChange()" fieldName="course">
+                    <select id="course" class="w-full p-2 border border-gray-300 rounded-lg" formControlName="course">
                         <option value="" disabled selected>{{ 'Select_Course' | translate }}</option>
                         <option *ngFor="let course of courses" [value]="course.key">
                             {{ course.value }}
@@ -59,125 +66,80 @@
                     </select>
                 </div>
 
-                <!-- Subscriber/Client Dropdown -->
                 <shared-simple-dropdown [readOnly]="isProcessor" class="w-full md:w-1/2" fieldName="SubscriberId"
                     label="{{'SubscriberCustomer' | translate}}" [formGroup]="accountForm"
                     [dropdownItems]="subscriberCustomers" [selectedItem]="selectedSubscriberCustomer">
                 </shared-simple-dropdown>
             </div>
 
-            <div
-                class="w-full flex flex-wrap items-center justify-center space-x-3 p-3  lg:space-y-0 md:space-y-0 space-y-6">
-                <shared-uploadfile [isMandatory]="true" [uploadFile]="uploadFile" [fileId]="''" [fileName]="''"
-                    typeFile="Identification" [formGroup]="accountForm" label="Identification"
-                    fieldName="IdentificationFileName" (fileUploaded)="handleFileUploaded($event)">
+            <div class="w-full flex flex-wrap justify-center gap-4">
+                <shared-uploadfile [isMandatory]="true" typeFile="Identification" [formGroup]="accountForm"
+                    label="Identification" fieldName="IdentificationFileName"
+                    (fileUploaded)="handleFileUploaded($event)">
                 </shared-uploadfile>
-
-                <shared-uploadfile [isMandatory]="true" [uploadFile]="uploadFile" [fileId]="''" [fileName]="''"
-                    typeFile="CurriculumVitae" [formGroup]="accountForm" label="CurriculumVitae"
-                    fieldName="CurriculumVitaeFileName" (fileUploaded)="handleFileUploaded($event)">
+                <shared-uploadfile [isMandatory]="true" typeFile="CurriculumVitae" [formGroup]="accountForm"
+                    label="CurriculumVitae" fieldName="CurriculumVitaeFileName"
+                    (fileUploaded)="handleFileUploaded($event)">
                 </shared-uploadfile>
-
-                <shared-uploadfile [isMandatory]="false" [uploadFile]="uploadFile" [fileId]="''" [fileName]="''"
-                    typeFile="CivilLiabilityInsurance" [formGroup]="accountForm" label="seguro_responsabilidad_civil"
-                    fieldName="CivilLiabilityInsuranceFileName" (fileUploaded)="handleFileUploaded($event)">
+                <shared-uploadfile [isMandatory]="false" typeFile="CivilLiabilityInsurance" [formGroup]="accountForm"
+                    label="{{'seguro_responsabilidad_civil' | translate}}" fieldName="CivilLiabilityInsuranceFileName"
+                    (fileUploaded)="handleFileUploaded($event)">
                 </shared-uploadfile>
             </div>
-
         </form>
 
-        <form [formGroup]="personalForm" autocomplete="off" class="flex flex-wrap items-center space-y-3">
-            <div class="flex w-full">
-                <shared-input-field class="w-full md:w-1/2" fieldName="identity" label="{{'DNI' | translate}}"
-                    inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-            </div>
-
+        <form [formGroup]="personalForm" autocomplete="off" class="flex flex-wrap items-center space-y-4 w-full">
+            <shared-input-field class="w-full md:w-1/2" fieldName="identity" label="{{'DNI' | translate}}"
+                inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
             <shared-input-field class="w-full md:w-1/2" fieldName="companyName" label="{{'RazonSocial' | translate}}"
                 inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
             <shared-input-field class="w-full md:w-1/2" fieldName="name" label="{{'Name' | translate}}" inputType="text"
                 [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
             <shared-input-field class="w-full md:w-1/2" fieldName="firstSurname"
                 label="{{'primer_apellido' | translate}}" inputType="text" [formGroup]="personalForm"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
             <shared-input-field class="w-full md:w-1/2" fieldName="middleSurname"
                 label="{{'segundo_apellido' | translate}}" inputType="text" [formGroup]="personalForm"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
             <shared-input-field class="w-full md:w-1/2" fieldName="landline" label="{{'tel_fijo' | translate}}"
                 inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
             <shared-input-field class="w-full md:w-1/2" fieldName="mobilePhone" label="{{'tel_movil' | translate}}"
                 inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
             <shared-input-field class="w-full md:w-1/2" fieldName="web" label="{{'pagina_web' | translate}}"
-                inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
+                inputType="text" [formGroup]="personalForm"></shared-input-field>
             <shared-input-field class="w-full md:w-1/2" fieldName="zipCode" label="{{'cod_postal' | translate}}"
-                inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
+                inputType="text" [formGroup]="personalForm"></shared-input-field>
             <shared-input-field class="w-full md:w-1/2" fieldName="city" label="{{'Ciudad' | translate}}"
-                inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
+                inputType="text" [formGroup]="personalForm"></shared-input-field>
             <shared-simple-dropdown class="w-full md:w-1/2" fieldName="country" label="{{'pais' | translate}}"
                 [formGroup]="personalForm" [dropdownItems]="countries" [selectedItem]="selectedCountries">
             </shared-simple-dropdown>
-
             <shared-text-area class="w-full" fieldName="address" label="{{'direccion' | translate}}" inputType="text"
-                [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-text-area>
-
-            <div class="flex flex-col lg:flex-row md:flex-row text-black w-full my-2 py-3 ">
-                <div class="flex-1 flex flex-col p-2 text-black space-y-4">
-                    <h1 class="text-lg font-bold text-darkslategray">{{'iniciar_sesion' | translate}}:</h1>
-                    <span class="">{{'loginInRegister' | translate}}</span>
-                </div>
-                <div class="flex-1 flex flex-col ">
-                    <shared-input-field class="w-full" fieldName="email" label="{{'email' | translate}}"
-                        inputType="email" [formGroup]="personalForm"
-                        [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-                    <auth-input-password class="w-full" [formGroup]="personalForm" fieldName="password"
-                        label="{{'contraseña' | translate}}"></auth-input-password>
-                </div>
+                [formGroup]="personalForm"></shared-text-area>
+            <shared-input-field class="w-full md:w-1/2" fieldName="email" label="{{'email' | translate}}"
+                inputType="email" [formGroup]="personalForm"></shared-input-field>
+            <auth-input-password class="w-full md:w-1/2" [formGroup]="personalForm" fieldName="password"
+                label="{{'contraseña' | translate}}"></auth-input-password>
+            <div class="flex items-center">
+                <input type="checkbox" id="acceptConditions" formControlName="acceptConditions">
+                <label for="acceptConditions" class="ml-2">{{'aceptar_condiciones' | translate}}</label>
+                <a href="https://www.google.com" target="_blank" class="text-blue-500 underline ml-3">Convenio de
+                    Adhesión
+                    Profesional Libre</a>
             </div>
-
-            <div class="bg-white flex flex-wrap items-start w-full">
-                <a *ngIf="!showDocument"
-                    class="p-2 bg-darkslategray rounded-xl text-white animate__animated animate__fadeInDown"
-                    href="assets/contracts/19-7-24-Contrato-Profesional-Libre .pdf" download>
-                    <i class="fa-solid fa-download"></i>
-                    {{'Contract' | translate }}
-                </a>
-                <a *ngIf="showDocument"
-                    class="p-2 bg-darkslategray rounded-xl text-white animate__animated animate__fadeInDown"
-                    href="assets/contracts/19-7-24-DSO-Frelance-Agreement.pdf" download>
-                    <i class="fa-solid fa-download"></i>
-                    {{'Contract' | translate }}
-                </a>
-            </div>
-            <div class="flex flex-col space-y-1">
-                <div class="flex flex-row items-center space-x-3">
-                    <div class="flex items-center space-x-1">
-                        <input type="checkbox" id="acceptConditions" formControlName="acceptConditions">
-                        <label for="acceptConditions"> {{'aceptar_condiciones' | translate}}</label>
-                    </div>
-                    <a href="https://www.google.com" target="_blank" class="text-blue-500 underline">Convenio de Adhesión Profesional Libre</a>
-                </div>
-                <div *ngIf="!personalForm.value.acceptConditions" class="text-red-700 pl-1">
-                    {{'error_condiciones' | translate}}
-                </div>
-            </div>
-
         </form>
     </div>
-    <div class="flex flex-wrap  space-x-3 w-full justify-end">
+
+    <div class="flex justify-end w-full space-x-4">
         <button routerLink="/onboarding/onboarding-register"
-            class="p-2  rounded-xl bg-line text-darkslategray font-medium animate__animated animate__fadeInDown">
+            class="px-4 py-2 rounded-lg bg-gray-300 text-darkslategray font-medium hover:bg-gray-400 transition">
             {{'cancelar' | translate}}
         </button>
-
-        <shared-confirmation-button (click)="onSubmit()" [ButtonName]="'confirm'"></shared-confirmation-button>
+        <button class="px-4 py-2 rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 transition"
+            (click)="onSubmit()">
+            {{'confirm' | translate}}
+        </button>
     </div>
+
 </div>

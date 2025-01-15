@@ -35,19 +35,9 @@ export class MenuService implements OnInit {
         return [
             { name: 'transparent_project', path: '/project-manager', icon: 'fa-project-diagram' },
             { name: 'file_claim', path: '/functions/claims-file', icon: 'fa-file' },
-            { name: 'Assign_Processor_to_Claim', path: '/functions/assign-pltr-claims', icon: 'fa-user' }
-        ];
-    }
-
-    getMenuOptionStudentsManagement(): MenuOption[] {
-        return [
-            { name: 'transparent_project', path: '/project-manager', icon: 'fa-project-diagram' },
-            { name: 'Assign_client_to_Trainer', path: '/functions/assign-client-to-Trainer', icon: 'fa-user' },
-            { name: 'authorizeCustomers', path: '/functions/sub-authorized', icon: 'fa-check-circle' },
-            { name: 'authorizeFreeProfessionals', path: '/functions/autorization-pl', icon: 'fa-check-circle' },
-            { name: 'CFH', path: '/home', icon: 'fa-school' },
-            { name: 'file_claim', path: '/functions/claims-file', icon: 'fa-file' },
-            { name: 'Assign_Processor_to_Claim', path: '/functions/assign-pltr-claims', icon: 'fa-user' }
+            { name: 'Assign_Processor_to_Claim', path: '/functions/assign-pltr-claims', icon: 'fa-user' },
+            { name: 'administer_users', path: '/functions/students-management', icon: 'fa-light fa-graduation-cap' },
+            { name: 'accounting', path: '/functions/accounting', icon: 'fa-money-check-alt' }
         ];
     }
 

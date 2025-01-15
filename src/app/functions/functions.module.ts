@@ -7,6 +7,7 @@ import { AssignPLTRClaimsComponent } from './pages/assign-pltr-claims/assign-plt
 import { SubAuthorizedComponent } from './pages/sub-authorized/sub-authorized.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginator';
 import { CustomPaginator } from '../services/custom-paginator.service';
 import { ClaimsFileComponent } from './pages/claims-file/claims-file.component';
@@ -18,6 +19,10 @@ import { ClaimantAndClaimsCustomerPerformanceComponent } from './pages/claimant-
 import { ClaimsTrainerPerformanceComponent } from './pages/claims-trainer-performance/claims-trainer-performance.component';
 import { ClaimsProcessorPerformanceComponent } from './pages/claims-processor-performance/claims-processor-performance.component';
 import { TruncatePipe } from './pipes/truncate.pipe';
+
+// ✅ Import StudentRecordComponent
+import { StudentRecordComponent } from './pages/students-management/student-record.component';
+import { AccountingComponent } from './pages/accounting/accounting.component';
 
 @NgModule({
   declarations: [
@@ -32,8 +37,10 @@ import { TruncatePipe } from './pipes/truncate.pipe';
     ClaimantAndClaimsCustomerPerformanceComponent,
     ClaimsTrainerPerformanceComponent,
     ClaimsProcessorPerformanceComponent,
-    TruncatePipe
-    ],
+    TruncatePipe,
+    StudentRecordComponent,
+    AccountingComponent
+  ],
   imports: [
     CommonModule,
     FunctionsRoutingModule,
@@ -41,7 +48,8 @@ import { TruncatePipe } from './pipes/truncate.pipe';
     FormsModule,
     TranslateModule,
     MatPaginatorModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,  // ✅ Already imported, correct
+    MatSnackBarModule  // ✅ Already imported, correct
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [

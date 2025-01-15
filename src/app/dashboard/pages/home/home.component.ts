@@ -60,7 +60,8 @@ export class HomeComponent implements OnDestroy {
             if (Array.isArray(freeProfessionals)) {
               freeProfessionals.forEach(item => {
                 var freeProfessional: FreeProfessional = item;
-                if (freeProfessional.Userid == this.user.Id) {
+                if (freeProfessional.userid == this.user.Id) {
+                  console.log('freeProfessional:', freeProfessional);
                   if (freeProfessional.FreeprofessionaltypeAcronym == "TR") {
                     this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuService.getMenuOptionFreeProfessionalProcessor() }));
                   }
@@ -72,7 +73,6 @@ export class HomeComponent implements OnDestroy {
                   }
                   else if (freeProfessional.FreeprofessionaltypeAcronym == "FC") {
                     this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuService.getMenuOptionFreeProfessionalTrainer() }));
-                    this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuService.getMenuOptionStudentsManagement() }));
                   }
                   else{
                     this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuService.getMenuOptionAllFreeProfessional() }));

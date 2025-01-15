@@ -112,7 +112,7 @@ export class EventFactoryService {
     return event;
   }
 
-  public CreateAddPerformanceFreeProfessionalEvent(performanceFP: PerformanceFreeProfessional, projectManagerSelectedId : string, documentBase64: string): WebBaseEvent {
+  public CreateAddPerformanceFreeProfessionalEvent(performanceFP: PerformanceFreeProfessional, projectManagerSelectedId: string, documentBase64: string): WebBaseEvent {
     let event: WebBaseEvent;
     event = new WebBaseEvent();
     event.SessionKey = this.authenticationService.sessionKey;
@@ -133,12 +133,12 @@ export class EventFactoryService {
 
     event.setBodyProperty(EventConstants.FORECAST_TRAVEL_EXPENSES, performanceFP.ForecastTravelExpenses);
     event.setBodyProperty(EventConstants.FORECAST_TRAVEL_TIME, performanceFP.ForecastTravelTime);
-    event.setBodyProperty(EventConstants.FORECAST_WORK_HOURS, performanceFP.ForecastWorkHours);  
-    event.setBodyProperty(EventConstants.TOTAL_FORECAST_DATA, performanceFP.TotalForecastData);  
+    event.setBodyProperty(EventConstants.FORECAST_WORK_HOURS, performanceFP.ForecastWorkHours);
+    event.setBodyProperty(EventConstants.TOTAL_FORECAST_DATA, performanceFP.TotalForecastData);
     return event;
   }
 
-  public CreateModifyPerformanceFreeProfessionalEvent(performanceFP: PerformanceFreeProfessional, projectManagerSelectedId : string, performanceId : string): WebBaseEvent {
+  public CreateModifyPerformanceFreeProfessionalEvent(performanceFP: PerformanceFreeProfessional, projectManagerSelectedId: string, performanceId: string): WebBaseEvent {
     let event: WebBaseEvent;
     event = new WebBaseEvent();
     event.SessionKey = this.authenticationService.sessionKey;
@@ -159,12 +159,12 @@ export class EventFactoryService {
 
     event.setBodyProperty(EventConstants.FORECAST_TRAVEL_EXPENSES, performanceFP.ForecastTravelExpenses);
     event.setBodyProperty(EventConstants.FORECAST_TRAVEL_TIME, performanceFP.ForecastTravelTime);
-    event.setBodyProperty(EventConstants.FORECAST_WORK_HOURS, performanceFP.ForecastWorkHours);  
-    event.setBodyProperty(EventConstants.TOTAL_FORECAST_DATA, performanceFP.TotalForecastData);  
+    event.setBodyProperty(EventConstants.FORECAST_WORK_HOURS, performanceFP.ForecastWorkHours);
+    event.setBodyProperty(EventConstants.TOTAL_FORECAST_DATA, performanceFP.TotalForecastData);
     return event;
   }
 
-  public CreateClaimTrainerEvent(claimTrainer: ClaimsTrainerPerformance, claimId : string, documentBytes: string): WebBaseEvent {
+  public CreateClaimTrainerEvent(claimTrainer: ClaimsTrainerPerformance, claimId: string, documentBytes: string): WebBaseEvent {
     let event: WebBaseEvent;
     event = new WebBaseEvent();
     event.SessionKey = this.authenticationService.sessionKey;
@@ -189,7 +189,7 @@ export class EventFactoryService {
     return event;
   }
 
-  public ModifyPerformanceTrainerEvent(claimTrainer: ClaimsTrainerPerformance, performanceId : string, documentBase64: string): WebBaseEvent {
+  public ModifyPerformanceTrainerEvent(claimTrainer: ClaimsTrainerPerformance, performanceId: string, documentBase64: string): WebBaseEvent {
     let event: WebBaseEvent;
     event = new WebBaseEvent();
     event.SessionKey = this.authenticationService.sessionKey;
@@ -230,7 +230,7 @@ export class EventFactoryService {
 
     return event;
   }
-  public gettingFreeProfessionalsTRDataEvent(subscriberId : string): WebBaseEvent {
+  public gettingFreeProfessionalsTRDataEvent(subscriberId: string): WebBaseEvent {
     let event: WebBaseEvent;
 
     event = new WebBaseEvent();
@@ -265,7 +265,7 @@ export class EventFactoryService {
     return event;
   }
 
-  public CreateGetPerformancesProjectManagerById(projectManagerId : string): WebBaseEvent {
+  public CreateGetPerformancesProjectManagerById(projectManagerId: string): WebBaseEvent {
     let event: WebBaseEvent;
     event = new WebBaseEvent();
     event.SessionKey = this.authenticationService.sessionKey;
@@ -336,7 +336,7 @@ export class EventFactoryService {
 
     event.setBodyProperty(EventConstants.DATE_PERFORMANCE, performance.Date);
     event.setBodyProperty(EventConstants.TYPE_PERFORMANCE, performance.Type);
-    event.setBodyProperty(EventConstants.USER_TYPE_PERFORMANCE,userTypePerformance);
+    event.setBodyProperty(EventConstants.USER_TYPE_PERFORMANCE, userTypePerformance);
     event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, performance.JustifyingDocument);
     event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT_BYTES, documentBase64);
     event.setBodyProperty(EventConstants.SUMMARY, performance.Summary);
@@ -368,7 +368,7 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.TRAINER_REMUNERATION, performance.TrainerRemuneration);
     event.setBodyProperty(EventConstants.SUMMARY, performance.Summary);
     event.setBodyProperty(EventConstants.PERFORMANCE_CLAIM_ID, performanceId);
- 
+
     return event;
   }
 
@@ -422,7 +422,7 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.TRAINER_REMUNERATION, performance.Trainer_Remuneration);
     event.setBodyProperty(EventConstants.SUMMARY, performance.Summary);
     event.setBodyProperty(EventConstants.PERFORMANCE_CLAIM_ID, performanceId);
- 
+
     return event;
   }
 
@@ -447,6 +447,55 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, performanceForm.JustifyingDocument);
     event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT_BYTES, documentBase64);
     event.setBodyProperty(EventConstants.SUMMARY_ID, performanceForm.SummaryTypeId);
+    return event;
+  }
+
+  public CreateGetCourseByUserIdEvent(userId: string): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.GET_COURSE_BY_USER_ID;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient'
+    event.setBodyProperty(EventConstants.USER_ID, userId);
+    return event;
+  }
+
+  public CreateGetStudentsByCourseEvent(Id: string): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.GET_STUDENTS_BY_COURSE;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    event.setBodyProperty(EventConstants.ID, Id);
+    return event;
+  }
+
+  public CreateUpdateStudentRecordsEvent(
+    studentName: string,
+    studentAttendance: number,
+    studentGrade: string,
+    studentStatus: string
+  ): WebBaseEvent {
+    const event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.UPDATE_STUDENT_RECORDS;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    event.setBodyProperty(EventConstants.STUDENT_NAME, studentName);
+    event.setBodyProperty(EventConstants.STUDENT_ATTENDANCE, studentAttendance);
+    event.setBodyProperty(EventConstants.STUDENT_GRADE, studentGrade);
+    event.setBodyProperty(EventConstants.STUDENT_STATUS, studentStatus);
     return event;
   }
 
@@ -514,6 +563,23 @@ export class EventFactoryService {
     return event;
   }
 
+  public CreateRegisterProfessorEvent(accountForm: Form, personalForm: Form, accounType: String): WebBaseEvent {
+    let event: WebBaseEvent;
+
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.REGISTER_PROFESSOR;
+    event.Date = (new Date()).toUTCString();
+    event.ApplicationIdentifier = "WebClient";
+    event.setBodyProperty(EventConstants.ACCOUNT_FORM, accountForm);
+    event.setBodyProperty(EventConstants.PERSONAL_FORM, personalForm);
+    event.setBodyProperty(EventConstants.ACCOUNT_TYPE, accounType);
+    return event;
+  }
+  
   public CreateRegisterUserEvent(accountForm: Form, personalForm: Form, accounType: String): WebBaseEvent {
     let event: WebBaseEvent;
 
@@ -567,7 +633,7 @@ export class EventFactoryService {
     return event;
   }
 
-  public CreateProjectEvent(projectForm : CreateProjectEvent): WebBaseEvent {
+  public CreateProjectEvent(projectForm: CreateProjectEvent): WebBaseEvent {
     let event: WebBaseEvent;
 
     event = new WebBaseEvent();
@@ -596,11 +662,11 @@ export class EventFactoryService {
     event.Type = EventType.OSD;
     event.Date = (new Date()).toUTCString();
     event.ApplicationIdentifier = "WebClient";
-   
+
     return event;
   }
 
-  public CreateUpdateValuationEvent(ClaimValuationForm : CreateClaimValuationEvent): WebBaseEvent {
+  public CreateUpdateValuationEvent(ClaimValuationForm: CreateClaimValuationEvent): WebBaseEvent {
     let event: WebBaseEvent;
 
     event = new WebBaseEvent();
@@ -615,7 +681,7 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.VALUATION_SUBSCRIBER, ClaimValuationForm.ValuationSubscriber);
     event.setBodyProperty(EventConstants.VALUATION_CLAIMANT, ClaimValuationForm.ValuationClaimant);
     event.setBodyProperty(EventConstants.VALUATION_FREE_PROFESSIONAL, ClaimValuationForm.ValuationFreeProfessionals);
-   
+
     return event;
   }
 
@@ -792,7 +858,7 @@ export class EventFactoryService {
     return event;
   }
 
-  public CreateGetPerformancesAssignedById(userId : string): WebBaseEvent {
+  public CreateGetPerformancesAssignedById(userId: string): WebBaseEvent {
     let event: WebBaseEvent;
 
     event = new WebBaseEvent();
@@ -808,7 +874,7 @@ export class EventFactoryService {
     return event;
   }
 
-  public CreateAddResponseToPerformancesAssigned(performance : ResponseToPerformanceAssignedEvent, performanceAssignedId : string): WebBaseEvent {
+  public CreateAddResponseToPerformancesAssigned(performance: ResponseToPerformanceAssignedEvent, performanceAssignedId: string): WebBaseEvent {
     let event: WebBaseEvent;
 
     event = new WebBaseEvent();
@@ -831,7 +897,7 @@ export class EventFactoryService {
     return event;
   }
 
-  public CreateModifyResponseToPerformancesAssigned(subPerformanceId : string, performance : ResponseToPerformanceAssignedEvent, performanceAssignedId : string): WebBaseEvent {
+  public CreateModifyResponseToPerformancesAssigned(subPerformanceId: string, performance: ResponseToPerformanceAssignedEvent, performanceAssignedId: string): WebBaseEvent {
     let event: WebBaseEvent;
     event = new WebBaseEvent();
     event.Action = EventAction.MODIFY_RESPONSE_TO_PERFORMANCE_ASSIGNED;
@@ -854,7 +920,7 @@ export class EventFactoryService {
     return event;
   }
 
-  public CreateValidateResponseToPerformancesAssigned(subPerformanceId: string, performance : ResponseToPerformanceAssignedEvent): WebBaseEvent {
+  public CreateValidateResponseToPerformancesAssigned(subPerformanceId: string, performance: ResponseToPerformanceAssignedEvent): WebBaseEvent {
     let event: WebBaseEvent;
 
     event = new WebBaseEvent();
@@ -874,7 +940,7 @@ export class EventFactoryService {
     return event;
   }
 
-  public CreateGetSubPerformanceById(performanceId : string): WebBaseEvent {
+  public CreateGetSubPerformanceById(performanceId: string): WebBaseEvent {
     let event: WebBaseEvent;
 
     event = new WebBaseEvent();
@@ -890,7 +956,7 @@ export class EventFactoryService {
     return event;
   }
 
-  public CreateAssignTrainerToSubscriber(subscriberId : string, trainerId : string): WebBaseEvent {
+  public CreateAssignTrainerToSubscriber(subscriberId: string, trainerId: string): WebBaseEvent {
     let event: WebBaseEvent;
 
     event = new WebBaseEvent();
@@ -908,7 +974,7 @@ export class EventFactoryService {
     return event;
   }
 
-  public CreateCloseClaimFile(closeClaimfileForm: CloseClaimFileEvent, ClaimId : string): WebBaseEvent {
+  public CreateCloseClaimFile(closeClaimfileForm: CloseClaimFileEvent, ClaimId: string): WebBaseEvent {
     let event: WebBaseEvent;
 
     event = new WebBaseEvent();

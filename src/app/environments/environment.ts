@@ -4,8 +4,10 @@
 
 export const environment = {
   production: false,
+  // Production API URL
   restAPIUrl: 'https://hosting-osdwebsite.onrender.com/api'
-  //restAPIUrl: 'http://localhost:5000/api'
+  // Development API URL
+  // restAPIUrl: 'http://localhost:5000/api'
 };
 
 /*

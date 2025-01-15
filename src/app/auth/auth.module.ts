@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { LoginComponent } from './pages/login/login.component';
 import { AuthRoutingModule } from './auth-routing.module';
 import { InputPasswordComponent } from './components/input-password/input-password.component';
@@ -24,6 +25,7 @@ import { TranslateModule } from '@ngx-translate/core';
     CommonModule,
     AuthRoutingModule,
     ReactiveFormsModule,
+    MatSnackBarModule,
     SharedModule,
     FormsModule,
     TranslateModule

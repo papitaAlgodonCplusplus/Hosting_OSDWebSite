@@ -62,6 +62,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   courses: DropDownItem[] = [];
   selectedCourse: string | undefined;
   showCourseDropdown: boolean = false;
+  showCourseCheckbox: boolean = false;
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
@@ -72,7 +73,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     private countryService: CountryService,
     private cdr: ChangeDetectorRef,
     private router: Router,
-    private http: HttpClient
+    private http: HttpClient,
   ) {
     this.accountForm = this.createAccountForm();
     this.personalForm = this.createPersonalForm();
@@ -82,9 +83,22 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     this.isDropdownOpen = !this.isDropdownOpen;
   }
 
+  onCheckBoxChange() {
+    if (this.accountForm.value.courseCheckbox) {
+      this.showCourseDropdown = true;
+      this.fetchCourses();
+    }
+    else {
+      this.showCourseDropdown = false;
+    }
+  }
+
   onWorkspaceChange() {
+    this.selectedWorkspace = this.accountForm.get('workspace')?.value;
+    this.cdr.detectChanges();
+    this.showCourseCheckbox = true;
     this.selectedWorkspace = this.accountForm.value.workspace;
-    if (this.selectedWorkspace === 'eea2312e-6a85-4ab6-85ff-0864547e3870') {
+    if (this.selectedWorkspace === 'eea2312e-6a85-4ab6-85ff-0864547e3870' || this.accountForm.value.courseCheckbox) {
       this.fetchCourses();
       this.showCourseDropdown = true;
     } else {
@@ -96,7 +110,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     this.selectedCourse = this.accountForm.value.course;
   }
 
-  fetchCourses() { 
+  fetchCourses() {
     this.http.get<any>(`${this.apiUrl}/courses`).subscribe(
       (response) => {
         if (response.success && response.courses.length) {
@@ -118,6 +132,9 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   }
 
   ngOnInit(): void {
+    this.accountForm.get('workspace')?.valueChanges.subscribe((value) => {
+      this.selectedWorkspace = value;
+    });
     setTimeout(() => {
       this.translate.get([
         'DT', 'FC', 'TR', 'TK', 'TC', 'TM', 'TS', 'OSDSystemsEngineer'
@@ -224,6 +241,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
       servicerates: [''],
       payTPV: [''],
       course: [''],
+      courseCheckbox: [false],
     });
     return accountForm;
   }
@@ -251,42 +269,75 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   }
 
   onSubmit(): void {
+    const workspace = this.accountForm.value.workspace;
+    const userEmail = this.personalForm.value.email;
+    const selectedCourse = this.accountForm.value.course;
+  
+    // Validate forms
     if (this.accountForm.invalid || this.personalForm.invalid) {
       this.accountForm.markAllAsTouched();
       this.personalForm.markAllAsTouched();
-      if (this.translate.currentLang == "en") {
-        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "There are missing fields to fill out" }));
-        this.store.dispatch(ModalActions.openAlert());
-      } else {
-        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Faltan campos por llenar" }));
-        this.store.dispatch(ModalActions.openAlert());
-      }
+      const alertMsg = this.translate.currentLang === "en"
+        ? "There are missing fields to fill out"
+        : "Faltan campos por llenar";
+  
+      this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: alertMsg }));
+      this.store.dispatch(ModalActions.openAlert());
       return;
     }
-
+  
+    // Validate acceptance of terms
     if (!this.personalForm.value.acceptConditions) {
       this.isAcceptConditions = true;
       return;
     }
+  
     this.uploadFile = true;
-    this.store.dispatch(UiActions.toggleConfirmationButton())
-    const userEmail = this.personalForm.value.email;
+    this.store.dispatch(UiActions.toggleConfirmationButton());
     localStorage.setItem('userEmail', userEmail);
-    this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.FREE_PROFESSIONAL).subscribe({
-      next: (response: any) => {
-        console.log("User registered successfully:", response);
-        this.router.navigate(['/auth']);
-      },
-      error: (error: any) => {
-        console.error("Registration failed:", error);
-        this.store.dispatch(
-          ModalActions.addAlertMessage({ alertMessage: "Registration failed. Please try again." })
-        );
-        this.store.dispatch(ModalActions.openAlert());
-      }
-    });
+  
+    if (workspace === 'eea2312e-6a85-4ab6-85ff-0864547e3870') {
+      this.http.post(`${this.apiUrl}/check-approval`, { email: userEmail, course_id: selectedCourse })
+        .subscribe((response: any) => {
+          if (response.approved) {
+            this.osdEventService.professorRegister(this.accountForm.value, this.personalForm.value, EventConstants.FREE_PROFESSIONAL)
+              .subscribe({
+                next: (res: any) => {
+                  console.log("Professor registered successfully:", res);
+                  this.router.navigate(['/auth']);
+                },
+                error: (err: any) => {
+                  console.error("Professor registration failed:", err);
+                  this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Professor registration failed. Please try again." }));
+                  this.store.dispatch(ModalActions.openAlert());
+                }
+              });
+          } else {
+            // Show error if not approved
+            this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: 'Course not yet approved' }));
+            this.store.dispatch(ModalActions.openAlert());
+          }
+        }, (error) => {
+          console.error("Approval check failed:", error);
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Approval check failed. Please try again." }));
+          this.store.dispatch(ModalActions.openAlert());
+        });
+    } else {
+      this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.FREE_PROFESSIONAL)
+        .subscribe({
+          next: (response: any) => {
+            console.log("User registered successfully:", response);
+            this.router.navigate(['/auth']);
+          },
+          error: (error: any) => {
+            console.error("Registration failed:", error);
+            this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Registration failed. Please try again." }));
+            this.store.dispatch(ModalActions.openAlert());
+          }
+        });
+    }
   }
-
+  
   CheckIfIsTr() {
     this.selectedWorkspace = this.accountForm.value.workspace;
     if (this.selectedWorkspace === "2fc2a66a-69ca-4832-a90e-1ff590b80d24") {

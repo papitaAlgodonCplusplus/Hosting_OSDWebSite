@@ -210,7 +210,12 @@ export class EventConstants {
   public static AMOUNT_PAID: string = "AmountPaid"
   public static PAYMENT_DATE: string = "PaymentDate"
   public static SAVINGS_INSTITUTION: string = "SavingsInstitution"
-  
+
+  public static STUDENT_NAME: string = "StudentName";
+  public static STUDENT_ATTENDANCE: string = "StudentAttendance";
+  public static STUDENT_GRADE: string = "StudentGrade";
+  public static STUDENT_STATUS: string = "StudentStatus";
+
   //#endregion
   constructor() {
 

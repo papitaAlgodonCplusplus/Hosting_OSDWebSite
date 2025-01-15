@@ -6,7 +6,9 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class BackblazeService {
-  //private backendUrl = 'http://localhost:3000';
+  // Development API URL
+  // private backendUrl = 'http://localhost:3000';
+  // Production API URL
   private backendUrl = 'https://hosting-osdwebsite-1.onrender.com/api';
 
   constructor(private http: HttpClient) { }

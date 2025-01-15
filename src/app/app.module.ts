@@ -5,7 +5,6 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { StoreModule } from '@ngrx/store';
 import { ToastrModule } from 'ngx-toastr';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SharedModule } from './shared/shared.module';
@@ -15,7 +14,7 @@ import { modalReducers } from './store/reducers/modal.reducer';
 import { AuthInterceptorService } from './auth/interceptors/auth-interceptor.service';
 import { NotificationService } from './services/notification.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core'
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClient } from '@angular/common/http';
 import { claimReducers } from './store/reducers/claim.reducer';
@@ -23,6 +22,10 @@ import { performanceReducers } from './store/reducers/performance.reducer';
 import { menuOptionsReducers } from './store/reducers/MenuOptions.reducer';
 import { metaReducers } from './store/store';
 import { reducers } from './store/reducers';
+
+// ✅ Import ReactiveFormsModule
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -35,12 +38,12 @@ import { reducers } from './store/reducers';
     SharedModule,
     BrowserAnimationsModule,
     HttpClientModule,
+    ReactiveFormsModule,  // ✅ Added ReactiveFormsModule
+    MatSnackBarModule,  // ✅ Added MatSnackBarModule
     StoreModule.forRoot(reducers, { metaReducers }),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: !isDevMode(),
-      // Register the ServiceWorker as soon as the application is stable
-      // or after 30 seconds (whichever comes first).
       registrationStrategy: 'registerWhenStable:30000'
     }),
     TranslateModule.forRoot({

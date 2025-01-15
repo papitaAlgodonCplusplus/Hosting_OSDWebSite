@@ -19,6 +19,9 @@ export class AlertComponent {
   constructor(private store: Store) { }
 
   ngOnInit() {
+    this.store.dispatch(ModalActions.addAlertMessage({
+      alertMessage:  'Processing...'
+    }));
     setTimeout(() => {
       this.toggleSuccessAlert();
     }, 5000);

@@ -8,6 +8,7 @@ export class EventAction {
   //#region OSD
   public static USER_LOGIN: string = "UserLogin";
   public static REGISTER_CUSTOMER: string = "RegisterCustomer";
+  public static REGISTER_PROFESSOR: string = "RegisterProfessor";
   public static VERIFY_EMAIL: string = "VerifyEmail";
   public static RESEND_EMAIL_VERIFICATION_CODE: string = "ResendEmailVerificationCode";
   public static GENERATE_MAIL_PASSWORD_RESET_TOKEN: string = "GenerateMailPasswordResetToken";
@@ -55,7 +56,9 @@ export class EventAction {
   public static GET_PERFORMANCES_CLAIM_BY_ID : string = "GetPerformancesClaimById";
   public static GET_PERFORMANCES_CLAIM_BY_ID_RESPONSE : string = "GetPerformancesClaimByIdResponse";
   public static GET_PERFORMANCES_ASSIGNED_BY_ID : string = "GetPerformanceAssignedById";
-
+  public static UPDATE_STUDENT_RECORDS : string = "UpdateStudentRecords";
+  public static GET_STUDENTS_BY_COURSE : string = "GetStudentsByCourse";
+  
   public static ADD_RESPONSE_TO_PERFORMANCE_ASSIGNED : string = "AddResponseToPerformanceAssigned";
 
   public static MODIFY_RESPONSE_TO_PERFORMANCE_ASSIGNED : string = "ModifyResponseToPerformanceAssigned";
@@ -96,6 +99,7 @@ export class EventAction {
   public static HANDLE_ASSIGN_CLAIMS_TO_FREE_PROFESSIONALS_RESPONSE: string = "HandleAssignClaimsToFreeProfessionalTRResponse";
   public static GET_TRANSPARENCY_REPORTS_INCOME_EXPENSES_RESPONSES: string = "GetTransparencyReportsIncomeExpensesResponse";
   public static GET_TRANSPARENCY_REPORTS_SUBSCRIBER_CLIENTES_RESPONSE: string = "GetTransparencyReportsSubscriberClientsResponse";
+  public static GET_COURSE_BY_USER_ID: string = "GetCourseByUserId";
   //#endregion 
 
   //#region Monitoring

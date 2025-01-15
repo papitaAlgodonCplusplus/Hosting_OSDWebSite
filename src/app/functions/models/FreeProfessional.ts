@@ -2,7 +2,7 @@ export class FreeProfessional {
     Id: string = "";
     Identity : string = "";
     Name: string = "";
-    Userid: string = "";
+    userid: string = "";
     Country: string = "";
     clientType: string= "";
     FreeprofessionaltypeName: string = "";

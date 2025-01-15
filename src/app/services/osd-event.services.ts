@@ -227,6 +227,11 @@ export class OSDService {
     });
   }
 
+  public professorRegister(accountForm: Form, personalForm: Form, accountType: string): Observable<any> {
+    const registerProfessorEvent: WebBaseEvent = this.eventFactoryService.CreateRegisterProfessorEvent(accountForm, personalForm, accountType);
+    return this.restApiService.SendOSDEvent(registerProfessorEvent);
+  }
+  
   public userRegister(accountForm: Form, personalForm: Form, accountType: string): Observable<any> {
     const registerUserEvent: WebBaseEvent = this.eventFactoryService.CreateRegisterUserEvent(accountForm, personalForm, accountType);
     return this.restApiService.SendOSDEvent(registerUserEvent);
@@ -468,6 +473,50 @@ export class OSDService {
     });
   }
 
+  public HandleGetCourseByUserIdResponse(webBaseEvent: WebBaseEvent) {
+    try {
+      if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['course']) {
+        var course = webBaseEvent.Body['course'];
+        this.osdDataService.emitCourseSuccess(course)
+      } else {
+        this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'No hay curso registrado' }));
+      }
+    }
+    catch (err) {
+      this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Error inesperado' }));
+    }
+  }
+  
+  public HandleGetStudentsByCourseResponse(webBaseEvent: WebBaseEvent) {
+    try {
+      if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['ListStudents']) {
+        var students = webBaseEvent.Body['ListStudents'];
+        this.osdDataService.emitStudentsListSuccess(students)
+      } else {
+        this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'No hay estudiantes registrados' }));
+      }
+    }
+    catch (err) {
+      this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Error inesperado' }));
+    }
+  }
+
+  public HandleUpdateStudentRecordsResponse(webBaseEvent: WebBaseEvent) {
+    try {
+      var actionUpdateStudentRecordsResultMessage = webBaseEvent.getBodyProperty(EventConstants.ACTION_OSD_RESULT_MESSAGE);
+      if (actionUpdateStudentRecordsResultMessage == "Student records updated successfully") {
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Student records updated successfully" }));
+        this.store.dispatch(ModalActions.openAlert());
+      } else {
+        this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: "Error updating student records" }));
+        this.store.dispatch(ModalActions.openAlert());
+      }
+    }
+    catch (err) {
+      this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Error inesperado' }));
+    }
+  }
+
   public HandleGettingFreeProfessionalsListResponse(webBaseEvent: WebBaseEvent) {
     try {
       if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['ListFreeProfessionals']) {
@@ -600,6 +649,57 @@ export class OSDService {
     catch (err) {
       this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Error inesperado' }));
     }
+  }
+
+  public getCourseByUserId(Id: string): Observable<any> {
+    const getCourseByUserIdEvent: WebBaseEvent = this.eventFactoryService.CreateGetCourseByUserIdEvent(Id);
+    return this.restApiService.SendOSDEvent(getCourseByUserIdEvent).pipe(
+      map((response) => {
+        const osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleGetCourseByUserIdResponse(osdEvent);
+        return response;
+      })
+    );
+  }
+
+  public getStudentsByCourse(Id: string): Observable<any> {
+    const getStudentsByCourseEvent: WebBaseEvent = this.eventFactoryService.CreateGetStudentsByCourseEvent(Id);
+    return this.restApiService.SendOSDEvent(getStudentsByCourseEvent).pipe(
+      map((response) => {
+        const osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleGetStudentsByCourseResponse(osdEvent);
+        return response;
+      })
+    );
+  }
+
+  public updateStudentRecords(records: any): Observable<any> {
+    return new Observable((observer) => {
+      if (Array.isArray(records.students) && records.students.length > 0) {
+        records.students.forEach((student: any) => {
+          const updateStudentRecordsEvent: WebBaseEvent = this.eventFactoryService.CreateUpdateStudentRecordsEvent(
+            student.name,
+            student.attendance,
+            student.grade,
+            student.status
+          );
+
+          this.restApiService.SendOSDEvent(updateStudentRecordsEvent).subscribe({
+            next: (response) => {
+              const osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+              this.HandleUpdateStudentRecordsResponse(osdEvent);
+              observer.next(response);
+            },
+            error: (error) => {
+              observer.error(error);
+            }
+          });
+        });
+        observer.complete();
+      } else {
+        observer.error('No student records found.');
+      }
+    });
   }
 
   public GetSubscribers() {
@@ -830,8 +930,8 @@ export class OSDService {
   public GetTransparencyReportsSubscriberClientsResponse(webBaseEvent: WebBaseEvent) {
     try {
       var TransparencyReportsSubscriberClientList = webBaseEvent.getBodyProperty(EventConstants.TRANSPARENCY_REPORTS_SUBSCRIBER_CLIENT_LIST);
-      
-      if (TransparencyReportsSubscriberClientList.length > 0 ) {
+
+      if (TransparencyReportsSubscriberClientList.length > 0) {
         this.osdDataService.emitTransparencyReportsSubscriberClientList(TransparencyReportsSubscriberClientList);
       }
 

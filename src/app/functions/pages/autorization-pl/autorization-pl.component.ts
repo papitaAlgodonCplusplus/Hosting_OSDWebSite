@@ -74,7 +74,7 @@ export class AutorizationPlComponent implements OnDestroy {
     const userDTO: UserInfo = {} as UserInfo;
     userDTO.Identity = user.Identity
     this.user = userDTO;
-    this.userSelected = user.Userid
+    this.userSelected = user.userid
     const FreeProfessionalDTO: FreeProfessional = {} as FreeProfessional;
     FreeProfessionalDTO.clientType = this.translate.instant("FreeProfessional");
     FreeProfessionalDTO.FreeprofessionaltypeName = user.FreeprofessionaltypeName;

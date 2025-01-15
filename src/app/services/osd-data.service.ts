@@ -64,6 +64,10 @@ export class OSDDataService {
 
   private ClaimsList = new Subject<Claim[]>();
 
+  private studentsList = new Subject<any>();
+
+  private courseList = new Subject<any>();
+  
   actionRegisterSuccess$ = this.actionRegisterSuccessSubject.asObservable();
   userRegisterSuccess$ = this.userRegisterSuccessSubject.asObservable();
   verifyEmailSuccess$ = this.verifyEmailSuccessSubject.asObservable();
@@ -225,5 +229,13 @@ export class OSDDataService {
 
   emitClaimsListSuccess(data: Claim[]) {
     this.ClaimsList.next(data);
+  }
+
+  emitStudentsListSuccess(data: any) {
+    this.studentsList.next(data);
+  }
+
+  emitCourseSuccess(data: any) {
+    this.courseList.next(data);
   }
 }
