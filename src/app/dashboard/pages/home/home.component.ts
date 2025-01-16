@@ -61,7 +61,6 @@ export class HomeComponent implements OnDestroy {
               freeProfessionals.forEach(item => {
                 var freeProfessional: FreeProfessional = item;
                 if (freeProfessional.userid == this.user.Id) {
-                  console.log('freeProfessional:', freeProfessional);
                   if (freeProfessional.FreeprofessionaltypeAcronym == "TR") {
                     this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: this.menuService.getMenuOptionFreeProfessionalProcessor() }));
                   }

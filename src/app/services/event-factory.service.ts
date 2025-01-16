@@ -579,7 +579,7 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.ACCOUNT_TYPE, accounType);
     return event;
   }
-  
+
   public CreateRegisterUserEvent(accountForm: Form, personalForm: Form, accounType: String): WebBaseEvent {
     let event: WebBaseEvent;
 
@@ -990,6 +990,20 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.PAYMENT_DATE, closeClaimfileForm.creditingDate);
     event.setBodyProperty(EventConstants.SAVINGS_INSTITUTION, closeClaimfileForm.AAsavingsPP);
 
+    return event;
+  }
+
+  public CreateGetUserByIdEvent(userId: string): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.GET_USER_BY_ID;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient'
+    event.setBodyProperty(EventConstants.USER_ID, userId);
     return event;
   }
 }

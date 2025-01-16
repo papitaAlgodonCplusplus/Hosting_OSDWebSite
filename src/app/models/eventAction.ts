@@ -13,7 +13,7 @@ export class EventAction {
   public static RESEND_EMAIL_VERIFICATION_CODE: string = "ResendEmailVerificationCode";
   public static GENERATE_MAIL_PASSWORD_RESET_TOKEN: string = "GenerateMailPasswordResetToken";
   public static CHANGE_PASSWORD: string = "ChangePassword";
-
+  public static GET_USER_BY_ID: string = "GetUserById";
   public static CREATE_CLAIMANT_AND_CLAIMS_CUSTOMER_PERFORMANCE: string = "CreateClaimantAndClaimsCustomerPerformance";
   public static MODIFIED_CLAIMANT_AND_CLAIMS_CUSTOMER_PERFORMANCE: string = "ModifiedClaimantAndClaimsCustomerPerformance";
   

@@ -171,7 +171,7 @@ export class EventConstants {
   public static FORMATION_COST: string = "formationCost"
 
 
-  public static PROJECTS_LIST: string = "ProjectsList"
+  public static PROJECTS_LIST: string = "projects"
   public static OBJECTIVE: string = "Objective"
   public static EXPECTED_HOURS: string = "ExpectedHours"
   public static ECONOMIC_BUDGET: string = "EconomicBudget"

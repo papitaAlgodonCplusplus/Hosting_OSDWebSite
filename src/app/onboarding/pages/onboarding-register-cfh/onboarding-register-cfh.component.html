@@ -71,7 +71,7 @@
             <!-- COURSES TABLE (FormArray) -->
             <div class="mt-5 w-full" formArrayName="courses">
                 <h2 class="text-base font-semibold text-darkslategray mb-2">
-                    {{ 'Cursos Disponibles' | translate }}
+                    {{ 'Cursos_Disponibles' | translate }}
                 </h2>
 
                 <div class="overflow-x-auto border rounded shadow-sm">
@@ -118,16 +118,14 @@
                                 <td colspan="3" class="px-4 py-2 bg-gray-50">
                                     <!-- Sub-table for modules in this course -->
                                     <div formArrayName="modules">
-                                        <h3 class="font-medium mb-1">
-                                            {{ 'Módulos para este curso' | translate }}
-                                        </h3>
+                                        {{ 'modules_for_course' | translate: { courseName: courseCtrl.value.courseName, rowNumber: i + 1 } }}
                                         <div class="overflow-x-auto border rounded shadow-sm">
                                             <table class="min-w-full text-left border-collapse">
                                                 <thead class="border-b bg-gray-100">
                                                     <tr>
-                                                        <th class="px-4 py-2">Módulo</th>
-                                                        <th class="px-4 py-2">Duración</th>
-                                                        <th class="px-4 py-2">Acciones</th>
+                                                        <th class="px-4 py-2">{{ 'module' | translate }}</th>
+                                                        <th class="px-4 py-2">{{ 'duration' | translate }}</th>
+                                                        <th class="px-4 py-2">{{ 'acciones' | translate }}</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -154,7 +152,7 @@
                                                             <button type="button"
                                                                 class="px-3 py-1 bg-red-500 text-white rounded"
                                                                 (click)="removeModule(i, m)">
-                                                                Eliminar módulo
+                                                                {{ 'eliminar' | translate }}
                                                             </button>
                                                         </td>
                                                     </tr>
@@ -165,7 +163,7 @@
                                         <div class="flex justify-end mt-2">
                                             <button type="button" class="p-2 bg-blue-500 text-white rounded"
                                                 (click)="addModule(i)">
-                                                + Añadir Módulo
+                                                {{ 'agregar_modulo' | translate }}
                                             </button>
                                         </div>
                                     </div>

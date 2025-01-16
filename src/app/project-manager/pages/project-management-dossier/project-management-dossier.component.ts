@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable, firstValueFrom } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { OSDDataService } from 'src/app/services/osd-data.service';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { PerformanceActions, UiActions } from 'src/app/store/actions';
@@ -45,7 +46,7 @@ export class ProjectManagementDossierComponent implements OnDestroy {
   showModalSubPerformance: boolean = false;
   subPerformance!: ResponseToPerformanceFreeProfessional[];
   validatseCreatePerformance: boolean = false
-  projectSelected : string = ""
+  projectSelected: string = ""
 
   constructor(private router: Router, private store: Store, private formBuilder: FormBuilder,
     private osdDataService: OSDDataService, private osdEventService: OSDService,
@@ -163,36 +164,34 @@ export class ProjectManagementDossierComponent implements OnDestroy {
   selectProject(event: Event): void {
     this.loadProjectManager = true;
     const id = (event.target as HTMLSelectElement).value;
+
     setTimeout(() => {
-      this.allProjects.forEach(element => {
-        if (element.Id === id) {
-          this.formProjectManager = this.createForm(element);
-          this.store.dispatch(PerformanceActions.setProjecTManagerId({ projectManagerId: element.Id }))
-          this.projectSelected = element.Id;
-          this.osdEventService.getPerformancesProjectManagerById(id)
-          this.loadPerformance();
-          this.openSideBar = false
-        }
-      });
+      const project = this.allProjects.find(element => element.Id === id);
+      if (project) {
+        this.formProjectManager = this.createForm(project);
+        this.store.dispatch(PerformanceActions.setProjecTManagerId({ projectManagerId: project.Id }));
+        this.projectSelected = project.Id;
+        this.osdEventService.getPerformancesProjectManagerById(id);
+        this.loadPerformance();
+        this.openSideBar = false;
+      }
     }, 0);
   }
 
   loadPerformance() {
     this.loadProjectManager = true;
     setTimeout(() => {
-      this.osdDataService.performanceFreeProfessionalList$.subscribe(performance => {
-        this.performances = performance;
-        this.performances.forEach(pf => {
-          pf.Type = "Performance Free Professional"
-        })
+      this.osdDataService.performanceFreeProfessionalList$.pipe(take(1)).subscribe(performance => {
+        this.performances = performance as showPerformance[];
+        this.performances.forEach(pf => pf.Type = "Performance Free Professional");
         this.performancesFreeProfessional = performance;
-      })
-      this.osdDataService.performanceBuyList$.subscribe(performance => {
-        this.performancesBuy = performance;
-      });
 
-      this.loadProjectManager = false;
-      this.updateDisplayedItems()
+        this.osdDataService.performanceBuyList$.pipe(take(1)).subscribe(performance => {
+          this.performancesBuy = performance;
+          this.loadProjectManager = false;
+          this.updateDisplayedItems();
+        });
+      });
     }, 0);
   }
 

@@ -25,9 +25,9 @@
             </td> -->
             <td class="text-center border-y px-2 py-2">{{ item.Code || '-' }}</td>
 
-            <td class="text-center border-y px-2 py-2">{{ item.Identity }}</td>
+            <td class="text-center border-y px-2 py-2">{{ item.identity }}</td>
 
-            <td class="text-center border-y px-2 py-2">{{ item.Name + " " + item.Firstname + " " + item.Middlesurname
+            <td class="text-center border-y px-2 py-2">{{ item.name + " " + item.firstsurname + " " + item.middlesurname
               }}
             </td>
 
@@ -38,7 +38,7 @@
             </td>
             <td class="text-center border-y px-2 py-2">
               <i class="fa-solid fa-circle"
-                [ngClass]="{'text-green-500': item.Isauthorized, 'text-red-600': !item.Isauthorized}">
+                [ngClass]="{'text-green-500': item.isauthorized, 'text-red-600': !item.isauthorized}">
               </i>
             </td>
           </tr>

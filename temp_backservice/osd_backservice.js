@@ -22,7 +22,7 @@ const pool = new Pool({
   }
 });
 
-// // Development
+// Development
 // const pool = new Pool({
 //   user: 'postgres',
 //   host: 'localhost',
@@ -104,6 +104,22 @@ app.post('/api/events/processOSDEvent', async (req, res) => {
 
       case 'UpdateStudentRecords':
         await handleUpdateStudentRecords(event, res);
+        break;
+
+      case 'GetUserById':
+        await handleGetUserById(event, res);
+        break;
+
+      case 'GettingClaims':
+        await handleGetClaims(event, res);
+        break;
+
+      case 'GetProjects':
+        await handleGetProjects(event, res);
+        break;
+
+      case 'GetPerformanceAssignedById':
+        await HandleGetPerformanceAssignedById(event, res);
         break;
 
       default:
@@ -230,6 +246,185 @@ const handleUserLogin = async (event, res) => {
       'UserLogin'
     )
   );
+};
+
+const HandleGetPerformanceAssignedById = async (event, res) => {
+  try {
+    const userId = event.Body?.UserId;
+
+    if (!userId) {
+      return res.status(400).json(createWebBaseEvent({
+        GET_PERFORMANCE_ASSIGNED_BY_ID_SUCCESS: false,
+        GET_PERFORMANCE_ASSIGNED_BY_ID_MESSAGE: 'User ID is required.',
+      }, event.SessionKey, event.SecurityToken, 'GetPerformanceAssignedById'));
+    }
+
+    console.log(`🔍 Fetching performance assigned by ID for user with ID: ${userId}`);
+    const performanceQuery = `
+      SELECT id, code, projectmanagerid AS "ProjectManagerId", summarytypeid AS "SummaryTypeId", 
+             start_date AS "Start_Date", end_date AS "End_Date", justifying_document AS "JustifyingDocument", 
+             freeprofessionalcreatedperformanceid AS "FreeProfessionalCreatedPerformanceId", 
+             freeprofessionalassignedid AS "FreeProfessionalAssignedId", 
+             estimated_transport_expenses AS "EstimatedTransportExpenses", 
+             estimated_transport_hours AS "EstimatedTransportHours", 
+             estimated_work_hours AS "EstimatedWorkHours", 
+             total_forecast_data AS "TotalForecastData", 
+             justifying_document_bytes AS "JustifyingDocumentBytes"
+      FROM performance_freeprofessional
+      WHERE freeprofessionalassignedid = $1
+    `;
+
+    const performanceResult = await pool.query(performanceQuery, [userId]);
+
+    if (performanceResult.rows.length === 0) {
+      return res.status(404).json(createWebBaseEvent({
+        GET_PERFORMANCE_ASSIGNED_BY_ID_SUCCESS: false,
+        GET_PERFORMANCE_ASSIGNED_BY_ID_MESSAGE: 'No performance records found for this user.',
+      }, event.SessionKey, event.SecurityToken, 'GetPerformanceAssignedById'));
+    }
+
+    console.log(`📄 Retrieved performance records: ${JSON.stringify(performanceResult.rows, null, 2)}`);
+
+    return res.status(200).json(createWebBaseEvent({
+      GET_PERFORMANCE_ASSIGNED_BY_ID_SUCCESS: true,
+      performance: performanceResult.rows
+    }, event.SessionKey, event.SecurityToken, 'GetPerformanceAssignedById'));
+
+  } catch (error) {
+    console.error('❌ Error fetching performance assigned by ID:', error);
+
+    return res.status(500).json(createWebBaseEvent({
+      GET_PERFORMANCE_ASSIGNED_BY_ID_SUCCESS: false,
+      GET_PERFORMANCE_ASSIGNED_BY_ID_MESSAGE: 'Server error fetching performance assigned by ID.',
+    }, event.SessionKey, event.SecurityToken, 'GetPerformanceAssignedById'));
+  }
+};
+
+const handleGetProjects = async (event, res) => {
+  try {
+    console.log('🔍 Fetching all project details');
+
+    const projectQuery = `
+      SELECT id, objective AS "Objective", startdate, enddate, expensesemployeesvolunteers, 
+             supplierexpensespurchases, economic_budget, hours_executed, expected_hours
+      FROM projectmanager
+    `;
+
+    const projectResult = await pool.query(projectQuery);
+
+    if (projectResult.rows.length === 0) {
+      return res.status(404).json(createWebBaseEvent({
+        GET_PROJECTS_SUCCESS: false,
+        GET_PROJECTS_MESSAGE: 'No projects found.',
+      }, event.SessionKey, event.SecurityToken, 'GetProjects'));
+    }
+
+    console.log(`📄 Retrieved project details: ${JSON.stringify(projectResult.rows, null, 2)}`);
+
+    return res.status(200).json(createWebBaseEvent({
+      GET_PROJECTS_SUCCESS: true,
+      projects: projectResult.rows
+    }, event.SessionKey, event.SecurityToken, 'GetProjects'));
+
+  } catch (error) {
+    console.error('❌ Error fetching project details:', error);
+
+    return res.status(500).json(createWebBaseEvent({
+      GET_PROJECTS_SUCCESS: false,
+      GET_PROJECTS_MESSAGE: 'Server error fetching project details.',
+    }, event.SessionKey, event.SecurityToken, 'GetProjects'));
+  }
+};
+
+const handleGetClaims = async (event, res) => {
+  try {
+    const userId = event.Body?.UserId;
+
+    if (!userId) {
+      return res.status(400).json(createWebBaseEvent({
+        GET_CLAIMS_SUCCESS: false,
+        GET_CLAIMS_MESSAGE: 'User ID is required.',
+      }, event.SessionKey, event.SecurityToken, 'GettingClaims'));
+    }
+
+    console.log(`🔍 Fetching claims for user with ID: ${userId}`);
+
+    const claimsQuery = `
+      SELECT id, code, datecreated, status, subscriberclaimedid, claimantid, claimtype, 
+             serviceprovided, facts, amountclaimed, documentfile1id, documentfile1name, 
+             documentfile2id, documentfile2name, creditingdate, amountpaid, 
+             improvementsavings, valuationsubscriber, valuationclaimant, 
+             valuationfreeprofessionals
+      FROM claim_file
+      WHERE claimantid = $1
+    `;
+
+    const claimsResult = await pool.query(claimsQuery, [userId]);
+
+    if (claimsResult.rows.length === 0) {
+      return res.status(404).json(createWebBaseEvent({
+        GET_CLAIMS_SUCCESS: false,
+        GET_CLAIMS_MESSAGE: 'No claims found for this user.',
+      }, event.SessionKey, event.SecurityToken, 'GettingClaims'));
+    }
+
+    console.log(`📄 Retrieved claims: ${JSON.stringify(claimsResult.rows, null, 2)}`);
+
+    return res.status(200).json(createWebBaseEvent({
+      GET_CLAIMS_SUCCESS: true,
+      claims: claimsResult.rows
+    }, event.SessionKey, event.SecurityToken, 'GettingClaims'));
+
+  } catch (error) {
+    console.error('❌ Error fetching claims:', error);
+
+    return res.status(500).json(createWebBaseEvent({
+      GET_CLAIMS_SUCCESS: false,
+      GET_CLAIMS_MESSAGE: 'Server error fetching claims.',
+    }, event.SessionKey, event.SecurityToken, 'GettingClaims'));
+  }
+};
+
+const handleGetUserById = async (event, res) => {
+  try {
+    const userId = event.Body?.UserId;
+
+    if (!userId) {
+      return res.status(400).json(createWebBaseEvent({
+        GET_USER_BY_ID_SUCCESS: false,
+        GET_USER_BY_ID_MESSAGE: 'User ID is required.',
+      }, event.SessionKey, event.SecurityToken, 'GetUserById'));
+    }
+
+    console.log(`🔍 Fetching user with ID: ${userId}`);
+
+    const userQuery = await pool.query(
+      `SELECT id, code, accounttype, identity, name, firstsurname, middlesurname, city, companyname, address, zipcode, country, landline, mobilephone, email, password, web, isauthorized, isadmin FROM osduser WHERE id = $1`,
+      [userId]
+    );
+
+    if (userQuery.rows.length === 0) {
+      return res.status(404).json(createWebBaseEvent({
+        GET_USER_BY_ID_SUCCESS: false,
+        GET_USER_BY_ID_MESSAGE: 'User not found.',
+      }, event.SessionKey, event.SecurityToken, 'GetUserById'));
+    }
+
+    const user = userQuery.rows[0];
+
+    return res.status(200).json(createWebBaseEvent({
+      GET_USER_BY_ID_SUCCESS: true,
+      user: user
+    }, event.SessionKey, event.SecurityToken, 'GetUserById'));
+
+  } catch (error) {
+    console.error('❌ Error fetching user by ID:', error);
+
+    return res.status(500).json(createWebBaseEvent({
+      GET_USER_BY_ID_SUCCESS: false,
+      GET_USER_BY_ID_MESSAGE: 'Server error fetching user by ID.',
+    }, event.SessionKey, event.SecurityToken, 'GetUserById'));
+  }
 };
 
 const handleUpdateStudentRecords = async (event, res) => {
@@ -495,8 +690,10 @@ const handleUserRegistration = async (event, res) => {
       console.log('✅ User already exists in osduser with ID:', userId);
     }
 
-    // Insert courses/modules if provided
-    if (Array.isArray(personalForm.courses) && personalForm.courses.length > 0) {
+    console.log("✅ Successfully created user with ID:", userId);
+    const courses = Array.isArray(personalForm.courses) ? personalForm.courses : [personalForm.courses];
+    console.log('📚 Courses:', courses, personalForm.courses);
+    if (courses.length > 0) {
       for (const course of personalForm.courses) {
         const courseId = uuidv4();
         const insertCourseQuery = `
@@ -797,18 +994,44 @@ const handleGetStudentsByCourse = async (event, res) => {
 
 const handleGetSubscribers = async (event, res) => {
   try {
+    const result = await pool.query(`
+      SELECT 
+        id, 
+        code, 
+        accounttype, 
+        identity AS "identity", 
+        name AS "Name", 
+        firstsurname AS "FirstSurname", 
+        middlesurname AS "MiddleSurname", 
+        city AS "city", 
+        companyname AS "CompanyName", 
+        address AS "Address", 
+        zipcode AS "ZipCode", 
+        country AS "Country", 
+        landline AS "landline", 
+        mobilephone AS "mobilePhone", 
+        email AS "email", 
+        password AS "password", 
+        web AS "web", 
+        isauthorized AS "isAuthorized", 
+        isadmin AS "isAdmin" 
+      FROM osduser
+    `);
+
     res.status(200).json(createWebBaseEvent({
       GET_SUBSCRIBERS_SUCCESS: true,
+      subscribers: result.rows
     }, event.SessionKey, event.SecurityToken, 'GetSubscribers'));
+    
   } catch (error) {
     console.error('❌ Error fetching subscribers:', error);
-
     res.status(500).json(createWebBaseEvent({
       GET_SUBSCRIBERS_SUCCESS: false,
       GET_SUBSCRIBERS_MESSAGE: 'Server error fetching subscribers.',
     }, event.SessionKey, event.SecurityToken, 'GetSubscribers'));
   }
 };
+
 
 app.get('/api/courses', async (req, res) => {
   try {

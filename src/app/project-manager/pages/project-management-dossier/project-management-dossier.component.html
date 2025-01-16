@@ -140,14 +140,6 @@
     </div>
 </div>
 
-<div *ngIf="loadProjectManager" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
-    <div class="bg-opacity-75 bg-black absolute inset-0"></div>
-    <div class="relative z-50 space-y-1">
-        <div class="justify-center text-white">
-            <i class="fa-solid fa-arrow-rotate-right animate-spin"></i> {{'Loading' | translate}}
-        </div>
-    </div>
-</div>
 
 <summary-type-modal *ngIf="isModalOpen" (close)="isModalOpen = false"></summary-type-modal>
 

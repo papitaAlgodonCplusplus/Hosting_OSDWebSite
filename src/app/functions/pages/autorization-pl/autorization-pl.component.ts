@@ -39,7 +39,6 @@ export class AutorizationPlComponent implements OnDestroy {
 
   ngOnInit(): void {
     this.osdEventService.getFreeProfessionalsList().then(freeProfessionals => {
-
       freeProfessionals.forEach(item => {
         if (item.FreeprofessionaltypeAcronym !== "INFIT") {
           this.items.push(item)
@@ -113,7 +112,16 @@ export class AutorizationPlComponent implements OnDestroy {
   }
 
   updateDisplayedItems(startIndex: number = 0, endIndex: number = 10) {
-    this.displayedItems = this.items.slice(startIndex, endIndex);
+    const displayedItemsPromises = this.items.slice(startIndex, endIndex).map(item => {
+      return this.osdEventService.getUserByID(item.userid).then((user: any) => {
+        return { ...item, user };
+      });
+    });
+
+    Promise.all(displayedItemsPromises).then(updatedItems => {
+      console.log("Found users", updatedItems.map(item => item.user.Body?.user));
+      this.displayedItems = updatedItems.map(item => item.user.Body?.user);
+    });
   }
 
   ngOnDestroy(): void {

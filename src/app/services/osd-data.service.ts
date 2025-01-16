@@ -238,4 +238,8 @@ export class OSDDataService {
   emitCourseSuccess(data: any) {
     this.courseList.next(data);
   }
+
+  emitUserSuccess(data: boolean) {
+    this.userRegisterSuccessSubject.next(data);
+  }
 }

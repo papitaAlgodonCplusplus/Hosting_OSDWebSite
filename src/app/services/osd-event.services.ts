@@ -70,6 +70,22 @@ export class OSDService {
     this.freeProfessionalsResponse = false;
   }
 
+  getUserByID(userId: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const event: WebBaseEvent = this.eventFactoryService.CreateGetUserByIdEvent(userId);
+      this.restApiService.SendOSDEvent(event).subscribe({
+        next: (response) => {
+          var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+          this.HandleGetUserByIdResponse(osdEvent);
+          resolve(osdEvent);
+        },
+        error: (error) => {
+          reject(error);
+        }
+      });
+    });
+  }
+
   getFreeProfessionalsList(): Promise<any[]> {
     return new Promise((resolve, reject) => {
       const checkResponse = () => {
@@ -517,6 +533,20 @@ export class OSDService {
     }
   }
 
+  public HandleGetUserByIdResponse(webBaseEvent: WebBaseEvent) {
+    try {
+      if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['OsdUser']) {
+        var osdUser = webBaseEvent.Body['OsdUser'];
+        this.osdDataService.emitUserSuccess(osdUser)
+      } else {
+        this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'No hay usuario registrado' }));
+      }
+    }
+    catch (err) {
+      this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Error inesperado' }));
+    }
+  }
+  
   public HandleGettingFreeProfessionalsListResponse(webBaseEvent: WebBaseEvent) {
     try {
       if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['ListFreeProfessionals']) {
@@ -895,7 +925,7 @@ export class OSDService {
 
   public HandleGetSubscriberResponse(webBaseEvent: WebBaseEvent) {
     try {
-      var actionGetOsdUsersSusbscriberResultMessage = webBaseEvent.getBodyProperty(EventConstants.LIST_OSD_USERS_SUBSCRIBERS);
+      var actionGetOsdUsersSusbscriberResultMessage = webBaseEvent.Body?.["subscribers"];
       if (actionGetOsdUsersSusbscriberResultMessage != null) {
         var actionGetSusbscribersResultMessage = webBaseEvent.getBodyProperty(EventConstants.LIST_SUBSCRIBERS);
         const osdUsersSubscribersModels = actionGetOsdUsersSusbscriberResultMessage;
@@ -1319,7 +1349,7 @@ export class OSDService {
   public HandleCreateGetProjectsResponse(webBaseEvent: WebBaseEvent) {
     var projectsList: Project[];
     try {
-      projectsList = webBaseEvent.getBodyProperty(EventConstants.PROJECTS_LIST);
+      projectsList = webBaseEvent.Body?.[EventConstants.PROJECTS_LIST];
       if (projectsList.length > 0) {
         this.osdDataService.emitGetProjectsSuccess(projectsList)
       }
@@ -1412,7 +1442,7 @@ export class OSDService {
   public HandleCreateGetPerformanceAssignedByIdResponse(webBaseEvent: WebBaseEvent) {
     var performanceAssigned: PerformanceFreeProfessional[];
     try {
-      performanceAssigned = webBaseEvent.getBodyProperty(EventConstants.PERFORMANCE_ASSIGNED_BY_ID_LIST);
+      performanceAssigned = webBaseEvent.Body?.["performance"];
       if (performanceAssigned.length > 0) {
         this.osdDataService.emitPerformanceAssignedListSuccess(performanceAssigned)
       }
@@ -1541,5 +1571,4 @@ export class OSDService {
 
     }
   }
-
 }

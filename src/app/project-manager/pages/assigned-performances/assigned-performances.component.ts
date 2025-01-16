@@ -41,6 +41,7 @@ export class AssignedPerformancesComponent implements OnDestroy {
     }, 0);
     
     this.osdDataService.PerformanceAssignedList$.subscribe(performanceAssigned=>{
+      console.log(performanceAssigned)
       this.performanceAssigned = performanceAssigned;
     })
   }
