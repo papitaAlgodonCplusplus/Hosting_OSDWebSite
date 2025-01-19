@@ -87,17 +87,41 @@ export class AccountingComponent implements OnInit {
     });
   }
 
+  get distribution() {
+    // default to 'presencial' if there's no mode or no courses
+    const mode = this.courses[0]?.mode || 'presencial';
+  
+    if (mode === 'presencial') {
+      // OSD=10%, Professor=80%, CFH=10%
+      return { osdPerc: 10, profPerc: 80, cfhPerc: 10 };
+    } else {
+      // OSD=30%, Professor=40%, CFH=30%
+      return { osdPerc: 30, profPerc: 40, cfhPerc: 30 };
+    }
+  }
+
   calculateBudget(): void {
     const pricePerStudent = +this.budgetForm.value.pricePerStudent || 0;
     const otherExpenses = +this.budgetForm.value.otherExpenses || 0;
-    const professorPercentage = 0.35;
+    let courseMode = this.courses[0]?.mode || 'presencial'; 
     const numberOfStudents = this.accountingEntries.length;
-
     const totalIncome = pricePerStudent * numberOfStudents;
-    const professorExpenses = totalIncome * professorPercentage;
-    const osdFee = Math.max(10, totalIncome * 0.1);
-    const netProfit = totalIncome - (professorExpenses + otherExpenses + osdFee);
-
+    
+    let osdFee = 0;
+    let professorExpenses = 0;
+    let cfhPortion = 0;
+    if (courseMode === 'presencial') {
+      osdFee = totalIncome * 0.10;
+      professorExpenses = totalIncome * 0.80;
+      cfhPortion = totalIncome * 0.10;
+    } else {
+      osdFee = totalIncome * 0.30;
+      professorExpenses = totalIncome * 0.40;
+      cfhPortion = totalIncome * 0.30;
+    }
+  
+    let netProfit = cfhPortion - otherExpenses;
+    netProfit = Math.max(0, netProfit);
     this.budgetForm.patchValue({
       totalIncome: totalIncome.toFixed(2),
       professorExpenses: professorExpenses.toFixed(2),

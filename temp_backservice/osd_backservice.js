@@ -87,7 +87,6 @@ app.post('/api/events/processOSDEvent', async (req, res) => {
 
       case 'GetSubscribers':
         await handleGetSubscribers(event, res);
-        console.log('📧 GetSubscribers event processed');
         break;
 
       case 'GetStudentsByCourse':
@@ -120,6 +119,46 @@ app.post('/api/events/processOSDEvent', async (req, res) => {
 
       case 'GetPerformanceAssignedById':
         await HandleGetPerformanceAssignedById(event, res);
+        break;
+
+      case 'GetTransparencyReportsSubscriberClients':
+        await handleGetTransparencyReportsSubscriberClients(event, res);
+        break;
+
+      case 'GetTransparencyReportsIncomeExpenses':
+        await handleGetTransparencyReportsIncomeExpenses(event, res);
+        break;
+
+      case 'GetTransparencyFreeProfessionals':
+        await handleGetTransparencyFreeProfessionals(event, res);
+        break;
+
+      case 'GetFreeProfessionalsByCFHId':
+        await handleGetFreeProfessionalsByCFHId(event, res);
+        break;
+
+      case 'AddFreeProfessionalToCFH':
+        await handleAddFreeProfessionalToCFH(event, res);
+        break;
+
+      case 'UpdateUserProfile':
+        await handleUpdateUserProfile(event, res);
+        break;
+
+      case 'CreateClaim':
+        await handleCreateClaim(event, res);
+        break;
+
+      case 'GetPerformancesClaimById':
+        await handleGetPerformancesClaimById(event, res);
+        break;
+
+      case 'CreateClaimantAndClaimsCustomerPerformance':
+        await handleCreateClaimantAndClaimsCustomerPerformance(event, res);
+        break;
+
+      case 'GetCFHReports':
+        await handleGetCFHReports(event, res);
         break;
 
       default:
@@ -248,6 +287,368 @@ const handleUserLogin = async (event, res) => {
   );
 };
 
+const handleAddFreeProfessionalToCFH = async (event, res) => {
+  try {
+    const { FreeProfessionalId, CfhId } = event.Body;
+
+    if (!FreeProfessionalId || !CfhId) {
+      return res.status(400).json(createWebBaseEvent({
+        ADD_FREE_PROFESSIONAL_TO_CFH_SUCCESS: false,
+        ADD_FREE_PROFESSIONAL_TO_CFH_MESSAGE: 'FreeProfessionalId and CfhId are required.',
+      }, event.SessionKey, event.SecurityToken, 'AddFreeProfessionalToCFH'));
+    }
+
+    console.log(`🔍 Fetching user with email: ${CfhId}`);
+
+    const userQuery = await pool.query(
+      'SELECT id FROM osduser WHERE email = $1',
+      [CfhId]
+    );
+
+    if (userQuery.rows.length === 0) {
+      return res.status(404).json(createWebBaseEvent({
+        ADD_FREE_PROFESSIONAL_TO_CFH_SUCCESS: false,
+        ADD_FREE_PROFESSIONAL_TO_CFH_MESSAGE: 'User not found.',
+      }, event.SessionKey, event.SecurityToken, 'AddFreeProfessionalToCFH'));
+    }
+
+    const userId = userQuery.rows[0].id;
+
+    console.log(`🔍 Inserting FreeProfessionalId: ${FreeProfessionalId} for userId: ${userId}`);
+
+    const updateQuery = `
+      UPDATE freeprofessional
+      SET cfh_id = $1
+      WHERE userid = $2
+      RETURNING id, userid, cfh_id;
+    `;
+
+    const updateResult = await pool.query(updateQuery, [FreeProfessionalId, userId]);
+
+    if (updateResult.rows.length === 0) {
+      return res.status(404).json(createWebBaseEvent({
+        ADD_FREE_PROFESSIONAL_TO_CFH_SUCCESS: false,
+        ADD_FREE_PROFESSIONAL_TO_CFH_MESSAGE: 'FreeProfessional not found or update failed.',
+      }, event.SessionKey, event.SecurityToken, 'AddFreeProfessionalToCFH'));
+    }
+
+    console.log(`✅ FreeProfessional added to CFH successfully: ${JSON.stringify(updateResult.rows[0], null, 2)}`);
+
+    return res.status(200).json(createWebBaseEvent({
+      ADD_FREE_PROFESSIONAL_TO_CFH_SUCCESS: true,
+      freeProfessional: updateResult.rows[0]
+    }, event.SessionKey, event.SecurityToken, 'AddFreeProfessionalToCFH'));
+
+  } catch (error) {
+    console.error('❌ Error adding FreeProfessional to CFH:', error);
+
+    return res.status(500).json(createWebBaseEvent({
+      ADD_FREE_PROFESSIONAL_TO_CFH_SUCCESS: false,
+      ADD_FREE_PROFESSIONAL_TO_CFH_MESSAGE: 'Server error adding FreeProfessional to CFH.',
+    }, event.SessionKey, event.SecurityToken, 'AddFreeProfessionalToCFH'));
+  }
+};
+
+const handleGetFreeProfessionalsByCFHId = async (event, res) => {
+  try {
+    const cfhId = event.Body?.CfhId;
+
+    if (!cfhId) {
+      return res.status(400).json(createWebBaseEvent({
+        GET_FREE_PROFESSIONALS_BY_CFHID_SUCCESS: false,
+        GET_FREE_PROFESSIONALS_BY_CFHID_MESSAGE: 'CfhId is required.',
+      }, event.SessionKey, event.SecurityToken, 'GetFreeProfessionalsByCFHId'));
+    }
+
+    console.log(`🔍 Fetching free professionals with CFH ID: ${cfhId}`);
+
+    const query = `
+    SELECT 
+      id, 
+      userid, 
+      freeprofessionaltypeid, 
+      identificationfileid, 
+      identificationfilename, 
+      curriculumvitaefileid, 
+      curriculumvitaefilename, 
+      civilliabilityinsurancefileid, 
+      civilliabilityinsurancefilename, 
+      servicerates, 
+      paytpv, 
+      course_id, 
+      cfh_id
+    FROM freeprofessional
+    WHERE cfh_id = $1
+  `;
+
+    const result = await pool.query(query, [cfhId]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json(createWebBaseEvent({
+        GET_FREE_PROFESSIONALS_BY_CFHID_SUCCESS: false,
+        GET_FREE_PROFESSIONALS_BY_CFHID_MESSAGE: 'No free professionals found with the specified CFH ID.',
+      }, event.SessionKey, event.SecurityToken, 'GetFreeProfessionalsByCFHId'));
+    }
+
+    console.log(`📄 Retrieved free professionals: ${JSON.stringify(result.rows, null, 2)}`);
+
+    return res.status(200).json(createWebBaseEvent({
+      GET_FREE_PROFESSIONALS_BY_CFHID_SUCCESS: true,
+      freeProfessionals: result.rows
+    }, event.SessionKey, event.SecurityToken, 'GetFreeProfessionalsByCFHId'));
+
+  } catch (error) {
+    console.error('❌ Error fetching free professionals by CFH ID:', error);
+
+    return res.status(500).json(createWebBaseEvent({
+      GET_FREE_PROFESSIONALS_BY_CFHID_SUCCESS: false,
+      GET_FREE_PROFESSIONALS_BY_CFHID_MESSAGE: 'Server error fetching free professionals by CFH ID.',
+    }, event.SessionKey, event.SecurityToken, 'GetFreeProfessionalsByCFHId'));
+  }
+};
+
+const handleGetTransparencyFreeProfessionals = async (event, res) => {
+};
+
+const handleGetTransparencyReportsIncomeExpenses = async (event, res) => {
+  try {
+    // We will accumulate the claims in this array
+    let claimList = [];
+
+    // Prepare the "DTO" object to accumulate results
+    const economicResultReportDTO = {
+      Income: 0,
+      ImprovementSavings: 0,
+      ClaimsAmount: 0,
+      CompensationClaimant: 0,
+      Numberfiles: 0
+    };
+
+    console.log('⚙️ Starting handleGetTransparencyReportsIncomeExpenses with:', event);
+    const { country, SubscriberId } = event.Body;
+    console.log('⚙️ Starting handleGetTransparencyReportsIncomeExpenses with:', { country, SubscriberId });
+
+    // 1) If Country is provided but SubscriberId is not:
+    if (country && !SubscriberId) {
+      console.log('📝 Getting all users for country:', country);
+
+      // (1A) Get all users from osduser with the specified country
+      const usersQuery = `
+        SELECT id
+        FROM osduser
+        WHERE country = $1
+      `;
+      const usersResult = await pool.query(usersQuery, [country]);
+
+      if (usersResult.rows.length > 0) {
+        const osdUsers = usersResult.rows;
+
+        // (1B) For each user, find the related subscriber(s)
+        console.log(`🔎 Found ${osdUsers.length} user(s) in country: ${country}`);
+        let subscriberCustomers = [];
+
+        for (const user of osdUsers) {
+          const subQuery = `
+            SELECT id
+            FROM subscribercustomer
+            WHERE userid = $1
+          `;
+          const subResult = await pool.query(subQuery, [user.id]);
+          if (subResult.rows.length > 0) {
+            subscriberCustomers = subscriberCustomers.concat(subResult.rows);
+          }
+        }
+
+        // (1C) For each subscriber, find completed claims
+        if (subscriberCustomers.length > 0) {
+          console.log(`🔎 Found ${subscriberCustomers.length} subscriberCustomer(s) for those users.`);
+          for (const sub of subscriberCustomers) {
+            const claimQuery = `
+              SELECT 
+                id,
+                amountclaimed,
+                amountpaid,
+                improvementsavings
+              FROM claim_file
+              WHERE status = 'Completed'
+                AND subscriberclaimedid = $1
+            `;
+            const claimResult = await pool.query(claimQuery, [sub.id]);
+            if (claimResult.rows.length > 0) {
+              claimList = claimList.concat(claimResult.rows);
+            }
+          }
+        }
+
+      }
+    }
+    // 2) If SubscriberId is provided (ignore Country)
+    else if (SubscriberId) {
+      console.log('📝 Getting all completed claims for subscriber:', SubscriberId);
+      const claimQuery = `
+        SELECT
+          id,
+          amountclaimed,
+          amountpaid,
+          improvementsavings
+        FROM claim_file
+        WHERE status = 'Completed'
+          AND subscriberclaimedid = $1
+      `;
+      const claimResult = await pool.query(claimQuery, [SubscriberId]);
+      claimList = claimResult.rows;
+    }
+    // 3) Otherwise, just get all completed claims
+    else {
+      console.log('📝 Getting all completed claims, no country/subscriber filter.');
+      const claimQuery = `
+        SELECT
+          id,
+          amountclaimed,
+          amountpaid,
+          improvementsavings
+        FROM claim_file
+        WHERE status = 'Completed'
+      `;
+      const claimResult = await pool.query(claimQuery);
+      claimList = claimResult.rows;
+    }
+
+    console.log(`✅ Total claims found: ${claimList.length}`);
+
+    // 4) Process each claim to accumulate the EconomicResultReportDTO
+    for (const claim of claimList) {
+      const improvementSavings = Number(claim.improvementsavings) || 0;
+
+      // If improvementsavings > 100 -> 10 + ((improvementsavings - 100) * 0.10)
+      // else -> 10
+      if (improvementSavings > 100) {
+        const additional = (improvementSavings - 100) * 0.10;
+        // Round to 2 decimals
+        economicResultReportDTO.Income += Number((10 + additional).toFixed(2));
+      } else {
+        economicResultReportDTO.Income += 10;
+      }
+
+      // improvement savings
+      economicResultReportDTO.ImprovementSavings += improvementSavings;
+
+      // amount claimed
+      // caution: parse to number
+      const amountClaimed = Number(claim.amountclaimed) || 0;
+      economicResultReportDTO.ClaimsAmount += amountClaimed;
+
+      // amount paid (compensation claimant)
+      const amountPaid = Number(claim.amountpaid) || 0;
+      economicResultReportDTO.CompensationClaimant += amountPaid;
+    }
+
+    // Number of files is length of claimList
+    economicResultReportDTO.Numberfiles = claimList.length;
+
+    // 5) Return results
+    console.log('🚀 Final economicResultReportDTO:', economicResultReportDTO);
+
+    return res.status(200).json(
+      createWebBaseEvent({
+        GET_REPORTS_INCOME_EXPENSES_SUCCESS: true,
+        economicResultReportDTO
+      },
+        event.SessionKey,
+        event.SecurityToken,
+        'GetTransparencyReportsIncomeExpenses')
+    );
+
+  } catch (error) {
+    console.error('❌ Error in handleGetTransparencyReportsIncomeExpenses:', error);
+
+    return res.status(500).json(
+      createWebBaseEvent({
+        GET_REPORTS_INCOME_EXPENSES_SUCCESS: false,
+        GET_REPORTS_INCOME_EXPENSES_MESSAGE: 'Server error generating transparency reports.'
+      },
+        event.SessionKey,
+        event.SecurityToken,
+        'GetTransparencyReportsIncomeExpenses')
+    );
+  }
+};
+
+const handleGetTransparencyReportsSubscriberClients = async (event, res) => {
+  try {
+    console.log('🔍 Fetching all claims from claim_file');
+
+    const claimsQuery = `
+      SELECT 
+      cf.id, 
+      cf.code, 
+      cf.datecreated, 
+      cf.status, 
+      cf.subscriberclaimedid, 
+      cf.claimantid, 
+      cf.claimtype, 
+      cf.serviceprovided, 
+      cf.facts, 
+      cf.amountclaimed, 
+      cf.documentfile1id, 
+      cf.documentfile1name, 
+      cf.documentfile2id, 
+      cf.documentfile2name, 
+      cf.creditingdate, 
+      cf.amountpaid, 
+      cf.improvementsavings, 
+      cf.valuationsubscriber, 
+      cf.valuationclaimant, 
+      cf.valuationfreeprofessionals,
+      u.id AS user_id,
+      u.code AS user_code,
+      u.accounttype AS user_accounttype,
+      u.identity AS user_identity,
+      u.name AS user_name,
+      u.firstsurname AS user_firstsurname,
+      u.middlesurname AS user_middlesurname,
+      u.city AS user_city,
+      u.companyname AS user_companyname,
+      u.address AS user_address,
+      u.zipcode AS user_zipcode,
+      u.country AS user_country,
+      u.landline AS user_landline,
+      u.mobilephone AS user_mobilephone,
+      u.email AS user_email,
+      u.password AS user_password,
+      u.web AS user_web,
+      u.isauthorized AS user_isauthorized,
+      u.isadmin AS user_isadmin
+      FROM claim_file cf
+      LEFT JOIN osduser u ON cf.subscriberclaimedid = u.id
+    `;
+
+    const claimsResult = await pool.query(claimsQuery);
+
+    if (claimsResult.rows.length === 0) {
+      return res.status(404).json(createWebBaseEvent({
+        GET_CLAIMS_SUCCESS: false,
+        GET_CLAIMS_MESSAGE: 'No claims found.',
+      }, event.SessionKey, event.SecurityToken, 'GetClaims'));
+    }
+
+    console.log(`📄 Retrieved claims: ${JSON.stringify(claimsResult.rows, null, 2)}`);
+
+    return res.status(200).json(createWebBaseEvent({
+      GET_CLAIMS_SUCCESS: true,
+      claims: claimsResult.rows
+    }, event.SessionKey, event.SecurityToken, 'GetClaims'));
+
+  } catch (error) {
+    console.error('❌ Error fetching claims:', error);
+
+    return res.status(500).json(createWebBaseEvent({
+      GET_CLAIMS_SUCCESS: false,
+      GET_CLAIMS_MESSAGE: 'Server error fetching claims.',
+    }, event.SessionKey, event.SecurityToken, 'GetClaims'));
+  }
+};
+
 const HandleGetPerformanceAssignedById = async (event, res) => {
   try {
     const userId = event.Body?.UserId;
@@ -350,13 +751,12 @@ const handleGetClaims = async (event, res) => {
     console.log(`🔍 Fetching claims for user with ID: ${userId}`);
 
     const claimsQuery = `
-      SELECT id, code, datecreated, status, subscriberclaimedid, claimantid, claimtype, 
-             serviceprovided, facts, amountclaimed, documentfile1id, documentfile1name, 
-             documentfile2id, documentfile2name, creditingdate, amountpaid, 
-             improvementsavings, valuationsubscriber, valuationclaimant, 
-             valuationfreeprofessionals
-      FROM claim_file
-      WHERE claimantid = $1
+      SELECT cf.*, u.accounttype, u.identity, u.name, u.firstsurname, u.middlesurname, u.city, 
+         u.companyname, u.address, u.zipcode, u.country, u.landline, u.mobilephone, u.email, 
+         u.password, u.web, u.isauthorized, u.isadmin
+      FROM claim_file cf
+      LEFT JOIN osduser u ON cf.subscriberclaimedid = u.id
+      WHERE cf.claimantid = $1
     `;
 
     const claimsResult = await pool.query(claimsQuery, [userId]);
@@ -492,6 +892,434 @@ const handleUpdateStudentRecords = async (event, res) => {
       success: false,
       message: 'Internal server error while updating student record.'
     });
+  }
+};
+const handleGetCFHReports = async (event, res) => {
+  try {
+    console.log('🔍 Fetching CFH reports');
+
+    // 1) Enhanced query to get cost, mode, plus total # of enrolled students and # approved
+    //    We GROUP BY c.id (or c.title, c.mode) so we can process each course distinctly.
+    const cfhQuery = `
+      SELECT 
+        c.id AS course_id,
+        c.title,
+        c.mode,
+        c.cost,
+        COUNT(sr.id) AS "alumnos",
+        COUNT(sr.id) FILTER (WHERE sr.status = 'Approved') AS "alumnosAprobados"
+      FROM courses c
+      LEFT JOIN student_records sr
+        ON sr.course_id = c.id
+      GROUP BY c.id, c.title, c.mode, c.cost
+    `;
+
+    const cfhResult = await pool.query(cfhQuery);
+
+    // 2) Build a default CFHresultItems object
+    const data = {
+      online: {
+        cfhIngresos: 0,
+        alumnos: 0,
+        alumnosAprobados: 0,
+        beneficios: 'Becas online',
+      },
+      FC: {
+        cfhIngresos: 0,
+        alumnos: 0,
+        alumnosAprobados: 0,
+        beneficios: 'Becas FC',
+      },
+      tramitador: {
+        cfhIngresos: 0,
+        alumnos: 0,
+        alumnosAprobados: 0,
+        beneficios: 'Becas tramitador',
+      },
+      presencial: {
+        cfhIngresos: 0,
+        alumnos: 0,
+        alumnosAprobados: 0,
+        beneficios: 'Becas presencial',
+      },
+    };
+
+    // 3) Merge DB query results into the data object
+    cfhResult.rows.forEach((row) => {
+      // row.title might be "Formador & Consultor", or "Técnico OSD", etc.
+      // row.mode can be "online" or "presencial" (or others).
+      // row.cost is the course cost.
+      // row.alumnos is # of enrolled students
+      // row.alumnosAprobados is # with sr.status='Approved'
+
+      // A) If we want standard logic for "online", "tramitador", "presencial", etc.,
+      //    we handle them the same as before:
+      if (row.mode === 'online') {
+        data.online.cfhIngresos += Number(row.cost) * Number(row.alumnos);
+        data.online.alumnos += Number(row.alumnos);
+        data.online.alumnosAprobados += Number(row.alumnosAprobados);
+      } 
+      else if (row.mode === 'presencial') {
+        data.presencial.cfhIngresos += Number(row.cost) * Number(row.alumnos);
+        data.presencial.alumnos += Number(row.alumnos);
+        data.presencial.alumnosAprobados += Number(row.alumnosAprobados);
+      }
+      else if (row.mode === 'tramitador') {
+        data.tramitador.cfhIngresos += Number(row.cost) * Number(row.alumnos);
+        data.tramitador.alumnos += Number(row.alumnos);
+        data.tramitador.alumnosAprobados += Number(row.alumnosAprobados);
+      }
+      
+      // B) Special logic for "Formador & Consultor" => the "FC" object
+      //    cost * #students * 0.8 if 'presencial', or * 0.4 if 'online'
+      //    (Adjust string matching if your DB title differs)
+      if (row.title.includes('Formador & Consultor')) {
+        const alumnos = Number(row.alumnos) || 0;
+        const cost = Number(row.cost) || 0;
+        const alumnosAprobados = Number(row.alumnosAprobados) || 0;
+
+        let multiplier = 0;
+        if (row.mode === 'presencial') {
+          multiplier = 0.8;
+        } else if (row.mode === 'online') {
+          multiplier = 0.4;
+        }
+
+        data.FC.cfhIngresos += cost * alumnos * multiplier;
+        data.FC.alumnos += alumnos;
+        data.FC.alumnosAprobados += alumnosAprobados;
+      }
+    });
+
+    // 4) Return the final array with a single CFHresultItems object
+    const cfhResultItemsArray = [ data ];
+
+    console.log('✅ CFH reports data compiled:', cfhResultItemsArray);
+
+    return res.status(200).json(
+      createWebBaseEvent(
+        {
+          CFHRESULT_SUCCESS: true,
+          cfhResult: cfhResultItemsArray,
+        },
+        event.SessionKey,
+        event.SecurityToken,
+        'GetCFHReports'
+      )
+    );
+
+  } catch (error) {
+    console.error('❌ Error fetching CFH reports:', error);
+
+    return res.status(500).json(
+      createWebBaseEvent(
+        {
+          CFHRESULT_SUCCESS: false,
+          CFHRESULT_MESSAGE: 'Server error fetching CFH reports.',
+        },
+        event.SessionKey,
+        event.SecurityToken,
+        'GetCFHReports'
+      )
+    );
+  }
+};
+
+const handleCreateClaimantAndClaimsCustomerPerformance = async (event, res) => {
+  try {
+    const {
+      ClaimId,
+      DatePerformance,
+      JustifyingDocument,
+      JustifyingDocumentBytes,
+      Summary,
+      Type,
+      TypePerformance,
+      UserTypePerformance
+    } = event.Body;
+
+    if (!ClaimId || !DatePerformance || !Summary || !Type || !TypePerformance || !UserTypePerformance) {
+      return res.status(400).json(createWebBaseEvent({
+        CREATE_CLAIMANT_AND_CLAIMS_CUSTOMER_PERFORMANCE_SUCCESS: false,
+        CREATE_CLAIMANT_AND_CLAIMS_CUSTOMER_PERFORMANCE_MESSAGE: 'All fields are required.',
+      }, event.SessionKey, event.SecurityToken, 'CreateClaimantAndClaimsCustomerPerformance'));
+    }
+
+    const insertPerformanceQuery = `
+      INSERT INTO performance_claim_control (
+      id, code, claimid, status, dateperformance, justifyingdocument, 
+      justifyingdocumentbytes, summary, type, typeperformance, usertypeperformance
+      ) VALUES (
+      $1, $2, $3, 'Running', $4, $5, $6, $7, $8, $9, $10
+      )
+    `;
+
+    const performanceId = uuidv4();
+    const performanceCode = `PERF-${uuidv4().replace(/-/g, '').substring(0, 8)}`;
+    const insertPerformanceResult = await pool.query(insertPerformanceQuery, [
+      performanceId,
+      performanceCode,
+      ClaimId,
+      DatePerformance,
+      JustifyingDocument,
+      JustifyingDocumentBytes,
+      Summary,
+      Type,
+      TypePerformance,
+      UserTypePerformance
+    ]);
+
+    console.log('✅ Performance claim created successfully:', insertPerformanceResult.rows[0]);
+
+    return res.status(201).json(createWebBaseEvent({
+      CREATE_CLAIMANT_AND_CLAIMS_CUSTOMER_PERFORMANCE_SUCCESS: true,
+      performanceClaim: insertPerformanceResult.rows[0]
+    }, event.SessionKey, event.SecurityToken, 'CreateClaimantAndClaimsCustomerPerformance'));
+
+  } catch (error) {
+    console.error('❌ Error creating performance claim:', error);
+
+    return res.status(500).json(createWebBaseEvent({
+      CREATE_CLAIMANT_AND_CLAIMS_CUSTOMER_PERFORMANCE_SUCCESS: false,
+      CREATE_CLAIMANT_AND_CLAIMS_CUSTOMER_PERFORMANCE_MESSAGE: 'Server error creating performance claim.',
+    }, event.SessionKey, event.SecurityToken, 'CreateClaimantAndClaimsCustomerPerformance'));
+  }
+};
+
+const handleGetPerformancesClaimById = async (event, res) => {
+  try {
+    const claimId = event.Body?.Id;
+
+    if (!claimId) {
+      return res.status(400).json(createWebBaseEvent({
+        GET_PERFORMANCES_CLAIM_BY_ID_SUCCESS: false,
+        GET_PERFORMANCES_CLAIM_BY_ID_MESSAGE: 'Claim ID is required.',
+      }, event.SessionKey, event.SecurityToken, 'GetPerformancesClaimById'));
+    }
+
+    console.log(`🔍 Fetching performance claims for claim ID: ${claimId}`);
+    const performanceClaimQuery = `
+      SELECT id, code, claimid, status
+      FROM performance_claim_control
+      WHERE claimid = $1
+    `;
+
+    const performanceClaimResult = await pool.query(performanceClaimQuery, [claimId]);
+
+    if (performanceClaimResult.rows.length === 0) {
+      return res.status(404).json(createWebBaseEvent({
+        GET_PERFORMANCES_CLAIM_BY_ID_SUCCESS: false,
+        GET_PERFORMANCES_CLAIM_BY_ID_MESSAGE: 'No performance claims found for this claim ID.',
+      }, event.SessionKey, event.SecurityToken, 'GetPerformancesClaimById'));
+    }
+
+    console.log(`📄 Retrieved performance claims: ${JSON.stringify(performanceClaimResult.rows, null, 2)}`);
+
+    return res.status(200).json(createWebBaseEvent({
+      GET_PERFORMANCES_CLAIM_BY_ID_SUCCESS: true,
+      performanceClaims: performanceClaimResult.rows
+    }, event.SessionKey, event.SecurityToken, 'GetPerformancesClaimById'));
+
+  } catch (error) {
+    console.error('❌ Error fetching performance claims by claim ID:', error);
+
+    return res.status(500).json(createWebBaseEvent({
+      GET_PERFORMANCES_CLAIM_BY_ID_SUCCESS: false,
+      GET_PERFORMANCES_CLAIM_BY_ID_MESSAGE: 'Server error fetching performance claims by claim ID.',
+    }, event.SessionKey, event.SecurityToken, 'GetPerformancesClaimById'));
+  }
+};
+
+const handleCreateClaim = async (event, res) => {
+  try {
+    const claimForm = event.Body?.ClaimForm;
+
+    if (!claimForm) {
+      return res.status(400).json(createWebBaseEvent({
+        CREATE_CLAIM_SUCCESS: false,
+        CREATE_CLAIM_MESSAGE: 'ClaimForm is required.',
+      }, event.SessionKey, event.SecurityToken, 'CreateClaim'));
+    }
+
+    const {
+      Date,
+      claimtype,
+      subscriberClaimedName,
+      serviceProvided,
+      amountClaimed,
+      facts,
+      firstSupportingDocumentFileName,
+      firstSupportingDocumentFileId,
+      secondSupportingDocumentFileName,
+      secondSupportingDocumentFileId,
+      ClaimantId = null // Default to null if not provided
+    } = claimForm;
+
+    // Validate required fields
+    if (!Date || !claimtype || !subscriberClaimedName || !serviceProvided || !amountClaimed || !facts) {
+      return res.status(400).json(createWebBaseEvent({
+        CREATE_CLAIM_SUCCESS: false,
+        CREATE_CLAIM_MESSAGE: 'All fields in ClaimForm are required.',
+      }, event.SessionKey, event.SecurityToken, 'CreateClaim'));
+    }
+
+    // Retrieve subscriberClaimedId from osduser table
+    const subscriberQuery = await pool.query(
+      'SELECT id FROM osduser WHERE name = $1',
+      [subscriberClaimedName]
+    );
+
+    if (subscriberQuery.rows.length === 0) {
+      return res.status(404).json(createWebBaseEvent({
+        CREATE_CLAIM_SUCCESS: false,
+        CREATE_CLAIM_MESSAGE: 'Subscriber claimed not found.',
+      }, event.SessionKey, event.SecurityToken, 'CreateClaim'));
+    }
+
+    console.log(`🔍 Subscriber claimed ID: ${subscriberQuery.rows[0].id}`);
+    const subscriberClaimedId = subscriberQuery.rows[0].id;
+
+    let claimantId = null;
+    if (ClaimantId !== null) {
+      const claimantQuery = await pool.query(
+        'SELECT id FROM osduser WHERE identity = $1',
+        [ClaimantId]
+      );
+
+      if (claimantQuery.rows.length === 0) {
+        console.log('❌ Claimant not found.');
+        return res.status(404).json(createWebBaseEvent({
+          CREATE_CLAIM_SUCCESS: false,
+          CREATE_CLAIM_MESSAGE: 'Claimant not found.',
+        }, event.SessionKey, event.SecurityToken, 'CreateClaim'));
+      }
+
+      claimantId = claimantQuery.rows[0].id || null;
+      console.log(`🔍 Claimant ID: ${claimantId}`);
+      const insertClaimantQuery = `
+        INSERT INTO claimant (id, userid)
+        VALUES ($1, $2)
+        ON CONFLICT (id) DO NOTHING;
+      `;
+      await pool.query(insertClaimantQuery, [claimantId, claimantId]);
+    }
+
+    const insertClaimQuery = `
+      INSERT INTO claim_file (
+      id, code, datecreated, status, subscriberclaimedid, claimantid, claimtype, 
+      serviceprovided, facts, amountclaimed, documentfile1id, documentfile1name, 
+      documentfile2id, documentfile2name
+      ) VALUES (
+      $1, $2, $3, 'Running', $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
+      ) RETURNING id, code, datecreated, status, subscriberclaimedid, claimantid, claimtype, 
+      serviceprovided, facts, amountclaimed, documentfile1id, documentfile1name, 
+      documentfile2id, documentfile2name;
+    `;
+
+    const claimId = uuidv4();
+    const claimCode = `CLM-${claimId}`;
+
+    const insertClaimResult = await pool.query(insertClaimQuery, [
+      claimId,
+      claimCode,
+      Date,
+      subscriberClaimedId,
+      claimantId,
+      claimtype,
+      serviceProvided,
+      facts,
+      amountClaimed,
+      firstSupportingDocumentFileId,
+      firstSupportingDocumentFileName,
+      secondSupportingDocumentFileId,
+      secondSupportingDocumentFileName
+    ]);
+
+    console.log('✅ Claim created successfully:', insertClaimResult.rows[0]);
+
+    return res.status(201).json(createWebBaseEvent({
+      CREATE_CLAIM_SUCCESS: true,
+      claim: insertClaimResult.rows[0]
+    }, event.SessionKey, event.SecurityToken, 'CreateClaim'));
+
+  } catch (error) {
+    console.error('❌ Error creating claim:', error);
+
+    return res.status(500).json(createWebBaseEvent({
+      CREATE_CLAIM_SUCCESS: false,
+      CREATE_CLAIM_MESSAGE: 'Server error creating claim.',
+    }, event.SessionKey, event.SecurityToken, 'CreateClaim'));
+  }
+};
+
+const handleUpdateUserProfile = async (event, res) => {
+  try {
+    const Email = event.Body?.Email;
+    console.log(`🔄 Updating profile for user with email: ${Email}`);
+
+    // Validate required fields
+    if (!Email) {
+      return res.status(400).json(createWebBaseEvent({
+        success: false,
+        message: 'Email is required.'
+      }, event.SessionKey, event.SecurityToken, 'UpdateUserProfile'));
+    }
+
+    // Check if the user exists
+    const userQuery = await pool.query(
+      `SELECT id FROM osduser WHERE email = $1`,
+      [Email]
+    );
+
+    if (userQuery.rows.length === 0) {
+      return res.status(404).json(createWebBaseEvent({
+        success: false,
+        message: 'User not found.'
+      }, event.SessionKey, event.SecurityToken, 'UpdateUserProfile'));
+    }
+
+    const userId = userQuery.rows[0].id;
+    const fields = [];
+    const values = [];
+    let index = 1;
+
+    for (const [key, value] of Object.entries(event.Body)) {
+      if (key !== 'Email' && key !== 'Action' && key !== 'TraceIdentifier' && key !== 'Type' && key !== 'Date' && key !== 'ApplicationIdentifier') {
+        fields.push(`${key.toLowerCase()} = $${index}`);
+        values.push(value);
+        index++;
+      }
+    }
+
+    if (fields.length === 0) {
+      return res.status(400).json(createWebBaseEvent({
+        success: false,
+        message: 'No fields to update.'
+      }, event.SessionKey, event.SecurityToken, 'UpdateUserProfile'));
+    }
+
+    values.push(userId);
+
+    const updateQuery = `
+      UPDATE osduser
+      SET ${fields.join(', ')}
+      WHERE id = $${index}
+      RETURNING id, name, firstsurname, middlesurname, city, companyname, address, zipcode, landline, mobilephone, email, web;
+    `;
+
+    const updateResult = await pool.query(updateQuery, values);
+
+    return res.status(200).json(createWebBaseEvent({
+      success: true,
+      message: 'User profile updated successfully.',
+      data: updateResult.rows[0]
+    }, event.SessionKey, event.SecurityToken, 'UpdateUserProfile'));
+  } catch (error) {
+    console.error('❌ Error updating user profile:', error);
+    return res.status(500).json(createWebBaseEvent({
+      success: false,
+      message: 'Internal server error while updating user profile.'
+    }, event.SessionKey, event.SecurityToken, 'UpdateUserProfile'));
   }
 };
 
@@ -652,10 +1480,10 @@ const handleUserRegistration = async (event, res) => {
         INSERT INTO osduser (
           id, code, accounttype, identity, name, firstsurname, middlesurname, city,
           companyname, address, zipcode, country, landline, mobilephone, email, password, web,
-          isauthorized, isadmin
+          isauthorized, isadmin, offering_type
         ) VALUES (
           $1, $2, $3, $4, $5, $6, $7, $8,
-          $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19
+          $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20
         )
         RETURNING id;
       `;
@@ -681,7 +1509,8 @@ const handleUserRegistration = async (event, res) => {
         personalForm.password,
         personalForm.web,
         true,
-        false
+        false,
+        accountForm.cfhOffer
       ]);
 
       userId = osdUserResult.rows[0].id;
@@ -691,39 +1520,6 @@ const handleUserRegistration = async (event, res) => {
     }
 
     console.log("✅ Successfully created user with ID:", userId);
-    const courses = Array.isArray(personalForm.courses) ? personalForm.courses : [personalForm.courses];
-    console.log('📚 Courses:', courses, personalForm.courses);
-    if (courses.length > 0) {
-      for (const course of personalForm.courses) {
-        const courseId = uuidv4();
-        const insertCourseQuery = `
-          INSERT INTO Courses (id, osduser_id, title, cost)
-          VALUES ($1, $2, $3, $4)
-        `;
-        await pool.query(insertCourseQuery, [
-          courseId,
-          userId,
-          course.courseName,
-          course.cost
-        ]);
-
-        if (Array.isArray(course.modules) && course.modules.length > 0) {
-          for (const module of course.modules) {
-            const moduleId = uuidv4();
-            const insertModuleQuery = `
-              INSERT INTO Modules (id, course_id, title, duration)
-              VALUES ($1, $2, $3, $4)
-            `;
-            await pool.query(insertModuleQuery, [
-              moduleId,
-              courseId,
-              module.moduleName,
-              module.duration
-            ]);
-          }
-        }
-      }
-    }
 
     // Insert into freeprofessional if account type is 'FreeProfessional'
     if (event.Body?.AccountType === 'FreeProfessional') {
@@ -995,34 +1791,31 @@ const handleGetStudentsByCourse = async (event, res) => {
 const handleGetSubscribers = async (event, res) => {
   try {
     const result = await pool.query(`
-      SELECT 
-        id, 
-        code, 
-        accounttype, 
-        identity AS "identity", 
-        name AS "Name", 
-        firstsurname AS "FirstSurname", 
-        middlesurname AS "MiddleSurname", 
-        city AS "city", 
-        companyname AS "CompanyName", 
-        address AS "Address", 
-        zipcode AS "ZipCode", 
-        country AS "Country", 
-        landline AS "landline", 
-        mobilephone AS "mobilePhone", 
-        email AS "email", 
-        password AS "password", 
-        web AS "web", 
-        isauthorized AS "isAuthorized", 
-        isadmin AS "isAdmin" 
-      FROM osduser
+       SELECT
+        fp.id,
+        fp.userid,
+        fp.freeprofessionaltypeid,
+        fpt.acronym AS "FreeprofessionaltypeAcronym",
+        fp.identificationfileid,
+        fp.identificationfilename,
+        fp.curriculumvitaefileid,
+        fp.curriculumvitaefilename,
+        fp.civilliabilityinsurancefileid,
+        fp.civilliabilityinsurancefilename,
+        fp.servicerates,
+        fp.paytpv,
+        u.country,
+        u.name
+      FROM freeprofessional fp
+      LEFT JOIN freeprofessionaltype fpt ON fp.freeprofessionaltypeid = fpt.id
+      LEFT JOIN osduser u ON fp.userid = u.id
     `);
 
     res.status(200).json(createWebBaseEvent({
       GET_SUBSCRIBERS_SUCCESS: true,
       subscribers: result.rows
     }, event.SessionKey, event.SecurityToken, 'GetSubscribers'));
-    
+
   } catch (error) {
     console.error('❌ Error fetching subscribers:', error);
     res.status(500).json(createWebBaseEvent({

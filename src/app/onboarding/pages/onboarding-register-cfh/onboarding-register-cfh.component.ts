@@ -40,6 +40,11 @@ export class OnboardingRegisterCfhComponent {
 
   mostrarMenu = true;
 
+  cfhOfferOptions: DropDownItem[] = [
+    { value: 'Formador/Consultor', key: 'F/C' },
+    { value: 'Kuarc Technicians', key: 'Kuarc Technicians' }
+  ];
+
   constructor(
     private store: Store,
     private formBuilder: FormBuilder,
@@ -55,6 +60,22 @@ export class OnboardingRegisterCfhComponent {
 
   ngOnInit(): void {
     setTimeout(() => {
+      this.translate.get([
+        'publicEntity',
+        'privateEntity',
+        'trainerConsultant',
+        'kuarcTechnicians'
+      ]).subscribe((translations) => {
+        this.entity = [
+          { value: translations['publicEntity'],  key: 'publicEntity' },
+          { value: translations['privateEntity'], key: 'privateEntity' }
+        ];
+  
+        this.cfhOfferOptions = [
+          { value: translations['trainerConsultant'], key: 'F/C' },
+          { value: translations['kuarcTechnicians'],   key: 'Kuarc Technicians' }
+        ];
+      });
       // Load countries
       this.countryService.getCountries().subscribe((data: any[]) => {
         let countriesList;
@@ -103,8 +124,6 @@ export class OnboardingRegisterCfhComponent {
   }
 
   // -------------------- FORMS SETUP --------------------
-
-  /** MAIN personalForm, containing "courses" (each with its own "modules") */
   private createPersonalForm(): FormGroup {
     return this.formBuilder.group({
       identity: ['', [Validators.required]],
@@ -125,90 +144,17 @@ export class OnboardingRegisterCfhComponent {
       web: [''],
       accountType: ['8e539a42-4108-4be6-8f77-2d16671d1069'],
       acceptConditions: [false],
-
-      // FormArray of courses
-      courses: this.formBuilder.array([
-        this.createCourseFormGroup()
-      ])
     });
   }
-
-  /** Each course has its own sub-FormArray of modules */
-  private createCourseFormGroup(): FormGroup {
-    return this.formBuilder.group({
-      courseName: ['', Validators.required],
-      cost: [0, [Validators.required, Validators.min(0)]],
-      // Each course can have many modules
-      modules: this.formBuilder.array([
-        this.createModuleFormGroup()
-      ])
-    });
-  }
-
-  /** Each module within a course has a name and duration */
-  private createModuleFormGroup(): FormGroup {
-    return this.formBuilder.group({
-      moduleName: ['', [Validators.required]],
-      duration: [1, [Validators.required, Validators.min(1)]]
-    });
-  }
-
   /** Create the "accountForm" */
   private createAccountForm(): FormGroup {
     return this.formBuilder.group({
-      clientType: ['', [Validators.required]]
+      clientType: ['', [Validators.required]],
+      cfhOffer: ['', [Validators.required]]  // <--- NEW FIELD
     });
   }
 
-  // -------------------- GETTERS FOR ARRAYS --------------------
-
-  /** top-level "courses" FormArray */
-  get courses(): FormArray {
-    return this.personalForm.get('courses') as FormArray;
-  }
-
-  /**
-   * Provide an array of FormGroups for "courses" to iterate in the template
-   * Instead of "courses.controls", we do "coursesControls"
-   */
-  get coursesControls(): FormGroup[] {
-    return this.courses.controls as FormGroup[];
-  }
-
-  /**
-   * For each course (by index), get the "modules" FormArray
-   */
-  getModules(courseIndex: number): FormArray {
-    return this.courses.at(courseIndex).get('modules') as FormArray;
-  }
-
-  /**
-   * Provide an array of FormGroups for modules in the given course
-   */
-  getModulesControls(courseIndex: number): FormGroup[] {
-    return this.getModules(courseIndex).controls as FormGroup[];
-  }
-
-  // -------------------- ACTIONS (ADD/REMOVE) --------------------
-
-  addCourse(): void {
-    this.courses.push(this.createCourseFormGroup());
-  }
-
-  removeCourse(index: number): void {
-    this.courses.removeAt(index);
-  }
-
-  addModule(courseIndex: number): void {
-    this.getModules(courseIndex).push(this.createModuleFormGroup());
-  }
-
-  removeModule(courseIndex: number, moduleIndex: number): void {
-    this.getModules(courseIndex).removeAt(moduleIndex);
-  }
-
   // -------------------- UI HANDLERS --------------------
-
   toggleMenu() {
     this.mostrarMenu = !this.mostrarMenu;
   }

@@ -1,0 +1,79 @@
+<div class="flex flex-col py-3 space-y-3">
+  <h1 class="text-center text-darkslategray text-xl">Editar Datos Personales</h1>
+
+  <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+    <table class="w-full border">
+      <tbody>
+        <tr>
+          <td class="p-2 border">Nombre</td>
+          <td class="p-2 border">
+            <input type="text" formControlName="name" class="w-full p-1 border rounded" placeholder="Nombre" />
+          </td>
+        </tr>
+        <tr>
+          <td class="p-2 border">Primer Apellido</td>
+          <td class="p-2 border">
+            <input type="text" formControlName="firstSurname" class="w-full p-1 border rounded" placeholder="Primer Apellido" />
+          </td>
+        </tr>
+        <tr>
+          <td class="p-2 border">Segundo Apellido</td>
+          <td class="p-2 border">
+            <input type="text" formControlName="middleSurname" class="w-full p-1 border rounded" placeholder="Segundo Apellido" />
+          </td>
+        </tr>
+        <tr>
+          <td class="p-2 border">Ciudad</td>
+          <td class="p-2 border">
+            <input type="text" formControlName="city" class="w-full p-1 border rounded" placeholder="Ciudad" />
+          </td>
+        </tr>
+        <tr>
+          <td class="p-2 border">Nombre de la Compañía</td>
+          <td class="p-2 border">
+            <input type="text" formControlName="companyName" class="w-full p-1 border rounded" placeholder="Nombre de la Compañía" />
+          </td>
+        </tr>
+        <tr>
+          <td class="p-2 border">Dirección</td>
+          <td class="p-2 border">
+            <input type="text" formControlName="address" class="w-full p-1 border rounded" placeholder="Dirección" />
+          </td>
+        </tr>
+        <tr>
+          <td class="p-2 border">Código Postal</td>
+          <td class="p-2 border">
+            <input type="text" formControlName="zipcode" class="w-full p-1 border rounded" placeholder="Código Postal" />
+          </td>
+        </tr>
+        <tr>
+          <td class="p-2 border">Teléfono Fijo</td>
+          <td class="p-2 border">
+            <input type="text" formControlName="landline" class="w-full p-1 border rounded" placeholder="Teléfono Fijo" />
+          </td>
+        </tr>
+        <tr>
+          <td class="p-2 border">Teléfono Móvil</td>
+          <td class="p-2 border">
+            <input type="text" formControlName="mobilePhone" class="w-full p-1 border rounded" placeholder="Teléfono Móvil" />
+          </td>
+        </tr>
+        <tr>
+          <td class="p-2 border">Correo Electrónico</td>
+          <td class="p-2 border">
+            <input type="email" formControlName="email" class="w-full p-1 border rounded" placeholder="Correo Electrónico" />
+          </td>
+        </tr>
+        <tr>
+          <td class="p-2 border">Sitio Web</td>
+          <td class="p-2 border">
+            <input type="text" formControlName="web" class="w-full p-1 border rounded" placeholder="Sitio Web" />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="flex justify-between py-3">
+      <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">💾 Guardar Cambios</button>
+    </div>
+  </form>
+</div>

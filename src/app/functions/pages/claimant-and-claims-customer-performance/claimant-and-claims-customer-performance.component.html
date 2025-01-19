@@ -24,10 +24,6 @@
                         class="cursor-pointer p-2 text-sm bg-darkslategray text-white rounded-xl">
                         {{'seleccionar_archivo' | translate}}
                     </label>
-                    <label (click)="downloadPdf(performance.JustifyingDocumentBytes)" for="JustifyingDocument"
-                        class="cursor-pointer p-2 text-sm bg-darkslategray text-white rounded-xl">
-                        {{'Download' | translate}}
-                    </label>
                     <span class="ml-2 text-sm text-darkslategray">{{documentName}}</span>
                     <p *ngIf="isErrorInForm" class="text-sm text-red-500">Este campo es obligatorio</p>
                 </div>

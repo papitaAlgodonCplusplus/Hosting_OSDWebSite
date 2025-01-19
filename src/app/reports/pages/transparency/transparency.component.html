@@ -1,84 +1,84 @@
-<div class="h-full flex flex-col justify-end items-end p-3">
-    <div class="h-full w-full px-3 lg:py-0 py-3">
-        <div *ngIf="reportOpen$ | async as reportOpen">
-            <div *ngIf="reportOpen == 'sub'">
-                <app-claimant-claimed-osd-report></app-claimant-claimed-osd-report>
-            </div>
-            <div *ngIf="reportOpen == 'osd'">
-                <app-osd-revenue-expenditure-economic-result-report></app-osd-revenue-expenditure-economic-result-report>
-            </div>
-            <div *ngIf="reportOpen == 'pl'">
-                <app-pl-remuneration-results-report></app-pl-remuneration-results-report>
-            </div>
-            <div *ngIf="reportOpen == 'cfh'">
-                <app-cfhresult-report></app-cfhresult-report>
+    <div class="h-full flex flex-col justify-end items-end p-3">
+        <div class="h-full w-full px-3 lg:py-0 py-3">
+            <div *ngIf="reportOpen$ | async as reportOpen">
+                <div *ngIf="reportOpen == 'sub'">
+                    <app-claimant-claimed-osd-report></app-claimant-claimed-osd-report>
+                </div>
+                <div *ngIf="reportOpen == 'osd'">
+                    <app-osd-revenue-expenditure-economic-result-report></app-osd-revenue-expenditure-economic-result-report>
+                </div>
+                <div *ngIf="reportOpen == 'pl'">
+                    <app-pl-remuneration-results-report></app-pl-remuneration-results-report>
+                </div>
+                <div *ngIf="reportOpen == 'cfh'">
+                    <app-cfhresult-report></app-cfhresult-report>
+                </div>
             </div>
         </div>
+        <div class="flex justify-end p-3">
+            <button class="font-medium  text-darkslategray bg-line border p-2 rounded-xl flex items-center"
+                [routerLink]="isUser ? '/home' : '/auth'">
+                {{'regresar' | translate}}
+            </button>
+        </div>
     </div>
-    <div class="flex justify-end p-3">
-        <button class="font-medium  text-darkslategray bg-line border p-2 rounded-xl flex items-center"
-            [routerLink]="isUser ? '/home' : '/auth'">
-            {{'regresar' | translate}}
+
+    <div *ngIf="arrowLeftSidebar"
+        class="bg-white w-6 h-full fixed top-0 left-0 border-r-2 animate__animated animate__fadeInLeft border-black"
+        style="border-color: #eeeff2; border-collapse: collapse;">
+        <button (click)="toggleLeftSidebar()" class="absolute rounded-full top-1/2 left-5 px-2">
+            <i class="fa-solid fa-chevron-right text-darkslategray"></i>
         </button>
     </div>
-</div>
 
-<div *ngIf="arrowLeftSidebar"
-    class="bg-white w-6 h-full fixed top-0 left-0 border-r-2 animate__animated animate__fadeInLeft border-black"
-    style="border-color: #eeeff2; border-collapse: collapse;">
-    <button (click)="toggleLeftSidebar()" class="absolute rounded-full top-1/2 left-5 px-2">
-        <i class="fa-solid fa-chevron-right text-darkslategray"></i>
-    </button>
-</div>
-
-<div *ngIf="!arrowLeftSidebar"
-    class="pr-3 pt-3 fixed bg-white h-full border top-0 animate__animated animate__fadeInLeft">
-    <button (click)="toggleLeftSidebar()" class="absolute top-1/2 rounded-full px-2" style="left: 100%;">
-        <i class="fa-solid fa-chevron-left text-darkslategray"></i>
-    </button>
-    <div class="text-darkslategray text-start py-3 text-xl font-medium animate__animated animate__fadeInLeft">
-        <span class="pl-5 pr-3 py-1 bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden">
-            {{'transparencia' | translate}} <i class="fa-solid fa-eye"></i></span>
-    </div>
-    <div class="space-y-3 text-darkslategray text-sm font-medium flex flex-col justify-center">
-        <a class="cursor-pointer" (click)="changeReport('sub')" (click)="toggleLeftSidebar()">
-            <span
-                class="px-3 py-1 transition duration-300 ease-in-out hover:bg-line rounded-r-full whitespace-nowrap overflow-hidden">1.
-                {{'customer_subscribers_results' | translate}}</span>
-        </a>
-        <div class="space-y-2">
-            <a class="">
-                <span class="px-3 py-1 overflow-hidden">2.
-                    {{'osd_results' | translate}}</span>
-            </a>
-            <ul class="">
-                <li class="mb-2">
-                    <a class="mb-2 cursor-pointer" (click)="changeReport('osd')" (click)="toggleLeftSidebar()">
-                        <span
-                            class="px-5 py-1 transition duration-300 ease-in-out hover:bg-line rounded-r-full whitespace-nowrap overflow-hidden">2.1.
-                            {{'income_expenses' | translate}}</span>
-                    </a>
-                </li>
-                <li class="mb-2">
-                    <a class="cursor-pointer" (click)="changeReport('pl')" (click)="toggleLeftSidebar()">
-                        <span
-                            class="px-5 py-1 transition duration-300 ease-in-out hover:bg-line rounded-r-full whitespace-nowrap overflow-hidden">2.2.
-                            {{'profesionales_libres' | translate}}</span>
-                    </a>
-                </li>
-                <li class="mb-2">
-                    <a class="cursor-pointer" (click)="changeReport('cfh')" (click)="toggleLeftSidebar()">
-                        <span
-                            class="px-5 py-1 transition duration-300 ease-in-out hover:bg-line rounded-r-full whitespace-nowrap overflow-hidden">2.3.
-                            {{'CFH' | translate}}</span>
-                    </a>
-                </li>
-            </ul>
+    <div *ngIf="!arrowLeftSidebar"
+        class="pr-3 pt-3 fixed bg-white h-full border top-0 animate__animated animate__fadeInLeft">
+        <button (click)="toggleLeftSidebar()" class="absolute top-1/2 rounded-full px-2" style="left: 100%;">
+            <i class="fa-solid fa-chevron-left text-darkslategray"></i>
+        </button>
+        <div class="text-darkslategray text-start py-3 text-xl font-medium animate__animated animate__fadeInLeft">
+            <span class="pl-5 pr-3 py-1 bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden">
+                {{'transparencia' | translate}} <i class="fa-solid fa-eye"></i></span>
         </div>
-        <a class="mb-4 cursor-pointer" routerLink="/project-manager">
-            <span
-                class="px-3 py-1 transition duration-300 ease-in-out hover:bg-line rounded-r-full whitespace-nowrap overflow-hidden">3.
-                {{'transparent_project' | translate}}</span>
-        </a>
+        <div class="space-y-3 text-darkslategray text-sm font-medium flex flex-col justify-center">
+            <a class="cursor-pointer" (click)="changeReport('sub')" (click)="toggleLeftSidebar()">
+                <span
+                    class="px-3 py-1 transition duration-300 ease-in-out hover:bg-line rounded-r-full whitespace-nowrap overflow-hidden">1.
+                    {{'customer_subscribers_results' | translate}}</span>
+            </a>
+            <div class="space-y-2">
+                <a class="">
+                    <span class="px-3 py-1 overflow-hidden">2.
+                        {{'osd_results' | translate}}</span>
+                </a>
+                <ul class="">
+                    <li class="mb-2">
+                        <a class="mb-2 cursor-pointer" (click)="changeReport('osd')" (click)="toggleLeftSidebar()">
+                            <span
+                                class="px-5 py-1 transition duration-300 ease-in-out hover:bg-line rounded-r-full whitespace-nowrap overflow-hidden">2.1.
+                                {{'income_expenses' | translate}}</span>
+                        </a>
+                    </li>
+                    <!-- <li class="mb-2">
+                        <a class="cursor-pointer" (click)="changeReport('pl')" (click)="toggleLeftSidebar()">
+                            <span
+                                class="px-5 py-1 transition duration-300 ease-in-out hover:bg-line rounded-r-full whitespace-nowrap overflow-hidden">2.2.
+                                {{'profesionales_libres' | translate}}</span>
+                        </a>
+                    </li> -->
+                    <li class="mb-2">
+                        <a class="cursor-pointer" (click)="changeReport('cfh')" (click)="toggleLeftSidebar()">
+                            <span
+                                class="px-5 py-1 transition duration-300 ease-in-out hover:bg-line rounded-r-full whitespace-nowrap overflow-hidden">2.2.
+                                {{'CFH' | translate}}</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <a class="mb-4 cursor-pointer" routerLink="/project-manager">
+                <span
+                    class="px-3 py-1 transition duration-300 ease-in-out hover:bg-line rounded-r-full whitespace-nowrap overflow-hidden">3.
+                    {{'transparent_project' | translate}}</span>
+            </a>
+        </div>
     </div>
-</div>

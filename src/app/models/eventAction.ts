@@ -1,11 +1,15 @@
 export class EventAction {
 
+  public static GET_FREE_PROFESSIONALS_BY_CFH_ID: string = "GetFreeProfessionalsByCFHId";
+
   public static HANDLE_CONNECTION_INITIALIZED: string = "HandleConnectionInitialized";
   public static NOTIFY_SESSION_TERMINATED: string = "NotifySessionTerminated";
 
   public static SHOW_LOGIN_FAILURE: string = "ShowLoginFailure";
 
   //#region OSD
+  public static GET_CFH_REPORTS: string = "GetCFHReports";
+  public static ADD_FREE_PROFESSIONAL_TO_CFH: string = "AddFreeProfessionalToCFH";
   public static USER_LOGIN: string = "UserLogin";
   public static REGISTER_CUSTOMER: string = "RegisterCustomer";
   public static REGISTER_PROFESSOR: string = "RegisterProfessor";
@@ -16,6 +20,7 @@ export class EventAction {
   public static GET_USER_BY_ID: string = "GetUserById";
   public static CREATE_CLAIMANT_AND_CLAIMS_CUSTOMER_PERFORMANCE: string = "CreateClaimantAndClaimsCustomerPerformance";
   public static MODIFIED_CLAIMANT_AND_CLAIMS_CUSTOMER_PERFORMANCE: string = "ModifiedClaimantAndClaimsCustomerPerformance";
+  public static UPDATE_USER_PROFILE: string = "UpdateUserProfile";
   
   public static CREATE_CLAIM_PROCESSOR_PERFORMANCE: string = "CreateClaimProcessorPerformance";
   public static MODIFIED_CLAIM_PROCESSOR_PERFORMANCE: string = "ModifiedClaimProcessorPerformance";

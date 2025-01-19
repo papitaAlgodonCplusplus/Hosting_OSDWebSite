@@ -10,6 +10,7 @@ export class SecurityDataService {
   private userAuthenticationSuccessSubject = new Subject<string>();
   private userRegisterSuccessSubject = new Subject<boolean>();
   private verifyEmailSuccessSubject = new Subject<boolean>();
+  private CFHResultList = new Subject<Claim[]>();
   actionRegisterSuccess$ = this.actionRegisterSuccessSubject.asObservable();
   userRegisterSuccess$ = this.userRegisterSuccessSubject.asObservable();
   verifyEmailSuccess$ = this.verifyEmailSuccessSubject.asObservable();
@@ -29,5 +30,7 @@ export class SecurityDataService {
     this.verifyEmailSuccessSubject.next(data);
   }
 
- 
+  emitCFHReportsSuccess(data: Claim[]) {
+    this.CFHResultList.next(data);
+  }
 }

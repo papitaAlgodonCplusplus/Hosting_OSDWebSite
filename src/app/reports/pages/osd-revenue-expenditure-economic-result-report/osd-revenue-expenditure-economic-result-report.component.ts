@@ -80,7 +80,7 @@ export class OSDRevenueExpenditureEconomicResultReportComponent {
     this.osdDataService.getSubscribersSuccess$.subscribe(items => {
       this.allSubscribers = items;
       items.forEach(subscriber => {
-        var itemDropdown: DropDownItem = { value: subscriber.companyName, key: subscriber.id };
+        var itemDropdown: DropDownItem = { value: subscriber.name, key: subscriber.id };
         this.subscribers.push(itemDropdown)
       })
     })

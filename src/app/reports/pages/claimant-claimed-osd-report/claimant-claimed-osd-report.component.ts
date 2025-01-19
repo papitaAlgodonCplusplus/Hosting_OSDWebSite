@@ -9,7 +9,6 @@ import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
 import { CountryService } from 'src/app/services/country.service';
 import { TransparencyReportsSubscriberClientList } from '../../models/TransparencyReportsSubscriberClient.model';
 import { Subscriber } from 'src/app/functions/models/Subscriber';
-import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Component({
@@ -46,6 +45,10 @@ export class ClaimantClaimedOsdReportComponent implements OnInit, OnDestroy {
     setTimeout(() => this.store.dispatch(UiActions.showAll()), 0);
   }
 
+  getReportUserNames(): DropDownItem[] {
+    return this.reports.map(report => ({ value: report.user_name, key: report.user_name }));
+  }
+
   private initializeData(): void {
     this.store.dispatch(UiActions.hideAll());
     this.osdService.GetTransparencyReportsSubscriberClients();
@@ -60,6 +63,7 @@ export class ClaimantClaimedOsdReportComponent implements OnInit, OnDestroy {
 
     this.osdDataService.getSubscribersSuccess$
       .subscribe(subscribers => {
+        console.log(subscribers);
         this.allSubscribers = subscribers;
         this.subscribers = subscribers.map(subscriber => ({
           value: subscriber.companyName,
@@ -125,6 +129,7 @@ export class ClaimantClaimedOsdReportComponent implements OnInit, OnDestroy {
   }
 
   selectClientReports(): void {
+    console.log("FIlter Form", this.filterForm.value);
     const client = this.filterForm.value.client;
     const country = this.filterForm.value.country;
 
@@ -135,7 +140,7 @@ export class ClaimantClaimedOsdReportComponent implements OnInit, OnDestroy {
     }
 
     if (client) {
-      filteredReports = filteredReports.filter(report => report.InstitutionsNames === client);
+      filteredReports = filteredReports.filter(report => report.user_name === client);
     }
 
     this.reports = filteredReports;

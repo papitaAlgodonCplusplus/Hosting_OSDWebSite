@@ -4,6 +4,7 @@ import { FunctionsRoutingModule } from './functions-routing.module';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { AutorizationPlComponent } from './pages/autorization-pl/autorization-pl.component';
 import { AssignPLTRClaimsComponent } from './pages/assign-pltr-claims/assign-pltr-claims.component';
+import { AssignCfhFreeprofComponent } from './pages/assign-nfp/assign-nfp.component';
 import { SubAuthorizedComponent } from './pages/sub-authorized/sub-authorized.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -19,8 +20,7 @@ import { ClaimantAndClaimsCustomerPerformanceComponent } from './pages/claimant-
 import { ClaimsTrainerPerformanceComponent } from './pages/claims-trainer-performance/claims-trainer-performance.component';
 import { ClaimsProcessorPerformanceComponent } from './pages/claims-processor-performance/claims-processor-performance.component';
 import { TruncatePipe } from './pipes/truncate.pipe';
-
-// ✅ Import StudentRecordComponent
+import { UserProfileEditComponent } from './pages/edit-my-info/edit-my-info.component';
 import { StudentRecordComponent } from './pages/students-management/student-record.component';
 import { AccountingComponent } from './pages/accounting/accounting.component';
 
@@ -28,6 +28,7 @@ import { AccountingComponent } from './pages/accounting/accounting.component';
   declarations: [
     AutorizationPlComponent,
     AssignPLTRClaimsComponent,
+    AssignCfhFreeprofComponent,
     SubAuthorizedComponent,
     ClaimsFileComponent,
     FileManagerComponent,
@@ -39,6 +40,7 @@ import { AccountingComponent } from './pages/accounting/accounting.component';
     ClaimsProcessorPerformanceComponent,
     TruncatePipe,
     StudentRecordComponent,
+    UserProfileEditComponent,
     AccountingComponent
   ],
   imports: [

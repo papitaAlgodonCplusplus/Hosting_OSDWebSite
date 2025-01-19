@@ -1,53 +1,59 @@
 <div class="border-b-2 w-full font-normal text-darkslategray text-lg">
-    <h1>{{'osdStudentIncomeResult' | translate}}</h1>
-</div>
-<div class="container mx-auto mt-8 overflow-x-auto max-w-4xl">
+    <h1>{{ 'osdStudentIncomeResult' | translate }}</h1>
+  </div>
+  
+  <div class="container mx-auto mt-8 overflow-x-auto max-w-4xl">
     <table class="min-w-full border-gray-300">
-        <thead>
-            <tr>
-                <th class="p-5 border text-yellow-500 font-normal">
-                    {{'exercise' | translate}} 2024
-                </th>
-                <th class="p-5 border text-yellow-500 font-normal">{{'CFHIncomes' | translate}}</th>
-                <th class="p-5 border text-yellow-500 font-normal">{{'numberOfStudents' | translate}}</th>
-                <th class="p-5 border text-yellow-500 font-normal">{{'graduatedPassedStudents' | translate}}</th>
-                <th class="p-5 border text-yellow-500 font-normal">{{'benefitsPassedStudents' | translate}}</th>
-            </tr>
-        </thead>
-        <tbody>
-            <ng-container *ngFor="let informe of reports">
-                <tr>
-                    <td class="p-5 border font-medium text-darkslategray text-center"></td>
-                    <td class="p-5 border text-center"></td>
-                    <td class="p-5 border text-center"></td>
-                    <td class="p-5 border text-center"></td>
-                    <td class="p-5 border text-center"></td>
-                </tr>
-                <tr>
-                    <td class="p-5 border font-medium text-darkslategray text-center">
-                    </td>
-                    <td class="p-5 border text-center"></td>
-                    <td class="p-5 border text-center"></td>
-                    <td class="p-5 border text-center"></td>
-                    <td class="p-5 border text-center"></td>
-                </tr>
-                <tr>
-                    <td class="p-5 border font-medium text-darkslategray text-center">
-                    </td>
-                    <td class="p-5 border text-center"></td>
-                    <td class="p-5 border text-center"></td>
-                    <td class="p-5 border text-center"></td>
-                    <td class="p-5 border text-center"></td>
-                </tr>
-                <tr>
-                    <td class="p-5 border font-medium text-darkslategray text-center">
-                    </td>
-                    <td class="p-5 border text-center"></td>
-                    <td class="p-5 border text-center"></td>
-                    <td class="p-5 border text-center"></td>
-                    <td class="p-5 border text-center"></td>
-                </tr>
-            </ng-container>
-        </tbody>
+      <thead>
+        <tr>
+          <!-- This column might just be a label, e.g. "Mode" or "Exercise" -->
+          <th class="p-5 border text-yellow-500 font-normal">
+            {{ 'exercise' | translate }} 2024
+          </th>
+          <th class="p-5 border text-yellow-500 font-normal">{{ 'CFHIncomes' | translate }}</th>
+          <th class="p-5 border text-yellow-500 font-normal">{{ 'numberOfStudents' | translate }}</th>
+          <th class="p-5 border text-yellow-500 font-normal">{{ 'graduatedPassedStudents' | translate }}</th>
+          <th class="p-5 border text-yellow-500 font-normal">{{ 'benefitsPassedStudents' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- We only have one object in the reports array, but let's still handle it as an array -->
+        <tr *ngFor="let informe of reports">
+          <!-- Row 1: online -->
+          <td class="p-5 border text-center font-medium text-darkslategray">ONLINE</td>
+          <td class="p-5 border text-center">{{ informe.online.cfhIngresos }}</td>
+          <td class="p-5 border text-center">{{ informe.online.alumnos }}</td>
+          <td class="p-5 border text-center">{{ informe.online.alumnosAprobados }}</td>
+          <td class="p-5 border text-center">{{ informe.online.beneficios }}</td>
+        </tr>
+  
+        <!-- Another row for FC -->
+        <tr *ngFor="let informe of reports">
+          <td class="p-5 border text-center font-medium text-darkslategray">FC</td>
+          <td class="p-5 border text-center">{{ informe.FC.cfhIngresos }}</td>
+          <td class="p-5 border text-center">{{ informe.FC.alumnos }}</td>
+          <td class="p-5 border text-center">{{ informe.FC.alumnosAprobados }}</td>
+          <td class="p-5 border text-center">{{ informe.FC.beneficios }}</td>
+        </tr>
+  
+        <!-- Another row for tramitador -->
+        <tr *ngFor="let informe of reports">
+          <td class="p-5 border text-center font-medium text-darkslategray">TRAMITADOR</td>
+          <td class="p-5 border text-center">{{ informe.tramitador.cfhIngresos }}</td>
+          <td class="p-5 border text-center">{{ informe.tramitador.alumnos }}</td>
+          <td class="p-5 border text-center">{{ informe.tramitador.alumnosAprobados }}</td>
+          <td class="p-5 border text-center">{{ informe.tramitador.beneficios }}</td>
+        </tr>
+  
+        <!-- Another row for presencial -->
+        <tr *ngFor="let informe of reports">
+          <td class="p-5 border text-center font-medium text-darkslategray">PRESENCIAL</td>
+          <td class="p-5 border text-center">{{ informe.presencial.cfhIngresos }}</td>
+          <td class="p-5 border text-center">{{ informe.presencial.alumnos }}</td>
+          <td class="p-5 border text-center">{{ informe.presencial.alumnosAprobados }}</td>
+          <td class="p-5 border text-center">{{ informe.presencial.beneficios }}</td>
+        </tr>
+      </tbody>
     </table>
-</div>
+  </div>
+  

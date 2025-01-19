@@ -49,6 +49,21 @@ export class EventFactoryService {
     return event;
   }
 
+  public CreateAddFreeProfessionalToCfhEvent(freeProfessionalId: string, cfhId: string): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.ADD_FREE_PROFESSIONAL_TO_CFH;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_ID, freeProfessionalId);
+    event.setBodyProperty(EventConstants.CFH_ID, cfhId);
+    return event;
+  }
+
   public CreateChangingUsdUserAutorizationStatusEvent(selectedUserId: any): WebBaseEvent {
     let event: WebBaseEvent;
 
@@ -598,6 +613,19 @@ export class EventFactoryService {
     return event;
   }
 
+  public CreateGetCFHReports(): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.GET_CFH_REPORTS;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    return event;
+  }
+
   public CreateAddClaimEvent(claimForm: Form): WebBaseEvent {
     let event: WebBaseEvent;
 
@@ -774,6 +802,31 @@ export class EventFactoryService {
     return event;
   }
 
+  public CreateUpdateUserProfileEvent(userId: string, userFormValue: any): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.Action = EventAction.UPDATE_USER_PROFILE;
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = "WebClient";
+    event.setBodyProperty(EventConstants.USER_ID, userId);
+    event.setBodyProperty(EventConstants.NAME, userFormValue.name);
+    event.setBodyProperty(EventConstants.FIRST_SURNAME, userFormValue.firstSurname);
+    event.setBodyProperty(EventConstants.MIDDLE_SURNAME, userFormValue.middleSurname);
+    event.setBodyProperty(EventConstants.CITY, userFormValue.city);
+    event.setBodyProperty(EventConstants.COMPANY_NAME, userFormValue.companyName);
+    event.setBodyProperty(EventConstants.ADDRESS, userFormValue.address);
+    event.setBodyProperty(EventConstants.ZIPCODE, userFormValue.zipcode);
+    event.setBodyProperty(EventConstants.LANDLINE, userFormValue.landline);
+    event.setBodyProperty(EventConstants.MOBILE_PHONE, userFormValue.mobilePhone);
+    event.setBodyProperty(EventConstants.EMAIL, userFormValue.email);
+    event.setBodyProperty(EventConstants.WEB, userFormValue.web);
+    return event;
+  }
+
   public ModifyUserInformation(osdUser: UserInfo): WebBaseEvent {
     let event: WebBaseEvent;
 
@@ -937,6 +990,20 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.TD_DATE, performance.TD_Date);
     event.setBodyProperty(EventConstants.ACCEPT_INCREASE_IN_HOURS, performance.AcceptIncreaseInHours);
 
+    return event;
+  }
+
+  public CreateGetFreeProfessionalsByCfhId (cfhId: string): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.GET_FREE_PROFESSIONALS_BY_CFH_ID;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    event.setBodyProperty(EventConstants.CFH_ID, cfhId);
     return event;
   }
 

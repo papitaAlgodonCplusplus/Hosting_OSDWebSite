@@ -57,6 +57,6 @@ export class WebBaseEvent {
     this.Body[key] = value;
   }
   public getBodyProperty(key:string) : any{
-    return this.Body[key];
+    return this.Body?.[key];
   }
 }

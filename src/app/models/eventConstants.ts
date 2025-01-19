@@ -1,4 +1,6 @@
 export class EventConstants {
+  public static CFH_REPORTS: string = "cfhResult";
+  public static CFH_ID: string = "CfhId";
   public static MESSAGE: string = "Message";
   public static TRACE_IDENTIFIER: string = "TraceIdentifier";
   public static TYPE_PERFORMANCE: string = "TypePerformance";
@@ -9,11 +11,22 @@ export class EventConstants {
   public static DATE_PERFORMANCE: string = "DatePerformance";
   public static APPLICATION_IDENTIFIER: string = "ApplicationIdentifier";
   public static COMPONENT: string = "Component";
+  public static COMPANY_NAME: string = "CompanyName";
+  public static FIRST_SURNAME: string = "FirstSurname";
+  public static MY_FIRST_NAME: string = "MyFirstName";
+  public static MIDDLE_SURNAME: string = "MiddleSurname";
+  public static CITY: string = "City";
+  public static COMPANY_NAME_SPANISH: string = "CompanyNameSpanish";
+  public static ADDRESS: string = "Address";
+  public static ZIPCODE: string = "Zipcode";
+  public static LANDLINE: string  = "Landline";
+  public static MOBILE_PHONE: string = "MobilePhone";
+  public static WEB: string = "Web";
 
   public static USER_ID: string = "UserId";
   public static ID: string = "Id";
   public static HASHTOKEN: string = "HashToken";
-
+  public static PHONE: string = "Phone";
   public static USER_AUTHENTICATION_SUCCESS: string = "UserAuthenticationSuccess";
   public static USER_AUTHENTICATION_RESULT_MESSAGE: string = "UserAuthenticationResultMessage";
   public static USER_AUTHENTICATION_RESULT_CODE: string = "UserAuthenticationResultCode";
@@ -89,7 +102,7 @@ export class EventConstants {
   public static USER_INFO: string = "UserInfo";
 
   public static LIST_CLAIM: string = "ListClaim"
-  public static LIST_SUBSCRIBERS: string = "ListSubscribers"
+  public static LIST_SUBSCRIBERS: string = "subscribers"
   public static LIST_OSD_USERS_SUBSCRIBERS: string = "ListOsdUsersSubscribers"
   public static PERFORMANCE_FREE_PROFESSIONAL_LIST: string = "PerformanceFreeProfessionalList"
   public static PERFORMANCE_BUY_LIST: string = "PerformanceBuyList"
@@ -196,6 +209,7 @@ export class EventConstants {
   public static CLAIMS_PROCESSOR_PERFORMANCE_LIST: string = "ClaimsProcessorPerformanceList"
   public static CLAIMS_TRAINER_PERFORMANCE_LIST: string = "ClaimsTrainerPerformanceList"
 
+  public static FREE_PROFESSIONALS_LIST: string = "FreeProfessionalsList"
   public static PERFORMANCE_ASSIGNED_BY_ID_LIST: string = "PerformanceAssignedByIdList"
 
   public static PERFORMANCE_ASSIGNED_ID: string = "PerformanceAssignedId"

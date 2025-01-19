@@ -21,4 +21,28 @@ export interface Claim {
     CreditingDate: string;
     AmountPaid: string;
     ImprovementSavings: string;
+
+    id: string;
+    code: string;
+    datecreated: string;
+    subscriberclaimedid: string;
+    namecompanysubscriberclaimed: string;
+    //claimant: string;
+    claimtype: string;
+    status: string;
+    facts: string;
+    freeprofessionalid: string;
+    serviceprovided: string;
+    amountclaimed: string;
+    date: string;
+    valuationclaimant: string;
+    valuationfreeprofessionals: string;
+    valuationsubscriber: string;
+    documentfile1id: string;
+    documentfile1name: string;
+    documentfile2id: string;
+    documentfile2name: string;
+    creditingdate: string;
+    amountpaid: string;
+    improvementsavings: string;
 }

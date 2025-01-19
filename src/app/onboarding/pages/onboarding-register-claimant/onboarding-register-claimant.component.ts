@@ -135,7 +135,6 @@ export class OnboardingRegisterClaimantComponent {
     return this.formBuilder.group({
       Date: [currentDate],
       claimtype: ['', [Validators.required]],
-      subscriberClaimed: ['', [Validators.required]],
       subscriberClaimedName: ['', [Validators.required]],
       serviceProvided: ['', [Validators.required]],
       amountClaimed: ['', [Validators.required]],
@@ -169,17 +168,17 @@ export class OnboardingRegisterClaimantComponent {
 
     this.uploadFile = true;
     this.store.dispatch(UiActions.toggleConfirmationButton());
-   
+
     setTimeout(() => {
       if (this.selectorRegistry) {
-        this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, "Claimant");
-      } else {
-        if (this.authenticationService.userInfo?.Id) {
-          const claimantIdControl = new FormControl(this.authenticationService.userInfo.Id);
-          this.accountForm.addControl(EventConstants.CLAIMANT_ID, claimantIdControl);
-        }
-        this.osdEventService.addClaim(this.accountForm.value);
+        this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, "Claimant").subscribe(() => {
+        });
       }
+      if (this.personalForm.value.identity) {
+        this.accountForm.addControl(EventConstants.CLAIMANT_ID, new FormControl(this.personalForm.value.identity));
+      }
+      this.osdEventService.addClaim(this.accountForm.value).subscribe(() => {
+      });
     }, 5000);
   }
 
@@ -193,14 +192,13 @@ export class OnboardingRegisterClaimantComponent {
 
   applyFilters() {
     this.filteredSubscribers = this.subscribers.filter(subscriber =>
-      (this.filterCountry ? subscriber.Country.toLowerCase().includes(this.filterCountry.toLowerCase()) : true) &&
-      (this.filterCompanyName ? subscriber.CompanyName.toLowerCase().includes(this.filterCompanyName.toLowerCase()) : true)
+      (this.filterCountry ? subscriber.country.toLowerCase().includes(this.filterCountry.toLowerCase()) : true) &&
+      (this.filterCompanyName ? subscriber.name.toLowerCase().includes(this.filterCompanyName.toLowerCase()) : true)
     );
   }
 
   selectSubscriber(id: string, name: string) {
     this.accountForm.patchValue({
-      subscriberClaimed: id,
       subscriberClaimedName: name
     });
     this.openModal = false;

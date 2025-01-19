@@ -16,6 +16,10 @@
                     label="{{ 'clientType' | translate }}" [formGroup]="accountForm" [dropdownItems]="entity"
                     [selectedItem]="selectedEntity">
                 </shared-simple-dropdown>
+                <!-- NEW FIELD for cfhOffer -->
+                <shared-simple-dropdown class="w-full md:w-1/2" fieldName="cfhOffer"
+                    label="{{ 'CFH_Offer' | translate }}" [formGroup]="accountForm" [dropdownItems]="cfhOfferOptions">
+                </shared-simple-dropdown>
             </form>
 
             <shared-input-field class="w-full md:w-1/2" fieldName="identity" label="{{'Identity' | translate}}"
@@ -67,121 +71,6 @@
 
         <!-- SECOND FORM: personalForm continued -->
         <form [formGroup]="personalForm" (ngSubmit)="onSubmit()" autocomplete="off">
-
-            <!-- COURSES TABLE (FormArray) -->
-            <div class="mt-5 w-full" formArrayName="courses">
-                <h2 class="text-base font-semibold text-darkslategray mb-2">
-                    {{ 'Cursos_Disponibles' | translate }}
-                </h2>
-
-                <div class="overflow-x-auto border rounded shadow-sm">
-                    <table class="min-w-full text-left border-collapse">
-                        <thead class="border-b bg-gray-100">
-                            <tr>
-                                <th class="px-4 py-2">{{ 'nombre_curso' | translate }}</th>
-                                <th class="px-4 py-2">{{ 'coste_en_euros' | translate }}</th>
-                                <th class="px-4 py-2">{{ 'acciones' | translate }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- MAIN ROW FOR EACH COURSE -->
-                            <tr class="border-b" *ngFor="let courseCtrl of coursesControls; let i = index"
-                                [formGroup]="courseCtrl">
-
-                                <!-- courseName -->
-                                <td class="px-4 py-2 align-top">
-                                    <shared-input-field fieldName="courseName" label="" inputType="text"
-                                        [formGroup]="courseCtrl" [bgColor]="'bg-white-lightbone'">
-                                    </shared-input-field>
-                                </td>
-
-                                <!-- cost -->
-                                <td class="px-4 py-2 align-top">
-                                    <shared-input-field fieldName="cost" label="" inputType="number"
-                                        [formGroup]="courseCtrl" [bgColor]="'bg-white-lightbone'">
-                                    </shared-input-field>
-                                </td>
-
-                                <!-- remove course button -->
-                                <td class="px-4 py-2 align-top">
-                                    <button type="button" class="px-3 py-1 bg-red-500 text-white rounded"
-                                        (click)="removeCourse(i)">
-                                        {{ 'eliminar' | translate }}
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <!-- SUB-ROW: nested table for modules of each course -->
-                            <tr class="border-b" *ngFor="let courseCtrl of coursesControls; let i = index"
-                                [formGroup]="courseCtrl">
-
-                                <td colspan="3" class="px-4 py-2 bg-gray-50">
-                                    <!-- Sub-table for modules in this course -->
-                                    <div formArrayName="modules">
-                                        {{ 'modules_for_course' | translate: { courseName: courseCtrl.value.courseName, rowNumber: i + 1 } }}
-                                        <div class="overflow-x-auto border rounded shadow-sm">
-                                            <table class="min-w-full text-left border-collapse">
-                                                <thead class="border-b bg-gray-100">
-                                                    <tr>
-                                                        <th class="px-4 py-2">{{ 'module' | translate }}</th>
-                                                        <th class="px-4 py-2">{{ 'duration' | translate }}</th>
-                                                        <th class="px-4 py-2">{{ 'acciones' | translate }}</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <!-- For each module in this course -->
-                                                    <tr class="border-b"
-                                                        *ngFor="let moduleCtrl of getModulesControls(i); let m = index"
-                                                        [formGroup]="moduleCtrl">
-
-                                                        <td class="px-4 py-2">
-                                                            <shared-input-field fieldName="moduleName" label=""
-                                                                inputType="text" [formGroup]="moduleCtrl"
-                                                                [bgColor]="'bg-white-lightbone'">
-                                                            </shared-input-field>
-                                                        </td>
-
-                                                        <td class="px-4 py-2">
-                                                            <shared-input-field fieldName="duration" label=""
-                                                                inputType="number" [formGroup]="moduleCtrl"
-                                                                [bgColor]="'bg-white-lightbone'">
-                                                            </shared-input-field>
-                                                        </td>
-
-                                                        <td class="px-4 py-2">
-                                                            <button type="button"
-                                                                class="px-3 py-1 bg-red-500 text-white rounded"
-                                                                (click)="removeModule(i, m)">
-                                                                {{ 'eliminar' | translate }}
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <!-- Add Module button -->
-                                        <div class="flex justify-end mt-2">
-                                            <button type="button" class="p-2 bg-blue-500 text-white rounded"
-                                                (click)="addModule(i)">
-                                                {{ 'agregar_modulo' | translate }}
-                                            </button>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Add Course button -->
-                <div class="flex justify-end mt-2">
-                    <button type="button" class="p-2 bg-green-500 text-white rounded" (click)="addCourse()">
-                        {{ 'agregar_curso' | translate }}
-                    </button>
-                </div>
-            </div>
-            <!-- END of COURSES TABLE -->
-
             <div class="flex flex-col lg:flex-row items-center mt-5">
                 <div class="flex flex-wrap text-black w-full my-2 py-3">
                     <div class="flex-1 flex flex-col p-2 text-black space-y-4">

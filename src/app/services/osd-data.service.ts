@@ -15,9 +15,37 @@ import { ClaimsTrainerPerformance } from '../functions/models/ClaimsTrainerPerfo
 import { TransparencyIncomeExpenses } from '../reports/models/TransparencyIncomeExpenses.interface';
 import { TransparencyReportsSubscriberClientList } from '../reports/models/TransparencyReportsSubscriberClient.model';
 
+export interface CFHresultItems {
+  online: {
+      cfhIngresos: number,
+      alumnos: number,
+      alumnosAprobados: number,
+      beneficios: string
+  },
+  FC: {
+      cfhIngresos: number,
+      alumnos: number,
+      alumnosAprobados: number,
+      beneficios: string
+  },
+  tramitador: {
+      cfhIngresos: number,
+      alumnos: number,
+      alumnosAprobados: number,
+      beneficios: string
+  },
+  presencial: {
+      cfhIngresos: number,
+      alumnos: number,
+      alumnosAprobados: number,
+      beneficios: string
+  },
+}
+
 @Injectable({
   providedIn: 'root'
 })
+
 export class OSDDataService {
   performanceFP: any = "";
 
@@ -31,6 +59,7 @@ export class OSDDataService {
   private freeProfessionalTypeId = new Subject<string>();
   private freeProfessionalTR = new Subject<any[]>();
   private usersFreeProfessionalTR = new Subject<any[]>();
+  private freeProfessionalCfh = new Subject<FreeProfessional[]>();
   private TransparencyReportsSubscriberClientList = new Subject<TransparencyReportsSubscriberClientList[]>();
 
   private TransparencyIncomeExpenses = new Subject<TransparencyIncomeExpenses>();
@@ -65,7 +94,6 @@ export class OSDDataService {
   private ClaimsList = new Subject<Claim[]>();
 
   private studentsList = new Subject<any>();
-
   private courseList = new Subject<any>();
   
   actionRegisterSuccess$ = this.actionRegisterSuccessSubject.asObservable();
@@ -75,8 +103,11 @@ export class OSDDataService {
   getOsdUsersSubscribersSuccess$ = this.getOsdUsersSubscribersSuccessSubject.asObservable();
   getSubscribersSuccess$ = this.getSubscribersSuccessSubject.asObservable();
 
+  CFHResultList$ = new Subject<CFHresultItems[]>();
   freeProfessionalId$ = this.freeProfessionalId.asObservable();
   freeProfessionalTypeId$ = this.freeProfessionalTypeId.asObservable();
+
+  freeProfessionalCfh$ = this.freeProfessionalCfh.asObservable();
 
   performanceFreeProfessionalList$ = this.performanceFreeProfessionalList.asObservable();
   performanceBuyList$ = this.performanceBuyList.asObservable();
@@ -119,6 +150,10 @@ export class OSDDataService {
   setPerformance(performance: any) {
     this.performanceFP = performance
   }
+  
+  setFreeProfessionalsCfh(freeProfessionals: FreeProfessional[]) {
+    this.freeProfessionalCfh.next(freeProfessionals);
+  }
 
   getPerformance() {
     return this.performanceFP
@@ -150,6 +185,9 @@ export class OSDDataService {
   }
   emitFreeProfessionalId(data: string) {
     this.freeProfessionalId.next(data);
+  }
+  emitFreeProfessionalCfh(data: FreeProfessional[]) {
+    this.freeProfessionalCfh.next(data);
   }
   emitFreeProfessionalTypeId(data: string) {
     this.freeProfessionalTypeId.next(data);
@@ -223,6 +261,10 @@ export class OSDDataService {
     this.performanceAssignedList.next(data);
   }
 
+  emitFreeProfessionalsByCfhIdListSuccess(data: FreeProfessional[]) {
+    this.freeProfessionalCfh.next(data);
+  }
+
   emitSubPerformanceByIdListSuccess(data: ResponseToPerformanceFreeProfessional[]) {
     this.SubPerformanceByIdList.next(data);
   }
@@ -241,5 +283,9 @@ export class OSDDataService {
 
   emitUserSuccess(data: boolean) {
     this.userRegisterSuccessSubject.next(data);
+  }
+
+  emitCFHReportsSuccess(data: CFHresultItems[]) {
+    this.CFHResultList$.next(data);
   }
 }

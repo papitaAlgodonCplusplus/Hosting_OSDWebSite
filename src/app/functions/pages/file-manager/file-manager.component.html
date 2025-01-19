@@ -1,196 +1,331 @@
-<div class="flex flex-col lg:flex-col ">
-    <div class="text-darkslategray text-start py-3 text-xl font-medium animate__animated animate__fadeInLeft">
-        <span class="pl-5 pr-3 py-1 bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden">
-            {{'reclamacion' | translate}}</span>
-    </div>
-    <div class="flex-1 flex justify-center text-darkslategray py-3">
-        <div class="flex flex-col">
-            <!-- <shared-input-field [readOnly]="true" class="w-full" label="{{'freeProfessionalsIntervention' | translate}}"
-                fieldName="freeProfessional" [formGroup]="fileManager">
-            </shared-input-field> -->
+<!-- Container to wrap everything, giving some spacing and a consistent layout -->
+<div class="container mx-auto p-6 space-y-6 text-darkslategray animate__animated animate__fadeInLeft">
 
-            <div class="font-bold flex flex-col justify-center items-center space-y-3 p-3">
-                <span class="rounded-xl p-2 bg-darkslategray text-line cursor-pointer"
-                    (click)="openPerformanceClaimsModal()">{{'viewPerformance' | translate}} </span>
-                <button *ngIf="isAssignedClaim" (click)="newPerformance()"
-                    class="space-x-2 flex items-center hover:underline" routerLink="/functions/claims-performance">
-                    <span>{{'newAction' | translate }}</span> <i
-                        class="fa-solid fa-chevron-right text-base animate-pulse"></i>
-                </button>
-            </div>
+    <!-- Title Section -->
+    <div class="flex flex-col items-start">
+      <h2 class="text-xl font-medium py-3">
+        <span class="pl-5 pr-3 py-1 bg-yellow-500 rounded-r-full">
+          {{ 'reclamacion' | translate }}
+        </span>
+      </h2>
+    </div>
+  
+    <!-- Performance Buttons -->
+    <div class="flex justify-center py-3">
+      <div class="flex flex-col items-center space-y-3 p-3">
+        <span
+          class="rounded-xl p-2 bg-darkslategray text-line font-bold cursor-pointer"
+          (click)="openPerformanceClaimsModal()"
+        >
+          {{ 'viewPerformance' | translate }}
+        </span>
+        <button
+          *ngIf="isAssignedClaim"
+          (click)="newPerformance()"
+          class="flex items-center space-x-2 hover:underline"
+          routerLink="/functions/claims-performance"
+        >
+          <span>{{ 'newAction' | translate }}</span>
+          <i class="fa-solid fa-chevron-right text-base animate-pulse"></i>
+        </button>
+      </div>
+    </div>
+  
+    <!-- Main Form Section -->
+    <div class="bg-white-lightbone shadow-md rounded-xl p-5">
+      <form
+        [formGroup]="fileManager"
+        (ngSubmit)="onSubmit()"
+        autocomplete="off"
+        class="grid grid-cols-1 lg:grid-cols-2 gap-4"
+      >
+        <!-- Code Field -->
+        <div class="w-full border border-gray-300 rounded-md p-2">
+          <label class="block mb-1 font-medium">{{ 'Code' | translate }}</label>
+          <input
+            formControlName="code"
+            type="text"
+            class="w-full bg-white-lightbone"
+            [readonly]="true"
+            [placeholder]="this.claim?.code"
+          />
         </div>
-    </div>
-
-    <div class="py-5 flex flex-col justify-center px-2 h-full">
-        <form [formGroup]="fileManager" (ngSubmit)="onSubmit()" autocomplete="off" class="flex flex-wrap items-center">
-
-            <shared-input-field [readOnly]="true" class="w-full lg:w-1/2" fieldName="code"
-                label="{{'Code' | translate}}" inputType="text" [formGroup]="fileManager"
-                [bgColor]="'bg-white-lightbone'">
-            </shared-input-field>
-
-            <div class="w-full ">
-                <shared-text-area [readOnly]="true" class="w-full lg:w-1/2" fieldName="facts"
-                    label="{{'facts' | translate}}" inputType="text" [formGroup]="fileManager"
-                    [bgColor]="'bg-white-lightbone'">
-                </shared-text-area>
-            </div>
-
-            <shared-input-field [readOnly]="true" class="w-full lg:w-1/2" fieldName="claimant"
-                label="{{'reclamacion' | translate}}" inputType="text" [formGroup]="fileManager"
-                [bgColor]="'bg-white-lightbone'">
-            </shared-input-field>
-
-            <shared-input-field [readOnly]="true" class="w-full lg:w-1/2" label="{{'status' | translate}}"
-                fieldName="state" inputType="text" [formGroup]="fileManager" [bgColor]="'bg-white-lightbone'">
-            </shared-input-field>
-
-            <shared-input-field [readOnly]="true" class="w-full lg:w-1/2" fieldName="subscriber"
-                label="{{'subscriber' | translate}}" inputType="text" [formGroup]="fileManager"
-                [bgColor]="'bg-white-lightbone'">
-            </shared-input-field>
-
-            <shared-input-field [readOnly]="true" class="w-full lg:w-1/2" fieldName="amountClaimed"
-                label="{{'cuantia_reclamada' | translate}}" inputType="text" [formGroup]="fileManager"
-                [bgColor]="'bg-white-lightbone'">
-            </shared-input-field>
-
-            <div class="flex flex-wrap  w-full justify-center py-3 space-x-3 lg:space-y-0 md:space-y-0 space-y-6 ">
-                <shared-uploadfile  [isMandatory]="true" [uploadFile]="false" [fileId]="this.claim.DocumentFile1Id"
-                    [fileName]="this.claim.DocumentFile1Name" [formGroup]="fileManager" label="documento1"
-                    fieldName="amountClaimed">
-                </shared-uploadfile>
-
-                <shared-uploadfile *ngIf="this.claim.DocumentFile2Id" [isMandatory]="true" [uploadFile]="false" [fileId]="this.claim.DocumentFile2Id"
-                    [fileName]="this.claim.DocumentFile2Name" [formGroup]="fileManager" label="documento2"
-                    fieldName="amountClaimed">
-                </shared-uploadfile>
-            </div>
-
-        </form>
-
-        <form [formGroup]="closeClaimfileForm" (ngSubmit)="closeClaimFile()" autocomplete="off"
-            class="flex flex-wrap items-center">
-            <div class="w-full border-b px-2">
-                <h1>{{'Processor' | translate}}</h1>
-            </div>
-            <shared-input-field [readOnly]="user.AccountType != 'FreeProfessional' || !isTerminatedPerformance"
-                class="w-full lg:w-1/2" fieldName="AmountPaid" label="{{'amountPaidByOtherParty' | translate}}"
-                inputType="text" [formGroup]="closeClaimfileForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-            <shared-input-field [readOnly]="user.AccountType != 'FreeProfessional'  || !isTerminatedPerformance"
-                class="w-full lg:w-1/2" fieldName="AAsavingsPP"
-                label="{{'institutionalImprovementSavings' | translate}}" inputType="text"
-                [formGroup]="closeClaimfileForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-            <shared-input-field [readOnly]="user.AccountType != 'FreeProfessional'  || !isTerminatedPerformance"
-                class="w-full lg:w-1/2" fieldName="creditingDate" label="{{'creditingDate' | translate}}"
-                inputType="date" [formGroup]="closeClaimfileForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-        </form>
-    </div>
-</div>
-
-<div class="flex w-full justify-end p-2 space-x-3">
-    <button routerLink="/functions/claims-file"
-        class="p-2 rounded-xl bg-line text-darkslategray font-medium animate__animated animate__fadeInDown">
-        {{'regresar' | translate}}
-    </button>
-
-    <button *ngIf="user.AccountType == 'FreeProfessional' && isTerminatedPerformance" (click)="closeClaimFile()"
-        class="p-2 rounded-xl bg-darkslategray text-line font-medium animate__animated animate__fadeInDown">
-        {{'Finalizar expediente de reclamacion' | translate}}
-    </button>
-</div>
-
-<div *ngIf="showModalPerformances" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
-    <div class="bg-opacity-75 bg-black absolute inset-0"></div>
-    <div class="relative z-50 bg-white shadow-md space-y-1 rounded-xl p-3">
-        <div class="justify-center">
-            <div class="p-3 flex flex-col items-center">
-                <div class="w-full flex-col flex justify-end space-y-3">
-                    <table class="table">
-                        <thead>
-                            <tr class="text-darkslategray">
-                                <th></th>
-                                <th>{{ 'Code' | translate }}</th>
-                                <th>{{ 'Date' | translate }}</th>
-                                <th>{{ 'Type' | translate }}</th>
-                                <th>{{ 'status' | translate }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="border-t text-center" *ngFor="let performance of displayedItems; let i = index">
-                                <td class="p-3">
-                                    <button (click)="viewPerformance(performance)"
-                                        class="text-darkslategray p-2 rounded-xl">
-                                        <i class="fa-solid fa-eye"></i>
-                                    </button>
-                                    <!-- <button (click)="viewPerformance(performance)"
-                                        class="text-darkslategray p-2 rounded-xl">
-                                        <i class="fa-solid fa-pencil"></i>
-                                    </button> -->
-                                </td>
-                                <td class="p-3">{{ performance.Code }}</td>
-                                <td class="p-3">{{ performance.Date | date:'dd-MM-yyyy' }}</td>
-                                <td class="p-3">{{ performance.Type | translate }}</td>
-                                <td class="p-3">{{ performance.Status | translate }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <mat-paginator [length]="allPerformances.length" [pageSize]="5"
-                        (page)="onPageChange($event)"></mat-paginator>
-
-                    <div class="flex items-end justify-end">
-                        <button (click)="closePerformanceModal()"
-                            class="p-2 rounded-xl bg-line text-darkslategray font-medium animate__animated animate__fadeInDown">
-                            {{'regresar' | translate}}
-                        </button>
-                    </div>
-                </div>
-            </div>
+  
+        <!-- Facts Field -->
+        <div class="col-span-1 lg:col-span-2 w-full border border-gray-300 rounded-md p-2">
+          <label class="block mb-1 font-medium">{{ 'facts' | translate }}</label>
+          <textarea
+            formControlName="facts"
+            class="w-full bg-white-lightbone"
+            [readonly]="true"
+            [placeholder]="this.claim?.facts"
+          ></textarea>
         </div>
-    </div>
-</div>
-
-<div *ngIf="showModalRatings" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
-    <div class="bg-opacity-75 bg-black absolute inset-0"></div>
-    <div class="relative z-50 bg-white shadow-md space-y-1 rounded-xl p-3">
-        <div class="justify-center">
-            <div class="p-3 flex flex-col items-center">
-                <div class="w-full flex-col flex justify-end space-y-3">
-                    <form [formGroup]="fileManager" autocomplete="off" class="w-full flex flex-col space-y-3 px-1 ">
-                        <h1 class="text-center text-darkslategray font-medium">{{'Valoration' | translate}}</h1>
-                        <div
-                            class="flex flex-col items-center space-x-0 lg:flex-row lg:space-x-3 md:flex-row md:space-x-3">
-
-                            <div *ngIf="isSubscriber" class="flex flex-col w-full ">
-                                <label for="valuationSubscriber">{{'institutionOsdValuation' | translate}}</label>
-                                <input formControlName="valuationSubscriber" id="valuationSubscriber"
-                                    class=" border p-2" type="number" max="5" min="0">
-                            </div>
-
-                            <div *ngIf="isClaimant" class="flex flex-col w-full ">
-                                <label for="valuationClaimant">{{'institutionClaimantRating' | translate}}</label>
-                                <input formControlName="valuationClaimant" id="valuationClaimant" class="border p-2"
-                                    type="number" max="5" min="0">
-                            </div>
-
-                            <div *ngIf="isFreeProfessional" class="flex flex-col w-full ">
-                                <label for="valuationFreeProfessionals">{{'institutionValuationFreeOsdProfessionals' |
-                                    translate}}</label>
-                                <input formControlName="valuationFreeProfessionals" id="valuationFreeProfessionals"
-                                    class="border p-2" type="number" max="5" min="0">
-                            </div>
-                        </div>
-                        <div class="flex justify-center">
-                            <button (click)="updateValuation()"
-                                class="p-2 rounded-xl bg-darkslategray text-line font-medium animate__animated animate__fadeInDown">
-                                {{'MakeAreview' | translate}}
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+  
+        <!-- Claimant Field -->
+        <div class="w-full border border-gray-300 rounded-md p-2">
+          <label class="block mb-1 font-medium">{{ 'reclamacion' | translate }}</label>
+          <input
+            formControlName="claimant"
+            type="text"
+            class="w-full bg-white-lightbone"
+            [readonly]="true"
+            [placeholder]="this.claim?.namecompanysubscriberclaimed"
+          />
         </div>
+  
+        <!-- Status Field -->
+        <div class="w-full border border-gray-300 rounded-md p-2">
+          <label class="block mb-1 font-medium">{{ 'status' | translate }}</label>
+          <input
+            formControlName="state"
+            type="text"
+            class="w-full bg-white-lightbone"
+            [readonly]="true"
+            [placeholder]="this.claim?.status"
+          />
+        </div>
+  
+        <!-- Subscriber Field -->
+        <div class="w-full border border-gray-300 rounded-md p-2">
+          <label class="block mb-1 font-medium">{{ 'subscriber' | translate }}</label>
+          <input
+            formControlName="subscriber"
+            type="text"
+            class="w-full bg-white-lightbone"
+            [readonly]="true"
+            [placeholder]="this.claim?.subscriberclaimedid"
+          />
+        </div>
+  
+        <!-- Amount Claimed Field -->
+        <div class="w-full border border-gray-300 rounded-md p-2">
+          <label class="block mb-1 font-medium">{{ 'cuantia_reclamada' | translate }}</label>
+          <input
+            formControlName="amountClaimed"
+            type="text"
+            class="w-full bg-white-lightbone"
+            [readonly]="true"
+            [placeholder]="this.claim?.amountclaimed"
+          />
+        </div>
+  
+        <!-- Document Upload Fields -->
+        <div class="col-span-1 lg:col-span-2 flex flex-wrap justify-center py-3 space-x-3">
+          <!-- Document 1 -->
+          <div *ngIf="this.claim?.documentfile1id" class="flex flex-col items-start">
+            <label class="block mb-1 font-medium">{{ this.claim?.documentfile1name }}</label>
+            <input
+              type="file"
+              class="border border-gray-300 rounded-md p-2 bg-white-lightbone"
+              [disabled]="true"
+              [placeholder]="this.claim?.documentfile1name"
+            />
+          </div>
+  
+          <!-- Document 2 -->
+          <div *ngIf="this.claim?.documentfile2id" class="flex flex-col items-start">
+            <label class="block mb-1 font-medium">{{ this.claim?.documentfile2name }}</label>
+            <input
+              type="file"
+              class="border border-gray-300 rounded-md p-2 bg-white-lightbone"
+              [disabled]="true"
+              [placeholder]="this.claim?.documentfile2name"
+            />
+          </div>
+        </div>
+      </form>
     </div>
-</div>
+  
+    <!-- Processor Form Section -->
+    <div class="bg-white-lightbone shadow-md rounded-xl p-5 mt-6">
+      <form
+        [formGroup]="closeClaimfileForm"
+        (ngSubmit)="closeClaimFile()"
+        autocomplete="off"
+        class="grid grid-cols-1 lg:grid-cols-2 gap-4"
+      >
+        <div class="col-span-1 lg:col-span-2 border-b pb-3">
+          <h1 class="font-bold">{{ 'Processor' | translate }}</h1>
+        </div>
+  
+        <div class="w-full border border-gray-300 rounded-md p-2">
+          <label class="block mb-1 font-medium">{{ 'amountPaidByOtherParty' | translate }}</label>
+          <input
+            formControlName="AmountPaid"
+            type="text"
+            class="w-full bg-white-lightbone"
+            [readonly]="user.AccountType != 'FreeProfessional' || !isTerminatedPerformance"
+            [placeholder]="this.claim?.amountpaid"
+          />
+        </div>
+  
+        <div class="w-full border border-gray-300 rounded-md p-2">
+          <label class="block mb-1 font-medium">{{ 'institutionalImprovementSavings' | translate }}</label>
+          <input
+            formControlName="AAsavingsPP"
+            type="text"
+            class="w-full bg-white-lightbone"
+            [readonly]="user.AccountType != 'FreeProfessional'  || !isTerminatedPerformance"
+            [placeholder]="this.claim?.improvementsavings"
+          />
+        </div>
+  
+        <div class="w-full border border-gray-300 rounded-md p-2">
+          <label class="block mb-1 font-medium">{{ 'creditingDate' | translate }}</label>
+          <input
+            formControlName="creditingDate"
+            type="date"
+            class="w-full bg-white-lightbone"
+            [readonly]="user.AccountType != 'FreeProfessional'  || !isTerminatedPerformance"
+            [placeholder]="this.claim?.creditingdate"
+          />
+        </div>
+      </form>
+    </div>
+  
+    <!-- Button Section -->
+    <div class="flex w-full justify-end p-2 space-x-3">
+      <button
+        routerLink="/functions/claims-file"
+        class="p-2 rounded-xl bg-line text-darkslategray font-medium animate__animated animate__fadeInDown"
+      >
+        {{ 'regresar' | translate }}
+      </button>
+      <button
+        *ngIf="user.AccountType == 'FreeProfessional' && isTerminatedPerformance"
+        (click)="closeClaimFile()"
+        class="p-2 rounded-xl bg-darkslategray text-line font-medium animate__animated animate__fadeInDown"
+      >
+        {{ 'Finalizar expediente de reclamacion' | translate }}
+      </button>
+    </div>
+  
+    <!-- Performance Modal -->
+    <div *ngIf="showModalPerformances" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
+      <div class="bg-opacity-75 bg-black absolute inset-0"></div>
+      <div class="relative z-50 bg-white shadow-md rounded-xl p-3 w-11/12 lg:w-3/4">
+        <div class="p-3 flex flex-col items-center space-y-3">
+          <table class="table-auto w-full">
+            <thead>
+              <tr class="text-darkslategray border-b">
+                <th class="py-2"></th>
+                <th class="py-2">{{ 'Code' | translate }}</th>
+                <th class="py-2">{{ 'Date' | translate }}</th>
+                <th class="py-2">{{ 'Type' | translate }}</th>
+                <th class="py-2">{{ 'status' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-t text-center" *ngFor="let performance of displayedItems; let i = index">
+                <td class="p-3">
+                  <button
+                    (click)="viewPerformance(performance)"
+                    class="text-darkslategray p-2 rounded-xl"
+                  >
+                    <i class="fa-solid fa-eye"></i>
+                  </button>
+                </td>
+                <td class="p-3">{{ performance.code }}</td>
+                <td class="p-3">{{ this.claim?.datecreated | date:'dd-MM-yyyy' }}</td>
+                <td class="p-3">{{ this.claim?.claimtype }}</td>
+                <td class="p-3">{{ performance.status | translate }}</td>
+              </tr>
+            </tbody>
+          </table>
+  
+          <mat-paginator
+            [length]="allPerformances.length"
+            [pageSize]="5"
+            (page)="onPageChange($event)"
+          ></mat-paginator>
+  
+          <div class="flex justify-end w-full">
+            <button
+              (click)="closePerformanceModal()"
+              class="p-2 rounded-xl bg-line text-darkslategray font-medium animate__animated animate__fadeInDown"
+            >
+              {{ 'regresar' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Ratings Modal -->
+    <div *ngIf="showModalRatings" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
+      <div class="bg-opacity-75 bg-black absolute inset-0"></div>
+      <div class="relative z-50 bg-white shadow-md rounded-xl p-3 w-11/12 lg:w-1/2">
+        <div class="p-3 flex flex-col items-center">
+          <form
+            [formGroup]="fileManager"
+            autocomplete="off"
+            class="w-full flex flex-col space-y-3"
+          >
+            <h1 class="text-center text-darkslategray font-medium">
+              {{ 'Valoration' | translate }}
+            </h1>
+            <div
+              class="flex flex-col lg:flex-row md:flex-row space-y-3 lg:space-y-0 md:space-y-0 lg:space-x-3 md:space-x-3 justify-center"
+            >
+              <div *ngIf="isSubscriber" class="flex flex-col w-full">
+                <label for="valuationSubscriber" class="font-semibold">
+                  {{ 'institutionOsdValuation' | translate }}
+                </label>
+                <input
+                  formControlName="valuationSubscriber"
+                  id="valuationSubscriber"
+                  class="border border-gray-300 rounded-md p-2"
+                  type="number"
+                  max="5"
+                  min="0"
+                  [placeholder]="this.claim?.valuationsubscriber"
+                />
+              </div>
+  
+              <div *ngIf="isClaimant" class="flex flex-col w-full">
+                <label for="valuationClaimant" class="font-semibold">
+                  {{ 'institutionClaimantRating' | translate }}
+                </label>
+                <input
+                  formControlName="valuationClaimant"
+                  id="valuationClaimant"
+                  class="border border-gray-300 rounded-md p-2"
+                  type="number"
+                  max="5"
+                  min="0"
+                  [placeholder]="this.claim?.valuationclaimant"
+                />
+              </div>
+  
+              <div *ngIf="isFreeProfessional" class="flex flex-col w-full">
+                <label for="valuationFreeProfessionals" class="font-semibold">
+                  {{ 'institutionValuationFreeOsdProfessionals' | translate }}
+                </label>
+                <input
+                  formControlName="valuationFreeProfessionals"
+                  id="valuationFreeProfessionals"
+                  class="border border-gray-300 rounded-md p-2"
+                  type="number"
+                  max="5"
+                  min="0"
+                  [placeholder]="this.claim?.valuationfreeprofessionals"
+                />
+              </div>
+            </div>
+  
+            <div class="flex justify-center">
+              <button
+                (click)="updateValuation()"
+                class="p-2 rounded-xl bg-darkslategray text-line font-medium animate__animated animate__fadeInDown"
+              >
+                {{ 'MakeAreview' | translate }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+  

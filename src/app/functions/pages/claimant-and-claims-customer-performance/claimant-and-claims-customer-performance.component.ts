@@ -59,7 +59,7 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
       this.store.dispatch(UiActions.hideFooter())
       this.store.dispatch(UiActions.hideLeftSidebar())
       this.claim$.subscribe(claim => {
-        this.claimId = claim.Id;
+        this.claimId = claim.id;
       });
 
     }, 0);
@@ -257,10 +257,14 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
     this.isErrorInForm = false;
     if (this.claimId) {
       if(this.documentBytes != null){
-        const documentBase64 = this.convertUint8ArrayToBase64(this.documentBytes);
-        this.OSDEventService.createClaimantAndClaimsCustomerPerformance(this.performanceForm.value, this.claimId, this.userTypePerformance, documentBase64);
+      const documentBase64 = this.convertUint8ArrayToBase64(this.documentBytes);
+      this.OSDEventService.createClaimantAndClaimsCustomerPerformance(this.performanceForm.value, this.claimId, this.userTypePerformance, documentBase64).subscribe(() => {
+        window.history.back();
+      });
       }else{
-        this.OSDEventService.createClaimantAndClaimsCustomerPerformance(this.performanceForm.value, this.claimId, this.userTypePerformance, "");
+      this.OSDEventService.createClaimantAndClaimsCustomerPerformance(this.performanceForm.value, this.claimId, this.userTypePerformance, "").subscribe(() => {
+        window.history.back();
+      });
       }
     }
   }

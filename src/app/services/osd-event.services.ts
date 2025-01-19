@@ -152,6 +152,11 @@ export class OSDService {
     );
   }
 
+  public addFreeProfessionalToCfh(cfhId: string, email: string) {
+    const addFreeProfessionalToCfhEvent: WebBaseEvent = this.eventFactoryService.CreateAddFreeProfessionalToCfhEvent(cfhId, email);
+    return this.restApiService.SendOSDEvent(addFreeProfessionalToCfhEvent);
+  }
+
   public addPerformanceFreeProfessional(performanceFP: PerformanceFreeProfessional, projectManagerSelectedId: string, documentBase64: string) {
     const event: WebBaseEvent = this.eventFactoryService.CreateAddPerformanceFreeProfessionalEvent(performanceFP, projectManagerSelectedId, documentBase64);
     this.restApiService.SendOSDEvent(event).subscribe({
@@ -247,22 +252,27 @@ export class OSDService {
     const registerProfessorEvent: WebBaseEvent = this.eventFactoryService.CreateRegisterProfessorEvent(accountForm, personalForm, accountType);
     return this.restApiService.SendOSDEvent(registerProfessorEvent);
   }
-  
+
   public userRegister(accountForm: Form, personalForm: Form, accountType: string): Observable<any> {
     const registerUserEvent: WebBaseEvent = this.eventFactoryService.CreateRegisterUserEvent(accountForm, personalForm, accountType);
     return this.restApiService.SendOSDEvent(registerUserEvent);
   }
 
-  public addClaim(claimForm: Form) {
+  public addClaim(claimForm: Form): Observable<any> {
+    console.log("CLAIM FORM", claimForm)
     const addClaimEvent: WebBaseEvent = this.eventFactoryService.CreateAddClaimEvent(claimForm);
-    this.restApiService.SendOSDEvent(addClaimEvent).subscribe({
-      next: (response) => {
-        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
-        this.HandleAddClaimResponse(osdEvent);
-      },
-      error: (error) => {
-        //TODO: Pending implementation
-      }
+    return new Observable((observer) => {
+      this.restApiService.SendOSDEvent(addClaimEvent).subscribe({
+        next: (response) => {
+          var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+          this.HandleAddClaimResponse(osdEvent);
+          observer.next(response);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
     });
   }
 
@@ -325,7 +335,6 @@ export class OSDService {
     this.restApiService.SendOSDEvent(performanceBuyEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
-        console.log("OSD EVENT", osdEvent)
         this.GetTransparencyReportsIncomeExpensesResponse(osdEvent);
       },
       error: (error) => {
@@ -463,6 +472,23 @@ export class OSDService {
     });
   }
 
+  getFreeProfessionalsByCfhId(cfhId: string): Observable<FreeProfessional[]> {
+    return new Observable((observer) => {
+      const CreateGetFreeProfessionalsByCfhIdEvent: WebBaseEvent = this.eventFactoryService.CreateGetFreeProfessionalsByCfhId(cfhId);
+      this.restApiService.SendOSDEvent(CreateGetFreeProfessionalsByCfhIdEvent).subscribe({
+        next: (response) => {
+          var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+          this.HandleGetFreeProfessionalsByCfhIdResponse(osdEvent);
+          observer.next(osdEvent.Body['FreeProfessionals']);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
+
   public GetSubPerformanceById(performanceId: string) {
     const CreateGetSubPerformanceByIdEvent: WebBaseEvent = this.eventFactoryService.CreateGetSubPerformanceById(performanceId);
     this.restApiService.SendOSDEvent(CreateGetSubPerformanceByIdEvent).subscribe({
@@ -502,7 +528,7 @@ export class OSDService {
       this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Error inesperado' }));
     }
   }
-  
+
   public HandleGetStudentsByCourseResponse(webBaseEvent: WebBaseEvent) {
     try {
       if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['ListStudents']) {
@@ -513,6 +539,22 @@ export class OSDService {
       }
     }
     catch (err) {
+      this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Error inesperado' }));
+    }
+  }
+
+  public HandleUpdateUserProfileResponse(webBaseEvent: WebBaseEvent) {
+    try {
+      const message = webBaseEvent.getBodyProperty(EventConstants.ACTION_OSD_RESULT_MESSAGE);
+      if (message) {
+        if (this.translate.currentLang === "en") {
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
+        } else {
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "El perfil del usuario se actualizó correctamente" }));
+        }
+        this.store.dispatch(ModalActions.openAlert());
+      }
+    } catch (err) {
       this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Error inesperado' }));
     }
   }
@@ -546,7 +588,7 @@ export class OSDService {
       this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Error inesperado' }));
     }
   }
-  
+
   public HandleGettingFreeProfessionalsListResponse(webBaseEvent: WebBaseEvent) {
     try {
       if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['ListFreeProfessionals']) {
@@ -563,14 +605,10 @@ export class OSDService {
 
   public GetPerformancesClaimByIdResponse(webBaseEvent: WebBaseEvent) {
     try {
-      var ClaimantAndClaimsCustomerPerformanceList = webBaseEvent.getBodyProperty(EventConstants.CLAIMANT_AND_CLAIMS_CUSTOMER_PERFORMANCE_LIST);
-      var ClaimsProcessorPerformanceList = webBaseEvent.getBodyProperty(EventConstants.CLAIMS_PROCESSOR_PERFORMANCE_LIST);
-      var ClaimsTrainerPerformanceList = webBaseEvent.getBodyProperty(EventConstants.CLAIMS_TRAINER_PERFORMANCE_LIST);
+      var ClaimantAndClaimsCustomerPerformanceList = webBaseEvent.Body?.["performanceClaims"]
 
-      if (ClaimantAndClaimsCustomerPerformanceList.length > 0 || ClaimsProcessorPerformanceList.length > 0 || ClaimsTrainerPerformanceList.length > 0) {
+      if (ClaimantAndClaimsCustomerPerformanceList.length > 0) {
         this.osdDataService.emitClaimantAndClaimsCustomerPerformanceList(ClaimantAndClaimsCustomerPerformanceList);
-        this.osdDataService.emitClaimsProcessorPerformanceList(ClaimsProcessorPerformanceList);
-        this.osdDataService.emitClaimsTrainerPerformanceList(ClaimsTrainerPerformanceList);
       }
       else {
         if (this.translate.currentLang == "en") {
@@ -621,8 +659,8 @@ export class OSDService {
 
   public HandleGettingClaimListResponse(webBaseEvent: WebBaseEvent) {
     try {
-      if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['ClaimList']) {
-        var claims = webBaseEvent.Body['ClaimList'];
+      if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['claims']) {
+        var claims = webBaseEvent.Body['claims'];
 
         if (claims.length > 0) {
           this.osdDataService.emitClaimsListSuccess(claims)
@@ -703,6 +741,17 @@ export class OSDService {
     );
   }
 
+  public updateUserProfile(userId: string, userFormValue: any): Observable<any> {
+    const updateUserProfileEvent: WebBaseEvent = this.eventFactoryService.CreateUpdateUserProfileEvent(userId, userFormValue);
+    return this.restApiService.SendOSDEvent(updateUserProfileEvent).pipe(
+      map((response) => {
+        const osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleUpdateUserProfileResponse(osdEvent);
+        return response;
+      })
+    );
+  }
+
   public updateStudentRecords(records: any): Observable<any> {
     return new Observable((observer) => {
       if (Array.isArray(records.students) && records.students.length > 0) {
@@ -746,17 +795,21 @@ export class OSDService {
     // this.websocketService.sendOSDEvent(createPerformanceEvent);
   }
 
-  public createClaimantAndClaimsCustomerPerformance(performance: ClaimantAndClaimsCustomerPerformance, claimId: string, userTypePerformance: string, documentBase64: string) {
-    const createClaimantAndClaimsCustomerPerformanceEvent: WebBaseEvent = this.eventFactoryService.CreateClaimantAndClaimsCustomerPerformance(performance, claimId, userTypePerformance, documentBase64);
-    console.log(createClaimantAndClaimsCustomerPerformanceEvent)
-    this.restApiService.SendOSDEvent(createClaimantAndClaimsCustomerPerformanceEvent).subscribe({
-      next: (response) => {
-        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
-        this.HandleCreatePerformanceResponse(osdEvent);
-      },
-      error: (error) => {
-        //TODO: Pending implementation
-      }
+  public createClaimantAndClaimsCustomerPerformance(performance: ClaimantAndClaimsCustomerPerformance, claimId: string, userTypePerformance: string, documentBase64: string): Observable<any> {
+    return new Observable((observer) => {
+      const createClaimantAndClaimsCustomerPerformanceEvent: WebBaseEvent = this.eventFactoryService.CreateClaimantAndClaimsCustomerPerformance(performance, claimId, userTypePerformance, documentBase64);
+      console.log(createClaimantAndClaimsCustomerPerformanceEvent)
+      this.restApiService.SendOSDEvent(createClaimantAndClaimsCustomerPerformanceEvent).subscribe({
+        next: (response) => {
+          var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+          this.HandleCreatePerformanceResponse(osdEvent);
+          observer.next(response);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
     });
   }
 
@@ -959,7 +1012,8 @@ export class OSDService {
 
   public GetTransparencyReportsSubscriberClientsResponse(webBaseEvent: WebBaseEvent) {
     try {
-      var TransparencyReportsSubscriberClientList = webBaseEvent.getBodyProperty(EventConstants.TRANSPARENCY_REPORTS_SUBSCRIBER_CLIENT_LIST);
+      console.log(webBaseEvent)
+      var TransparencyReportsSubscriberClientList = webBaseEvent.getBodyProperty("claims");
 
       if (TransparencyReportsSubscriberClientList.length > 0) {
         this.osdDataService.emitTransparencyReportsSubscriberClientList(TransparencyReportsSubscriberClientList);
@@ -991,7 +1045,8 @@ export class OSDService {
 
   public GetTransparencyReportsIncomeExpensesResponse(webBaseEvent: WebBaseEvent) {
     try {
-      var totalOsdIncomeExpenses = webBaseEvent.getBodyProperty(EventConstants.TRANSPARENCY_INCOME_EXPENSES);
+      console.log("TransparencyReportsIncomeExpensesResponse", webBaseEvent)
+      var totalOsdIncomeExpenses = webBaseEvent.getBodyProperty("economicResultReportDTO");
 
       if (totalOsdIncomeExpenses != null) {
         this.osdDataService.emitTotalOsdIncomeExpenses(totalOsdIncomeExpenses);
@@ -1402,6 +1457,19 @@ export class OSDService {
     }
   }
 
+  public GetCFHReports() {
+    const createCFHReportsEvent: WebBaseEvent = this.eventFactoryService.CreateGetCFHReports();
+    this.restApiService.SendOSDEvent(createCFHReportsEvent).subscribe({
+      next: (response) => {
+        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleGetCFHReportsResponse(osdEvent);
+      },
+      error: (error) => {	
+        // TODO: Pending implementation
+      }
+    });
+  }
+
   public HandleCreateGetUnassignedSubscribersResponse(webBaseEvent: WebBaseEvent) {
     var unassignedSubscribersList: Subscriber[];
     try {
@@ -1420,6 +1488,20 @@ export class OSDService {
       }
     } catch {
 
+    }
+  }
+
+  public HandleGetCFHReportsResponse(webBaseEvent: WebBaseEvent) {
+    try {
+      console.log("Reports", webBaseEvent)
+      const reports = webBaseEvent.getBodyProperty(EventConstants.CFH_REPORTS);
+      if (reports && reports.length > 0) {
+        this.osdDataService.emitCFHReportsSuccess(reports);
+      } else {
+        this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'No CFH reports found' }));
+      }
+    } catch (err) {
+      this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Unexpected error occurred while fetching CFH reports' }));
     }
   }
 
@@ -1512,6 +1594,21 @@ export class OSDService {
       this.store.dispatch(UiActions.toggleConfirmationButton())
     } catch {
 
+    }
+  }
+
+  public HandleGetFreeProfessionalsByCfhIdResponse(webBaseEvent: WebBaseEvent) {
+    var freeProfessionals: FreeProfessional[];
+    try {
+      freeProfessionals = webBaseEvent.Body?.["freeProfessionals"];
+      if (freeProfessionals) {
+        this.osdDataService.emitFreeProfessionalsByCfhIdListSuccess(freeProfessionals)
+      }
+      else {
+        // TODO: NOT EXISTS PROFESSIONALS FREE BUT IS NECESSARY CATCH ERRORS
+      }
+    }
+    catch {
     }
   }
 

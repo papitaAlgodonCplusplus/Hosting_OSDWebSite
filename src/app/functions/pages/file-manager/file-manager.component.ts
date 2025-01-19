@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 import { combineLatest, map, Observable } from 'rxjs';
+import { ChangeDetectorRef } from '@angular/core';
 import { Claim } from 'src/app/models/claim';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { OSDService } from 'src/app/services/osd-event.services';
@@ -46,6 +47,7 @@ export class FileManagerComponent implements OnDestroy {
     private osdDataService: OSDDataService,
     private router: Router,
     private datePipe: DatePipe,
+    private changeDetectorRef: ChangeDetectorRef,
     private authenticationService: AuthenticationService) {
     this.fileManager = this.createForm();
     this.closeClaimfileForm = this.createCloseClaimFileForm();
@@ -56,9 +58,11 @@ export class FileManagerComponent implements OnDestroy {
       this.store.dispatch(UiActions.hideFooter());
       this.store.dispatch(UiActions.hideLeftSidebar());
       this.claim$.subscribe(claim => {
+        console.log("Claim is: ", claim);
         this.fileManager = this.fillForm(claim);
         this.claimId = claim.Id;
         this.claim = claim;
+        this.changeDetectorRef.detectChanges();
         if (claim.Status == "Running") {
           this.isAssignedClaim = true;
           this.isTerminatedPerformance = true;
@@ -98,15 +102,15 @@ export class FileManagerComponent implements OnDestroy {
 
   private fillForm(claim: Claim): FormGroup {
     const form = this.formBuilder.group({
-      code: [claim.Code],
-      claimant: [this.translate.instant(claim.Claimtype)],
-      state: [this.translate.instant(claim.Status)],
-      subscriber: [claim.NameCompanySubscriberclaimed],
-      amountClaimed: ['€ ' + claim.Amountclaimed],
-      facts: [claim.Facts],
-      valuationSubscriber: [claim.Valuationsubscriber || 0],
-      valuationClaimant: [claim.Valuationclaimant || 0],
-      valuationFreeProfessionals: [claim.Valuationfreeprofessionals || 0],
+      code: [claim.code],
+      claimant: [this.translate.instant(claim.claimtype)],
+      state: [this.translate.instant(claim.status)],
+      subscriber: [claim.namecompanysubscriberclaimed],
+      amountClaimed: ['€ ' + claim.amountclaimed],
+      facts: [claim.facts],
+      valuationSubscriber: [claim.valuationsubscriber || 0],
+      valuationClaimant: [claim.valuationclaimant || 0],
+      valuationFreeProfessionals: [claim.valuationfreeprofessionals || 0],
     });
     return form;
   }
@@ -131,24 +135,15 @@ export class FileManagerComponent implements OnDestroy {
 
   async openPerformanceClaimsModal() {
     this.showModalPerformances = true;
-
-    if (this.claimId) {
-      await this.osdEventService.GetPerformancesClaimById(this.claimId);
+    if (this.claim?.id) {
+      await this.osdEventService.GetPerformancesClaimById(this.claim?.id);
       combineLatest([
         this.osdDataService.claimantAndClaimsCustomerPerformanceList$.pipe(map(performanceClaim =>
           performanceClaim.map(item => ({ ...item, typePerformance: 'ClaimantCustomer' }))
-        )),
-        this.osdDataService.claimsProcessorPerformanceList$.pipe(map(performanceClaim =>
-          performanceClaim.map(item => ({ ...item, typePerformance: 'Processor' }))
-        )),
-        this.osdDataService.claimsTrainerPerformanceList$.pipe(map(performanceClaim =>
-          performanceClaim.map(item => ({ ...item, typePerformance: 'Trainer' }))
         ))
-      ]).subscribe(([claimantAndCustomer, processor, trainer]) => {
+      ]).subscribe(([claimantAndCustomer]) => {
         this.allPerformances = [
-          ...claimantAndCustomer,
-          ...processor,
-          ...trainer
+          ...claimantAndCustomer
         ];
         this.updateDisplayedItems(0, 5);
       });
@@ -270,9 +265,9 @@ export class FileManagerComponent implements OnDestroy {
     let formatedStartDate = this.datePipe.transform(formattedDate, 'yyyy-MM-dd');
 
     const form = this.formBuilder.group({
-      AAsavingsPP: ['€ ' + claim.ImprovementSavings, [Validators.required]],
+      AAsavingsPP: ['€ ' + claim.improvementsavings, [Validators.required]],
       creditingDate: [formatedStartDate, [Validators.required]],
-      AmountPaid: ['€ ' + claim.AmountPaid, [Validators.required]],
+      AmountPaid: ['€ ' + claim.amountpaid, [Validators.required]],
     });
     return form;
   }
