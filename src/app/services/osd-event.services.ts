@@ -60,6 +60,11 @@ export class OSDService {
 
   }
 
+  logEvent(logData: any): Observable<any> {
+    const logEvent: WebBaseEvent = this.eventFactoryService.CreateLogEvent(logData);
+    return this.restApiService.SendOSDEvent(logEvent);
+  }
+
   cleanClaimList() {
     this.claims = []
     this.claimsResponse = false;
@@ -233,6 +238,21 @@ export class OSDService {
         //TODO: Pending implementation
       }
     });
+  }
+
+  public getIncomes(): Observable<any> {
+    return new Observable((observer) => {
+    })
+  }
+
+  public getPurchases(): Observable<any> {
+    return new Observable((observer) => {
+    })
+  }
+
+  public getServiceDetails(): Observable<any> {
+    return new Observable((observer) => {
+    })
   }
 
   public assignFreeProfessionalsTRToClaim(idClaim: string, idFreeProfesionalTR: string) {
@@ -502,8 +522,8 @@ export class OSDService {
     });
   }
 
-  public CloseClaimFile(closeClaimfileForm: CloseClaimFileEvent, claimId: string) {
-    const CreateCloseClaimFileEvent: WebBaseEvent = this.eventFactoryService.CreateCloseClaimFile(closeClaimfileForm, claimId);
+  public CloseClaimFile(closeClaimfileForm: CloseClaimFileEvent, claimId: string, userId: any) {
+    const CreateCloseClaimFileEvent: WebBaseEvent = this.eventFactoryService.CreateCloseClaimFile(closeClaimfileForm, claimId, userId);
     this.restApiService.SendOSDEvent(CreateCloseClaimFileEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
@@ -676,9 +696,9 @@ export class OSDService {
 
   public HandleGettingFreeProfessionalsTRResponse(webBaseEvent: WebBaseEvent) {
     try {
-      if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['FreeProfessionalList']) {
-        var usersFreeProfessionalsTR = webBaseEvent.Body['OsdUserList'];
-        var freeProfessionalsTR = webBaseEvent.Body['FreeProfessionalList'];
+      if (webBaseEvent && webBaseEvent.Body && webBaseEvent.Body['freeProfessionals']) {
+        var usersFreeProfessionalsTR = webBaseEvent.Body['users'];
+        var freeProfessionalsTR = webBaseEvent.Body['freeProfessionals'];
         if (usersFreeProfessionalsTR.length > 0) {
           this.freeProfessionalsTRResponse = true;
           this.osdDataService.emitFreeProfessionalTR(freeProfessionalsTR)
@@ -719,6 +739,19 @@ export class OSDService {
     }
   }
 
+  public addPerformanceUpdate(payload: any): void {
+    const addPerformanceUpdateEvent: WebBaseEvent = this.eventFactoryService.CreateAddPerformanceUpdateEvent(payload);
+    this.restApiService.SendOSDEvent(addPerformanceUpdateEvent).subscribe({
+      next: (response) => {
+        const osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleAddPerformanceUpdateResponse(osdEvent);
+      },
+      error: (error) => {
+        console.error('Error in addPerformanceUpdate:', error);
+      }
+    });
+  }
+
   public getCourseByUserId(Id: string): Observable<any> {
     const getCourseByUserIdEvent: WebBaseEvent = this.eventFactoryService.CreateGetCourseByUserIdEvent(Id);
     return this.restApiService.SendOSDEvent(getCourseByUserIdEvent).pipe(
@@ -747,6 +780,17 @@ export class OSDService {
       map((response) => {
         const osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
         this.HandleUpdateUserProfileResponse(osdEvent);
+        return response;
+      })
+    );
+  }
+
+  public deleteStudentRecord(student_name: string): Observable<any> {
+    const deleteStudentRecordEvent: WebBaseEvent = this.eventFactoryService.CreateDeleteStudentRecordEvent(student_name);
+    return this.restApiService.SendOSDEvent(deleteStudentRecordEvent).pipe(
+      map((response) => {
+        const osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleDeleteStudentRecordResponse(osdEvent);
         return response;
       })
     );
@@ -1383,6 +1427,7 @@ export class OSDService {
     var summaryTypesPerformanceBuyList: SummaryTypes[];
 
     try {
+      console.log(webBaseEvent)
       summaryTypesPerformanceFreeProfessionalList = webBaseEvent.getBodyProperty(EventConstants.SUMMARY_TYPES_PERFORMANCE_FREEPROFESSIONAL_LIST);
       summaryTypesPerformanceBuyList = webBaseEvent.getBodyProperty(EventConstants.SUMMARY_TYPES_PERFORMANCE_BUY_LIST);
 
@@ -1398,6 +1443,14 @@ export class OSDService {
       }
     } catch {
 
+    }
+  }
+
+  public HandleDeleteStudentRecordResponse(webBaseEvent: WebBaseEvent) {
+    try {
+      this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Success" }));
+    } catch (err) {
+      this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Error inesperado' }));
     }
   }
 
@@ -1464,7 +1517,7 @@ export class OSDService {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
         this.HandleGetCFHReportsResponse(osdEvent);
       },
-      error: (error) => {	
+      error: (error) => {
         // TODO: Pending implementation
       }
     });
@@ -1539,6 +1592,7 @@ export class OSDService {
   public HandleAddResponseToPerformanceAssignedResponse(webBaseEvent: WebBaseEvent) {
     let message: string;
     try {
+      console.log(webBaseEvent)
       message = webBaseEvent.getBodyProperty(EventConstants.ACTION_OSD_RESULT_MESSAGE);
       if (message) {
         if (this.translate.currentLang == "en") {
@@ -1609,6 +1663,25 @@ export class OSDService {
       }
     }
     catch {
+    }
+  }
+
+  public HandleAddPerformanceUpdateResponse(webBaseEvent: WebBaseEvent) {
+    let message: string;
+    try {
+      message = webBaseEvent.getBodyProperty(EventConstants.ACTION_OSD_RESULT_MESSAGE);
+      if (message) {
+        if (this.translate.currentLang == "en") {
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
+        } else {
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Actualización de rendimiento agregada correctamente" }));
+        }
+        this.store.dispatch(ModalActions.openAlert());
+        this.securityDataService.emitUserAuthenticationSuccess("/project-manager");
+      }
+      this.store.dispatch(UiActions.toggleConfirmationButton());
+    } catch (err) {
+      this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Error inesperado' }));
     }
   }
 

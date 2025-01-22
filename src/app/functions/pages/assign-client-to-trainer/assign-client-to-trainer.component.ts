@@ -8,6 +8,7 @@ import { Subscriber } from '../../models/Subscriber';
 import { Observable } from 'rxjs';
 import { flush } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-assign-client-to-trainer',
@@ -19,8 +20,9 @@ export class AssignClientToTrainerComponent implements OnDestroy {
   unassignedSubscribers$: Observable<Subscriber[]> = this.osdDataService.UnassignedSubscribersList$;
   showModal: boolean = false;
   freeProfessionalsTrainersObservable$: Observable<FreeProfessional[]> = this.osdDataService.ProfessionalFreeTrainerList$
-  freeProfessionalsTrainers: FreeProfessional[] =[];
-  subscribersSelected : string = "";
+  freeProfessionalsTrainers: FreeProfessional[] = [];
+  subscribersSelected: string = "";
+  private subscription: Subscription | null = null;
 
   constructor(
     private store: Store,
@@ -40,6 +42,9 @@ export class AssignClientToTrainerComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
     setTimeout(() => {
       this.store.dispatch(UiActions.showAll())
       this.freeProfessionalsTrainers = {} as FreeProfessional[];
@@ -54,34 +59,45 @@ export class AssignClientToTrainerComponent implements OnDestroy {
 
   selectSubscriber(subscriberId: string) {
     this.subscribersSelected = subscriberId;
+
+    // Reset the list before fetching
+    this.freeProfessionalsTrainers = [];
+
+    // Ensure the modal toggles correctly
+    this.showModal = !this.showModal;
+
     setTimeout(() => {
-      this.osdEventService.GetProfessionalFreeTrainers()
+      this.osdEventService.GetProfessionalFreeTrainers();
     }, 0);
-    this.freeProfessionalsTrainersObservable$.subscribe(freeProfessionalsTrainers => {
+
+    // Unsubscribe from any previous subscription
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+
+    // Subscribe to the observable
+    this.subscription = this.freeProfessionalsTrainersObservable$.subscribe(freeProfessionalsTrainers => {
       freeProfessionalsTrainers.forEach(fp => {
-        if(fp.Code != null){
-          this.freeProfessionalsTrainers.push(fp)
-        }
-        else{
-          if (this.translate.currentLang == "en") {
-            this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "There are no authorized trainers" }));
-          }
-          else {
-            this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "No hay formadores autorizados" }));
-          }
-  
-          this.store.dispatch(ModalActions.openAlert())
+        if (fp.Code != null) {
+          this.freeProfessionalsTrainers.push(fp);
+        } else {
+          const alertMessage =
+            this.translate.currentLang === 'en'
+              ? 'There are no authorized trainers'
+              : 'No hay formadores autorizados';
+
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage }));
+          this.store.dispatch(ModalActions.openAlert());
         }
       });
-    })
-    this.showModal = !this.showModal
-    console.log(subscriberId)
+    });
   }
 
   selectTrainer(freeProfessionalId: string) {
+    console.log("Subscriber: " + this.subscribersSelected + " Trainer: " + freeProfessionalId)
     this.store.dispatch(UiActions.toggleConfirmationButton())
     this.showModal = !this.showModal
-    this.osdEventService.assignTrainerToSubscriber(this.subscribersSelected,freeProfessionalId)
+    this.osdEventService.assignTrainerToSubscriber(this.subscribersSelected, freeProfessionalId)
   }
 
   closeModal() {

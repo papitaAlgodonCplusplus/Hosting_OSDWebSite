@@ -1,0 +1,77 @@
+.success-snackbar {
+  background-color: #4caf50;
+  /* Green */
+  color: white;
+  font-weight: bold;
+}
+
+/* Error Notification */
+.error-snackbar {
+  background-color: #f44336;
+  /* Red */
+  color: white;
+  font-weight: bold;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  border: 1px solid black;
+}
+
+thead th {
+  background-color: #f4f4f4;
+  border-bottom: 2px solid black;
+  text-align: left;
+  padding: 10px;
+}
+
+tbody tr {
+  border-bottom: 1px solid black;
+}
+
+tbody tr:last-child {
+  border-bottom: none;
+}
+
+td {
+  text-align: center;
+  padding: 8px;
+  border: 1px solid black;
+}
+
+.bg-tc {
+  background-color: #d1e7dd; /* Light green */
+}
+
+.bg-tr {
+  background-color: #f8d7da; /* Light red */
+}
+
+.bg-infit {
+  background-color: #ffeeba; /* Light yellow */
+}
+
+.bg-isosd {
+  background-color: #d1c4e9; /* Light purple */
+}
+
+.bg-tm {
+  background-color: #cfe2f3; /* Light blue */
+}
+
+.bg-dt {
+  background-color: #f9e79f; /* Light gold */
+}
+
+.bg-ts {
+  background-color: #e6b0aa; /* Light pink */
+}
+
+.bg-fc {
+  background-color: #aed6f1; /* Light cyan */
+}
+
+.bg-tk {
+  background-color: #f5cba7; /* Light peach */
+}

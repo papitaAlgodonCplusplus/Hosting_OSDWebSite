@@ -45,4 +45,5 @@ export interface Claim {
     creditingdate: string;
     amountpaid: string;
     improvementsavings: string;
+    name: string;
 }

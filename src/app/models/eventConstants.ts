@@ -1,4 +1,5 @@
 export class EventConstants {
+  public static LOG_DATA: string = "LogData";
   public static CFH_REPORTS: string = "cfhResult";
   public static CFH_ID: string = "CfhId";
   public static MESSAGE: string = "Message";
@@ -22,6 +23,8 @@ export class EventConstants {
   public static LANDLINE: string  = "Landline";
   public static MOBILE_PHONE: string = "MobilePhone";
   public static WEB: string = "Web";
+  public static PAYLOAD: string = "Payload";
+  public static FINAL_RATING: string = "FinalRating";
 
   public static USER_ID: string = "UserId";
   public static ID: string = "Id";
@@ -104,8 +107,8 @@ export class EventConstants {
   public static LIST_CLAIM: string = "ListClaim"
   public static LIST_SUBSCRIBERS: string = "subscribers"
   public static LIST_OSD_USERS_SUBSCRIBERS: string = "ListOsdUsersSubscribers"
-  public static PERFORMANCE_FREE_PROFESSIONAL_LIST: string = "PerformanceFreeProfessionalList"
-  public static PERFORMANCE_BUY_LIST: string = "PerformanceBuyList"
+  public static PERFORMANCE_FREE_PROFESSIONAL_LIST: string = "performancesFreeProfessional"
+  public static PERFORMANCE_BUY_LIST: string = "performancesBuy"
   public static PERFORMANCE_CLAIM_LIST: string = "PerformanceClaimList"
   public static CLAIM_ID: string = "ClaimId";
 
@@ -195,15 +198,15 @@ export class EventConstants {
   public static VALUATION_CLAIMANT: string = "ValuationClaimant"
   public static VALUATION_FREE_PROFESSIONAL: string = "ValuationFreeProfessional"
 
-  public static ACTION_OSD_RESULT_MESSAGE: string = "ActionOSDResultMessage"
+  public static ACTION_OSD_RESULT_MESSAGE: string = "ADD_RESPONSE_PERFORMANCE_ASSIGNED_MESSAGE"
   public static MODIFIED_RESULT_MESSAGE: string = "ModifiedResultMessage"
 
-  public static SUMMARY_TYPES_PERFORMANCE_FREEPROFESSIONAL_LIST: string = "SummaryTypesPerformanceFreeProfessionalList"
-  public static SUMMARY_TYPES_PERFORMANCE_BUY_LIST: string = "SummaryTypesPerformanceBuyList"
+  public static SUMMARY_TYPES_PERFORMANCE_FREEPROFESSIONAL_LIST: string = "summarytypePerformanceFreeProfessional"
+  public static SUMMARY_TYPES_PERFORMANCE_BUY_LIST: string = "summarytypePerformanceBuy"
 
-  public static UNASSIGNED_SUBSCRIBERS_LIST: string = "UnassignedSubscribersList"
+  public static UNASSIGNED_SUBSCRIBERS_LIST: string = "subscribers"
 
-  public static PROFESSIONAL_FREE_TRAINERS_LIST: string = "ProfessionalFreeTrainersList"
+  public static PROFESSIONAL_FREE_TRAINERS_LIST: string = "professionalFreeTrainers"
 
   public static CLAIMANT_AND_CLAIMS_CUSTOMER_PERFORMANCE_LIST: string = "ClaimantAndClaimsCustomerPerformanceList"
   public static CLAIMS_PROCESSOR_PERFORMANCE_LIST: string = "ClaimsProcessorPerformanceList"
@@ -217,7 +220,7 @@ export class EventConstants {
   public static PERFORMANCE_ID: string = "PerformanceId"
   public static SUBPERFORMANCE_ID: string = "SubPerformanceId"
 
-  public static SUB_PERFORMANCE_LIST: string = "SubPerformanceList"
+  public static SUB_PERFORMANCE_LIST: string = "subPerformances"
 
   public static SUBSCRIBER_ID: string = "SubscriberId"
 

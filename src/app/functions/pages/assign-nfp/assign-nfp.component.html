@@ -51,25 +51,16 @@
         <table class="table-auto w-full">
           <thead>
             <tr class="text-darkslategray">
-              <th class="px-4 py-2">{{ 'ID' | translate }}</th>
-              <th class="px-4 py-2">{{ 'UserId' | translate }}</th>
+              <th class="px-4 py-2">{{ 'Name' | translate }}</th>
               <th class="px-4 py-2">{{ 'FreeProfessionalType' | translate }}</th>
               <th class="px-4 py-2">{{ 'ServiceRates' | translate }}</th>
-              <th class="px-4 py-2">{{ 'Actions' | translate }}</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let fp of pagedFreeProfessionals" class="text-center">
-              <td class="border-y px-4 py-2">{{ fp.Id }}</td>
-              <td class="border-y px-4 py-2">{{ fp.userid }}</td>
-              <td class="border-y px-4 py-2">{{ fp.FreeprofessionaltypeAcronym }}</td>
-              <td class="border-y px-4 py-2">{{ fp.Name }}</td>
-              <td class="border-y px-4 py-2">
-                <!-- Example: Possibly a remove button or more details -->
-                <button class="bg-line text-darkslategray p-1 rounded-md">
-                  {{ 'Details' | translate }}
-                </button>
-              </td>
+              <td class="border-y px-4 py-2">{{ fp.username }}</td>
+              <td class="border-y px-4 py-2">{{ fp.typename }}</td>
+              <td class="border-y px-4 py-2">{{ fp.servicerates }}</td>
             </tr>
           </tbody>
         </table>

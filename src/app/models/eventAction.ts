@@ -8,6 +8,7 @@ export class EventAction {
   public static SHOW_LOGIN_FAILURE: string = "ShowLoginFailure";
 
   //#region OSD
+  public static LOG_EVENT: string = "LogEvent";
   public static GET_CFH_REPORTS: string = "GetCFHReports";
   public static ADD_FREE_PROFESSIONAL_TO_CFH: string = "AddFreeProfessionalToCFH";
   public static USER_LOGIN: string = "UserLogin";
@@ -19,6 +20,7 @@ export class EventAction {
   public static CHANGE_PASSWORD: string = "ChangePassword";
   public static GET_USER_BY_ID: string = "GetUserById";
   public static CREATE_CLAIMANT_AND_CLAIMS_CUSTOMER_PERFORMANCE: string = "CreateClaimantAndClaimsCustomerPerformance";
+  public static DELETE_STUDENT_RECORD: string = "DeleteStudentRecord";
   public static MODIFIED_CLAIMANT_AND_CLAIMS_CUSTOMER_PERFORMANCE: string = "ModifiedClaimantAndClaimsCustomerPerformance";
   public static UPDATE_USER_PROFILE: string = "UpdateUserProfile";
   
@@ -95,6 +97,7 @@ export class EventAction {
   public static FREE_PROFESSIONAL: string = "FreeProfessional";
   public static GET_FREE_PROFESSIONALS: string = "GetFreeProfessionals"
   public static HANDLE_GET_FREE_PROFESSIONALS_RESPONSE: string = "HandleGetFreeProfessionalsResponse";
+  public static ADD_PERFORMANCE_UPDATE: string = "AddPerformanceUpdate";
 
   public static CHANGING_OSD_USER_AUTORIZATION_STATUS: string = "ChangingOsdUserAutorizationStatus";
   public static HANDLE_CHANGING_OSD_USER_AUTORIZATION_STATUS_RESPONSE: string = "HandleChangingOsdUserAutorizationStatusResponse";

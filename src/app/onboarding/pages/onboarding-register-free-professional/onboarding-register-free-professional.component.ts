@@ -231,7 +231,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   private createAccountForm(): FormGroup {
     const accountForm = this.formBuilder.group({
       workspace: ['', [Validators.required]],
-      SubscriberId: [''],
+      pricePerHour: [''],
       IdentificationFileName: ['', [Validators.required]],
       IdentificationFileId: [''],
       CurriculumVitaeFileName: ['', [Validators.required]],
@@ -341,13 +341,9 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   CheckIfIsTr() {
     this.selectedWorkspace = this.accountForm.value.workspace;
     if (this.selectedWorkspace === "2fc2a66a-69ca-4832-a90e-1ff590b80d24") {
-      this.accountForm.get('SubscriberId')?.setValidators(Validators.required);
-      this.accountForm.get('SubscriberId')?.updateValueAndValidity();
       this.isProcessor = false
 
     } else {
-      this.accountForm.get('SubscriberId')?.clearValidators();
-      this.accountForm.get('SubscriberId')?.updateValueAndValidity();
       this.isProcessor = true
     }
   }

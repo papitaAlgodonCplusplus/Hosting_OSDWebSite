@@ -1,6 +1,7 @@
 export class ResponseToPerformanceFreeProfessional {
   Id: string = "";
   Code: string = "";
+  code: string = "";
   PerformanceId: string = "";
   FreeProfessionalId: string = "";
   FP_WorkHours: string = "";
@@ -13,4 +14,17 @@ export class ResponseToPerformanceFreeProfessional {
   TD_WorkHours: string = "";
   AcceptIncreaseInHours: string = "";
   Revised: string = "";
+  acceptIncreaseInHours: boolean = false;
+  documentIncreaseWorkingHours: string = "";
+  freeProfessionalId: string = "";
+  freeProfessionalTravelExpenses: string = "";
+  freeProfessionalTravelHours: string = "";
+  freeProfessionalWorkHours: string = "";
+  id: string = "";
+  justifyChangeEstimatedWorkHours: string = "";
+  performanceId: string = "";
+  revised: boolean = false;
+  technicalDirectorDate: string = "";
+  technicalDirectorWorkHours: string = "";
+  totalFreeProfessionalData: string = "";
 }

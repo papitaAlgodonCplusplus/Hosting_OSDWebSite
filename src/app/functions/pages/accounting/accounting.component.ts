@@ -50,7 +50,10 @@ export class AccountingComponent implements OnInit {
       next: (response: any) => {
         const courses = response.Body?.courses || [];
         this.courses = courses;
-        const totalCost = courses.reduce((sum: number, course: any) => sum + (course.cost || 0), 0);
+        let totalCost = 0;
+        for(const course of courses) {
+          totalCost += parseInt(course.cost, 10);
+        }
         this.budgetForm.patchValue({ pricePerStudent: totalCost });
         this.calculateBudget();
         this.cdr.detectChanges();
@@ -74,7 +77,9 @@ export class AccountingComponent implements OnInit {
             name: [student.name || '', Validators.required],
             attendance: [student.assistance ?? '', [Validators.required, Validators.min(0), Validators.max(100)]],
             grade: [student.calification || '', Validators.required],
-            status: [student.status || 'Pendiente', Validators.required]
+            status: [student.status || 'Pendiente', Validators.required],
+            course_id: [student.course_id || '', Validators.required],
+            course_name: [student.course_name || '', Validators.required]
           });
           this.accountingEntries.push(studentGroup);
         });
@@ -101,26 +106,36 @@ export class AccountingComponent implements OnInit {
   }
 
   calculateBudget(): void {
-    const pricePerStudent = +this.budgetForm.value.pricePerStudent || 0;
     const otherExpenses = +this.budgetForm.value.otherExpenses || 0;
-    let courseMode = this.courses[0]?.mode || 'presencial'; 
-    const numberOfStudents = this.accountingEntries.length;
-    const totalIncome = pricePerStudent * numberOfStudents;
-    
+    const courseMode = this.courses[0]?.mode || 'presencial';
+
+    let totalIncome = 0;
+    this.courses.forEach(course => {
+      const studentsInCourse = this.accountingEntries.controls.filter(entry => entry.value.course_id === course.id).length;
+      totalIncome += studentsInCourse * (+course.cost || 0);
+    });
+
+    // Distribution logic
     let osdFee = 0;
     let professorExpenses = 0;
     let cfhPortion = 0;
+
     if (courseMode === 'presencial') {
-      osdFee = totalIncome * 0.10;
-      professorExpenses = totalIncome * 0.80;
-      cfhPortion = totalIncome * 0.10;
+      osdFee = totalIncome * 0.10;         // 10%
+      professorExpenses = totalIncome * 0.80;  // 80%
+      cfhPortion = totalIncome * 0.10;     // 10%
     } else {
-      osdFee = totalIncome * 0.30;
-      professorExpenses = totalIncome * 0.40;
-      cfhPortion = totalIncome * 0.30;
+      osdFee = totalIncome * 0.30;         // 30%
+      professorExpenses = totalIncome * 0.40;  // 40%
+      cfhPortion = totalIncome * 0.30;     // 30%
     }
-  
-    let netProfit = cfhPortion - otherExpenses;
+
+    let netProfit = 0;
+    if (this.user.AccountType === "FreeProfessional") {
+      netProfit = professorExpenses - otherExpenses;
+    } else {
+      netProfit = cfhPortion - otherExpenses;
+    }
     netProfit = Math.max(0, netProfit);
     this.budgetForm.patchValue({
       totalIncome: totalIncome.toFixed(2),

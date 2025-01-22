@@ -46,7 +46,7 @@ export class StudentRecordComponent implements OnInit {
           students = [students];
         }
         students.forEach((student: any) => {
-          console.log('Student:', student);
+          'Student:', student);
           const studentGroup = this.fb.group({
             name: [student.name || '', Validators.required],
             attendance: [student.assistance ?? '', [Validators.required, Validators.min(0), Validators.max(100)]],
@@ -63,7 +63,23 @@ export class StudentRecordComponent implements OnInit {
   }
 
   removeStudent(index: number): void {
+    const studentControl = this.students.at(index).get('name');
+    const student_name = studentControl ? studentControl.value : '';
     this.students.removeAt(index);
+    this.OSDEventService.deleteStudentRecord(student_name).subscribe({
+      complete: () => {
+        '✅ Student record deleted successfully');
+      },
+      error: (error: any) => {
+        console.error('❌ Error deleting student record:', error);
+        this.snackBar.open('❌ Error al eliminar el registro del alumno.', 'Cerrar', {
+          duration: 3000,
+          horizontalPosition: 'left',
+          verticalPosition: 'top',
+          panelClass: ['error-snackbar']
+        });
+      }
+    });
   }
 
 
@@ -85,20 +101,12 @@ export class StudentRecordComponent implements OnInit {
     this.isErrorInForm = false;
 
     this.OSDEventService.updateStudentRecords(this.studentForm.value).subscribe({
-      next: () => {
-        // Show success notification
-        this.snackBar.open('✅ Registro de alumnos actualizado con éxito.', 'Cerrar', {
-          duration: 3000,
-          horizontalPosition: 'left',
-          verticalPosition: 'top',
-          panelClass: ['success-snackbar']
-        });
+      complete: () => {
+        '✅ Student records updated successfully');
         this.router.navigate(['/home']);
       },
       error: (error: any) => {
         console.error('❌ Error updating student records:', error);
-
-        // Show error notification
         this.snackBar.open('❌ Error al actualizar el registro de alumnos.', 'Cerrar', {
           duration: 3000,
           horizontalPosition: 'left',

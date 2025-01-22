@@ -42,7 +42,7 @@
                 <label for="objectivesDropdown">{{ "Objective" | translate }}</label>
                 <select (change)="selectProject($event)" class="border rounded-xl bg-white text-black p-2 w-64">
                     <option disabled selected hidden>{{ 'Elegir proyecto..' | translate }}</option>
-                    <option *ngFor="let project of (Projects$ | async)" [value]="project.Id">{{ project.Objective }}
+                    <option *ngFor="let project of (Projects$ | async)" [value]="project.id">{{ project.Objective }}
                     </option>
                 </select>
             </div>
@@ -68,15 +68,6 @@
                 <h1>{{'performances' | translate}}</h1>
             </div>
             <div class="text-center flex flex-row items-center space-x-3 px-1 p-2">
-                <div class="flex-1 flex flex-row space-x-3 font-light text-sm text-darkslategray items-center">
-                    <span class="underline cursor-pointer" (click)="filterPerformance('buy')">
-                        {{'Mostrar actuaciones de compra' | translate}}
-                    </span>
-                    <span class="underline cursor-pointer" (click)="filterPerformance('freeProfessional')">
-                        {{'Mostrar actuaciones de Gestor de proyecto' | translate}}
-                    </span>
-                </div>
-
                 <div class="flex-1 flex items-center justify-end space-x-3" *ngIf="isAdmin && projectSelected != ''">
                     <div *ngIf="showOptions" class="animate__animated animate__fadeInRight flex flex-row space-x-3">
                         <a routerLink="/project-manager/create-performances-buy"
@@ -117,11 +108,11 @@
                             <i class="fa-solid fa-eye" (click)="viewPerformance(pf)"></i>
                         </td>
                         <td class="border-y px-2 py-2">{{pf.Type | translate}}</td>
-                        <td class="border-y px-2 py-2">{{pf.Code}}</td>
+                        <td class="border-y px-2 py-2">{{pf.code}}</td>
                         <td class="border-y px-2 py-2">{{pf.SummaryTypeName}}</td>
 
                         <td *ngIf="pf.Type.trim() === 'Performance Free Professional'"
-                            class="border-y px-2 py-2 hover:underline" (click)="viewSubPerformances(pf.Id)">
+                            class="border-y px-2 py-2 hover:underline" (click)="viewSubPerformances(pf.id)">
                             Ver Subactuaciones
                         </td>
                     </tr>
@@ -161,7 +152,7 @@
                                 <i class="text-darkslategray fa-solid fa-eye mr-2"
                                     (click)="viewSubPerformance(subPerformance)"></i>
                             </td>
-                            <td class="border-y px-2 py-2">{{subPerformance.Code}}</td>
+                            <td class="border-y px-2 py-2">{{subPerformance.code}}</td>
                         </tr>
                     </tbody>
                 </table>

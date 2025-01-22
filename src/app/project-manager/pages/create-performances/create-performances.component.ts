@@ -69,7 +69,7 @@ export class CreatePerformancesComponent {
 
     this.OSDDataService.SummaryTypesPerformanceFreeProfessionalList$.subscribe(summaryTypes => {
       summaryTypes.forEach(items => {
-        var entityDropDownItem: DropDownItem = { value: items.Summary, key: items.Id };
+        var entityDropDownItem: DropDownItem = { value: items.summary, key: items.id };
         this.summaryTypes.push(entityDropDownItem);
       });
     });
@@ -86,7 +86,7 @@ export class CreatePerformancesComponent {
       this.professionalsFree = freeProfessionals;
       if (this.authService.userInfo) {
         if (freeProfessionals) {
-          const freeProfessional: FreeProfessional | undefined = freeProfessionals?.find(fp => fp.Userid === this.authService.userInfo?.Id);
+          const freeProfessional: FreeProfessional | undefined = freeProfessionals?.find(fp => fp.userid === this.authService.userInfo?.Id);
           if (freeProfessional?.FreeprofessionaltypeAcronym == "DT" || freeProfessional?.FreeprofessionaltypeAcronym == "INFIT") {
             this.isViewPerformance = false;
           }
@@ -96,7 +96,7 @@ export class CreatePerformancesComponent {
 
     this.projectManagerSelectedObservable$.subscribe(id => {
       this.projectManagerSelected = id;
-    })
+    });
   }
 
   ngOnDestroy() {
@@ -108,15 +108,15 @@ export class CreatePerformancesComponent {
 
   displayFileName(event: Event): void {
     const input = event.target as HTMLInputElement;
-  
+
     if (input?.files && input.files.length > 0) {
       this.documentFile = input.files[0];
-  
+
       if (this.documentFile.type !== 'application/pdf') {
-        if (this.translate.currentLang == "en"){
+        if (this.translate.currentLang == "en") {
           this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "The document must be in PDF format" }));
           this.store.dispatch(ModalActions.openAlert());
-        }else{
+        } else {
           this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "El documento debe de estar en formato PDF" }));
           this.store.dispatch(ModalActions.openAlert());
         }
@@ -124,14 +124,14 @@ export class CreatePerformancesComponent {
         this.documentName = '';
         return;
       }
-  
+
       const maxSizeInKB = 1000;
       const maxSizeInBytes = maxSizeInKB * 1024;
       if (this.documentFile.size > maxSizeInBytes) {
-        if (this.translate.currentLang == "en"){
+        if (this.translate.currentLang == "en") {
           this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "The document exceeds 1000kb" }));
           this.store.dispatch(ModalActions.openAlert());
-        }else{
+        } else {
           this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "El documento sobrepasa los 1000kb" }));
           this.store.dispatch(ModalActions.openAlert());
         }
@@ -140,9 +140,9 @@ export class CreatePerformancesComponent {
         this.documentName = '';
         return;
       }
-  
+
       this.documentName = this.documentFile.name;
-  
+
       const reader = new FileReader();
       reader.onload = () => {
         const arrayBuffer = reader.result as ArrayBuffer;
@@ -173,27 +173,27 @@ export class CreatePerformancesComponent {
 
     this.isCreatePerformance = false;
 
-    this.justifyingDocument = performance.JustifyingDocument;
+    this.justifyingDocument = performance.justifying_document;
 
-    let originalDate = this.performanceFP.Start_Date;
+    let originalDate = performance.start_date;
     let formatedStartDate = this.datePipe.transform(originalDate, 'yyyy-MM-dd');
 
-    let originalDTDate = this.performanceFP.End_Date;
+    let originalDTDate = performance.end_date;
     let formatedEndDate = this.datePipe.transform(originalDTDate, 'yyyy-MM-dd');
 
     const form = this.formBuilder.group({
       Start_Date: [formatedStartDate, [Validators.required]],
       End_Date: [formatedEndDate, [Validators.required]],
-      JustifyingDocument: [performance.JustifyingDocument, [Validators.required]],
+      JustifyingDocument: [performance.justifying_document, [Validators.required]],
       FreeProfessionalCode: [performance.FreeProfessionalAssignedCode, [Validators.required]],
-      SummaryId: [performance.SummaryId, [Validators.required]],
-      freeProfessionalId: [performance.FreeProfessionalId, [Validators.required]],
-      ForecastTravelExpenses: [performance.ForecastTravelExpenses, [Validators.required]],
-      ForecastTravelTime: [performance.ForecastTravelTime, [Validators.required]],
-      ForecastWorkHours: [performance.ForecastWorkHours, [Validators.required]],
-      TotalForecastData: [performance.TotalForecastData, [Validators.required]]
+      SummaryId: [performance.summarytypeid, [Validators.required]],
+      freeProfessionalId: [performance.freeprofessionalassignedid, [Validators.required]],
+      ForecastTravelExpenses: [performance.estimated_transport_expenses, [Validators.required]],
+      ForecastTravelTime: [performance.estimated_transport_hours, [Validators.required]],
+      ForecastWorkHours: [performance.estimated_work_hours, [Validators.required]],
+      TotalForecastData: [performance.total_forecast_data, [Validators.required]]
     });
-    return form
+    return form;
   }
 
   onSubmit(): void {
@@ -202,20 +202,20 @@ export class CreatePerformancesComponent {
       return;
     }
     this.store.dispatch(UiActions.toggleConfirmationButton())
-    
-    if(this.documentBytes != null){
-      
-      
+
+    if (this.documentBytes != null) {
+
+
       if (this.projectManagerSelected) {
-        if(this.documentBytes != null){
+        if (this.documentBytes != null) {
           const documentBase64 = this.convertUint8ArrayToBase64(this.documentBytes);
           this.OSDEventService.addPerformanceFreeProfessional(this.performanceForm.value, this.projectManagerSelected, documentBase64);
-        }else{
+        } else {
           this.OSDEventService.addPerformanceFreeProfessional(this.performanceForm.value, this.projectManagerSelected, "");
         }
       }
     }
-    
+
   }
 
   convertUint8ArrayToBase64(uint8Array: Uint8Array): string {
@@ -228,22 +228,22 @@ export class CreatePerformancesComponent {
   }
 
   convertBase64ToBlob(base64: string, contentType: string = 'application/pdf'): Blob {
-    const byteCharacters = atob(base64); 
+    const byteCharacters = atob(base64);
     const byteNumbers = new Array(byteCharacters.length);
     for (let i = 0; i < byteCharacters.length; i++) {
       byteNumbers[i] = byteCharacters.charCodeAt(i);
     }
     const byteArray = new Uint8Array(byteNumbers);
-    return new Blob([byteArray], { type: contentType }); 
+    return new Blob([byteArray], { type: contentType });
   }
-  
+
   downloadPdf(base64String: string) {
-  
+
     try {
       const blob = this.convertBase64ToBlob(base64String, 'application/pdf');
 
       const url = window.URL.createObjectURL(blob);
-  
+
       const a = document.createElement('a');
       a.href = url;
       a.download = 'document.pdf';
@@ -255,12 +255,25 @@ export class CreatePerformancesComponent {
     }
   }
 
+  getInvalidFields(): string[] {
+    const invalidFields: string[] = [];
+    const formControls = this.performanceForm.controls;
+    for (const key in formControls) {
+      const control = formControls[key];
+      if (control.invalid) {
+        invalidFields.push(key);
+      }
+    }
+    return invalidFields;
+  }
+
   modifyPerformance(): void {
     if (this.performanceForm.invalid) {
       this.performanceForm.markAllAsTouched();
+      console.log("Invalid form fields:", this.getInvalidFields());
       return;
     }
-    this.OSDEventService.modifyPerformanceFreeProfessional(this.performanceForm.value, this.projectManagerSelected, this.performanceFP.Id);
+    this.OSDEventService.modifyPerformanceFreeProfessional(this.performanceForm.value, this.projectManagerSelected, this.performanceFP.id);
   }
 
   verifiedFormat() {

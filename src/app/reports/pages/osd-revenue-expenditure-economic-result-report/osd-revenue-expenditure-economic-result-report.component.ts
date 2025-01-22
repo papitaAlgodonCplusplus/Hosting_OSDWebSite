@@ -80,12 +80,13 @@ export class OSDRevenueExpenditureEconomicResultReportComponent {
     this.osdDataService.getSubscribersSuccess$.subscribe(items => {
       this.allSubscribers = items;
       items.forEach(subscriber => {
-        var itemDropdown: DropDownItem = { value: subscriber.name, key: subscriber.id };
+        var itemDropdown: DropDownItem = { value: subscriber.name, key: subscriber.scid };
         this.subscribers.push(itemDropdown)
       })
     })
 
     this.osdDataService.TotalOsdIncomeExpenses$.subscribe(item => {
+      console.log(item)
       this.transparencyIncomeExpenses = item
       this.calculateExpenses();
     })
@@ -114,13 +115,13 @@ export class OSDRevenueExpenditureEconomicResultReportComponent {
     var client = this.filterForm.value.client
 
     if (country != undefined && client == undefined) {
-      console.log(country)
       this.osdService.GetTransparencyReportsIncomeExpenses("", country);
     } else if (country != undefined && client != undefined) {
       this.osdService.GetTransparencyReportsIncomeExpenses(client, country);
+    } else if (country == undefined && client != undefined) {
+      this.osdService.GetTransparencyReportsIncomeExpenses(client, "");
     } else {
       this.osdService.GetTransparencyReportsIncomeExpenses("", "");
-
     }
   }
 
@@ -129,11 +130,10 @@ export class OSDRevenueExpenditureEconomicResultReportComponent {
     var foundClients = 0;
 
     if (country != undefined) {
-      console.log(country)
       this.allSubscribers.forEach(subscriber => {
         if (subscriber.country == country) {
           foundClients++;
-          var itemDropdown: DropDownItem = { value: subscriber.companyName, key: subscriber.id };
+          var itemDropdown: DropDownItem = { value: subscriber.name, key: subscriber.id };
           this.subscribers.push(itemDropdown)
         }
       })

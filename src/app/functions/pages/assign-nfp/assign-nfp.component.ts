@@ -114,7 +114,7 @@ export class AssignCfhFreeprofComponent implements OnInit {
     // You’d have a function in OSDService to handle this request:
     this.osdEventService.addFreeProfessionalToCfh(this.cfhId, email).subscribe({
       next: (result: any) => {
-        console.log('Successfully assigned free professional:', result);
+        'Successfully assigned free professional:', result);
         // Possibly reload or simply push the newly assigned FP into local array
         this.loadFreeProfessionalsForCfh();
         // Reset the form

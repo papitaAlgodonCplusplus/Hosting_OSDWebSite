@@ -55,7 +55,7 @@
       </div>
     </div>
 
-    <!-- NEW ROW for distribution percentages -->
+    <!-- Distribution Percentages -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
       <div>
         <label class="block text-sm font-medium text-gray-700">% OSD</label>
@@ -141,6 +141,7 @@
       <thead>
         <tr class="bg-gray-200">
           <th class="border p-2">Nombre</th>
+          <th class="border p-2">Curso Matriculado</th>
           <th class="border p-2">Asistencia (%)</th>
           <th class="border p-2">Calificación</th>
           <th class="border p-2">Estado</th>
@@ -155,6 +156,14 @@
             <input
               type="text"
               formControlName="name"
+              class="w-full p-1 border rounded bg-gray-100 cursor-not-allowed"
+              readonly
+            />
+          </td>
+          <td class="border p-2">
+            <input
+              type="text"
+              formControlName="course_name"
               class="w-full p-1 border rounded bg-gray-100 cursor-not-allowed"
               readonly
             />

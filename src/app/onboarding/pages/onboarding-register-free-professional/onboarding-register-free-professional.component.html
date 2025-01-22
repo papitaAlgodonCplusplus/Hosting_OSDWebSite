@@ -45,7 +45,12 @@
                     [dropdownItems]="workspace" [selectedItem]="selectedWorkspace">
                 </shared-simple-dropdown>
 
-                <div *ngIf="showCourseCheckbox && selectedWorkspace !== 'eea2312e-6a85-4ab6-85ff-0864547e3870'" class="w-full md:w-1/2 flex items-center">
+                <shared-input-field class="w-full md:w-1/2" fieldName="pricePerHour"
+                    label="{{'price_per_hour (EUR)' | translate}}" inputType="text" [formGroup]="accountForm">
+                </shared-input-field>
+
+                <div *ngIf="showCourseCheckbox && selectedWorkspace !== 'eea2312e-6a85-4ab6-85ff-0864547e3870'"
+                    class="w-full md:w-1/2 flex items-center">
                     <input type="checkbox" id="courseCheckbox" formControlName="courseCheckbox"
                         (change)="onCheckBoxChange()"
                         [disabled]="selectedWorkspace === 'eea2312e-6a85-4ab6-85ff-0864547e3870'">
@@ -65,11 +70,6 @@
                         </option>
                     </select>
                 </div>
-
-                <shared-simple-dropdown [readOnly]="isProcessor" class="w-full md:w-1/2" fieldName="SubscriberId"
-                    label="{{'SubscriberCustomer' | translate}}" [formGroup]="accountForm"
-                    [dropdownItems]="subscriberCustomers" [selectedItem]="selectedSubscriberCustomer">
-                </shared-simple-dropdown>
             </div>
 
             <div class="w-full flex flex-wrap justify-center gap-4">

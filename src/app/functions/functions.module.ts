@@ -16,6 +16,7 @@ import { FileManagerComponent } from './pages/file-manager/file-manager.componen
 import { RestoreHistoryComponent } from './pages/restore-history/restore-history.component';
 import { AuthorizedModalComponent } from './components/authorized-modal/authorized-modal.component';
 import { AssignClientToTrainerComponent } from './pages/assign-client-to-trainer/assign-client-to-trainer.component';
+import { AccountingServicesComponent } from './pages/accounting-services/accounting-services.component';
 import { ClaimantAndClaimsCustomerPerformanceComponent } from './pages/claimant-and-claims-customer-performance/claimant-and-claims-customer-performance.component';
 import { ClaimsTrainerPerformanceComponent } from './pages/claims-trainer-performance/claims-trainer-performance.component';
 import { ClaimsProcessorPerformanceComponent } from './pages/claims-processor-performance/claims-processor-performance.component';
@@ -23,6 +24,7 @@ import { TruncatePipe } from './pipes/truncate.pipe';
 import { UserProfileEditComponent } from './pages/edit-my-info/edit-my-info.component';
 import { StudentRecordComponent } from './pages/students-management/student-record.component';
 import { AccountingComponent } from './pages/accounting/accounting.component';
+import { FpManagementComponent } from './pages/fp-management/fp-management.component'; // Import the new component
 
 @NgModule({
   declarations: [
@@ -35,13 +37,15 @@ import { AccountingComponent } from './pages/accounting/accounting.component';
     RestoreHistoryComponent,
     AuthorizedModalComponent,
     AssignClientToTrainerComponent,
+    AccountingServicesComponent,
     ClaimantAndClaimsCustomerPerformanceComponent,
     ClaimsTrainerPerformanceComponent,
     ClaimsProcessorPerformanceComponent,
     TruncatePipe,
     StudentRecordComponent,
     UserProfileEditComponent,
-    AccountingComponent
+    AccountingComponent,
+    FpManagementComponent // Add the new component to declarations
   ],
   imports: [
     CommonModule,

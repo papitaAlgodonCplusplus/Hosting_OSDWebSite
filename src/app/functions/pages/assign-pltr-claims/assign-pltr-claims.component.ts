@@ -87,13 +87,13 @@ export class AssignPLTRClaimsComponent implements OnDestroy {
     this.osdEventService.cleanClaimList();
     var freeProfessional = this.freeProfessionalsTr.find(fp => fp.userid == idTR)
     if (freeProfessional) {
-      this.osdEventService.assignFreeProfessionalsTRToClaim(idClaim, freeProfessional.Id);
+      this.osdEventService.assignFreeProfessionalsTRToClaim(idClaim, freeProfessional.id);
     }
     this.showModal = false;
   }
 
   openModal(claim: Claim): void {
-    this.osdEventService.gettingFreeProfessionalsTRData(claim.SubscriberclaimedId);
+    this.osdEventService.gettingFreeProfessionalsTRData(claim.subscriberclaimedid);
     this.claim = claim
     this.showModal = true
   }

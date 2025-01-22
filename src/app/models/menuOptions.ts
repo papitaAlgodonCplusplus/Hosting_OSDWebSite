@@ -1,5 +1,6 @@
 export interface MenuOption {
-    name?: string;
-    path?: string;
-    icon?: string;
+    name: string;
+    path: string;
+    icon: string;
+    color?: string;
 }

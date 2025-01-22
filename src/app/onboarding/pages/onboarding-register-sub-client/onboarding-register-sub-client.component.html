@@ -5,10 +5,11 @@
             <shared-simple-dropdown class="w-full md:w-1/2" fieldName="clientType" label="{{'type_client' | translate}}"
                 [formGroup]="accountForm" [dropdownItems]="clientType" [selectedItem]="selectedClientType">
             </shared-simple-dropdown>
-            <shared-input-field (click)="openModal()" [readOnly]="true" class="w-full md:w-1/2" fieldName="showCodepl"
-                label="{{'cod_PL' | translate}}" [formGroup]="accountForm">
+        
+            <shared-input-field class="w-full md:w-1/2" fieldName="emailOfRefer"
+                label="{{'Email_of_Refer' | translate}}" inputType="text" [formGroup]="accountForm">
             </shared-input-field>
-
+        
             <shared-input-field *ngIf="false" (click)="openModal()" [readOnly]="true" class="w-full md:w-1/2"
                 fieldName="plCode" [formGroup]="accountForm">
             </shared-input-field>

@@ -1,6 +1,7 @@
 <shared-confirmation-modal *ngIf="!user.Isauthorized" [showModal]="true" [message]="message"
     [messageType]="'success'"></shared-confirmation-modal>
 
+<!-- Unauthorized User Section -->
 <div *ngIf="!user.Isauthorized" class="h-full bg-gradient-to-b from-gray-100 to-gray-300">
     <div class="flex flex-col items-center justify-center space-y-6 font-medium h-full text-center">
         <h1 class="text-3xl font-bold text-darkslategray">{{ 'HOME.WELCOME_TITLE' | translate }}</h1>
@@ -18,6 +19,7 @@
     </div>
 </div>
 
+<!-- Authorized User Section -->
 <div *ngIf="user.Isauthorized" class="h-full bg-white">
     <div class="flex flex-col items-center justify-center py-10 px-5 space-y-5 text-center">
         <h1 class="text-4xl font-extrabold text-darkslategray">{{ 'HOME.WELCOME_BACK' | translate }}</h1>
@@ -25,25 +27,12 @@
             {{ 'HOME.INSTRUCTION' | translate }}
         </p>
         <div class="grid grid-cols-2 gap-6">
-            <div routerLink="/functions/edit-my-info"
-                class="flex items-center justify-center p-5 bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow-md cursor-pointer transition duration-300">
-                <i class="fa-solid fa-user-edit text-2xl"></i>
-                <span class="ml-3">{{ 'HOME.EDIT_PROFILE' | translate }}</span>
-            </div>
-            <div routerLink="/functions/students-management"
-                class="flex items-center justify-center p-5 bg-green-500 hover:bg-green-600 text-white rounded-lg shadow-md cursor-pointer transition duration-300">
-                <i class="fa-solid fa-graduation-cap text-2xl"></i>
-                <span class="ml-3">{{ 'HOME.STUDENT_MANAGEMENT' | translate }}</span>
-            </div>
-            <div routerLink="/functions/accounting"
-                class="flex items-center justify-center p-5 bg-purple-500 hover:bg-purple-600 text-white rounded-lg shadow-md cursor-pointer transition duration-300">
-                <i class="fa-solid fa-money-check-alt text-2xl"></i>
-                <span class="ml-3">{{ 'HOME.ACCOUNTING' | translate }}</span>
-            </div>
-            <div routerLink="/project-manager"
-                class="flex items-center justify-center p-5 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg shadow-md cursor-pointer transition duration-300">
-                <i class="fa-solid fa-project-diagram text-2xl"></i>
-                <span class="ml-3">{{ 'HOME.PROJECT_MANAGEMENT' | translate }}</span>
+            <!-- Menu Options -->
+            <div *ngFor="let option of menuOptions" [routerLink]="option.path" 
+                class="flex items-center justify-center p-5 text-white rounded-lg shadow-md cursor-pointer transition duration-300"
+                [ngClass]="option.color">
+                <i [class]="'fa-solid ' + option.icon + ' text-2xl'"></i>
+                <span class="ml-3">{{ option.name | translate }}</span>
             </div>
         </div>
     </div>

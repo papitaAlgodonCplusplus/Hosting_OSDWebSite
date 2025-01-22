@@ -8,6 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { RestAPIService } from './services/rest-api.service';
 import { AuthenticationService } from './services/authentication.service';
 import { UiActions } from './store/actions';
+import { LoggingService } from './logger/LoggingService';
 
 @Component({
   selector: 'app-root',
@@ -33,7 +34,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private restApiService: RestAPIService,
     private securityDataService: SecurityDataService,
     private translate: TranslateService,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private loggingService: LoggingService
   ) {
     this.showHeader = false;
     this.initialized = false;
@@ -52,17 +54,30 @@ export class AppComponent implements OnInit, OnDestroy {
     });
 
     if (this.confirmationButtonState == true) {
-      this.store.dispatch(UiActions.toggleConfirmationButton())
+      this.store.dispatch(UiActions.toggleConfirmationButton());
     }
 
+    // Log page load
     this.initializeApp();
+    const userId = this.authenticationService.userInfo?.Id ?? '';
+    const additionalInfo = { 'pageLoadTime': new Date().toLocaleString() };
+    this.loggingService.logAction(userId, 'Page Load', window.location.href);
     this.subscriptions.add(
       this.securityDataService.userAuthenticationSuccess$.subscribe((userAuthenticationSuccess: string) => {
         if (userAuthenticationSuccess !== "") {
-          this.router.navigate([userAuthenticationSuccess]);
+          const userId = this.authenticationService.userInfo?.Id ?? '';
+          this.loggingService.logAction(userId, 'Page Navigation', userAuthenticationSuccess);
         }
       })
     );
+
+    // Log button clicks globally
+    document.addEventListener('click', (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      const elementClicked = target.textContent?.trim() || target.tagName;
+      const userId = this.authenticationService.userInfo?.Id ?? '';
+      this.loggingService.logAction(userId, 'Element Clicked', window.location.href, elementClicked, additionalInfo);
+    });
   }
 
   ngOnDestroy(): void {
@@ -78,7 +93,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   private initializeApp(): void {
-    if (!this.initialized) {
+      if(!this.initialized) {
       this.restApiService.connectAPI().subscribe({
         next: (jsonEventResponse) => {
           const sessionlessKey = jsonEventResponse.SessionKey;

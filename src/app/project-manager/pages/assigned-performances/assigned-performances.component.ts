@@ -36,6 +36,7 @@ export class AssignedPerformancesComponent implements OnDestroy {
         }
       }) 
       if(this.auth.userInfo){
+        console.log(this.auth.userInfo)
         this.osdEventService.getPerformancesAssignedById(this.auth.userInfo.Id)
        } 
     }, 0);

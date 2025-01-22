@@ -16,30 +16,34 @@ import { TransparencyIncomeExpenses } from '../reports/models/TransparencyIncome
 import { TransparencyReportsSubscriberClientList } from '../reports/models/TransparencyReportsSubscriberClient.model';
 
 export interface CFHresultItems {
-  online: {
+  formadorConsultor: {
+    online: {
       cfhIngresos: number,
       alumnos: number,
       alumnosAprobados: number,
       beneficios: string
-  },
-  FC: {
+    },
+    presencial: {
       cfhIngresos: number,
       alumnos: number,
       alumnosAprobados: number,
       beneficios: string
+    }
   },
-  tramitador: {
+  tecnicoOSD: {
+    online: {
       cfhIngresos: number,
       alumnos: number,
       alumnosAprobados: number,
       beneficios: string
-  },
-  presencial: {
+    },
+    presencial: {
       cfhIngresos: number,
       alumnos: number,
       alumnosAprobados: number,
       beneficios: string
-  },
+    }
+  }
 }
 
 @Injectable({
@@ -246,7 +250,11 @@ export class OSDDataService {
   }
 
   emitClaimantAndClaimsCustomerPerformanceList(data: ClaimantAndClaimsCustomerPerformance[]) {
-    this.claimantAndClaimsCustomerPerformanceList.next(data);
+    if (data) {
+      this.claimantAndClaimsCustomerPerformanceList.next(data);
+    } else {
+      this.claimantAndClaimsCustomerPerformanceList.next([]);
+    }
   }
 
   emitClaimsProcessorPerformanceList(data: ClaimsProcessorPerformance[]) {

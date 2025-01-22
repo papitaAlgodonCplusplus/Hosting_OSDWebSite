@@ -44,7 +44,7 @@ export class SubAuthorizedComponent implements OnDestroy {
         this.subscribers = subscribers;
 
         this.items.forEach(item => {
-          const matchingSubscriber = this.subscribers.find(sub => sub.userId === item.Id);
+          const matchingSubscriber = this.subscribers.find(sub => sub.userId === item.id);
           if (matchingSubscriber) {
            
             item.trainerAssigned = matchingSubscriber.trainerAssigned;
@@ -75,24 +75,24 @@ export class SubAuthorizedComponent implements OnDestroy {
   }
 
   selectUser(userId: string) {
-    const foundUser: UserInfo = this.displayedItems.find(item => item.Id === userId);
+    const foundUser: UserInfo = this.displayedItems.find(item => item.id === userId);
     if (foundUser.Isauthorized) {
       this.isAuthorized = true
     }
     else {
       this.isAuthorized = false
     }
-    this.userId = foundUser.Id;
+    this.userId = foundUser.userid;
     const userDTO: UserInfo = {} as UserInfo;
-    userDTO.Code =  foundUser.Code
-    userDTO.Identity = foundUser.Identity;
-    userDTO.Name = foundUser.Name.trim();
-    userDTO.Email = foundUser.Email;
+    "foundUser", foundUser)
+    userDTO.Identity = foundUser.identity;
+    userDTO.Name = foundUser.name.trim();
+    userDTO.Email = foundUser.email;
     this.user = userDTO;
 
-    var subscriber = this.subscribers.find(item => item.userId === userId);
+    var subscriber = this.subscribers.find(item => item.id === userId);
     const subscriberDTO: Subscriber = {} as Subscriber;
-    subscriberDTO.clientType = subscriber.clientType
+    subscriberDTO.clientType = subscriber.clienttype
     this.subscriber = subscriberDTO;
 
     this.showAuthorizatedModal = true;

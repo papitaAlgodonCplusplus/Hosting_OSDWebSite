@@ -10,6 +10,7 @@ import { OSDDataService } from 'src/app/services/osd-data.service';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { ValidationsService } from 'src/app/services/validations.service';
 import { ModalActions, UiActions } from 'src/app/store/actions';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register-sub-client',
@@ -25,26 +26,29 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
   showDocument!: boolean;
   showModal: boolean = false;
   professionalFreeTrainers$ = this.osdDataService.ProfessionalFreeTrainerList$;
-  professionalsFree! : FreeProfessional[];
-  freeProfessionalExists! : boolean ;
+  professionalsFree!: FreeProfessional[];
+  freeProfessionalExists!: boolean;
   clientType: DropDownItem[] = [
-    { value: this.translate.instant('Public Entity'), key: "Public Entity" }, //TODO: Implement language switching
+    { value: this.translate.instant('Public Entity'), key: "Public Entity" },
     { value: this.translate.instant('Private Entity'), key: "Private Entity" },
   ];
   countries: DropDownItem[] = [];
   selectedCountries: string | undefined;
-  
-  constructor(private store: Store,
+
+  constructor(
+    private store: Store,
     private formBuilder: FormBuilder,
     private validationsService: ValidationsService,
     private osdEventService: OSDService,
     private translate: TranslateService,
     private osdDataService: OSDDataService,
-    private countryService: CountryService
+    private countryService: CountryService,
+    private router: Router
   ) {
     this.accountForm = this.createAccountForm();
     this.personalForm = this.createPersonalForm();
   }
+
   ngOnInit(): void {
     setTimeout(() => {
       this.countryService.getCountries().subscribe((data: any[]) => {
@@ -54,23 +58,22 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
             .map(country => {
               if (country.name?.common && country.cca2) {
                 return {
-                  value: country.name.common, 
-                  key: country.name.common          
+                  value: country.name.common,
+                  key: country.name.common
                 } as DropDownItem;
               }
               return undefined;
             })
-            .filter(country => country !== undefined) 
+            .filter(country => country !== undefined)
             .sort((a, b) => (a && b) ? a.value.localeCompare(b.value) : 0);
-        }
-        else if (this.translate.currentLang === "es") {
+        } else if (this.translate.currentLang === "es") {
           countriesList = data
             .filter(country => country.translations?.spa)
             .map(country => {
               if (country.translations?.spa?.common && country.cca2) {
                 return {
-                  value: country.translations.spa.common, 
-                  key: country.name.common                    
+                  value: country.translations.spa.common,
+                  key: country.name.common
                 } as DropDownItem;
               }
               return undefined;
@@ -82,18 +85,14 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
         this.countries.sort((a, b) => a.value.localeCompare(b.value));
       });
 
-      if (this.translate.currentLang == "en") {
-        this.showDocument = true
-      }
-      else {
-        this.showDocument = false
-      }
-      this.osdEventService.GetProfessionalFreeTrainers()
+      this.showDocument = this.translate.currentLang === "en";
+      this.osdEventService.GetProfessionalFreeTrainers();
       this.store.dispatch(UiActions.hideFooter());
       this.store.dispatch(UiActions.hideLeftSidebar());
     }, 0);
+
     this.professionalFreeTrainers$.subscribe(pft => {
-        this.professionalsFree = pft;
+      this.professionalsFree = pft;
     });
   }
 
@@ -103,50 +102,8 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
     }, 0);
   }
 
-  displayFileName(event: any): void {
-    const fileInput = event.target as HTMLInputElement;
-
-    if (fileInput.files && fileInput.files.length > 0) {
-      const file = fileInput.files[0];
-      const fileName = file.name.toLowerCase();
-      const fileExtension = fileName.split('.').pop();
-
-      if (fileExtension === 'pdf') {
-        this.documentName = fileName;
-      } else {
-        if (this.translate.currentLang == "en") {
-          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "You must insert only PDF files" }));
-          this.store.dispatch(ModalActions.openAlert());
-        } else {
-          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Debe Insertar Solo archivos PDF" }));
-          this.store.dispatch(ModalActions.openAlert());
-        }
-        this.documentName = '';
-      }
-    } else {
-      this.documentName = '';
-    }
-  }
-
-
-  openVideo() {
-    window.open('https://www.youtube.com/embed/I80vR3wOUqc', '_blank');
-  }
-
-  makeAPurchase() {
-    window.open('https://buy.stripe.com/5kA0139lO0Od2v67ss', '_blank');
-  }
-
-  openVideoSolutionsOsd() {
-    window.open('https://www.youtube.com/watch?v=2HTLx9uvvqw', '_blank');
-  }
-
-  makeAPurchaseSolutionsOsd() {
-    window.open('https://buy.stripe.com/00g5ln69CeF35Hi28b', '_blank');
-  }
-
   private createPersonalForm(): FormGroup {
-    const personalForm = this.formBuilder.group({
+    return this.formBuilder.group({
       companyName: ['', [Validators.required]],
       identity: ['', [Validators.required]],
       name: ['', [Validators.required]],
@@ -164,53 +121,52 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
       accountType: ['063e12fa-33db-47f3-ac96-a5bdb08ede61'],
       acceptConditions: [false]
     });
-    return personalForm;
   }
+
   private createAccountForm(): FormGroup {
-    const accountForm = this.formBuilder.group({
+    return this.formBuilder.group({
       clientType: ['', [Validators.required]],
-      plCode: [''],
-      showCodepl:['']
+      showCodepl: [''],
+      emailOfRefer: [''], // Optional field
     });
-    return accountForm;
-  }
-
-  mostrarMenu = true;
-
-  toggleMenu() {
-    this.mostrarMenu = !this.mostrarMenu;
   }
 
   onSubmit(): void {
+    console.log('onSubmit called');
     if (this.personalForm.invalid || this.accountForm.invalid) {
+      console.log('Forms are invalid');
       this.accountForm.markAllAsTouched();
       this.personalForm.markAllAsTouched();
-      if (this.translate.currentLang == "en") {
-        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "There are missing fields to fill out" }));
-        this.store.dispatch(ModalActions.openAlert());
-      } else {
-        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Faltan campos por llenar" }));
-        this.store.dispatch(ModalActions.openAlert());
-      }
-      return
+      const alertMessage = this.translate.currentLang === "en"
+        ? "There are missing fields to fill out"
+        : "Faltan campos por llenar";
+      this.store.dispatch(ModalActions.addAlertMessage({ alertMessage }));
+      this.store.dispatch(ModalActions.openAlert());
+      return;
     }
 
     if (this.personalForm.value.acceptConditions) {
+      console.log('Conditions accepted');
       this.isAcceptConditions = true;
     }
-    
-    this.store.dispatch(UiActions.toggleConfirmationButton())
+
+    console.log('Toggling confirmation button');
+    this.store.dispatch(UiActions.toggleConfirmationButton());
     const userEmail = this.personalForm.value.email;
+    console.log('User email:', userEmail);
     localStorage.setItem('userEmail', userEmail);
-    this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.SUBSCRIBER_CUSTOMER);
+
+    console.log('Dispatching user registration');
+    // Include both accountForm and personalForm values in the registration call
+    this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.SUBSCRIBER_CUSTOMER)
+      .subscribe(() => {
+        this.router.navigate(['/auth']);
+      });
   }
 
   openModal() {
     this.showModal = !this.showModal;
-    this.accountForm.patchValue({
-      plCode: '', showCodepl:''
-    });  
-    this.freeProfessionalExists = false
+    this.freeProfessionalExists = false;
   }
 
   closeModal() {
@@ -219,29 +175,39 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
 
   verifiedProfessionalFree(event: Event) {
     const inputElement = event.target as HTMLInputElement;
-    const inputValue = inputElement.value.trim(); 
-  
+    const inputValue = inputElement.value.trim();
+
     this.professionalsFree.forEach(pft => {
-      console.log(pft)
-      const code = pft.Code.trim(); 
-      if(code === inputValue) {
-      this.freeProfessionalExists = true
-      this.accountForm.patchValue({
-        showCodepl: inputValue,
-        plCode: pft.Id
-      });      
-      }
-      else{
-        this.freeProfessionalExists = false
+      const code = pft.Code.trim();
+      if (code === inputValue) {
+        this.freeProfessionalExists = true;
+        this.accountForm.patchValue({
+          showCodepl: inputValue,
+        });
+      } else {
+        this.freeProfessionalExists = false;
       }
     });
   }
-  
-  eliminatedProfessionalFree(){
+
+  eliminatedProfessionalFree() {
     this.showModal = false;
-    this.freeProfessionalExists = false
-    this.accountForm.patchValue({
-      plCode: '', showCodepl: ''
-    });  
+    this.freeProfessionalExists = false;
+  }
+
+  openVideo() {
+    window.open('https://www.youtube.com/embed/I80vR3wOUqc', '_blank');
+  }
+
+  makeAPurchase() {
+    window.open('https://buy.stripe.com/5kA0139lO0Od2v67ss', '_blank');
+  }
+
+  openVideoSolutionsOsd() {
+    window.open('https://www.youtube.com/watch?v=2HTLx9uvvqw', '_blank');
+  }
+
+  makeAPurchaseSolutionsOsd() {
+    window.open('https://buy.stripe.com/00g5ln69CeF35Hi28b', '_blank');
   }
 }

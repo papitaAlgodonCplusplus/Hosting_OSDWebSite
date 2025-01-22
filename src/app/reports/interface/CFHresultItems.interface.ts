@@ -1,26 +1,32 @@
+
 export interface CFHresultItems {
-    online: {
+    formadorConsultor: {
+      online: {
         cfhIngresos: number,
         alumnos: number,
         alumnosAprobados: number,
         beneficios: string
-    },
-    FC: {
+      },
+      presencial: {
         cfhIngresos: number,
         alumnos: number,
         alumnosAprobados: number,
         beneficios: string
+      }
     },
-    tramitador: {
+    tecnicoOSD: {
+      online: {
         cfhIngresos: number,
         alumnos: number,
         alumnosAprobados: number,
         beneficios: string
-    },
-    presencial: {
+      },
+      presencial: {
         cfhIngresos: number,
         alumnos: number,
         alumnosAprobados: number,
         beneficios: string
-    },
-}
+      }
+    }
+  }
+  

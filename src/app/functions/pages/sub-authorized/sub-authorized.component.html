@@ -24,17 +24,17 @@
                 <tbody>
                     <tr *ngFor="let item of displayedItems">
                         <td class="text-center border-y px-2 py-2">
-                            {{ item.trainerAssigned ? item.trainerAssigned : 'Sin asignar' }}
+                            {{ item.trainerassigned ? item.trainerassigned : 'Sin asignar' }}
                         </td>
-                        <td class="text-center border-y px-2  py-2">{{ item.Identity }}</td>
-                        <td class="text-center border-y px-2 py-2">{{ item.CompanyName }}</td>
+                        <td class="text-center border-y px-2  py-2">{{ item.identity }}</td>
+                        <td class="text-center border-y px-2 py-2">{{ item.name }}</td>
                         <td class="text-center space-x-2 border-y py-2">
-                            <button (click)="selectUser(item.Id)" class="underline text-darkslategray text-sm"><i
+                            <button (click)="selectUser(item.id)" class="underline text-darkslategray text-sm"><i
                                     class="fas fa-check-circle text-xl animate-bounce"></i></button>
                         </td>
                         <td class="text-center border-y px-2 py-2">
                             <i class="fa-solid fa-circle"
-                                [ngClass]="{'text-green-500': item.Isauthorized, 'text-red-600': !item.Isauthorized}">
+                                [ngClass]="{'text-green-500': item.isauthorized, 'text-red-600': !item.isauthorized}">
                             </i>
                         </td>
                     </tr>

@@ -1,59 +1,74 @@
 <div class="border-b-2 w-full font-normal text-darkslategray text-lg">
-    <h1>{{ 'osdStudentIncomeResult' | translate }}</h1>
-  </div>
-  
-  <div class="container mx-auto mt-8 overflow-x-auto max-w-4xl">
-    <table class="min-w-full border-gray-300">
-      <thead>
-        <tr>
-          <!-- This column might just be a label, e.g. "Mode" or "Exercise" -->
-          <th class="p-5 border text-yellow-500 font-normal">
-            {{ 'exercise' | translate }} 2024
-          </th>
-          <th class="p-5 border text-yellow-500 font-normal">{{ 'CFHIncomes' | translate }}</th>
-          <th class="p-5 border text-yellow-500 font-normal">{{ 'numberOfStudents' | translate }}</th>
-          <th class="p-5 border text-yellow-500 font-normal">{{ 'graduatedPassedStudents' | translate }}</th>
-          <th class="p-5 border text-yellow-500 font-normal">{{ 'benefitsPassedStudents' | translate }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- We only have one object in the reports array, but let's still handle it as an array -->
-        <tr *ngFor="let informe of reports">
-          <!-- Row 1: online -->
-          <td class="p-5 border text-center font-medium text-darkslategray">ONLINE</td>
-          <td class="p-5 border text-center">{{ informe.online.cfhIngresos }}</td>
-          <td class="p-5 border text-center">{{ informe.online.alumnos }}</td>
-          <td class="p-5 border text-center">{{ informe.online.alumnosAprobados }}</td>
-          <td class="p-5 border text-center">{{ informe.online.beneficios }}</td>
-        </tr>
-  
-        <!-- Another row for FC -->
-        <tr *ngFor="let informe of reports">
-          <td class="p-5 border text-center font-medium text-darkslategray">FC</td>
-          <td class="p-5 border text-center">{{ informe.FC.cfhIngresos }}</td>
-          <td class="p-5 border text-center">{{ informe.FC.alumnos }}</td>
-          <td class="p-5 border text-center">{{ informe.FC.alumnosAprobados }}</td>
-          <td class="p-5 border text-center">{{ informe.FC.beneficios }}</td>
-        </tr>
-  
-        <!-- Another row for tramitador -->
-        <tr *ngFor="let informe of reports">
-          <td class="p-5 border text-center font-medium text-darkslategray">TRAMITADOR</td>
-          <td class="p-5 border text-center">{{ informe.tramitador.cfhIngresos }}</td>
-          <td class="p-5 border text-center">{{ informe.tramitador.alumnos }}</td>
-          <td class="p-5 border text-center">{{ informe.tramitador.alumnosAprobados }}</td>
-          <td class="p-5 border text-center">{{ informe.tramitador.beneficios }}</td>
-        </tr>
-  
-        <!-- Another row for presencial -->
-        <tr *ngFor="let informe of reports">
-          <td class="p-5 border text-center font-medium text-darkslategray">PRESENCIAL</td>
-          <td class="p-5 border text-center">{{ informe.presencial.cfhIngresos }}</td>
-          <td class="p-5 border text-center">{{ informe.presencial.alumnos }}</td>
-          <td class="p-5 border text-center">{{ informe.presencial.alumnosAprobados }}</td>
-          <td class="p-5 border text-center">{{ informe.presencial.beneficios }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  
+  <h1>{{ 'osdStudentIncomeResult' | translate }}</h1>
+</div>
+
+<div class="container mx-auto mt-8 overflow-x-auto max-w-4xl">
+  <table class="min-w-full border-gray-300">
+    <thead>
+      <tr>
+        <th class="p-5 border text-yellow-500 font-normal">{{ 'exercise' | translate }} 2024</th>
+        <th class="p-5 border text-yellow-500 font-normal">{{ 'CFHIncomes' | translate }} (€)</th>
+        <th class="p-5 border text-yellow-500 font-normal">{{ 'numberOfStudents' | translate }}</th>
+        <th class="p-5 border text-yellow-500 font-normal">{{ 'graduatedPassedStudents' | translate }}</th>
+        <th class="p-5 border text-yellow-500 font-normal">{{ 'benefitsPassedStudents' | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Formador/Consultor -->
+      <tr (click)="toggleRow('formadorConsultor')" class="cursor-pointer">
+        <td colspan="5" class="p-5 border text-center font-medium text-darkslategray">
+          Formador/Consultor
+          <span class="float-right">
+            <i
+              [class.fa-chevron-down]="expandedRow === 'formadorConsultor'"
+              [class.fa-chevron-right]="expandedRow !== 'formadorConsultor'"
+              class="fa"
+            ></i>
+          </span>
+        </td>
+      </tr>
+      <tr *ngIf="expandedRow === 'formadorConsultor'">
+        <td class="p-5 border text-center font-medium text-darkslategray">Online</td>
+        <td class="p-5 border text-center">€{{ reports.formadorConsultor.online.cfhIngresos }}</td>
+        <td class="p-5 border text-center">{{ reports.formadorConsultor.online.alumnos }}</td>
+        <td class="p-5 border text-center">{{ reports.formadorConsultor.online.alumnosAprobados }}</td>
+        <td class="p-5 border text-center">{{ reports.formadorConsultor.online.beneficios }}</td>
+      </tr>
+      <tr *ngIf="expandedRow === 'formadorConsultor'">
+        <td class="p-5 border text-center font-medium text-darkslategray">Presencial</td>
+        <td class="p-5 border text-center">€{{ reports.formadorConsultor.presencial.cfhIngresos }}</td>
+        <td class="p-5 border text-center">{{ reports.formadorConsultor.presencial.alumnos }}</td>
+        <td class="p-5 border text-center">{{ reports.formadorConsultor.presencial.alumnosAprobados }}</td>
+        <td class="p-5 border text-center">{{ reports.formadorConsultor.presencial.beneficios }}</td>
+      </tr>
+
+      <!-- Tecnico OSD -->
+      <tr (click)="toggleRow('tecnicoOSD')" class="cursor-pointer">
+        <td colspan="5" class="p-5 border text-center font-medium text-darkslategray">
+          Tecnico OSD
+          <span class="float-right">
+            <i
+              [class.fa-chevron-down]="expandedRow === 'tecnicoOSD'"
+              [class.fa-chevron-right]="expandedRow !== 'tecnicoOSD'"
+              class="fa"
+            ></i>
+          </span>
+        </td>
+      </tr>
+      <tr *ngIf="expandedRow === 'tecnicoOSD'">
+        <td class="p-5 border text-center font-medium text-darkslategray">Online</td>
+        <td class="p-5 border text-center">€{{ reports.tecnicoOSD.online.cfhIngresos }}</td>
+        <td class="p-5 border text-center">{{ reports.tecnicoOSD.online.alumnos }}</td>
+        <td class="p-5 border text-center">{{ reports.tecnicoOSD.online.alumnosAprobados }}</td>
+        <td class="p-5 border text-center">{{ reports.tecnicoOSD.online.beneficios }}</td>
+      </tr>
+      <tr *ngIf="expandedRow === 'tecnicoOSD'">
+        <td class="p-5 border text-center font-medium text-darkslategray">Presencial</td>
+        <td class="p-5 border text-center">€{{ reports.tecnicoOSD.presencial.cfhIngresos }}</td>
+        <td class="p-5 border text-center">{{ reports.tecnicoOSD.presencial.alumnos }}</td>
+        <td class="p-5 border text-center">{{ reports.tecnicoOSD.presencial.alumnosAprobados }}</td>
+        <td class="p-5 border text-center">{{ reports.tecnicoOSD.presencial.beneficios }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

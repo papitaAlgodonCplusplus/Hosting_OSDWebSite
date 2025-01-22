@@ -1,5 +1,6 @@
 export class Subscriber {
     id: string = "";
+    scid: string = "";
     userId: string = "";
     clientType: string = "";
     companyName: string = "";

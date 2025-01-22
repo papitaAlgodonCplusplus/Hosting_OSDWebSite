@@ -1,89 +1,94 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { MenuOption } from '../models/menuOptions';
 import { AuthenticationService } from './authentication.service';
-import { UserInfo } from '../models/userInfo';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root',
 })
-export class MenuService implements OnInit {
-    user!: UserInfo;
+export class MenuService {
+  constructor(private authService: AuthenticationService) {}
 
-    constructor(private authService: AuthenticationService) { }
+  private createMenuOption(
+    name: string,
+    path: string,
+    icon: string,
+    color: string
+  ): MenuOption {
+    return { name, path, icon, color };
+  }
 
-    ngOnInit(): void {
-        setTimeout(() => {
-            if (this.authService.userInfo) { console.log(this.user); this.user = this.authService.userInfo };
-        }, 0);
-    }
+  getMenuOptionAllFreeProfessional(): MenuOption[] {
+    return [
+      this.createMenuOption('transparent_project', '/project-manager', 'fa-project-diagram', 'bg-indigo-500'),
+      this.createMenuOption('file_claim', '/functions/claims-file', 'fa-file', 'bg-yellow-500'),
+      this.createMenuOption('presentar_reclamación', '/onboarding/onboarding-register-claimant/False', 'fa-balance-scale', 'bg-red-500'),
+      this.createMenuOption('edit_user_profile', '/functions/edit-my-info', 'fa-user-edit', 'bg-blue-500'),
+    ];
+  }
 
-    getMenuOptionAllFreeProfessional(): MenuOption[] {
-        return [
-            { name: 'transparent_project', path: '/project-manager', icon: 'fa-project-diagram' },
-            { name: 'accounting', path: '/functions/accounting', icon: 'fa-money-check-alt' },
-            { name: 'edit_user_profile', path: '/functions/edit-my-info', icon: 'fa-user-edit' }
-        ];
-    }
+  getMenuOptionFreeProfessionalProcessor(): MenuOption[] {
+    return [
+      this.createMenuOption('transparent_project', '/project-manager', 'fa-project-diagram', 'bg-indigo-500'),
+      this.createMenuOption('file_claim', '/functions/claims-file', 'fa-file', 'bg-yellow-500'),
+      this.createMenuOption('edit_user_profile', '/functions/edit-my-info', 'fa-user-edit', 'bg-blue-500'),
+    ];
+  }
 
-    getMenuOptionFreeProfessionalProcessor(): MenuOption[] {
-        return [
-            { name: 'transparent_project', path: '/project-manager', icon: 'fa-project-diagram' },
-            { name: 'file_claim', path: '/functions/claims-file', icon: 'fa-file' },
-            { name: 'accounting', path: '/functions/accounting', icon: 'fa-money-check-alt' },
-            { name: 'edit_user_profile', path: '/functions/edit-my-info', icon: 'fa-user-edit' }
-        ];
-    }
+  getMenuOptionFreeProfessionalTrainer(): MenuOption[] {
+    return [
+      this.createMenuOption('transparent_project', '/project-manager', 'fa-project-diagram', 'bg-indigo-500'),
+      this.createMenuOption('file_claim', '/functions/claims-file', 'fa-file', 'bg-yellow-500'),
+      this.createMenuOption('Assign_Processor_to_Claim', '/functions/assign-pltr-claims', 'fa-user', 'bg-green-500'),
+      this.createMenuOption('accounting', '/functions/accounting', 'fa-money-check-alt', 'bg-purple-500'),
+      this.createMenuOption('administer_users', '/functions/students-management', 'fa-graduation-cap', 'bg-teal-500'),
+      this.createMenuOption('edit_user_profile', '/functions/edit-my-info', 'fa-user-edit', 'bg-blue-500'),
+    ];
+  }
 
-    getMenuOptionFreeProfessionalTrainer(): MenuOption[] {
-        return [
-            { name: 'transparent_project', path: '/project-manager', icon: 'fa-project-diagram' },
-            { name: 'file_claim', path: '/functions/claims-file', icon: 'fa-file' },
-            { name: 'Assign_Processor_to_Claim', path: '/functions/assign-pltr-claims', icon: 'fa-user' },
-            { name: 'administer_users', path: '/functions/students-management', icon: 'fa-light fa-graduation-cap' },
-            { name: 'accounting', path: '/functions/accounting', icon: 'fa-money-check-alt' },
-            { name: 'edit_user_profile', path: '/functions/edit-my-info', icon: 'fa-user-edit' }
-        ];
-    }
+  getMenuOptionAdmin(): MenuOption[] {
+    return [
+      this.createMenuOption('transparent_project', '/project-manager', 'fa-project-diagram', 'bg-indigo-500'),
+      this.createMenuOption('Assign_client_to_Trainer', '/functions/assign-client-to-Trainer', 'fa-user', 'bg-orange-500'),
+      this.createMenuOption('authorizeCustomers', '/functions/sub-authorized', 'fa-check-circle', 'bg-green-500'),
+      this.createMenuOption('authorizeFreeProfessionals', '/functions/autorization-pl', 'fa-check-circle', 'bg-teal-500'),
+      this.createMenuOption('Assign_Processor_to_Claim', '/functions/assign-pltr-claims', 'fa-user', 'bg-yellow-500'),
+      this.createMenuOption('accounting_services', '/functions/accounting-services', 'fa-calculator', 'bg-purple-500'),
+      this.createMenuOption('edit_user_profile', '/functions/edit-my-info', 'fa-user-edit', 'bg-blue-500'),
+      this.createMenuOption('administer_users', '/functions/students-management', 'fa-graduation-cap', 'bg-teal-500'),
+      this.createMenuOption('accounting', '/functions/accounting', 'fa-money-check-alt', 'bg-purple-500'),
+      this.createMenuOption('fp_management', '/functions/fp-management', 'fa-users-cog', 'bg-pink-500'),
+    ];
+  }
 
-    getMenuOptionAdmin(): MenuOption[] {
-        return [
-            { name: 'transparent_project', path: '/project-manager', icon: 'fa-project-diagram' },
-            { name: 'Assign_client_to_Trainer', path: '/functions/assign-client-to-Trainer', icon: 'fa-user' },
-            { name: 'authorizeCustomers', path: '/functions/sub-authorized', icon: 'fa-check-circle' },
-            { name: 'authorizeFreeProfessionals', path: '/functions/autorization-pl', icon: 'fa-check-circle' },
-            { name: 'accounting', path: '/functions/accounting', icon: 'fa-money-check-alt' },
-            { name: 'file_claim', path: '/functions/claims-file', icon: 'fa-file' },
-            { name: 'Assign_Processor_to_Claim', path: '/functions/assign-pltr-claims', icon: 'fa-user' },
-            { name: 'edit_user_profile', path: '/functions/edit-my-info', icon: 'fa-user-edit' }
-        ];
-    }
+  getMenuOptionClaimant(): MenuOption[] {
+    return [
+      this.createMenuOption('transparent_project', '/project-manager', 'fa-project-diagram', 'bg-indigo-500'),
+      this.createMenuOption('presentar_reclamación', '/onboarding/onboarding-register-claimant/False', 'fa-balance-scale', 'bg-red-500'),
+      this.createMenuOption('file_claim', '/functions/claims-file', 'fa-file', 'bg-yellow-500'),
+      this.createMenuOption('edit_user_profile', '/functions/edit-my-info', 'fa-user-edit', 'bg-blue-500'),
+    ];
+  }
 
-    getMenuOptionClaimant(): MenuOption[] {
-        return [
-            { name: 'presentar_reclamación', path: '/onboarding/onboarding-register-claimant/False', icon: 'fa-balance-scale' },
-            { name: 'accounting', path: '/functions/accounting', icon: 'fa-money-check-alt' },
-            { name: 'file_claim', path: '/functions/claims-file', icon: 'fa-file' },
-            { name: 'edit_user_profile', path: '/functions/edit-my-info', icon: 'fa-user-edit' }
-        ];
-    }
+  getMenuOptionCFH(): MenuOption[] {
+    return [
+      this.createMenuOption('transparent_project', '/project-manager', 'fa-project-diagram', 'bg-indigo-500'),
+      this.createMenuOption('file_claim', '/functions/claims-file', 'fa-file', 'bg-yellow-500'),
+      this.createMenuOption('Assign_Processor_to_Claim', '/functions/assign-pltr-claims', 'fa-user', 'bg-green-500'),
+      this.createMenuOption('Assign_New_Free_Professional', '/functions/assign-nfp', 'fa-user-plus', 'bg-orange-500'),
+      this.createMenuOption('administer_users', '/functions/students-management', 'fa-graduation-cap', 'bg-teal-500'),
+      this.createMenuOption('accounting', '/functions/accounting', 'fa-money-check-alt', 'bg-purple-500'),
+      this.createMenuOption('edit_user_profile', '/functions/edit-my-info', 'fa-user-edit', 'bg-blue-500'),
+    ];
+  }
 
-    getMenuOptionCFH(): MenuOption[] {
-        return [
-            { name: 'transparent_project', path: '/project-manager', icon: 'fa-project-diagram' },
-            { name: 'file_claim', path: '/functions/claims-file', icon: 'fa-file' },
-            { name: 'Assign_Processor_to_Claim', path: '/functions/assign-pltr-claims', icon: 'fa-user' },
-            { name: 'Assign_New_Free_Professional', path: '/functions/assign-nfp', icon: 'fa-user-plus' },
-            { name: 'administer_users', path: '/functions/students-management', icon: 'fa-light fa-graduation-cap' },
-            { name: 'accounting', path: '/functions/accounting', icon: 'fa-money-check-alt' },
-            { name: 'edit_user_profile', path: '/functions/edit-my-info', icon: 'fa-user-edit' }
-        ];
-    }
-
-    getMenuOptionSubscriber(): MenuOption[] {
-        return [
-            { name: 'file_claim', path: '/functions/claims-file', icon: 'fa-file' },
-            { name: 'accounting', path: '/functions/accounting', icon: 'fa-money-check-alt' },
-            { name: 'edit_user_profile', path: '/functions/edit-my-info', icon: 'fa-user-edit' }
-        ];
-    }
+  getMenuOptionSubscriber(): MenuOption[] {
+    return [
+      this.createMenuOption('transparent_project', '/project-manager', 'fa-project-diagram', 'bg-indigo-500'),
+      this.createMenuOption('presentar_reclamación', '/onboarding/onboarding-register-claimant/False', 'fa-balance-scale', 'bg-red-500'),
+      this.createMenuOption('Assign_Processor_to_Claim', '/functions/assign-pltr-claims', 'fa-user', 'bg-green-500'),
+      this.createMenuOption('file_claim', '/functions/claims-file', 'fa-file', 'bg-yellow-500'),
+      this.createMenuOption('edit_user_profile', '/functions/edit-my-info', 'fa-user-edit', 'bg-blue-500'),
+      this.createMenuOption('Assign_New_Free_Professional', '/functions/assign-nfp', 'fa-user-plus', 'bg-orange-500'),
+    ];
+  }
 }

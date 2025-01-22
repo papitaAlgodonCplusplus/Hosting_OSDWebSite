@@ -73,7 +73,7 @@ export class AutorizationPlComponent implements OnDestroy {
     const userDTO: UserInfo = {} as UserInfo;
     userDTO.Identity = user.Identity
     this.user = userDTO;
-    this.userSelected = user.userid
+    this.userSelected = user.id
     const FreeProfessionalDTO: FreeProfessional = {} as FreeProfessional;
     FreeProfessionalDTO.clientType = this.translate.instant("FreeProfessional");
     FreeProfessionalDTO.FreeprofessionaltypeName = user.FreeprofessionaltypeName;
@@ -119,7 +119,7 @@ export class AutorizationPlComponent implements OnDestroy {
     });
 
     Promise.all(displayedItemsPromises).then(updatedItems => {
-      console.log("Found users", updatedItems.map(item => item.user.Body?.user));
+      "Found users", updatedItems.map(item => item.user.Body?.user));
       this.displayedItems = updatedItems.map(item => item.user.Body?.user);
     });
   }

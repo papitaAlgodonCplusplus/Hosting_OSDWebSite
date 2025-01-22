@@ -63,11 +63,11 @@ export class ClaimantClaimedOsdReportComponent implements OnInit, OnDestroy {
 
     this.osdDataService.getSubscribersSuccess$
       .subscribe(subscribers => {
-        console.log(subscribers);
         this.allSubscribers = subscribers;
+        console.log(subscribers);
         this.subscribers = subscribers.map(subscriber => ({
-          value: subscriber.companyName,
-          key: subscriber.companyName
+          value: subscriber.name,
+          key: subscriber.name
         }));
       });
   }
@@ -115,7 +115,7 @@ export class ClaimantClaimedOsdReportComponent implements OnInit, OnDestroy {
       this.reports = this.allReports.filter(report => report.Country === country);
       this.subscribers = this.allSubscribers
         .filter(subscriber => subscriber.country === country)
-        .map(subscriber => ({ value: subscriber.companyName, key: subscriber.companyName }));
+        .map(subscriber => ({ value: subscriber.name, key: subscriber.name }));
 
       if (this.subscribers.length === 0) {
         this.subscribers = [];
@@ -124,12 +124,11 @@ export class ClaimantClaimedOsdReportComponent implements OnInit, OnDestroy {
       this.reports = this.allReports;
       this.subscribers = [];
       this.subscribers = this.allSubscribers
-        .map(subscriber => ({ value: subscriber.companyName, key: subscriber.companyName }));
+        .map(subscriber => ({ value: subscriber.name, key: subscriber.name }));
     }
   }
 
   selectClientReports(): void {
-    console.log("FIlter Form", this.filterForm.value);
     const client = this.filterForm.value.client;
     const country = this.filterForm.value.country;
 

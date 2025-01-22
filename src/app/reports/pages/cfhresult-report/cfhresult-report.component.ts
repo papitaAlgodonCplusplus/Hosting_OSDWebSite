@@ -3,19 +3,42 @@ import { Store } from '@ngrx/store';
 import { UiActions } from 'src/app/store/actions';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { OSDDataService } from 'src/app/services/osd-data.service';
-import { CFHresultItems } from '../../interface/CFHresultItems.interface';
+
+export interface CFHModeDetails {
+  cfhIngresos: number;
+  alumnos: number;
+  alumnosAprobados: number;
+  beneficios: string;
+}
+
+export interface CFHresultItems {
+  formadorConsultor: {
+    online: CFHModeDetails;
+    presencial: CFHModeDetails;
+  };
+  tecnicoOSD: {
+    online: CFHModeDetails;
+    presencial: CFHModeDetails;
+  };
+}
 
 @Component({
   selector: 'app-cfhresult-report',
   templateUrl: './cfhresult-report.component.html',
-  styleUrls: ['./cfhresult-report.component.css']
+  styleUrls: ['./cfhresult-report.component.css'],
 })
 export class CFHResultReportComponent implements OnInit, OnDestroy {
-
-  /**
-   * This array will be populated with CFH data from the backend
-   */
-  reports: CFHresultItems[] = [];
+  reports: CFHresultItems = {
+    formadorConsultor: {
+      online: { cfhIngresos: 0, alumnos: 0, alumnosAprobados: 0, beneficios: '' },
+      presencial: { cfhIngresos: 0, alumnos: 0, alumnosAprobados: 0, beneficios: '' },
+    },
+    tecnicoOSD: {
+      online: { cfhIngresos: 0, alumnos: 0, alumnosAprobados: 0, beneficios: '' },
+      presencial: { cfhIngresos: 0, alumnos: 0, alumnosAprobados: 0, beneficios: '' },
+    },
+  };
+  expandedRow: string | null = null;
 
   constructor(
     private store: Store,
@@ -24,26 +47,25 @@ export class CFHResultReportComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // Hide certain UI elements if needed
     setTimeout(() => {
       this.store.dispatch(UiActions.hideAll());
-
-      // 1) Fetch the CFH data from the backend
-      //    Make sure you have a corresponding method in OSDService
       this.osdService.GetCFHReports();
     }, 0);
 
-    // 2) Subscribe to the CFH data store observable
-    //    Adjust the property name to whatever you actually have in OSDDataService
-    this.osdDataService.CFHResultList$.subscribe(data => {
-      this.reports = data; 
+    this.osdDataService.CFHResultList$.subscribe((data: CFHresultItems[]) => {
+      if (data.length > 0) {
+        this.reports = data[0];
+      }
     });
   }
 
   ngOnDestroy(): void {
     setTimeout(() => {
-      // Restore UI elements
       this.store.dispatch(UiActions.showAll());
     }, 0);
+  }
+
+  toggleRow(rowName: string): void {
+    this.expandedRow = this.expandedRow === rowName ? null : rowName;
   }
 }

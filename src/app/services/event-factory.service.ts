@@ -6,6 +6,7 @@ import { EventAction } from '../models/eventAction';
 import { EventConstants } from '../models/eventConstants';
 import { AuthenticationService } from './authentication.service';
 import { NotificationEvent } from '../models/notificationEvent';
+import { PayloadForm } from '../models/payloadForm';
 import { EventComponent } from '../models/eventComponent';
 import { UserLoginEvent } from '../auth/interfaces/login.interface';
 import { VerifyEmailEvent } from '../auth/interfaces/verify-email.interface';
@@ -29,6 +30,19 @@ export class EventFactoryService {
 
   constructor(private authenticationService: AuthenticationService) {
 
+  }
+
+  public CreateLogEvent(logData: any): WebBaseEvent {
+    const event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.LOG_EVENT;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    event.setBodyProperty(EventConstants.LOG_DATA, logData);
+    return event;
   }
 
   public ConvertJsonToWebBaseEvent(jsonEvent: string): WebBaseEvent {
@@ -163,6 +177,7 @@ export class EventFactoryService {
     event.Action = EventAction.MODIFY_PERFORMANCE_FREE_PROFESSIONAL;
     event.Date = new Date().toUTCString();
     event.ApplicationIdentifier = 'WebClient';
+    console.log("performanceFP", performanceFP, "projectManagerSelectedId", projectManagerSelectedId, "performanceId", performanceId)
     event.setBodyProperty(EventConstants.PERFORMANCE_ID, performanceId);
     event.setBodyProperty(EventConstants.PROJECT_MANAGER_ID, projectManagerSelectedId);
     event.setBodyProperty(EventConstants.START_DATE, performanceFP.Start_Date);
@@ -730,6 +745,34 @@ export class EventFactoryService {
     return event;
   }
 
+  public CreateAddPerformanceUpdateEvent(payload: PayloadForm): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.ADD_PERFORMANCE_UPDATE;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    event.setBodyProperty(EventConstants.PAYLOAD, payload);
+    return event;
+  }
+
+  public CreateDeleteStudentRecordEvent(studentName: string): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.DELETE_STUDENT_RECORD;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    event.setBodyProperty(EventConstants.STUDENT_NAME, studentName);
+    return event;
+  }
+
   public CreateEmailVerificationCodeResendEvent(emailVerificationCodeResendEvent: EmailVerificationCodeResendEvent): WebBaseEvent {
     let event: WebBaseEvent;
 
@@ -1041,7 +1084,7 @@ export class EventFactoryService {
     return event;
   }
 
-  public CreateCloseClaimFile(closeClaimfileForm: CloseClaimFileEvent, ClaimId: string): WebBaseEvent {
+  public CreateCloseClaimFile(closeClaimfileForm: CloseClaimFileEvent, ClaimId: string, userId: any): WebBaseEvent {
     let event: WebBaseEvent;
 
     event = new WebBaseEvent();
@@ -1056,7 +1099,8 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.AMOUNT_PAID, closeClaimfileForm.AmountPaid);
     event.setBodyProperty(EventConstants.PAYMENT_DATE, closeClaimfileForm.creditingDate);
     event.setBodyProperty(EventConstants.SAVINGS_INSTITUTION, closeClaimfileForm.AAsavingsPP);
-
+    event.setBodyProperty(EventConstants.FINAL_RATING, closeClaimfileForm.finalRating);
+    event.setBodyProperty(EventConstants.USER_ID, userId);
     return event;
   }
 

@@ -141,59 +141,59 @@ export class ResponseToPerformanceComponent implements OnDestroy {
   private ShowForm(): FormGroup {
     var fillForm = {} as PerformanceFreeProfessional;
     this.performanceAssigned$.subscribe(performance => {
+      console.log("This is the performance assigned", performance)
       fillForm = performance
     })
 
     this.justifyingDocument = fillForm.JustifyingDocument
 
-    let originalStartDate = fillForm.Start_Date;
+    let originalStartDate = fillForm.start_date;
     let formatedStartDate = this.datePipe.transform(originalStartDate, 'yyyy-MM-dd');
 
-    let originalEndDate = fillForm.End_Date;
+    let originalEndDate = fillForm.end_date;
     let formatedEndDate = this.datePipe.transform(originalEndDate, 'yyyy-MM-dd');
 
     const form = this.formBuilder.group({
       start_date: formatedStartDate,
       end_date: formatedEndDate,
-      freeProfessionalId: fillForm.FreeProfessionalId,
+      freeProfessionalId: fillForm.freeprofessionalassignedid,
       freeProfessionalCode: fillForm.FreeProfessionalAssignedCode,
       Summary: fillForm.SummaryTypeName,
       JustifyingDocument: fillForm.JustifyingDocument,
-      ForecastTravelExpenses: fillForm.ForecastTravelExpenses,
-      ForecastTravelTime: fillForm.ForecastTravelTime,
-      ForecastWorkHours: fillForm.ForecastWorkHours,
-      Totalforecastdata: fillForm.TotalForecastData
+      ForecastTravelExpenses: fillForm.estimated_transport_expenses,
+      ForecastTravelTime: fillForm.estimated_transport_hours,
+      ForecastWorkHours: fillForm.estimated_work_hours,
+      Totalforecastdata: fillForm.total_forecast_data
     });
     return form;
   }
 
   private FillResponsePerformanceForm(): FormGroup {
-    let originalDate = this.responseToPerformanceFreeProfessional.TD_Date;
-    let [day, month, year] = originalDate.split('/').map(Number);
-    let parsedDate = new Date(year, month - 1, day);
+    let originalDate = this.responseToPerformanceFreeProfessional.technicalDirectorDate;
+    let parsedDate = new Date(originalDate);
     let formatedDate = this.datePipe.transform(parsedDate, 'yyyy-MM-dd');
 
-    if (this.responseToPerformanceFreeProfessional.JustifyChangeEstimatedWorkHours != '') {
-      this.isWorkMore = true
+    if (this.responseToPerformanceFreeProfessional.justifyChangeEstimatedWorkHours != '') {
+      this.isWorkMore = true;
     }
 
-    if (this.responseToPerformanceFreeProfessional.Revised == 'True') {
+    if (this.responseToPerformanceFreeProfessional.revised) {
       this.isReviewPerformance = true;
       this.reviewPerformanceForm = this.formBuilder.group({
         TD_Date: formatedDate,
-        TD_WorkHours: this.responseToPerformanceFreeProfessional.TD_WorkHours,
-        AcceptIncreaseInHours: this.responseToPerformanceFreeProfessional.AcceptIncreaseInHours
+        TD_WorkHours: this.responseToPerformanceFreeProfessional.technicalDirectorWorkHours,
+        AcceptIncreaseInHours: this.responseToPerformanceFreeProfessional.acceptIncreaseInHours
       });
     }
 
-    this.DocumentIncreaseWorkingHours = this.responseToPerformanceFreeProfessional.DocumentIncreaseWorkingHours
+    this.DocumentIncreaseWorkingHours = this.responseToPerformanceFreeProfessional.documentIncreaseWorkingHours;
     const form = this.formBuilder.group({
-      FP_WorkHours: this.responseToPerformanceFreeProfessional.FP_WorkHours,
-      FP_TravelTime: this.responseToPerformanceFreeProfessional.FP_TravelTime,
-      FP_TravelExpenses: this.responseToPerformanceFreeProfessional.FP_TravelExpenses,
-      Total_FP: this.responseToPerformanceFreeProfessional.Total_FP,
-      JustifyChangeEstimatedWorkHours: this.responseToPerformanceFreeProfessional.JustifyChangeEstimatedWorkHours,
-      DocumentIncreaseWorkingHours: this.responseToPerformanceFreeProfessional.DocumentIncreaseWorkingHours
+      FP_WorkHours: this.responseToPerformanceFreeProfessional.freeProfessionalWorkHours,
+      FP_TravelTime: this.responseToPerformanceFreeProfessional.freeProfessionalTravelHours,
+      FP_TravelExpenses: this.responseToPerformanceFreeProfessional.freeProfessionalTravelExpenses,
+      Total_FP: this.responseToPerformanceFreeProfessional.totalFreeProfessionalData,
+      JustifyChangeEstimatedWorkHours: this.responseToPerformanceFreeProfessional.justifyChangeEstimatedWorkHours,
+      DocumentIncreaseWorkingHours: this.responseToPerformanceFreeProfessional.documentIncreaseWorkingHours
     });
 
     return form;
@@ -201,7 +201,7 @@ export class ResponseToPerformanceComponent implements OnDestroy {
 
   onSubmit(): void {
     this.checkWorkHours()
-    
+
     if (this.responsePerformanceForm.invalid) {
       this.responsePerformanceForm.markAllAsTouched();
       return;

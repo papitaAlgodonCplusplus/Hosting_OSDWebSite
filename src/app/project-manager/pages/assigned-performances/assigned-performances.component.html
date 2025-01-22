@@ -30,7 +30,7 @@
                         {{pf.End_Date | date:'dd-MM-yyyy'}}
                     </th>
                     <th class="border-y px-2 py-2">
-                        {{pf.SummaryTypeName}}
+                        {{pf.Summary}}
                     </th>
                     <td class="border-y px-2 py-2">
                         <button *ngIf="checkDateIsNotInFuture(pf.End_Date); else close" (click)="selectPerformance(pf)"

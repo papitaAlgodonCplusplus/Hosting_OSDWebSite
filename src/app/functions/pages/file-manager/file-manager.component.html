@@ -1,331 +1,447 @@
 <!-- Container to wrap everything, giving some spacing and a consistent layout -->
 <div class="container mx-auto p-6 space-y-6 text-darkslategray animate__animated animate__fadeInLeft">
 
-    <!-- Title Section -->
-    <div class="flex flex-col items-start">
-      <h2 class="text-xl font-medium py-3">
-        <span class="pl-5 pr-3 py-1 bg-yellow-500 rounded-r-full">
-          {{ 'reclamacion' | translate }}
-        </span>
-      </h2>
+  <!-- Title Section -->
+  <div class="flex flex-col items-start">
+    <h2 class="text-xl font-medium py-3">
+      <span class="pl-5 pr-3 py-1 bg-yellow-500 rounded-r-full">
+        {{ 'reclamacion' | translate }}
+      </span>
+    </h2>
+  </div>
+
+  <!-- Performance Buttons -->
+  <div class="flex justify-center py-3">
+    <div class="flex flex-col items-center space-y-3 p-3">
+      <!-- View Performance Button -->
+      <span
+        class="rounded-xl p-2 bg-darkslategray text-line font-bold cursor-pointer"
+        (click)="openPerformanceClaimsModal()"
+      >
+        {{ 'viewPerformance' | translate }}
+      </span>
+
+      <!-- New Performance Button (conditionally displayed) -->
+      <button
+        *ngIf="isAssignedClaim"
+        (click)="newPerformance()"
+        class="flex items-center space-x-2 hover:underline"
+        routerLink="/functions/claims-performance"
+      >
+        <span>{{ 'newAction' | translate }}</span>
+        <i class="fa-solid fa-chevron-right text-base animate-pulse"></i>
+      </button>
     </div>
-  
-    <!-- Performance Buttons -->
-    <div class="flex justify-center py-3">
-      <div class="flex flex-col items-center space-y-3 p-3">
-        <span
-          class="rounded-xl p-2 bg-darkslategray text-line font-bold cursor-pointer"
-          (click)="openPerformanceClaimsModal()"
-        >
-          {{ 'viewPerformance' | translate }}
-        </span>
-        <button
-          *ngIf="isAssignedClaim"
-          (click)="newPerformance()"
-          class="flex items-center space-x-2 hover:underline"
-          routerLink="/functions/claims-performance"
-        >
-          <span>{{ 'newAction' | translate }}</span>
-          <i class="fa-solid fa-chevron-right text-base animate-pulse"></i>
-        </button>
+  </div>
+
+  <!-- Main Form Section -->
+  <div class="bg-white-lightbone shadow-md rounded-xl p-5">
+    <form
+      [formGroup]="fileManager"
+      (ngSubmit)="onSubmit()"
+      autocomplete="off"
+      class="grid grid-cols-1 lg:grid-cols-2 gap-4"
+    >
+      <!-- Code Field -->
+      <div class="w-full border border-gray-300 rounded-md p-2">
+        <label class="block mb-1 font-medium">{{ 'Code' | translate }}</label>
+        <input
+          formControlName="code"
+          type="text"
+          class="w-full bg-white-lightbone"
+          [readonly]="true"
+          [placeholder]="this.claim?.code"
+        />
       </div>
-    </div>
-  
-    <!-- Main Form Section -->
-    <div class="bg-white-lightbone shadow-md rounded-xl p-5">
-      <form
-        [formGroup]="fileManager"
-        (ngSubmit)="onSubmit()"
-        autocomplete="off"
-        class="grid grid-cols-1 lg:grid-cols-2 gap-4"
-      >
-        <!-- Code Field -->
-        <div class="w-full border border-gray-300 rounded-md p-2">
-          <label class="block mb-1 font-medium">{{ 'Code' | translate }}</label>
-          <input
-            formControlName="code"
-            type="text"
-            class="w-full bg-white-lightbone"
-            [readonly]="true"
-            [placeholder]="this.claim?.code"
-          />
-        </div>
-  
-        <!-- Facts Field -->
-        <div class="col-span-1 lg:col-span-2 w-full border border-gray-300 rounded-md p-2">
-          <label class="block mb-1 font-medium">{{ 'facts' | translate }}</label>
-          <textarea
-            formControlName="facts"
-            class="w-full bg-white-lightbone"
-            [readonly]="true"
-            [placeholder]="this.claim?.facts"
-          ></textarea>
-        </div>
-  
-        <!-- Claimant Field -->
-        <div class="w-full border border-gray-300 rounded-md p-2">
-          <label class="block mb-1 font-medium">{{ 'reclamacion' | translate }}</label>
-          <input
-            formControlName="claimant"
-            type="text"
-            class="w-full bg-white-lightbone"
-            [readonly]="true"
-            [placeholder]="this.claim?.namecompanysubscriberclaimed"
-          />
-        </div>
-  
-        <!-- Status Field -->
-        <div class="w-full border border-gray-300 rounded-md p-2">
-          <label class="block mb-1 font-medium">{{ 'status' | translate }}</label>
-          <input
-            formControlName="state"
-            type="text"
-            class="w-full bg-white-lightbone"
-            [readonly]="true"
-            [placeholder]="this.claim?.status"
-          />
-        </div>
-  
-        <!-- Subscriber Field -->
-        <div class="w-full border border-gray-300 rounded-md p-2">
-          <label class="block mb-1 font-medium">{{ 'subscriber' | translate }}</label>
-          <input
-            formControlName="subscriber"
-            type="text"
-            class="w-full bg-white-lightbone"
-            [readonly]="true"
-            [placeholder]="this.claim?.subscriberclaimedid"
-          />
-        </div>
-  
-        <!-- Amount Claimed Field -->
-        <div class="w-full border border-gray-300 rounded-md p-2">
-          <label class="block mb-1 font-medium">{{ 'cuantia_reclamada' | translate }}</label>
-          <input
-            formControlName="amountClaimed"
-            type="text"
-            class="w-full bg-white-lightbone"
-            [readonly]="true"
-            [placeholder]="this.claim?.amountclaimed"
-          />
-        </div>
-  
-        <!-- Document Upload Fields -->
-        <div class="col-span-1 lg:col-span-2 flex flex-wrap justify-center py-3 space-x-3">
-          <!-- Document 1 -->
-          <div *ngIf="this.claim?.documentfile1id" class="flex flex-col items-start">
-            <label class="block mb-1 font-medium">{{ this.claim?.documentfile1name }}</label>
+
+      <!-- Facts Field -->
+      <div class="col-span-1 lg:col-span-2 w-full border border-gray-300 rounded-md p-2">
+        <label class="block mb-1 font-medium">{{ 'facts' | translate }}</label>
+        <textarea
+          formControlName="facts"
+          class="w-full bg-white-lightbone"
+          [readonly]="true"
+          [placeholder]="this.claim?.facts"
+        ></textarea>
+      </div>
+
+      <!-- Claimant Field -->
+      <div class="w-full border border-gray-300 rounded-md p-2">
+        <label class="block mb-1 font-medium">{{ 'reclamacion' | translate }}</label>
+        <input
+          formControlName="claimant"
+          type="text"
+          class="w-full bg-white-lightbone"
+          [readonly]="true"
+          [placeholder]="this.claim?.namecompanysubscriberclaimed"
+        />
+      </div>
+
+      <!-- Status Field -->
+      <div class="w-full border border-gray-300 rounded-md p-2">
+        <label class="block mb-1 font-medium">{{ 'status' | translate }}</label>
+        <input
+          formControlName="state"
+          type="text"
+          class="w-full bg-white-lightbone"
+          [readonly]="true"
+          [placeholder]="this.claim?.status"
+        />
+      </div>
+
+      <!-- Subscriber Field -->
+      <div class="w-full border border-gray-300 rounded-md p-2">
+        <label class="block mb-1 font-medium">{{ 'subscriber' | translate }}</label>
+        <input
+          formControlName="subscriber"
+          type="text"
+          class="w-full bg-white-lightbone"
+          [readonly]="true"
+          [placeholder]="this.claim?.subscriberclaimedid"
+        />
+      </div>
+
+      <!-- Amount Claimed Field -->
+      <div class="w-full border border-gray-300 rounded-md p-2">
+        <label class="block mb-1 font-medium">{{ 'cuantia_reclamada' | translate }}</label>
+        <input
+          formControlName="amountClaimed"
+          type="text"
+          class="w-full bg-white-lightbone"
+          [readonly]="true"
+          [placeholder]="this.claim?.amountclaimed"
+        />
+      </div>
+    </form>
+  </div>
+
+  <!-- Processor Form Section -->
+  <div class="bg-white-lightbone shadow-md rounded-xl p-5 mt-6">
+    <form
+      [formGroup]="closeClaimfileForm"
+      (ngSubmit)="closeClaimFileDirect()"
+      autocomplete="off"
+      class="grid grid-cols-1 lg:grid-cols-2 gap-4"
+    >
+      <div class="col-span-1 lg:col-span-2 border-b pb-3">
+        <h1 class="font-bold">{{ 'Processor' | translate }}</h1>
+      </div>
+
+      <div class="w-full border border-gray-300 rounded-md p-2">
+        <label class="block mb-1 font-medium">{{ 'amountPaidByOtherParty' | translate }}</label>
+        <input
+          formControlName="AmountPaid"
+          type="text"
+          class="w-full bg-white-lightbone"
+          [readonly]="user.AccountType != 'FreeProfessional' || !isTerminatedPerformance"
+          [placeholder]="this.claim?.amountpaid"
+        />
+      </div>
+
+      <div class="w-full border border-gray-300 rounded-md p-2">
+        <label class="block mb-1 font-medium">{{ 'institutionalImprovementSavings' | translate }}</label>
+        <input
+          formControlName="AAsavingsPP"
+          type="text"
+          class="w-full bg-white-lightbone"
+          [readonly]="user.AccountType != 'FreeProfessional' || !isTerminatedPerformance"
+          [placeholder]="this.claim?.improvementsavings"
+        />
+      </div>
+    </form>
+  </div>
+
+  <!-- Button Section -->
+  <div class="flex w-full justify-end p-2 space-x-3">
+    <button
+      routerLink="/functions/claims-file"
+      class="p-2 rounded-xl bg-line text-darkslategray font-medium animate__animated animate__fadeInDown"
+    >
+      {{ 'regresar' | translate }}
+    </button>
+
+    <!-- Instead of directly calling closeClaimFile(), open a "Finalize" modal to gather the rating -->
+    <button
+      (click)="openFinalizeModal()"
+      class="p-2 rounded-xl bg-darkslategray text-line font-medium animate__animated animate__fadeInDown"
+    >
+      {{ 'Finalizar expediente de reclamacion' | translate }}
+    </button>
+  </div>
+
+  <!-- Add Update Modal -->
+  <div *ngIf="showAddUpdateModal" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
+    <div class="bg-opacity-75 bg-black absolute inset-0"></div>
+    <div class="relative z-50 bg-white shadow-md rounded-xl p-3 w-11/12 lg:w-1/2">
+      <div class="p-3 flex flex-col items-center">
+        <h1 class="text-center text-darkslategray font-medium text-xl mb-3">
+          Add Update
+        </h1>
+
+        <!-- Modal Form -->
+        <form
+          [formGroup]="addUpdateForm"
+          class="w-full flex flex-col space-y-3"
+          (ngSubmit)="submitAddUpdate()"
+        >
+          <!-- Status Field -->
+          <div class="flex flex-col w-full">
+            <label for="performanceStatus" class="font-semibold mb-1">Status</label>
             <input
-              type="file"
-              class="border border-gray-300 rounded-md p-2 bg-white-lightbone"
-              [disabled]="true"
-              [placeholder]="this.claim?.documentfile1name"
+              formControlName="status"
+              id="performanceStatus"
+              class="border border-gray-300 rounded-md p-2"
+              type="text"
+              placeholder="Enter the new status here"
             />
           </div>
-  
-          <!-- Document 2 -->
-          <div *ngIf="this.claim?.documentfile2id" class="flex flex-col items-start">
-            <label class="block mb-1 font-medium">{{ this.claim?.documentfile2name }}</label>
+
+          <!-- Document Field -->
+          <div class="flex flex-col w-full">
+            <label for="performanceDocument" class="font-semibold mb-1">Document</label>
             <input
+              formControlName="document"
+              id="performanceDocument"
+              class="border border-gray-300 rounded-md p-2"
               type="file"
-              class="border border-gray-300 rounded-md p-2 bg-white-lightbone"
-              [disabled]="true"
-              [placeholder]="this.claim?.documentfile2name"
             />
           </div>
-        </div>
-      </form>
-    </div>
-  
-    <!-- Processor Form Section -->
-    <div class="bg-white-lightbone shadow-md rounded-xl p-5 mt-6">
-      <form
-        [formGroup]="closeClaimfileForm"
-        (ngSubmit)="closeClaimFile()"
-        autocomplete="off"
-        class="grid grid-cols-1 lg:grid-cols-2 gap-4"
-      >
-        <div class="col-span-1 lg:col-span-2 border-b pb-3">
-          <h1 class="font-bold">{{ 'Processor' | translate }}</h1>
-        </div>
-  
-        <div class="w-full border border-gray-300 rounded-md p-2">
-          <label class="block mb-1 font-medium">{{ 'amountPaidByOtherParty' | translate }}</label>
-          <input
-            formControlName="AmountPaid"
-            type="text"
-            class="w-full bg-white-lightbone"
-            [readonly]="user.AccountType != 'FreeProfessional' || !isTerminatedPerformance"
-            [placeholder]="this.claim?.amountpaid"
-          />
-        </div>
-  
-        <div class="w-full border border-gray-300 rounded-md p-2">
-          <label class="block mb-1 font-medium">{{ 'institutionalImprovementSavings' | translate }}</label>
-          <input
-            formControlName="AAsavingsPP"
-            type="text"
-            class="w-full bg-white-lightbone"
-            [readonly]="user.AccountType != 'FreeProfessional'  || !isTerminatedPerformance"
-            [placeholder]="this.claim?.improvementsavings"
-          />
-        </div>
-  
-        <div class="w-full border border-gray-300 rounded-md p-2">
-          <label class="block mb-1 font-medium">{{ 'creditingDate' | translate }}</label>
-          <input
-            formControlName="creditingDate"
-            type="date"
-            class="w-full bg-white-lightbone"
-            [readonly]="user.AccountType != 'FreeProfessional'  || !isTerminatedPerformance"
-            [placeholder]="this.claim?.creditingdate"
-          />
-        </div>
-      </form>
-    </div>
-  
-    <!-- Button Section -->
-    <div class="flex w-full justify-end p-2 space-x-3">
-      <button
-        routerLink="/functions/claims-file"
-        class="p-2 rounded-xl bg-line text-darkslategray font-medium animate__animated animate__fadeInDown"
-      >
-        {{ 'regresar' | translate }}
-      </button>
-      <button
-        *ngIf="user.AccountType == 'FreeProfessional' && isTerminatedPerformance"
-        (click)="closeClaimFile()"
-        class="p-2 rounded-xl bg-darkslategray text-line font-medium animate__animated animate__fadeInDown"
-      >
-        {{ 'Finalizar expediente de reclamacion' | translate }}
-      </button>
-    </div>
-  
-    <!-- Performance Modal -->
-    <div *ngIf="showModalPerformances" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
-      <div class="bg-opacity-75 bg-black absolute inset-0"></div>
-      <div class="relative z-50 bg-white shadow-md rounded-xl p-3 w-11/12 lg:w-3/4">
-        <div class="p-3 flex flex-col items-center space-y-3">
-          <table class="table-auto w-full">
-            <thead>
-              <tr class="text-darkslategray border-b">
-                <th class="py-2"></th>
-                <th class="py-2">{{ 'Code' | translate }}</th>
-                <th class="py-2">{{ 'Date' | translate }}</th>
-                <th class="py-2">{{ 'Type' | translate }}</th>
-                <th class="py-2">{{ 'status' | translate }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="border-t text-center" *ngFor="let performance of displayedItems; let i = index">
-                <td class="p-3">
-                  <button
-                    (click)="viewPerformance(performance)"
-                    class="text-darkslategray p-2 rounded-xl"
-                  >
-                    <i class="fa-solid fa-eye"></i>
-                  </button>
-                </td>
-                <td class="p-3">{{ performance.code }}</td>
-                <td class="p-3">{{ this.claim?.datecreated | date:'dd-MM-yyyy' }}</td>
-                <td class="p-3">{{ this.claim?.claimtype }}</td>
-                <td class="p-3">{{ performance.status | translate }}</td>
-              </tr>
-            </tbody>
-          </table>
-  
-          <mat-paginator
-            [length]="allPerformances.length"
-            [pageSize]="5"
-            (page)="onPageChange($event)"
-          ></mat-paginator>
-  
-          <div class="flex justify-end w-full">
+
+          <!-- Summary Field -->
+          <div class="flex flex-col w-full">
+            <label for="performanceSummary" class="font-semibold mb-1">Summary</label>
+            <textarea
+              formControlName="summary"
+              id="performanceSummary"
+              class="border border-gray-300 rounded-md p-2"
+              placeholder="Enter a short description or summary"
+            ></textarea>
+          </div>
+
+          <!-- Improvement/Savings Field -->
+          <div class="flex flex-col w-full">
+            <label for="improvementSavings" class="font-semibold mb-1">Improvement/Savings Inst/Entity</label>
+            <input
+              formControlName="improvementSavings"
+              id="improvementSavings"
+              class="border border-gray-300 rounded-md p-2"
+              type="number"
+              placeholder="Enter improvement/savings amount"
+            />
+          </div>
+
+          <!-- Amount Paid Field -->
+          <div class="flex flex-col w-full">
+            <label for="amountPaid" class="font-semibold mb-1">Amount paid by other party</label>
+            <input
+              formControlName="amountPaid"
+              id="amountPaid"
+              class="border border-gray-300 rounded-md p-2"
+              type="number"
+              placeholder="Enter amount paid"
+            />
+          </div>
+
+          <!-- Crediting Date Field -->
+          <div class="flex flex-col w-full">
+            <label for="creditingDate" class="font-semibold mb-1">Crediting Date</label>
+            <input
+              formControlName="creditingDate"
+              id="creditingDate"
+              class="border border-gray-300 rounded-md p-2"
+              type="date"
+            />
+          </div>
+
+          <!-- Submit / Cancel Buttons -->
+          <div class="flex justify-end space-x-3 mt-3">
             <button
-              (click)="closePerformanceModal()"
+              type="button"
+              (click)="closeAddUpdateModal()"
               class="p-2 rounded-xl bg-line text-darkslategray font-medium animate__animated animate__fadeInDown"
             >
-              {{ 'regresar' | translate }}
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="p-2 rounded-xl bg-darkslategray text-line font-medium animate__animated animate__fadeInDown"
+            >
+              Submit
             </button>
           </div>
-        </div>
+        </form>
       </div>
     </div>
-  
-    <!-- Ratings Modal -->
-    <div *ngIf="showModalRatings" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
-      <div class="bg-opacity-75 bg-black absolute inset-0"></div>
-      <div class="relative z-50 bg-white shadow-md rounded-xl p-3 w-11/12 lg:w-1/2">
-        <div class="p-3 flex flex-col items-center">
-          <form
-            [formGroup]="fileManager"
-            autocomplete="off"
-            class="w-full flex flex-col space-y-3"
-          >
-            <h1 class="text-center text-darkslategray font-medium">
-              {{ 'Valoration' | translate }}
-            </h1>
-            <div
-              class="flex flex-col lg:flex-row md:flex-row space-y-3 lg:space-y-0 md:space-y-0 lg:space-x-3 md:space-x-3 justify-center"
-            >
-              <div *ngIf="isSubscriber" class="flex flex-col w-full">
-                <label for="valuationSubscriber" class="font-semibold">
-                  {{ 'institutionOsdValuation' | translate }}
-                </label>
-                <input
-                  formControlName="valuationSubscriber"
-                  id="valuationSubscriber"
-                  class="border border-gray-300 rounded-md p-2"
-                  type="number"
-                  max="5"
-                  min="0"
-                  [placeholder]="this.claim?.valuationsubscriber"
-                />
-              </div>
-  
-              <div *ngIf="isClaimant" class="flex flex-col w-full">
-                <label for="valuationClaimant" class="font-semibold">
-                  {{ 'institutionClaimantRating' | translate }}
-                </label>
-                <input
-                  formControlName="valuationClaimant"
-                  id="valuationClaimant"
-                  class="border border-gray-300 rounded-md p-2"
-                  type="number"
-                  max="5"
-                  min="0"
-                  [placeholder]="this.claim?.valuationclaimant"
-                />
-              </div>
-  
-              <div *ngIf="isFreeProfessional" class="flex flex-col w-full">
-                <label for="valuationFreeProfessionals" class="font-semibold">
-                  {{ 'institutionValuationFreeOsdProfessionals' | translate }}
-                </label>
-                <input
-                  formControlName="valuationFreeProfessionals"
-                  id="valuationFreeProfessionals"
-                  class="border border-gray-300 rounded-md p-2"
-                  type="number"
-                  max="5"
-                  min="0"
-                  [placeholder]="this.claim?.valuationfreeprofessionals"
-                />
-              </div>
-            </div>
-  
-            <div class="flex justify-center">
-              <button
-                (click)="updateValuation()"
-                class="p-2 rounded-xl bg-darkslategray text-line font-medium animate__animated animate__fadeInDown"
-              >
-                {{ 'MakeAreview' | translate }}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  
   </div>
-  
+
+  <!-- Performance Modal -->
+  <div *ngIf="showModalPerformances" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
+    <div class="bg-opacity-75 bg-black absolute inset-0"></div>
+    <div class="relative z-50 bg-white shadow-md rounded-xl p-3 w-11/12 lg:w-3/4">
+      <div class="p-3 flex flex-col items-center space-y-3">
+        <table class="table-auto w-full">
+          <thead>
+            <tr class="text-darkslategray border-b">
+              <th class="py-2">{{ 'Code' | translate }}</th>
+              <th class="py-2">{{ 'Date' | translate }}</th>
+              <th class="py-2">{{ 'Type' | translate }}</th>
+              <th class="py-2">{{ 'status' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              class="border-t text-center"
+              *ngFor="let performance of displayedItems; let i = index"
+            >
+              <td class="p-3">{{ performance.code }}</td>
+              <td class="p-3">{{ claim?.datecreated | date:'dd-MM-yyyy' }}</td>
+              <td class="p-3">{{ claim?.claimtype }}</td>
+              <td class="p-3">{{ performance.status | translate }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <mat-paginator
+          [length]="allPerformances.length"
+          [pageSize]="5"
+          (page)="onPageChange($event)"
+        ></mat-paginator>
+
+        <div class="flex justify-end w-full space-x-3">
+          <button
+            (click)="openAddUpdateModal()"
+            class="p-2 rounded-xl bg-indigo-500 text-white font-medium animate__animated animate__fadeInDown"
+          >
+            Add Update
+          </button>
+          <button
+            (click)="closePerformanceModal()"
+            class="p-2 rounded-xl bg-line text-darkslategray font-medium animate__animated animate__fadeInDown"
+          >
+            {{ 'regresar' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Finalize Claim (Rating) Modal -->
+  <div *ngIf="showFinalizeModal" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
+    <div class="bg-opacity-75 bg-black absolute inset-0"></div>
+    <div class="relative z-50 bg-white shadow-md rounded-xl p-3 w-11/12 lg:w-1/2">
+      <div class="p-3 flex flex-col items-center">
+        <h1 class="text-center text-darkslategray font-medium text-xl mb-3">
+          {{ 'Finalizar Reclamación' | translate }}
+        </h1>
+        <p class="mb-2 text-sm text-gray-600">
+          {{ 'Califique la reclamación de 0 a 5 estrellas (0 = malo, 5 = excelente)' | translate }}
+        </p>
+
+        <!-- Finalize Form for rating -->
+        <form [formGroup]="finalizeForm" (ngSubmit)="submitFinalize()" class="w-full flex flex-col space-y-3">
+          <div class="flex flex-col w-full">
+            <label for="finalRating" class="font-semibold mb-1">Rating (0-5)</label>
+            <input
+              formControlName="finalRating"
+              id="finalRating"
+              type="number"
+              min="0"
+              max="5"
+              class="border border-gray-300 rounded-md p-2"
+              placeholder="e.g. 4"
+            />
+          </div>
+
+          <div class="flex justify-end space-x-3 mt-3">
+            <button
+              type="button"
+              (click)="closeFinalizeModal()"
+              class="p-2 rounded-xl bg-line text-darkslategray font-medium animate__animated animate__fadeInDown"
+            >
+              {{ 'Cancel' | translate }}
+            </button>
+            <button
+              type="submit"
+              class="p-2 rounded-xl bg-darkslategray text-line font-medium animate__animated animate__fadeInDown"
+            >
+              {{ 'Submit' | translate }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ratings Modal -->
+  <div *ngIf="showModalRatings" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
+    <div class="bg-opacity-75 bg-black absolute inset-0"></div>
+    <div class="relative z-50 bg-white shadow-md rounded-xl p-3 w-11/12 lg:w-1/2">
+      <div class="p-3 flex flex-col items-center">
+        <form [formGroup]="fileManager" autocomplete="off" class="w-full flex flex-col space-y-3">
+          <h1 class="text-center text-darkslategray font-medium">
+            {{ 'Valoration' | translate }}
+          </h1>
+
+          <div class="flex flex-col lg:flex-row md:flex-row space-y-3 lg:space-y-0 md:space-y-0 lg:space-x-3 md:space-x-3 justify-center">
+            <!-- Subscriber Valuation -->
+            <div *ngIf="isSubscriber" class="flex flex-col w-full">
+              <label for="valuationSubscriber" class="font-semibold">
+                {{ 'institutionOsdValuation' | translate }}
+              </label>
+              <input
+                formControlName="valuationSubscriber"
+                id="valuationSubscriber"
+                class="border border-gray-300 rounded-md p-2"
+                type="number"
+                max="5"
+                min="0"
+                [placeholder]="this.claim?.valuationsubscriber"
+              />
+            </div>
+
+            <!-- Claimant Valuation -->
+            <div *ngIf="isClaimant" class="flex flex-col w-full">
+              <label for="valuationClaimant" class="font-semibold">
+                {{ 'institutionClaimantRating' | translate }}
+              </label>
+              <input
+                formControlName="valuationClaimant"
+                id="valuationClaimant"
+                class="border border-gray-300 rounded-md p-2"
+                type="number"
+                max="5"
+                min="0"
+                [placeholder]="this.claim?.valuationclaimant"
+              />
+            </div>
+
+            <!-- Free Professional Valuation -->
+            <div *ngIf="isFreeProfessional" class="flex flex-col w-full">
+              <label for="valuationFreeProfessionals" class="font-semibold">
+                {{ 'institutionValuationFreeOsdProfessionals' | translate }}
+              </label>
+              <input
+                formControlName="valuationFreeProfessionals"
+                id="valuationFreeProfessionals"
+                class="border border-gray-300 rounded-md p-2"
+                type="number"
+                max="5"
+                min="0"
+                [placeholder]="this.claim?.valuationfreeprofessionals"
+              />
+            </div>
+          </div>
+
+          <div class="flex justify-center">
+            <button
+              (click)="updateValuation()"
+              class="p-2 rounded-xl bg-darkslategray text-line font-medium animate__animated animate__fadeInDown"
+            >
+              {{ 'MakeAreview' | translate }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

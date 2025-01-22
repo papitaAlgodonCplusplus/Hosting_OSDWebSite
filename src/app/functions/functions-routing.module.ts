@@ -12,9 +12,12 @@ import { AccountingComponent } from './pages/accounting/accounting.component';
 import { FileManagerComponent } from './pages/file-manager/file-manager.component';
 import { RestoreHistoryComponent } from './pages/restore-history/restore-history.component';
 import { AssignClientToTrainerComponent } from './pages/assign-client-to-trainer/assign-client-to-trainer.component';
+import { AccountingServicesComponent } from './pages/accounting-services/accounting-services.component';
 import { ClaimantAndClaimsCustomerPerformanceComponent } from './pages/claimant-and-claims-customer-performance/claimant-and-claims-customer-performance.component';
 import { ClaimsTrainerPerformanceComponent } from './pages/claims-trainer-performance/claims-trainer-performance.component';
 import { ClaimsProcessorPerformanceComponent } from './pages/claims-processor-performance/claims-processor-performance.component';
+import { FpManagementComponent } from './pages/fp-management/fp-management.component';
+
 
 const routes: Routes = [
   {
@@ -70,8 +73,16 @@ const routes: Routes = [
     component: RestoreHistoryComponent
   },
   {
-    path:'assign-client-to-Trainer',
+    path: 'assign-client-to-Trainer',
     component: AssignClientToTrainerComponent
+  },
+  {
+    path: 'accounting-services',
+    component: AccountingServicesComponent
+  },
+  {
+    path: 'fp-management',
+    component: FpManagementComponent
   }
 ];
 

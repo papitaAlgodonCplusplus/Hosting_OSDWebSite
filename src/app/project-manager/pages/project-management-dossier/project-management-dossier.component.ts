@@ -116,14 +116,15 @@ export class ProjectManagementDossierComponent implements OnDestroy {
   }
 
   private createForm(project: Project): FormGroup {
+    console.log(project)
     const form = this.formBuilder.group({
-      startDate: (project.StartDate ?? 0),
+      startDate: project.startdate ? new Date(project.startdate).toISOString().split('T')[0] : '',
       endDate: '',
       projectAmount: '€ ' + this.amountProject,
       expensesEmployeesVolunteers: '€ 0',
       supplierExpensesPurchases: '€ 0',
-      economicBudget: '€' + (project.EconomicBudget ?? 0),
-      expectedTimes: (project.ExpectedHours ?? 0) + ' ' + this.translate.instant('Hours')
+      economicBudget: '€' + (project.economic_budget ?? 0),
+      expectedTimes: (project.expected_hours ?? 0) + ' ' + this.translate.instant('Hours')
     });
     return form;
   }
@@ -166,8 +167,10 @@ export class ProjectManagementDossierComponent implements OnDestroy {
     const id = (event.target as HTMLSelectElement).value;
 
     setTimeout(() => {
-      const project = this.allProjects.find(element => element.Id === id);
+      console.log(id, this.allProjects)
+      const project = this.allProjects.find(element => element.id === id);
       if (project) {
+        console.log(project)
         this.formProjectManager = this.createForm(project);
         this.store.dispatch(PerformanceActions.setProjecTManagerId({ projectManagerId: project.Id }));
         this.projectSelected = project.Id;
