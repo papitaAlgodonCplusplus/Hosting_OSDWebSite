@@ -64,7 +64,6 @@ export class ClaimantClaimedOsdReportComponent implements OnInit, OnDestroy {
     this.osdDataService.getSubscribersSuccess$
       .subscribe(subscribers => {
         this.allSubscribers = subscribers;
-        console.log(subscribers);
         this.subscribers = subscribers.map(subscriber => ({
           value: subscriber.name,
           key: subscriber.name

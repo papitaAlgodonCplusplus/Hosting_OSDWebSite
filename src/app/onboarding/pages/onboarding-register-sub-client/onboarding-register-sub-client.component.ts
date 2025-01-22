@@ -132,9 +132,7 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
   }
 
   onSubmit(): void {
-    console.log('onSubmit called');
     if (this.personalForm.invalid || this.accountForm.invalid) {
-      console.log('Forms are invalid');
       this.accountForm.markAllAsTouched();
       this.personalForm.markAllAsTouched();
       const alertMessage = this.translate.currentLang === "en"
@@ -146,17 +144,13 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
     }
 
     if (this.personalForm.value.acceptConditions) {
-      console.log('Conditions accepted');
       this.isAcceptConditions = true;
     }
 
-    console.log('Toggling confirmation button');
     this.store.dispatch(UiActions.toggleConfirmationButton());
     const userEmail = this.personalForm.value.email;
-    console.log('User email:', userEmail);
     localStorage.setItem('userEmail', userEmail);
 
-    console.log('Dispatching user registration');
     // Include both accountForm and personalForm values in the registration call
     this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.SUBSCRIBER_CUSTOMER)
       .subscribe(() => {

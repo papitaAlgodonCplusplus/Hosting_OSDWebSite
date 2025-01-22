@@ -40,10 +40,8 @@ export class RestAPIService {
   }
   
   SendOSDEvent(jsonEvent: any): Observable<any> {
-    console.log('Sending OSDEvent:', jsonEvent);
     return this.http.post(`${this.apiUrl}/events/processOSDEvent`, jsonEvent).pipe(
       map((response: any) => {
-        console.log('OSDEvent response:', response);
         // Check for logical errors in the response
         if (response.Body?.ActionRegisterSuccess === false) {
           console.error('SendOSDEvent logic error:', response.Body.ActionRegisterResultMessage);

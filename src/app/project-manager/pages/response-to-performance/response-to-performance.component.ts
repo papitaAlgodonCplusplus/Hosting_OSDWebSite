@@ -141,7 +141,6 @@ export class ResponseToPerformanceComponent implements OnDestroy {
   private ShowForm(): FormGroup {
     var fillForm = {} as PerformanceFreeProfessional;
     this.performanceAssigned$.subscribe(performance => {
-      console.log("This is the performance assigned", performance)
       fillForm = performance
     })
 

@@ -303,7 +303,6 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
             this.osdEventService.professorRegister(this.accountForm.value, this.personalForm.value, EventConstants.FREE_PROFESSIONAL)
               .subscribe({
                 next: (res: any) => {
-                  console.log("Professor registered successfully:", res);
                   this.router.navigate(['/auth']);
                 },
                 error: (err: any) => {
@@ -326,7 +325,6 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
       this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.FREE_PROFESSIONAL)
         .subscribe({
           next: (response: any) => {
-            console.log("User registered successfully:", response);
             this.router.navigate(['/auth']);
           },
           error: (error: any) => {

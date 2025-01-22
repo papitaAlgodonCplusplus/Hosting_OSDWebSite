@@ -92,7 +92,6 @@ app.get('/get-download-url', async (req, res) => {
     // Formar la URL de descarga
     const finalDownloadUrl = `${downloadUrl}/file/${bucketName}/${encodeURIComponent(fileName)}`;
 
-    console.log(`URL de descarga formada: ${finalDownloadUrl}`);
 
     // Enviar la URL de descarga de vuelta al frontend
     res.json({ downloadUrl: finalDownloadUrl, fileName });
@@ -163,5 +162,4 @@ app.post('/delete-file', async (req, res) => {
 // Iniciar el servidor
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Servidor corriendo en el puerto ${PORT}`);
 });

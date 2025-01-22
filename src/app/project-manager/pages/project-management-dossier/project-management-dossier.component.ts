@@ -116,7 +116,6 @@ export class ProjectManagementDossierComponent implements OnDestroy {
   }
 
   private createForm(project: Project): FormGroup {
-    console.log(project)
     const form = this.formBuilder.group({
       startDate: project.startdate ? new Date(project.startdate).toISOString().split('T')[0] : '',
       endDate: '',
@@ -167,10 +166,8 @@ export class ProjectManagementDossierComponent implements OnDestroy {
     const id = (event.target as HTMLSelectElement).value;
 
     setTimeout(() => {
-      console.log(id, this.allProjects)
       const project = this.allProjects.find(element => element.id === id);
       if (project) {
-        console.log(project)
         this.formProjectManager = this.createForm(project);
         this.store.dispatch(PerformanceActions.setProjecTManagerId({ projectManagerId: project.Id }));
         this.projectSelected = project.Id;

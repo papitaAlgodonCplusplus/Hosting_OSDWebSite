@@ -18,7 +18,6 @@ export class LoggingService {
     };
 
     this.osdService.logEvent(logData).subscribe({
-      next: () => console.log('Log data sent to server'),
     });
   }
 }

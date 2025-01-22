@@ -203,7 +203,6 @@ export class OnboardingRegisterCfhComponent {
           invalidFields.push(key);
         }
       });
-      console.log('Invalid fields:', invalidFields);
 
       // Show error modal
       const msgEn = "There are missing fields to fill out";
@@ -224,7 +223,6 @@ export class OnboardingRegisterCfhComponent {
     this.store.dispatch(UiActions.toggleConfirmationButton());
 
     // For debugging: 
-    console.log('personalForm:', this.personalForm.value);
 
     const userEmail = this.personalForm.value.email;
     localStorage.setItem('userEmail', userEmail);
@@ -235,7 +233,6 @@ export class OnboardingRegisterCfhComponent {
       EventConstants.APPROVED_TRAINING_CENTER
     ).subscribe({
       next: (response: any) => {
-        console.log("User registered successfully:", response);
         this.router.navigate(['/auth']);
       },
       error: (error: any) => {

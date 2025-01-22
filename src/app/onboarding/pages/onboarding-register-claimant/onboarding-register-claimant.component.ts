@@ -181,7 +181,6 @@ export class OnboardingRegisterClaimantComponent {
     setTimeout(() => {
       if (this.selectorRegistry) {
         this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, "Claimant").subscribe(() => {
-          console.log("User registered");
           setTimeout(() => {
           // Wait 5 seconds for database update
           }, 5000);
@@ -190,7 +189,6 @@ export class OnboardingRegisterClaimantComponent {
       if (this.personalForm.value.identity) {
         this.accountForm.addControl(EventConstants.CLAIMANT_ID, new FormControl(this.personalForm.value.identity));
       } else if (this.user) {
-        console.log(this.user);
         this.accountForm.addControl(EventConstants.EMAIL, new FormControl(this.user.email));
       }
       this.osdEventService.addClaim(this.accountForm.value).subscribe(() => {

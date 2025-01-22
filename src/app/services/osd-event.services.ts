@@ -279,7 +279,6 @@ export class OSDService {
   }
 
   public addClaim(claimForm: Form): Observable<any> {
-    console.log("CLAIM FORM", claimForm)
     const addClaimEvent: WebBaseEvent = this.eventFactoryService.CreateAddClaimEvent(claimForm);
     return new Observable((observer) => {
       this.restApiService.SendOSDEvent(addClaimEvent).subscribe({
@@ -311,7 +310,6 @@ export class OSDService {
 
   public performanceBuy(performanceForm: PerformanceBuy, projectManagerId: string, documentBase64: string) {
     const performanceBuyEvent: WebBaseEvent = this.eventFactoryService.CreatePerformanceBuyEvent(performanceForm, projectManagerId, documentBase64);
-    console.log(performanceBuyEvent)
     this.restApiService.SendOSDEvent(performanceBuyEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
@@ -325,7 +323,6 @@ export class OSDService {
 
   public modifyPerformanceBuy(performanceForm: PerformanceBuy, projectManagerId: string, performanceId: string) {
     const performanceBuyEvent: WebBaseEvent = this.eventFactoryService.CreateModifyPerformanceBuyEvent(performanceForm, projectManagerId, performanceId);
-    console.log(performanceBuyEvent)
     this.restApiService.SendOSDEvent(performanceBuyEvent).subscribe({
       next: (response) => {
         var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
@@ -842,7 +839,6 @@ export class OSDService {
   public createClaimantAndClaimsCustomerPerformance(performance: ClaimantAndClaimsCustomerPerformance, claimId: string, userTypePerformance: string, documentBase64: string): Observable<any> {
     return new Observable((observer) => {
       const createClaimantAndClaimsCustomerPerformanceEvent: WebBaseEvent = this.eventFactoryService.CreateClaimantAndClaimsCustomerPerformance(performance, claimId, userTypePerformance, documentBase64);
-      console.log(createClaimantAndClaimsCustomerPerformanceEvent)
       this.restApiService.SendOSDEvent(createClaimantAndClaimsCustomerPerformanceEvent).subscribe({
         next: (response) => {
           var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
@@ -1056,7 +1052,6 @@ export class OSDService {
 
   public GetTransparencyReportsSubscriberClientsResponse(webBaseEvent: WebBaseEvent) {
     try {
-      console.log(webBaseEvent)
       var TransparencyReportsSubscriberClientList = webBaseEvent.getBodyProperty("claims");
 
       if (TransparencyReportsSubscriberClientList.length > 0) {
@@ -1089,7 +1084,6 @@ export class OSDService {
 
   public GetTransparencyReportsIncomeExpensesResponse(webBaseEvent: WebBaseEvent) {
     try {
-      console.log("TransparencyReportsIncomeExpensesResponse", webBaseEvent)
       var totalOsdIncomeExpenses = webBaseEvent.getBodyProperty("economicResultReportDTO");
 
       if (totalOsdIncomeExpenses != null) {
@@ -1427,7 +1421,6 @@ export class OSDService {
     var summaryTypesPerformanceBuyList: SummaryTypes[];
 
     try {
-      console.log(webBaseEvent)
       summaryTypesPerformanceFreeProfessionalList = webBaseEvent.getBodyProperty(EventConstants.SUMMARY_TYPES_PERFORMANCE_FREEPROFESSIONAL_LIST);
       summaryTypesPerformanceBuyList = webBaseEvent.getBodyProperty(EventConstants.SUMMARY_TYPES_PERFORMANCE_BUY_LIST);
 
@@ -1546,7 +1539,6 @@ export class OSDService {
 
   public HandleGetCFHReportsResponse(webBaseEvent: WebBaseEvent) {
     try {
-      console.log("Reports", webBaseEvent)
       const reports = webBaseEvent.getBodyProperty(EventConstants.CFH_REPORTS);
       if (reports && reports.length > 0) {
         this.osdDataService.emitCFHReportsSuccess(reports);
@@ -1564,7 +1556,6 @@ export class OSDService {
       professionalFreeTrainers = webBaseEvent.getBodyProperty(EventConstants.PROFESSIONAL_FREE_TRAINERS_LIST);
       if (professionalFreeTrainers.length > 0) {
         this.osdDataService.emitProfessionalFreeTrainersListSuccess(professionalFreeTrainers)
-        console.log(professionalFreeTrainers)
       }
       else {
         //TODO: NOT EXISTS PROFESSIONALS FREE BUT IS NECESSARY CATCH ERRORS
@@ -1592,7 +1583,6 @@ export class OSDService {
   public HandleAddResponseToPerformanceAssignedResponse(webBaseEvent: WebBaseEvent) {
     let message: string;
     try {
-      console.log(webBaseEvent)
       message = webBaseEvent.getBodyProperty(EventConstants.ACTION_OSD_RESULT_MESSAGE);
       if (message) {
         if (this.translate.currentLang == "en") {

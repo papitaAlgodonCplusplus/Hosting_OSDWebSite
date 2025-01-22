@@ -270,7 +270,6 @@ export class CreatePerformancesComponent {
   modifyPerformance(): void {
     if (this.performanceForm.invalid) {
       this.performanceForm.markAllAsTouched();
-      console.log("Invalid form fields:", this.getInvalidFields());
       return;
     }
     this.OSDEventService.modifyPerformanceFreeProfessional(this.performanceForm.value, this.projectManagerSelected, this.performanceFP.id);

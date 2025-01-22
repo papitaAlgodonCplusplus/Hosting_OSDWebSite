@@ -94,7 +94,6 @@ export class AssignClientToTrainerComponent implements OnDestroy {
   }
 
   selectTrainer(freeProfessionalId: string) {
-    console.log("Subscriber: " + this.subscribersSelected + " Trainer: " + freeProfessionalId)
     this.store.dispatch(UiActions.toggleConfirmationButton())
     this.showModal = !this.showModal
     this.osdEventService.assignTrainerToSubscriber(this.subscribersSelected, freeProfessionalId)

@@ -14,7 +14,6 @@ export class AuthInterceptorService implements HttpInterceptor {
   intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
 
     // Log that the request has passed through the authentication interceptor.
-    console.log("Passed for authentication interceptor");
 
     // Handle the request and add error handling using RxJS operators.
     return next.handle(req).pipe(

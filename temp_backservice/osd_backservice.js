@@ -53,7 +53,6 @@ app.post('/api/control/connect', async (req, res) => {
       timestamp: new Date().toISOString(),
     });
 
-    console.log('✅ API connection successful');
   } catch (error) {
     console.error('❌ Database connection failed:', error);
 
@@ -66,10 +65,8 @@ app.post('/api/control/connect', async (req, res) => {
 
 // Unified Event Handler
 app.post('/api/events/processOSDEvent', async (req, res) => {
-  console.log('📡 Processing OSD Event');
   const event = req.body;
   const action = event.Body?.Action;
-  console.log(`🔔 Body: ${JSON.stringify(event.Body, null, 2)} Action: ${action}`);
   try {
     switch (action) {
       case 'UserLogin':
@@ -245,7 +242,6 @@ app.post('/api/events/processOSDEvent', async (req, res) => {
 app.post('/api/check-approval', async (req, res) => {
   try {
     const { email, course_id } = req.body;
-    console.log(`🔍 Checking approval for email: ${email} and course_id: ${course_id}`);
     if (!email || !course_id) {
       return res.status(400).json({
         success: false,
@@ -264,14 +260,12 @@ app.post('/api/check-approval', async (req, res) => {
 
     const result = await pool.query(approvalQuery, [email, course_id]);
     if (result.rows.length === 0) {
-      console.log('❌ User is not approved for this course.');
       return res.status(200).json({
         approved: false,
         message: 'User is not approved for the selected course.'
       });
     }
 
-    console.log('✅ User is approved for this course.');
     return res.status(200).json({
       approved: true,
       message: 'User is approved for the selected course.'
@@ -290,7 +284,6 @@ const handleUserLogin = async (event, res) => {
   const email = event.Body?.Email;
   const password = event.Body?.Password;
 
-  console.log(`🔑 Attempting login for email: ${email}`);
 
   if (!email || !password) {
     return res.status(400).json(createWebBaseEvent({
@@ -362,7 +355,6 @@ const handleAddFreeProfessionalToCFH = async (event, res) => {
       }, event.SessionKey, event.SecurityToken, 'AddFreeProfessionalToCFH'));
     }
 
-    console.log(`🔍 Fetching user with email: ${CfhId}`);
 
     const userQuery = await pool.query(
       'SELECT id FROM osduser WHERE email = $1',
@@ -378,7 +370,6 @@ const handleAddFreeProfessionalToCFH = async (event, res) => {
 
     const userId = userQuery.rows[0].id;
 
-    console.log(`🔍 Inserting FreeProfessionalId: ${FreeProfessionalId} for userId: ${userId}`);
 
     const updateQuery = `
       UPDATE freeprofessional
@@ -390,41 +381,34 @@ const handleAddFreeProfessionalToCFH = async (event, res) => {
     const updateResult = await pool.query(updateQuery, [FreeProfessionalId, userId]);
 
     if (updateResult.rows.length === 0) {
-      console.log('❌ FreeProfessional not found or update failed.', updateResult);
       return res.status(404).json(createWebBaseEvent({
         ADD_FREE_PROFESSIONAL_TO_CFH_SUCCESS: false,
         ADD_FREE_PROFESSIONAL_TO_CFH_MESSAGE: 'FreeProfessional not found or update failed.',
       }, event.SessionKey, event.SecurityToken, 'AddFreeProfessionalToCFH'));
     }
 
-    console.log(`✅ FreeProfessional added to CFH successfully: ${JSON.stringify(updateResult.rows[0], null, 2)}`);
 
     const NewUserId = updateResult.rows[0].cfh_id;
-    console.log(`🔍 Checking if user with ID: ${NewUserId} is a subscriber customer.`);
     const subscriberCustomerQuery = `
       SELECT id FROM subscribercustomer WHERE id = $1
     `;
     const subscriberCustomerResult = await pool.query(subscriberCustomerQuery, [NewUserId]);
 
     if (subscriberCustomerResult.rows.length === 0) {
-      console.log(`🔍 User with ID: ${NewUserId} is not a subscriber customer. Inserting into subscribercustomer.`);
       const insertSubscriberCustomerQuery = `
       INSERT INTO subscribercustomer (id, userid, clienttype)
       VALUES ($1, $2, 'Subscriber')
       `;
       await pool.query(insertSubscriberCustomerQuery, [NewUserId, NewUserId]);
     } else {
-      console.log(`✅ User with ID: ${NewUserId} is already a subscriber customer.`);
     }
 
-    console.log(`🔍 Checking if FreeProfessional with ID: ${userId} exists.`);
     const freeProfessionalQuery = `
       SELECT id FROM freeprofessional WHERE userid = $1
     `;
     const freeProfessionalResult = await pool.query(freeProfessionalQuery, [userId]);
 
     if (freeProfessionalResult.rows.length === 0) {
-      console.log(`❌ FreeProfessional with ID: ${userId} not found.`);
       return res.status(404).json(createWebBaseEvent({
         ADD_FREE_PROFESSIONAL_TO_CFH_SUCCESS: false,
         ADD_FREE_PROFESSIONAL_TO_CFH_MESSAGE: 'FreeProfessional not found.',
@@ -433,7 +417,6 @@ const handleAddFreeProfessionalToCFH = async (event, res) => {
 
     const NewFreeProfessionalId = freeProfessionalResult.rows[0].id;
 
-    console.log(`🔍 Inserting FreeProfessional with ID: ${NewFreeProfessionalId} into subscribercustomerfreeprofessionalprocessor for user ID: ${NewUserId}.`);
     const insertProcessorQuery = `
       INSERT INTO subscribercustomerfreeprofessionalprocessor (id, subscribercustomerid, freeprofessionalid)
       VALUES ($1, $2, $3)
@@ -445,7 +428,6 @@ const handleAddFreeProfessionalToCFH = async (event, res) => {
       NewFreeProfessionalId
     ]);
 
-    console.log('✅ FreeProfessional added to subscribercustomerfreeprofessionalprocessor successfully.');
 
     const updateClaimFileQuery = `
       UPDATE claim_file
@@ -455,7 +437,6 @@ const handleAddFreeProfessionalToCFH = async (event, res) => {
 
     await pool.query(updateClaimFileQuery, [NewFreeProfessionalId, NewUserId]);
 
-    console.log('✅ Updated claim_file table with new processor_id.');
 
     return res.status(200).json(createWebBaseEvent({
       ADD_FREE_PROFESSIONAL_TO_CFH_SUCCESS: true,
@@ -483,7 +464,6 @@ const handleGetFreeProfessionalsByCFHId = async (event, res) => {
       }, event.SessionKey, event.SecurityToken, 'GetFreeProfessionalsByCFHId'));
     }
 
-    console.log(`🔍 Fetching free professionals with CFH ID: ${cfhId}`);
 
     const query = `
       SELECT 
@@ -517,7 +497,6 @@ const handleGetFreeProfessionalsByCFHId = async (event, res) => {
       }, event.SessionKey, event.SecurityToken, 'GetFreeProfessionalsByCFHId'));
     }
 
-    console.log(`📄 Retrieved free professionals: ${JSON.stringify(result.rows, null, 2)}`);
 
     return res.status(200).json(createWebBaseEvent({
       GET_FREE_PROFESSIONALS_BY_CFHID_SUCCESS: true,
@@ -548,16 +527,13 @@ const handleGetTransparencyReportsIncomeExpenses = async (event, res) => {
       Numberfiles: 0
     };
 
-    console.log('⚙️ Starting handleGetTransparencyReportsIncomeExpenses with:', event);
     const { country, SubscriberId } = event.Body;
 
     if (country && !SubscriberId) {
-      console.log('📝 Getting all users for country:', country);
       const usersResult = await pool.query(`SELECT id FROM osduser WHERE country = $1`, [country]);
 
       if (usersResult.rows.length > 0) {
         const osdUsers = usersResult.rows;
-        console.log(`🔎 Found ${osdUsers.length} user(s) in country: ${country}`);
         let subscriberCustomers = [];
 
         for (const user of osdUsers) {
@@ -568,7 +544,6 @@ const handleGetTransparencyReportsIncomeExpenses = async (event, res) => {
         }
 
         if (subscriberCustomers.length > 0) {
-          console.log(`🔎 Found ${subscriberCustomers.length} subscriberCustomer(s) for those users.`);
           for (const sub of subscriberCustomers) {
             const claimResult = await pool.query(`
               SELECT id, amountclaimed, amountpaid, improvementsavings 
@@ -582,7 +557,6 @@ const handleGetTransparencyReportsIncomeExpenses = async (event, res) => {
         }
       }
     } else if (SubscriberId) {
-      console.log('📝 Getting all completed claims for subscriber:', SubscriberId);
       const claimResult = await pool.query(`
         SELECT id, amountclaimed, amountpaid, improvementsavings 
         FROM claim_file 
@@ -590,7 +564,6 @@ const handleGetTransparencyReportsIncomeExpenses = async (event, res) => {
       `, [SubscriberId]);
       claimList = claimResult.rows;
     } else {
-      console.log('📝 Getting all completed claims, no country/subscriber filter.');
       const claimResult = await pool.query(`
         SELECT id, amountclaimed, amountpaid, improvementsavings 
         FROM claim_file 
@@ -599,10 +572,8 @@ const handleGetTransparencyReportsIncomeExpenses = async (event, res) => {
       claimList = claimResult.rows;
     }
 
-    console.log(`✅ Total claims found: ${claimList.length}`);
 
     for (const claim of claimList) {
-      console.log('📝 Processing claim:', claim);
       const improvementSavings = Number(claim.improvementsavings) || 0;
       const amountClaimed = Number(claim.amountclaimed) || 0;
       const amountPaid = Number(claim.amountpaid) || 0;
@@ -621,7 +592,6 @@ const handleGetTransparencyReportsIncomeExpenses = async (event, res) => {
 
     economicResultReportDTO.Numberfiles = claimList.length;
 
-    console.log('🚀 Final economicResultReportDTO:', economicResultReportDTO);
 
     return res.status(200).json(
       createWebBaseEvent({
@@ -650,7 +620,6 @@ const handleGetTransparencyReportsIncomeExpenses = async (event, res) => {
 
 const handleGetTransparencyReportsSubscriberClients = async (event, res) => {
   try {
-    console.log('🔍 Fetching all claims from claim_file');
 
     const claimsQuery = `
       SELECT 
@@ -706,7 +675,6 @@ const handleGetTransparencyReportsSubscriberClients = async (event, res) => {
       }, event.SessionKey, event.SecurityToken, 'GetClaims'));
     }
 
-    console.log(`📄 Retrieved claims: ${JSON.stringify(claimsResult.rows, null, 2)}`);
 
     return res.status(200).json(createWebBaseEvent({
       GET_CLAIMS_SUCCESS: true,
@@ -734,7 +702,6 @@ const HandleGetPerformanceAssignedById = async (event, res) => {
       }, event.SessionKey, event.SecurityToken, 'GetPerformanceAssignedById'));
     }
 
-    console.log(`🔍 Fetching free professional ID for user with ID: ${userId}`);
 
     const freeProfessionalQuery = await pool.query(
       'SELECT id FROM freeprofessional WHERE userid = $1',
@@ -749,7 +716,6 @@ const HandleGetPerformanceAssignedById = async (event, res) => {
     }
 
     const freeProfessionalId = freeProfessionalQuery.rows[0].id;
-    console.log(`🔍 Free professional ID: ${freeProfessionalId}`);
 
     const performanceQuery = `
       SELECT 
@@ -783,7 +749,6 @@ const HandleGetPerformanceAssignedById = async (event, res) => {
       }, event.SessionKey, event.SecurityToken, 'GetPerformanceAssignedById'));
     }
 
-    console.log(`📄 Retrieved performance records: ${JSON.stringify(performanceResult.rows, null, 2)}`);
 
     return res.status(200).json(createWebBaseEvent({
       GET_PERFORMANCE_ASSIGNED_BY_ID_SUCCESS: true,
@@ -802,7 +767,6 @@ const HandleGetPerformanceAssignedById = async (event, res) => {
 
 const handleGetProjects = async (event, res) => {
   try {
-    console.log('🔍 Fetching all project details');
 
     const projectQuery = `
       SELECT id, objective AS "Objective", startdate, enddate, expensesemployeesvolunteers, 
@@ -819,7 +783,6 @@ const handleGetProjects = async (event, res) => {
       }, event.SessionKey, event.SecurityToken, 'GetProjects'));
     }
 
-    console.log(`📄 Retrieved project details: ${JSON.stringify(projectResult.rows, null, 2)}`);
 
     return res.status(200).json(createWebBaseEvent({
       GET_PROJECTS_SUCCESS: true,
@@ -847,7 +810,6 @@ const handleGetClaims = async (event, res) => {
       }, event.SessionKey, event.SecurityToken, 'GettingClaims'));
     }
 
-    console.log(`🔍 Fetching claims for user with ID: ${userId}`);
     const claimsQuery = `
     SELECT cf.*, u.accounttype, u.identity, u.name, u.firstsurname, u.middlesurname, u.city, 
            u.companyname, u.address, u.zipcode, u.country, u.landline, u.mobilephone, u.email, 
@@ -873,7 +835,6 @@ const handleGetClaims = async (event, res) => {
       }, event.SessionKey, event.SecurityToken, 'GettingClaims'));
     }
 
-    console.log(`📄 Retrieved claims: ${JSON.stringify(claimsResult.rows, null, 2)}`);
 
     return res.status(200).json(createWebBaseEvent({
       GET_CLAIMS_SUCCESS: true,
@@ -901,7 +862,6 @@ const handleGetUserById = async (event, res) => {
       }, event.SessionKey, event.SecurityToken, 'GetUserById'));
     }
 
-    console.log(`🔍 Fetching user with ID: ${userId}`);
 
     const userQuery = await pool.query(
       `SELECT id, code, accounttype, identity, name, firstsurname, middlesurname, city, companyname, address, zipcode, country, landline, mobilephone, email, password, web, isauthorized, isadmin FROM osduser WHERE id = $1`,
@@ -939,7 +899,6 @@ const handleUpdateStudentRecords = async (event, res) => {
     const studentGrade = event.Body?.StudentGrade;
     const studentStatus = event.Body?.StudentStatus;
 
-    console.log(`🔄 Updating record for student: ${studentName}`);
 
     // Validate required fields
     if (!studentName || studentAttendance === undefined || !studentGrade || !studentStatus) {
@@ -956,7 +915,6 @@ const handleUpdateStudentRecords = async (event, res) => {
     );
 
     if (studentQuery.rows.length === 0) {
-      console.log('❌ Student not found.');
       return res.status(404).json({
         success: false,
         message: 'Student not found.'
@@ -983,7 +941,6 @@ const handleUpdateStudentRecords = async (event, res) => {
       studentId
     ]);
 
-    console.log('✅ Student record updated successfully.');
 
     return res.status(200).json({
       success: true,
@@ -1002,7 +959,6 @@ const handleUpdateStudentRecords = async (event, res) => {
 const handleAddResponseToPerformanceAssigned = async (event, res) => {
   try {
     const addResponsePerformanceAssignedEvent = event.Body;
-    console.log('🔍 Fetching free professional ID for user with ID:', addResponsePerformanceAssignedEvent.UserId);
 
     const freeProfessionalQuery = await pool.query(
       'SELECT id FROM freeprofessional WHERE userid = $1',
@@ -1010,7 +966,6 @@ const handleAddResponseToPerformanceAssigned = async (event, res) => {
     );
 
     if (freeProfessionalQuery.rows.length === 0) {
-      console.log('❌ Free professional not found.');
       return res.status(404).json(createWebBaseEvent({
         ADD_RESPONSE_PERFORMANCE_ASSIGNED_SUCCESS: false,
         ADD_RESPONSE_PERFORMANCE_ASSIGNED_MESSAGE: 'Free professional not found.',
@@ -1018,16 +973,13 @@ const handleAddResponseToPerformanceAssigned = async (event, res) => {
     }
 
     const freeProfessionalId = freeProfessionalQuery.rows[0].id;
-    console.log('✅ Free professional ID:', freeProfessionalId);
 
-    console.log('🔍 Fetching performance free professional with ID:', addResponsePerformanceAssignedEvent.PerformanceAssignedId);
     const performanceFreeProfessionalQuery = await pool.query(
       'SELECT id, code FROM performance_freeprofessional WHERE id = $1',
       [addResponsePerformanceAssignedEvent.PerformanceAssignedId]
     );
 
     if (performanceFreeProfessionalQuery.rows.length === 0) {
-      console.log('❌ Performance free professional not found.');
       return res.status(404).json(createWebBaseEvent({
         ADD_RESPONSE_PERFORMANCE_ASSIGNED_SUCCESS: false,
         ADD_RESPONSE_PERFORMANCE_ASSIGNED_MESSAGE: 'Performance free professional not found.',
@@ -1035,16 +987,13 @@ const handleAddResponseToPerformanceAssigned = async (event, res) => {
     }
 
     const performanceFreeProfessional = performanceFreeProfessionalQuery.rows[0];
-    console.log('✅ Performance free professional:', performanceFreeProfessional);
 
-    console.log('🔍 Fetching count of project performance free professional assigned for performance ID:', performanceFreeProfessional.id);
     const projectPerformanceFreeProfessionalAssignedCountQuery = await pool.query(
       'SELECT COUNT(*) FROM project_performance_freeprofessional_assigned WHERE performanceid = $1',
       [performanceFreeProfessional.id]
     );
 
     const projectPerformanceFreeProfessionalAssignedCount = parseInt(projectPerformanceFreeProfessionalAssignedCountQuery.rows[0].count, 10);
-    console.log('✅ Count of project performance free professional assigned:', projectPerformanceFreeProfessionalAssignedCount);
 
     const projectPerformanceFreeProfessionalAssigned = {
       id: uuidv4(),
@@ -1059,7 +1008,6 @@ const handleAddResponseToPerformanceAssigned = async (event, res) => {
       documentincreaseworkinghours: addResponsePerformanceAssignedEvent.DocumentIncreaseWorkingHours
     };
 
-    console.log('💾 Inserting project performance free professional assigned:', projectPerformanceFreeProfessionalAssigned);
     await pool.query(
       `INSERT INTO project_performance_freeprofessional_assigned (
         id, performanceid, code, freeprofessionalid, free_professional_work_hours, free_professional_travel_hours,
@@ -1079,7 +1027,6 @@ const handleAddResponseToPerformanceAssigned = async (event, res) => {
       ]
     );
 
-    console.log('✅ Response to performance assigned added successfully.');
     res.status(200).json(createWebBaseEvent({
       ADD_RESPONSE_PERFORMANCE_ASSIGNED_SUCCESS: true,
       ADD_RESPONSE_PERFORMANCE_ASSIGNED_MESSAGE: 'Successful response to assigned action',
@@ -1105,7 +1052,6 @@ const handleDeleteStudentRecord = async (event, res) => {
       }, event.SessionKey, event.SecurityToken, 'DeleteStudentRecord'));
     }
 
-    console.log(`🗑️ Deleting student record for student with name: ${studentName}`);
 
     const deleteQuery = await pool.query(
       'DELETE FROM student_records WHERE name = $1 RETURNING *',
@@ -1119,7 +1065,6 @@ const handleDeleteStudentRecord = async (event, res) => {
       }, event.SessionKey, event.SecurityToken, 'DeleteStudentRecord'));
     }
 
-    console.log('✅ Student record deleted successfully.');
 
     return res.status(200).json(createWebBaseEvent({
       DELETE_STUDENT_RECORD_SUCCESS: true,
@@ -1139,7 +1084,6 @@ const handleDeleteStudentRecord = async (event, res) => {
 const handleModifyResponseToPerformanceAssigned = async (event, res) => {
   try {
     const modifyResponsePerformanceAssignedEvent = event.Body;
-    console.log('🔍 Fetching free professional ID for user with ID:', modifyResponsePerformanceAssignedEvent.UserId);
 
     const freeProfessionalQuery = await pool.query(
       'SELECT id FROM freeprofessional WHERE userid = $1',
@@ -1147,7 +1091,6 @@ const handleModifyResponseToPerformanceAssigned = async (event, res) => {
     );
 
     if (freeProfessionalQuery.rows.length === 0) {
-      console.log('❌ Free professional not found.');
       return res.status(404).json(createWebBaseEvent({
         MODIFY_RESPONSE_PERFORMANCE_ASSIGNED_SUCCESS: false,
         MODIFY_RESPONSE_PERFORMANCE_ASSIGNED_MESSAGE: 'Free professional not found.',
@@ -1156,7 +1099,6 @@ const handleModifyResponseToPerformanceAssigned = async (event, res) => {
 
     const freeProfessionalId = freeProfessionalQuery.rows[0].id;
 
-    console.log('🔍 Fetching subperformance with ID:', freeProfessionalId);
 
     let projectPerformanceFreeprofessionalAssigned = await pool.query(
       'SELECT * FROM project_performance_freeprofessional_assigned WHERE freeprofessionalid = $1',
@@ -1164,7 +1106,6 @@ const handleModifyResponseToPerformanceAssigned = async (event, res) => {
     );
 
     if (projectPerformanceFreeprofessionalAssigned.rows.length === 0) {
-      console.log('❌ SubPerformance not found.');
       return res.status(404).json(createWebBaseEvent({
         MODIFY_RESPONSE_PERFORMANCE_ASSIGNED_SUCCESS: false,
         MODIFY_RESPONSE_PERFORMANCE_ASSIGNED_MESSAGE: 'SubPerformance not found.',
@@ -1172,7 +1113,6 @@ const handleModifyResponseToPerformanceAssigned = async (event, res) => {
     }
 
     projectPerformanceFreeprofessionalAssigned = projectPerformanceFreeprofessionalAssigned.rows[0];
-    console.log('📄 Retrieved subperformance:', projectPerformanceFreeprofessionalAssigned);
 
     projectPerformanceFreeprofessionalAssigned.free_professional_work_hours = modifyResponsePerformanceAssignedEvent.FP_WorkHours;
     projectPerformanceFreeprofessionalAssigned.free_professional_travel_hours = modifyResponsePerformanceAssignedEvent.FP_TravelTime;
@@ -1187,7 +1127,6 @@ const handleModifyResponseToPerformanceAssigned = async (event, res) => {
       projectPerformanceFreeprofessionalAssigned.documentincreaseworkinghours = modifyResponsePerformanceAssignedEvent.DocumentIncreaseWorkingHours;
     }
 
-    console.log('🔄 Updating subperformance in database:', projectPerformanceFreeprofessionalAssigned);
 
     await pool.query(
       `UPDATE project_performance_freeprofessional_assigned
@@ -1205,7 +1144,6 @@ const handleModifyResponseToPerformanceAssigned = async (event, res) => {
       ]
     );
 
-    console.log('✅ Subperformance modified successfully.');
     return res.status(200).json(createWebBaseEvent({
       MODIFY_RESPONSE_PERFORMANCE_ASSIGNED_SUCCESS: true,
       MODIFY_RESPONSE_PERFORMANCE_ASSIGNED_MESSAGE: 'Correctly modified subperformance.',
@@ -1225,14 +1163,12 @@ const handleModifyPerformanceFreeProfessional = async (event, res) => {
     const addPerformancFPEvent = event.Body;
     const performanceId = addPerformancFPEvent.PerformanceId;
 
-    console.log(`🔍 Fetching performance with ID: ${performanceId}`);
     let performanceFreeprofessional = await pool.query(
       'SELECT * FROM performance_freeprofessional WHERE id = $1',
       [performanceId]
     );
 
     if (performanceFreeprofessional.rows.length === 0) {
-      console.log('❌ Performance not found.');
       return res.status(404).json(createWebBaseEvent({
         MODIFY_PERFORMANCE_FREE_PROFESSIONAL_SUCCESS: false,
         MODIFY_PERFORMANCE_FREE_PROFESSIONAL_MESSAGE: 'Performance not found.',
@@ -1241,20 +1177,17 @@ const handleModifyPerformanceFreeProfessional = async (event, res) => {
 
     performanceFreeprofessional = performanceFreeprofessional.rows[0];
 
-    console.log(`🔄 Updating performance details for ID: ${performanceId}`);
     performanceFreeprofessional.summarytypeid = addPerformancFPEvent.SummaryId;
     performanceFreeprofessional.start_date = addPerformancFPEvent.StartDate;
     performanceFreeprofessional.end_date = addPerformancFPEvent.EndDate;
     performanceFreeprofessional.justifying_document = addPerformancFPEvent.JustifyingDocument;
 
-    console.log(`🔍 Fetching free professional with user ID: ${addPerformancFPEvent.FreeProfessionalId}`);
     const freeprofessional = await pool.query(
       'SELECT id FROM freeprofessional WHERE userid = $1',
       [addPerformancFPEvent.FreeProfessionalId]
     );
 
     if (freeprofessional.rows.length === 0) {
-      console.log('❌ Free professional not found.');
       return res.status(404).json(createWebBaseEvent({
         MODIFY_PERFORMANCE_FREE_PROFESSIONAL_SUCCESS: false,
         MODIFY_PERFORMANCE_FREE_PROFESSIONAL_MESSAGE: 'Free professional not found.',
@@ -1267,7 +1200,6 @@ const handleModifyPerformanceFreeProfessional = async (event, res) => {
     performanceFreeprofessional.estimated_work_hours = addPerformancFPEvent.ForecastWorkHours;
     performanceFreeprofessional.total_forecast_data = addPerformancFPEvent.TotalForecasData;
 
-    console.log(`🔄 Updating performance in database for ID: ${performanceId}`);
     await pool.query(
       `UPDATE performance_freeprofessional
        SET start_date = $1, end_date = $2, justifying_document = $3,
@@ -1288,7 +1220,6 @@ const handleModifyPerformanceFreeProfessional = async (event, res) => {
       ]
     );
 
-    console.log('✅ Performance was successfully modified.');
     return res.status(200).json(createWebBaseEvent({
       MODIFY_PERFORMANCE_FREE_PROFESSIONAL_SUCCESS: true,
       MODIFY_PERFORMANCE_FREE_PROFESSIONAL_MESSAGE: 'Performance was successfully modified.',
@@ -1308,7 +1239,6 @@ const handleGetSummaryTypes = async (event, res) => {
     const summarytypePerformanceFreeProfessionalDTO = [];
     const summarytypePerformanceBuyDTO = [];
 
-    console.log('🔍 Fetching summary types for performance free professional and performance buy');
 
     const summarytypesPerformanceFreeProfessionalList = await pool.query('SELECT * FROM summarytypeperformancefreeprofessional');
     const summarytypesPerformanceBuyList = await pool.query('SELECT * FROM summarytypeperformancebuy');
@@ -1316,7 +1246,6 @@ const handleGetSummaryTypes = async (event, res) => {
     summarytypePerformanceFreeProfessionalDTO.push(...summarytypesPerformanceFreeProfessionalList.rows);
     summarytypePerformanceBuyDTO.push(...summarytypesPerformanceBuyList.rows);
 
-    console.log('✅ Summary types fetched successfully');
 
     return res.status(200).json(createWebBaseEvent({
       GET_SUMMARY_TYPES_SUCCESS: true,
@@ -1345,7 +1274,6 @@ const handleGetSubPerformanceById = async (event, res) => {
       }, event.SessionKey, event.SecurityToken, 'GetSubPerformanceById'));
     }
 
-    console.log(`🔍 Fetching sub performances for performance ID: ${performanceId}`);
 
     const subPerformanceQuery = `
       SELECT *
@@ -1379,7 +1307,6 @@ const handleGetSubPerformanceById = async (event, res) => {
       revised: row.revised,
     }));
 
-    console.log(`📄 Retrieved sub performances: ${JSON.stringify(subPerformanceFreeProfessionalDTO, null, 2)}`);
 
     return res.status(200).json(createWebBaseEvent({
       GET_SUB_PERFORMANCE_BY_ID_SUCCESS: true,
@@ -1405,7 +1332,6 @@ const handleAssignClaimsToFreeProfessionalTR = async (event, res) => {
       Freeprofessionalid: assignationFreeProfessionalToClaim.FreeProfessionalId
     };
 
-    console.log(`🔍 Fetching claim with ID: ${freeprofessionalClaim.Claimid}`);
     const claimQuery = await pool.query('SELECT * FROM claim_file WHERE id = $1', [freeprofessionalClaim.Claimid]);
 
     if (claimQuery.rows.length === 0) {
@@ -1418,17 +1344,14 @@ const handleAssignClaimsToFreeProfessionalTR = async (event, res) => {
     const claim = claimQuery.rows[0];
     claim.Status = 'Running';
 
-    console.log(`🔄 Updating claim status to 'Running' for claim ID: ${freeprofessionalClaim.Claimid}`);
     await pool.query('UPDATE claim_file SET status = $1 WHERE id = $2', [claim.Status, freeprofessionalClaim.Claimid]);
 
-    console.log('💾 Inserting free professional claim:', freeprofessionalClaim);
     await pool.query('INSERT INTO freeprofessional_claim (id, claimid, freeprofessionalid) VALUES ($1, $2, $3)', [
       freeprofessionalClaim.Id,
       freeprofessionalClaim.Claimid,
       freeprofessionalClaim.Freeprofessionalid
     ]);
 
-    console.log('✅ Free professional successfully assigned to claim.');
     return res.status(200).json(createWebBaseEvent({
       ASSIGN_CLAIMS_TO_FREE_PROFESSIONAL_TR_SUCCESS: true,
       ASSIGN_CLAIMS_TO_FREE_PROFESSIONAL_TR_MESSAGE: 'It is correctly assigned to the claim.'
@@ -1448,7 +1371,6 @@ const handleGettingFreeProfessionalsTR = async (event, res) => {
     const getFreeProfessionalTREvent = event.Body;
     const subscriberId = getFreeProfessionalTREvent.SubscriberId;
 
-    console.log(`🔍 Fetching free professionals for subscriber ID: ${subscriberId}`);
 
     const subscribercustomerfreeprofessionalprocessors = await pool.query(`
       SELECT freeprofessionalid
@@ -1480,7 +1402,6 @@ const handleGettingFreeProfessionalsTR = async (event, res) => {
       }
     }
 
-    console.log('✅ Free professionals and users fetched successfully.');
 
     return res.status(200).json(createWebBaseEvent({
       GETTING_FREE_PROFESSIONALS_TR_SUCCESS: true,
@@ -1503,10 +1424,8 @@ const handleChangingOsdUserAutorizationStatus = async (event, res) => {
     const changingOsdUserAutorizationEvent = event.Body;
     const osdUserId = changingOsdUserAutorizationEvent.Id;
 
-    console.log(`🔍 Fetching user with ID: ${osdUserId}`);
     const userQuery = await pool.query('SELECT * FROM osduser WHERE id = $1', [osdUserId]);
     if (userQuery.rows.length === 0) {
-      console.log('❌ User not found.');
       return res.status(404).json(createWebBaseEvent({
         CHANGING_OSD_USER_AUTORIZATION_SUCCESS: false,
         CHANGING_OSD_USER_AUTORIZATION_MESSAGE: 'User not found.',
@@ -1514,15 +1433,11 @@ const handleChangingOsdUserAutorizationStatus = async (event, res) => {
     }
 
     let osdUser = userQuery.rows[0];
-    console.log(`🔍 User found: ${JSON.stringify(osdUser)}`);
 
-    console.log(`🔍 Fetching number of users in the same country: ${osdUser.country}`);
     const usersInCountryQuery = await pool.query('SELECT COUNT(*) FROM osduser WHERE LOWER(TRIM(country)) = LOWER(TRIM($1))', [osdUser.country]);
     const getNumberOfUsers = parseInt(usersInCountryQuery.rows[0].count, 10);
-    console.log(`🔍 Number of users in country: ${getNumberOfUsers}`);
 
     if (osdUser.isauthorized) {
-      console.log('✅ User is already authorized.');
       return res.status(200).json(createWebBaseEvent({
         CHANGING_OSD_USER_AUTORIZATION_SUCCESS: true,
         CHANGING_OSD_USER_AUTORIZATION_MESSAGE: 'The user is already authorized.',
@@ -1530,21 +1445,15 @@ const handleChangingOsdUserAutorizationStatus = async (event, res) => {
     } else {
       osdUser.isauthorized = true;
 
-      console.log(`🔍 Fetching account type for user: ${osdUser.accounttype}`);
       const accountTypeQuery = await pool.query('SELECT * FROM accounttype WHERE id = $1', [osdUser.accounttype]);
       const accountType = accountTypeQuery.rows[0];
-      console.log(`🔍 Account type: ${JSON.stringify(accountType)}`);
 
       if (accountType.type === 'FreeProfessional') {
-        console.log(`🔍 Fetching free professional details for user: ${osdUser.id}`);
         const freeProfessionalQuery = await pool.query('SELECT * FROM freeprofessional WHERE userid = $1', [osdUser.id]);
         const freeProfessional = freeProfessionalQuery.rows[0];
-        console.log(`🔍 Free professional details: ${JSON.stringify(freeProfessional)}`);
 
-        console.log(`🔍 Fetching free professional type: ${freeProfessional.freeprofessionaltypeid}`);
         const freeProfessionalTypeQuery = await pool.query('SELECT * FROM freeprofessionaltype WHERE id = $1', [freeProfessional.freeprofessionaltypeid]);
         const freeProfessionalType = freeProfessionalTypeQuery.rows[0];
-        console.log(`🔍 Free professional type: ${JSON.stringify(freeProfessionalType)}`);
 
         const acronym = freeProfessionalType.acronym;
         const countryCode = osdUser.country.toUpperCase().trim();
@@ -1571,10 +1480,8 @@ const handleChangingOsdUserAutorizationStatus = async (event, res) => {
         osdUser.code = `${countryCode}/CL/${getNumberOfUsers}/${year}`;
       }
 
-      console.log(`🔄 Updating user authorization status and code: ${osdUser.code}`);
       await pool.query('UPDATE osduser SET isauthorized = $1, code = $2 WHERE id = $3', [osdUser.isauthorized, osdUser.code, osdUser.id]);
 
-      console.log('✅ User properly authorized.');
       return res.status(200).json(createWebBaseEvent({
         CHANGING_OSD_USER_AUTORIZATION_SUCCESS: true,
         CHANGING_OSD_USER_AUTORIZATION_MESSAGE: 'User properly authorized.',
@@ -1609,7 +1516,6 @@ const handleAssignTrainerToSubscriber = async (event, res) => {
       subscribercustomerfreeprofessionaltrainer.Freeprofessionalid
     ]);
 
-    console.log('✅ Trainer assigned to subscriber successfully.');
     res.status(200).json(createWebBaseEvent({
       ASSIGN_TRAINER_TO_SUBSCRIBER_SUCCESS: true,
       ASSIGN_TRAINER_TO_SUBSCRIBER_MESSAGE: 'Successfully assigned'
@@ -1632,7 +1538,6 @@ const handleGetProfessionalFreeTrainers = async (event, res) => {
     `);
 
     if (freeProfessionalTypeResult.rows.length === 0) {
-      console.log('❌ Free professional type "Trainer" not found.');
       return res.status(404).json(createWebBaseEvent({
         GET_PROFESSIONAL_FREE_TRAINERS_SUCCESS: false,
         GET_PROFESSIONAL_FREE_TRAINERS_MESSAGE: 'Free professional type "Trainer" not found.',
@@ -1662,7 +1567,6 @@ const handleGetProfessionalFreeTrainers = async (event, res) => {
       }
     }
 
-    console.log('✅ Professional free trainers fetched successfully.');
     return res.status(200).json(createWebBaseEvent({
       GET_PROFESSIONAL_FREE_TRAINERS_SUCCESS: true,
       professionalFreeTrainers: professionalFreeTrainersDTO,
@@ -1737,7 +1641,6 @@ const handleGetPerformancesProjectManagerById = async (event, res) => {
       }, event.SessionKey, event.SecurityToken, 'GetPerformanceAssignedById'));
     }
 
-    console.log(`🔍 Fetching performances for Project Manager with ID: ${projectManagerId}`);
 
     const performancesFreeProfessionalQuery = `
       SELECT id, code, projectmanagerid, summarytypeid, start_date, end_date, justifying_document, 
@@ -1755,7 +1658,6 @@ const handleGetPerformancesProjectManagerById = async (event, res) => {
 
     const performancesFreeProfessionalResult = await pool.query(performancesFreeProfessionalQuery, [projectManagerId]);
     const performancesBuyResult = await pool.query(performancesBuyQuery, [projectManagerId]);
-    console.log(`📝 Result performancesFreeProfessionalResult: ${JSON.stringify(performancesFreeProfessionalResult.rows, null, 2)}
     📝 Result performancesBuyResult: ${JSON.stringify(performancesBuyResult.rows, null, 2)}`);
 
     const performancesFreeProfessionalDto = performancesFreeProfessionalResult.rows.map(pfp => ({
@@ -1770,7 +1672,6 @@ const handleGetPerformancesProjectManagerById = async (event, res) => {
     }));
 
     for (const pfDTO of performancesFreeProfessionalDto) {
-      console.log(`🔍 Fetching summary type for performance free professional with ID: ${pfDTO.summarytypeid}`);
       const summaryTypeResult = await pool.query(
         'SELECT summary FROM summarytypeperformancefreeprofessional WHERE id = $1',
         [pfDTO.summarytypeid]
@@ -1796,7 +1697,6 @@ const handleGetPerformancesProjectManagerById = async (event, res) => {
     }
 
     for (const pfBuyDTO of performancesBuyDto) {
-      console.log(`🔍 Fetching summary type for performance buy with ID: ${pfBuyDTO.summarytypeid}`);
       const summaryTypeResult = await pool.query(
         'SELECT summary FROM summarytypeperformancebuy WHERE id = $1',
         [pfBuyDTO.summarytypeid]
@@ -1806,7 +1706,6 @@ const handleGetPerformancesProjectManagerById = async (event, res) => {
       }
     }
 
-    console.log(`📄 Retrieved performances: ${JSON.stringify(performancesFreeProfessionalDto, null, 2)}`);
 
     return res.status(200).json(createWebBaseEvent({
       GET_PERFORMANCE_ASSIGNED_BY_ID_SUCCESS: true,
@@ -1836,7 +1735,6 @@ const handleCloseClaimFile = async (event, res) => {
       }, event.SessionKey, event.SecurityToken, 'CloseClaimFile'));
     }
 
-    console.log(`🔍 Closing claim file with ID: ${claimId}`);
 
     // Retrieve claimantid and subscriberclaimedid from claim_file
     const claimQuery = `
@@ -1857,7 +1755,6 @@ const handleCloseClaimFile = async (event, res) => {
     const { claimantid, subscriberclaimedid } = claimResult.rows[0];
 
     let updateQuery;
-    console.log(`🔍 User ID: ${userId}, Claimant ID: ${claimantid}, Subscriber ID: ${subscriberclaimedid}`);
     if (userId === claimantid) {
       // Update valuationclaimant if userId matches claimantid
       updateQuery = `
@@ -1885,7 +1782,6 @@ const handleCloseClaimFile = async (event, res) => {
     }
 
     const updateResult = await pool.query(updateQuery, [claimId, rating]);
-    console.log(`✅ Claim file closed and updated successfully: ${JSON.stringify(updateResult.rows[0], null, 2)}`);
     return res.status(200).json(createWebBaseEvent({
       CLOSE_CLAIM_FILE_SUCCESS: true,
       claim: updateResult.rows[0]
@@ -1904,7 +1800,6 @@ const handleCloseClaimFile = async (event, res) => {
 const handleAddPerformanceUpdate = async (event, res) => {
   try {
     const performanceData = event.Body.Payload;
-    console.log('🔍 Adding performance update:', performanceData);
     if (!performanceData || !performanceData.ClaimId) {
       return res.status(400).json(createWebBaseEvent({
         ADD_PERFORMANCE_UPDATE_SUCCESS: false,
@@ -1939,7 +1834,6 @@ const handleAddPerformanceUpdate = async (event, res) => {
       documentBase64 = Buffer.from(performanceData.Document).toString('base64');
     }
 
-    console.log('📄 Inserting performance update:', performanceData);
     const result = await pool.query(insertPerformanceQuery, [
       uuidv4(), // Generate new UUID for id
       performanceCode,
@@ -1974,8 +1868,6 @@ const handleAddPerformanceUpdate = async (event, res) => {
       performanceData.ClaimId
     ]);
 
-    console.log('✅ Performance update added successfully:', result.rows[0]);
-    console.log('✅ Claim file updated successfully:', updateResult.rows[0]);
 
     return res.status(200).json(createWebBaseEvent({
       ADD_PERFORMANCE_UPDATE_SUCCESS: true,
@@ -1996,7 +1888,6 @@ const handleAddPerformanceUpdate = async (event, res) => {
 
 const handleGetCFHReports = async (event, res) => {
   try {
-    console.log('🔍 Fetching CFH reports');
 
     const cfhQuery = `
       SELECT 
@@ -2075,10 +1966,8 @@ const handleGetCFHReports = async (event, res) => {
 
     const cfhResultItemsArray = [data];
 
-    console.log('✅ CFH reports data compiled:', cfhResultItemsArray);
 
     for (item of cfhResultItemsArray) {
-      console.log('📄 CFH report:', JSON.stringify(item, null, 2))
     };
 
     return res.status(200).json(
@@ -2153,7 +2042,6 @@ const handleCreateClaimantAndClaimsCustomerPerformance = async (event, res) => {
       UserTypePerformance
     ]);
 
-    console.log('✅ Performance claim created successfully:', insertPerformanceResult.rows[0]);
 
     return res.status(201).json(createWebBaseEvent({
       CREATE_CLAIMANT_AND_CLAIMS_CUSTOMER_PERFORMANCE_SUCCESS: true,
@@ -2181,7 +2069,6 @@ const handleGetPerformancesClaimById = async (event, res) => {
       }, event.SessionKey, event.SecurityToken, 'GetPerformancesClaimById'));
     }
 
-    console.log(`🔍 Fetching performance claims for claim ID: ${claimId}`);
     const performanceClaimQuery = `
       SELECT id, code, claimid, status
       FROM performance_claim_control
@@ -2197,7 +2084,6 @@ const handleGetPerformancesClaimById = async (event, res) => {
       }, event.SessionKey, event.SecurityToken, 'GetPerformancesClaimById'));
     }
 
-    console.log(`📄 Retrieved performance claims: ${JSON.stringify(performanceClaimResult.rows, null, 2)}`);
 
     const claimFileQuery = `
       SELECT
@@ -2218,7 +2104,6 @@ const handleGetPerformancesClaimById = async (event, res) => {
       }, event.SessionKey, event.SecurityToken, 'GetPerformancesClaimById'));
     }
 
-    console.log(`📄 Retrieved claim file details: ${JSON.stringify(claimFileResult.rows[0], null, 2)}`);
     return res.status(200).json(createWebBaseEvent({
       GET_PERFORMANCES_CLAIM_BY_ID_SUCCESS: true,
       performanceClaims: performanceClaimResult.rows,
@@ -2282,19 +2167,16 @@ const handleCreateClaim = async (event, res) => {
       }, event.SessionKey, event.SecurityToken, 'CreateClaim'));
     }
 
-    console.log(`🔍 Subscriber claimed ID: ${subscriberQuery.rows[0].id}`);
     let subscriberClaimedId = subscriberQuery.rows[0].id;
 
     let claimantId = null;
     if (ClaimantId !== null || Email !== null) {
-      console.log('🚹 Checking if user is a claimant: ', ClaimantId, Email);
       const claimantQuery = await pool.query(
         'SELECT id FROM osduser WHERE identity = $1 OR email = $2',
         [ClaimantId, Email]
       );
 
       if (claimantQuery.rows.length === 0) {
-        console.log('❌ Claimant not found.');
         return res.status(404).json(createWebBaseEvent({
           CREATE_CLAIM_SUCCESS: false,
           CREATE_CLAIM_MESSAGE: 'Claimant not found.',
@@ -2302,7 +2184,6 @@ const handleCreateClaim = async (event, res) => {
       }
 
       claimantId = claimantQuery.rows[0].id || null;
-      console.log(`🔍 Claimant ID: ${claimantId}`);
       const insertClaimantQuery = `
       INSERT INTO claimant (id, userid)
       VALUES ($1, $2)
@@ -2311,7 +2192,6 @@ const handleCreateClaim = async (event, res) => {
       await pool.query(insertClaimantQuery, [claimantId, claimantId]);
     }
 
-    console.log("🚹 Checking if user is a subscriber getting claimed: ", subscriberClaimedId);
     if (subscriberClaimedId !== null) {
       const subscriberCustomerQuery = await pool.query(
         'SELECT id FROM subscribercustomer WHERE userid = $1',
@@ -2319,7 +2199,6 @@ const handleCreateClaim = async (event, res) => {
       );
 
       if (subscriberCustomerQuery.rows.length === 0) {
-        console.log('💥 Subscriber not found, inserting new subscriber');
         const insertSubscriberCustomerQuery = `
       INSERT INTO subscribercustomer (id, userid, clienttype)
       VALUES ($1, $2, 'Subscriber')
@@ -2331,14 +2210,12 @@ const handleCreateClaim = async (event, res) => {
     }
 
     if (claimantId) {
-      console.log("🚹 Checking if user is a claimant: ", claimantId);
       const claimantExistsQuery = `
         SELECT 1 FROM claimant WHERE id = $1
       `;
       const claimantExistsResult = await pool.query(claimantExistsQuery, [claimantId]);
 
       if (claimantExistsResult.rows.length === 0) {
-        console.log('💥 Claimant not found, inserting new claimant');
         const insertClaimantQuery = `
           INSERT INTO claimant (id, userid)
           VALUES ($1, $2)
@@ -2378,7 +2255,6 @@ const handleCreateClaim = async (event, res) => {
       secondSupportingDocumentFileName
     ]);
 
-    console.log('✅ Claim created successfully:', insertClaimResult.rows[0]);
 
     return res.status(201).json(createWebBaseEvent({
       CREATE_CLAIM_SUCCESS: true,
@@ -2398,7 +2274,6 @@ const handleCreateClaim = async (event, res) => {
 const handleUpdateUserProfile = async (event, res) => {
   try {
     const Email = event.Body?.Email;
-    console.log(`🔄 Updating profile for user with email: ${Email}`);
 
     // Validate required fields
     if (!Email) {
@@ -2475,7 +2350,6 @@ const handleProfessorRegistration = async (event, res) => {
     const courseId = accountForm?.course;
     const workspaceId = accountForm?.workspace; // FreeProfessionalTypeId to update
 
-    console.log(`📚 Registering professor with email: ${userEmail} for course ID: ${courseId}`);
 
     // Validate required fields
     if (!userEmail || !courseId || !workspaceId) {
@@ -2492,7 +2366,6 @@ const handleProfessorRegistration = async (event, res) => {
     );
 
     if (userQuery.rows.length === 0) {
-      console.log('❌ User not found.');
       return res.status(404).json({
         success: false,
         message: 'User not found.'
@@ -2508,7 +2381,6 @@ const handleProfessorRegistration = async (event, res) => {
     );
 
     if (courseQuery.rows.length === 0) {
-      console.log('❌ Course not found.');
       return res.status(404).json({
         success: false,
         message: 'Course not found.'
@@ -2522,7 +2394,6 @@ const handleProfessorRegistration = async (event, res) => {
     );
 
     if (existingProfessorQuery.rows.length > 0) {
-      console.log('⚠️ Professor is already assigned to this course.');
       return res.status(400).json({
         success: false,
         message: 'Professor is already assigned to this course.'
@@ -2542,7 +2413,6 @@ const handleProfessorRegistration = async (event, res) => {
       courseId
     ]);
 
-    console.log('✅ Professor successfully registered for the course.');
 
     // Update the freeprofessionaltypeid in the freeprofessional table
     const updateFreeProfessionalQuery = `
@@ -2560,7 +2430,6 @@ const handleProfessorRegistration = async (event, res) => {
     if (updateResult.rows.length === 0) {
       console.warn('⚠️ No freeprofessional record found to update.');
     } else {
-      console.log('✅ FreeProfessionalTypeId updated in freeprofessional table.');
     }
 
     return res.status(201).json({
@@ -2585,7 +2454,6 @@ const handleUserRegistration = async (event, res) => {
   try {
     const accountForm = event.Body?.AccountForm;
     const personalForm = event.Body?.PersonalForm;
-    console.log('🔐 Registering user:', personalForm, 'with Account Info', accountForm);
 
     // Check required fields
     if (!personalForm?.email || !personalForm?.password) {
@@ -2643,7 +2511,6 @@ const handleUserRegistration = async (event, res) => {
         RETURNING id;
       `;
 
-      console.log('🔐 Inserting user into osduser:', personalForm);
 
       const osdUserResult = await pool.query(insertOsdUserQuery, [
         userId,
@@ -2672,10 +2539,8 @@ const handleUserRegistration = async (event, res) => {
       userId = osdUserResult.rows[0].id;
     } else {
       userId = userExists.rows[0].id;
-      console.log('✅ User already exists in osduser with ID:', userId);
     }
 
-    console.log("✅ Successfully created user with ID:", userId);
 
     const accountTypeId = accountForm.accountType || personalForm.accountType;
 
@@ -2708,7 +2573,6 @@ const handleUserRegistration = async (event, res) => {
         );
         insertedCourseIds.add(newCourseId);
       }
-      console.log('✅ Courses copied successfully for the new user.');
     }
 
     // Insert into freeprofessional if account type is 'FreeProfessional'
@@ -2740,7 +2604,6 @@ const handleUserRegistration = async (event, res) => {
         accountForm.course || null
       ]);
 
-      console.log('✅ FreeProfessional record created successfully.');
 
       // Insert into student_records if courseCheckbox is checked
       if (accountForm.courseCheckbox === true && accountForm.course) {
@@ -2754,7 +2617,6 @@ const handleUserRegistration = async (event, res) => {
           );
         `;
 
-        console.log('📚 Inserting student record for course:', accountForm.course);
 
         await pool.query(insertStudentRecordQuery, [
           uuidv4(),
@@ -2847,21 +2709,18 @@ const handleGetCourseByUserId = async (event, res) => {
     const userId = event.Body?.UserId;
 
     if (!userId) {
-      console.log('⚠️ User ID is required.');
       return res.status(400).json(createWebBaseEvent({
         GET_COURSE_BY_USERID_SUCCESS: false,
         GET_COURSE_BY_USERID_MESSAGE: 'User ID is required.',
       }, event.SessionKey, event.SecurityToken, 'GetCourseByUserId'));
     }
 
-    console.log(`📚 Fetching courses for user with ID: ${userId}`);
 
     let courseQuery;
     let queryParams;
 
     // Check if the user ID matches the special case
     if (userId === 'e77b5172-f726-4c1d-9f9e-d2dbd77e03c9') {
-      console.log('📖 Special user detected, retrieving all courses.');
 
       // Query to fetch all courses
       courseQuery = `
@@ -2883,7 +2742,6 @@ const handleGetCourseByUserId = async (event, res) => {
 
       const professorCoursesResult = await pool.query(professorCoursesQuery, [userId]);
       if (professorCoursesResult.rows.length === 0) {
-        console.log('⚠️ No courses found for this professor.');
         return res.status(404).json(createWebBaseEvent({
           GET_COURSE_BY_USERID_SUCCESS: false,
           GET_COURSE_BY_USERID_MESSAGE: 'No courses found for this professor.',
@@ -2895,10 +2753,8 @@ const handleGetCourseByUserId = async (event, res) => {
       // Ensure courseIds are UUID strings and properly formatted
       const formattedCourseIds = courseIds.map(id => id.trim());
 
-      console.log(`📖 Professor is teaching courses with IDs: ${formattedCourseIds.join(', ')}`);
 
       if (formattedCourseIds.length === 0) {
-        console.log('⚠️ No valid course IDs found for this professor.');
         return res.status(404).json(createWebBaseEvent({
           GET_COURSE_BY_USERID_SUCCESS: false,
           GET_COURSE_BY_USERID_MESSAGE: 'No valid course IDs found for this professor.',
@@ -2914,17 +2770,14 @@ const handleGetCourseByUserId = async (event, res) => {
     }
 
     const courseResult = await pool.query(courseQuery, queryParams);
-    console.log(`📚 Result of Query`, courseResult.rows);
 
     if (courseResult.rows.length === 0) {
-      console.log('⚠️ No course details found.');
       return res.status(404).json(createWebBaseEvent({
         GET_COURSE_BY_USERID_SUCCESS: false,
         GET_COURSE_BY_USERID_MESSAGE: 'No course details found.',
       }, event.SessionKey, event.SecurityToken, 'GetCourseByUserId'));
     }
 
-    console.log(`📖 Retrieved course details:`, courseResult.rows);
 
     return res.status(200).json(createWebBaseEvent({
       GET_COURSE_BY_USERID_SUCCESS: true,
@@ -2983,13 +2836,11 @@ const handleGetStudentsByCourse = async (event, res) => {
       }, event.SessionKey, event.SecurityToken, 'GetStudentsByCourse'));
     }
 
-    console.log(`📚 Fetching courses taught by professor with ID: ${userId}`);
 
     let studentsQuery;
     let studentsResult;
 
     if (userId === 'e77b5172-f726-4c1d-9f9e-d2dbd77e03c9') {
-      console.log('🔍 Fetching all students from all courses');
       studentsQuery = `
         SELECT sr.*, c.title AS course_name
         FROM student_records sr
@@ -3011,7 +2862,6 @@ const handleGetStudentsByCourse = async (event, res) => {
       const professorCoursesResult = await pool.query(professorCoursesQuery, [userId]);
 
       if (professorCoursesResult.rows.length === 0) {
-        console.log('⚠️ No courses found for this professor.');
         return res.status(404).json(createWebBaseEvent({
           GET_STUDENTS_BY_COURSE_SUCCESS: false,
           GET_STUDENTS_BY_COURSE_MESSAGE: 'No courses found for this professor.',
@@ -3020,7 +2870,6 @@ const handleGetStudentsByCourse = async (event, res) => {
 
       const courseIds = professorCoursesResult.rows.map(row => row.course_id);
 
-      console.log(`📖 Professor is teaching courses with IDs: ${courseIds.join(', ')}`);
 
       // Step 2: Fetch students enrolled in these courses along with course names
       studentsQuery = `
@@ -3033,7 +2882,6 @@ const handleGetStudentsByCourse = async (event, res) => {
       studentsResult = await pool.query(studentsQuery, [courseIds]);
     }
 
-    console.log(`👨‍🎓 Found ${studentsResult.rows.length} students enrolled in professor's courses.`);
 
     return res.status(200).json(createWebBaseEvent({
       GET_STUDENTS_BY_COURSE_SUCCESS: true,
@@ -3145,5 +2993,4 @@ app.get('/api/courses', async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`🚀 Server running at http://localhost:${port}/api`);
 });

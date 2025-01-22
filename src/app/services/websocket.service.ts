@@ -63,11 +63,9 @@ private registerOnServiceChannelSecurityEvents(): void {
       this.webSocketConnection
         .start()
         .then(() => {
-          console.log('Websocket connection started');
           //this.connectionEstablished.emit(true); //TODO: check if some logic is necessary
         })
         .catch(err => {
-          console.log('Error while establishing connection, retrying...');
           //setTimeout(function () { this.startConnection(); }, 5000);
         });
     }
@@ -87,7 +85,6 @@ private registerOnServiceChannelSecurityEvents(): void {
     var jsonEvent:string;
 
     jsonEvent = JSON.stringify(webBaseEvent);
-    console.log("Enviando mensaje al webSocketConnection.invoke('ProcessOSDEvent', jsonEvent)");
     this.webSocketConnection.invoke('ProcessOSDEvent', jsonEvent)
     .catch(err => console.error(err)); //TODO: send error to local log file or ZeptooBrowser
   }

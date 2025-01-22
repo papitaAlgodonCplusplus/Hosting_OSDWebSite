@@ -177,7 +177,6 @@ export class EventFactoryService {
     event.Action = EventAction.MODIFY_PERFORMANCE_FREE_PROFESSIONAL;
     event.Date = new Date().toUTCString();
     event.ApplicationIdentifier = 'WebClient';
-    console.log("performanceFP", performanceFP, "projectManagerSelectedId", projectManagerSelectedId, "performanceId", performanceId)
     event.setBodyProperty(EventConstants.PERFORMANCE_ID, performanceId);
     event.setBodyProperty(EventConstants.PROJECT_MANAGER_ID, projectManagerSelectedId);
     event.setBodyProperty(EventConstants.START_DATE, performanceFP.Start_Date);
@@ -372,7 +371,6 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.SUMMARY, performance.Summary);
     event.setBodyProperty(EventConstants.CLAIM_ID, claimId);
 
-    console.log("Evento enviado: ", event)
     return event;
   }
 

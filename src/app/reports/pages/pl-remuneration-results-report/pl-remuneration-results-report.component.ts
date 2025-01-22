@@ -101,7 +101,6 @@ export class PLRemunerationResultsReportComponent {
   }
   
   updateDisplayedItems(startIndex: number, endIndex: number) {
-    console.log("start",startIndex,"end",endIndex)
     this.displayedFpFullNames = this.fpFullNames.slice(startIndex, endIndex);
     this.displayedHoursPerformances = this.hoursPerformances.slice(startIndex, endIndex);
     this.displayedSummationFiles = this.summationFiles.slice(startIndex, endIndex);
