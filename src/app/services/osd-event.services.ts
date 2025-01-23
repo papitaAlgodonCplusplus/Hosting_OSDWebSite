@@ -364,6 +364,22 @@ export class OSDService {
       }
     });
   }
+
+  public getUsers(): Observable<any> {
+    const event: WebBaseEvent = this.eventFactoryService.CreateGetUsersEvent();
+    return this.restApiService.SendOSDEvent(event);
+  }
+
+  public getUserActionLogs(): Observable<any> {
+    const event: WebBaseEvent = this.eventFactoryService.CreateGetUserActionLogsEvent();
+    return this.restApiService.SendOSDEvent(event);
+  }
+  
+  public getDatabaseChangeLogs(): Observable<any> {
+    const event: WebBaseEvent = this.eventFactoryService.CreateGetDatabaseChangeLogsEvent();
+    return this.restApiService.SendOSDEvent(event);
+  }
+
   public GetTransparencyFreeProfessionals() {
     const performanceBuyEvent: WebBaseEvent = this.eventFactoryService.CreateGetTransparencyFreeProfessionals();
     this.restApiService.SendOSDEvent(performanceBuyEvent).subscribe({

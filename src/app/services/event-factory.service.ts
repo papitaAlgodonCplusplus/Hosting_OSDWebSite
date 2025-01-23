@@ -478,6 +478,45 @@ export class EventFactoryService {
     return event;
   }
 
+  public CreateGetDatabaseChangeLogsEvent(): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.GET_DATABASE_CHANGE_LOGS;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    return event;
+  }
+
+  public CreateGetUserActionLogsEvent(): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.GET_USER_ACTION_LOGS;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    return event;
+  }
+
+  public CreateGetUsersEvent(): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.GET_USERS;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    return event;
+  }
+
   public CreateGetCourseByUserIdEvent(userId: string): WebBaseEvent {
     let event: WebBaseEvent;
     event = new WebBaseEvent();
@@ -829,6 +868,7 @@ export class EventFactoryService {
     return event;
   }
 
+
   public CreatePasswordResetToken(email: string): WebBaseEvent {
     let event: WebBaseEvent;
 
@@ -1054,7 +1094,7 @@ export class EventFactoryService {
     return event;
   }
 
-  public CreateGetFreeProfessionalsByCfhId (cfhId: string): WebBaseEvent {
+  public CreateGetFreeProfessionalsByCfhId(cfhId: string): WebBaseEvent {
     let event: WebBaseEvent;
     event = new WebBaseEvent();
     event.SessionKey = this.authenticationService.sessionKey;

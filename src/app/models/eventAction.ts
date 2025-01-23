@@ -7,6 +7,9 @@ export class EventAction {
 
   public static SHOW_LOGIN_FAILURE: string = "ShowLoginFailure";
   public static GET_HORAS_REPORT: string = "GetHorasReport";
+  public static GET_DATABASE_CHANGE_LOGS: string = "GetDatabaseChangeLogs";
+  public static GET_USERS: string = "GetUsers";
+  public static GET_USER_ACTION_LOGS: string = "GetUserActionLogs";
 
   //#region OSD
   public static LOG_EVENT: string = "LogEvent";

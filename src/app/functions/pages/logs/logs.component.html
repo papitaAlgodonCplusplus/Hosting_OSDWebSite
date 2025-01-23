@@ -1,0 +1,117 @@
+<div class="container mx-auto p-4">
+  <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">System Logs</h1>
+
+  <form [formGroup]="logsForm">
+    <!-- User Filter -->
+    <div class="mb-6 flex items-center space-x-4">
+      <label for="userFilter" class="text-gray-700 font-medium">Filter by User:</label>
+      <select id="userFilter" (change)="logSelectedUser($event)" class="border p-2 rounded-md">
+        <option value="">All Users</option>
+        <option *ngFor="let user of users" [value]="user.id">
+          {{ user.name }}
+        </option>
+      </select>
+      <button type="button" (click)="applyUserFilter()" class="bg-blue-500 text-white px-4 py-2 rounded-md">
+        Apply
+      </button>
+    </div>
+
+    <!-- Database Change Logs Section -->
+    <div class="bg-white shadow-md rounded-md p-4 mb-6">
+      <h2 class="text-lg font-medium text-gray-700 flex justify-between items-center">
+        Database Change Logs
+        <i [class]="databaseChangeLogsVisible ? 'fas fa-chevron-up' : 'fas fa-chevron-down'"
+          (click)="toggleSection('databaseChangeLogs')" class="cursor-pointer"></i>
+      </h2>
+      <div *ngIf="databaseChangeLogsVisible" class="mt-4">
+        <table class="w-full border-collapse border border-gray-200">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="p-2 border">ID</th>
+              <th class="p-2 border">Table Name</th>
+              <th class="p-2 border">Operation Type</th>
+              <th class="p-2 border">Change Time</th>
+              <th class="p-2 border">Row Data</th>
+            </tr>
+          </thead>
+          <tbody formArrayName="databaseLogs">
+            <tr *ngFor="let log of databaseLogs.controls; let i = index" [formGroupName]="i">
+              <td class="p-2 border">{{ log.value.id }}</td>
+              <td class="p-2 border">{{ log.value.table_name }}</td>
+              <td class="p-2 border">{{ log.value.operation_type }}</td>
+              <td class="p-2 border">{{ log.value.change_time }}</td>
+              <td class="p-2 border">
+                <button type="button" class="text-blue-500 underline" (click)="toggleRowData(i)">
+                  View Details
+                </button>
+                <div *ngIf="expandedRow === i" class="mt-2">
+                  <table class="w-full text-sm border-collapse border border-gray-200">
+                    <thead class="bg-gray-50">
+                      <tr>
+                        <th class="p-2 border">Field</th>
+                        <th *ngIf="log.value.operation_type === 'INSERT'" class="p-2 border">Value</th>
+                        <th *ngIf="log.value.operation_type !== 'INSERT'" class="p-2 border">Old Value</th>
+                        <th *ngIf="log.value.operation_type !== 'DELETE'" class="p-2 border">New Value</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let key of getRowDataKeys(log.value.row_data, log.value.operation_type)" [ngClass]="{
+                          'bg-red-100': log.value.operation_type === 'UPDATE' && log.value.row_data.old?.[key] !== log.value.row_data.new?.[key]
+                        }">
+                        <td class="p-2 border">{{ key }}</td>
+                        <td *ngIf="log.value.operation_type === 'INSERT'" class="p-2 border">
+                          {{ log.value.row_data[key] || 'N/A' }}
+                        </td>
+                        <td *ngIf="log.value.operation_type !== 'INSERT'" class="p-2 border">
+                          {{ log.value.row_data.old?.[key] || 'N/A' }}
+                        </td>
+                        <td *ngIf="log.value.operation_type !== 'DELETE'" class="p-2 border">
+                          {{ log.value.row_data.new?.[key] || 'N/A' }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- User Action Logs Section -->
+    <div class="bg-white shadow-md rounded-md p-4">
+      <h2 class="text-lg font-medium text-gray-700 flex justify-between items-center">
+        User Action Logs
+        <i [class]="userActionLogsVisible ? 'fas fa-chevron-up' : 'fas fa-chevron-down'"
+          (click)="toggleSection('userActionLogs')" class="cursor-pointer"></i>
+      </h2>
+      <div *ngIf="userActionLogsVisible" class="mt-4">
+        <table class="w-full border-collapse border border-gray-200">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="p-2 border">ID</th>
+              <th class="p-2 border">Action</th>
+              <th class="p-2 border">Page URL</th>
+              <th class="p-2 border">Element Clicked</th>
+              <th class="p-2 border">Additional Info</th>
+              <th class="p-2 border">Timestamp</th>
+            </tr>
+          </thead>
+          <tbody formArrayName="userLogs">
+            <tr *ngFor="let log of userLogs.controls; let i = index" [formGroupName]="i">
+              <td class="p-2 border">{{ log.value.id }}</td>
+              <td class="p-2 border">{{ log.value.action }}</td>
+              <td class="p-2 border">{{ log.value.page_url }}</td>
+              <td class="p-2 border">{{ log.value.element_clicked || 'N/A' }}</td>
+              <td class="p-2 border">
+                <pre>{{ log.value.additional_info | json }}</pre>
+              </td>
+              <td class="p-2 border">{{ log.value.timestamp }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </form>
+</div>

@@ -17,7 +17,7 @@ import { ClaimantAndClaimsCustomerPerformanceComponent } from './pages/claimant-
 import { ClaimsTrainerPerformanceComponent } from './pages/claims-trainer-performance/claims-trainer-performance.component';
 import { ClaimsProcessorPerformanceComponent } from './pages/claims-processor-performance/claims-processor-performance.component';
 import { FpManagementComponent } from './pages/fp-management/fp-management.component';
-
+import { LogsComponent } from './pages/logs/logs.component';
 
 const routes: Routes = [
   {
@@ -83,6 +83,10 @@ const routes: Routes = [
   {
     path: 'fp-management',
     component: FpManagementComponent
+  },
+  {
+    path: 'logs',
+    component: LogsComponent
   }
 ];
 

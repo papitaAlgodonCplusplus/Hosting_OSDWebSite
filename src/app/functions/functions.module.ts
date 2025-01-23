@@ -20,6 +20,7 @@ import { AccountingServicesComponent } from './pages/accounting-services/account
 import { ClaimantAndClaimsCustomerPerformanceComponent } from './pages/claimant-and-claims-customer-performance/claimant-and-claims-customer-performance.component';
 import { ClaimsTrainerPerformanceComponent } from './pages/claims-trainer-performance/claims-trainer-performance.component';
 import { ClaimsProcessorPerformanceComponent } from './pages/claims-processor-performance/claims-processor-performance.component';
+import { LogsComponent } from './pages/logs/logs.component';
 import { TruncatePipe } from './pipes/truncate.pipe';
 import { UserProfileEditComponent } from './pages/edit-my-info/edit-my-info.component';
 import { StudentRecordComponent } from './pages/students-management/student-record.component';
@@ -41,6 +42,7 @@ import { FpManagementComponent } from './pages/fp-management/fp-management.compo
     ClaimantAndClaimsCustomerPerformanceComponent,
     ClaimsTrainerPerformanceComponent,
     ClaimsProcessorPerformanceComponent,
+    LogsComponent,
     TruncatePipe,
     StudentRecordComponent,
     UserProfileEditComponent,
