@@ -25,6 +25,8 @@ export class EventConstants {
   public static WEB: string = "Web";
   public static PAYLOAD: string = "Payload";
   public static FINAL_RATING: string = "FinalRating";
+  public static CATEGORY: string = "Category";
+  public static DEVELOPER : string = "Developer";
 
   public static USER_ID: string = "UserId";
   public static ID: string = "Id";

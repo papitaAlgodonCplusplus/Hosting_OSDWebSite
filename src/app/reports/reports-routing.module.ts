@@ -4,6 +4,7 @@ import { TransparencyComponent } from './pages/transparency/transparency.compone
 import { CFHResultReportComponent } from './pages/cfhresult-report/cfhresult-report.component';
 import { ClaimantClaimedOsdReportComponent } from './pages/claimant-claimed-osd-report/claimant-claimed-osd-report.component';
 import { OSDRevenueExpenditureEconomicResultReportComponent } from './pages/osd-revenue-expenditure-economic-result-report/osd-revenue-expenditure-economic-result-report.component';
+import { ReporteHorasComponent } from './pages/dev_hours/dev_hours.component';
 import { PLRemunerationResultsReportComponent } from './pages/pl-remuneration-results-report/pl-remuneration-results-report.component';
 
 const routes: Routes = [
@@ -29,6 +30,10 @@ const routes: Routes = [
         path: 'Step4',
         component : PLRemunerationResultsReportComponent
       },
+      {
+        path: 'Step5',
+        component : ReporteHorasComponent
+      }
     
 ];
 

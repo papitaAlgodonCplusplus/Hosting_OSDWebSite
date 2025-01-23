@@ -1,0 +1,55 @@
+<div class="filter-container">
+    <form [formGroup]="filterForm" (ngSubmit)="filterReport()">
+      <label for="developer">Developer:</label>
+      <input id="developer" formControlName="developer" placeholder="Developer Name" />
+  
+      <label for="category">Category:</label>
+      <input id="category" formControlName="category" placeholder="Category" />
+  
+      <button type="submit">Filter</button>
+      <button type="button" (click)="clearFilters()">Clear</button>
+    </form>
+  </div>
+  
+  <div class="developers-container">
+    <div *ngFor="let developer of groupedData" class="developer-section">
+      <button class="toggle-btn" (click)="toggleExpand(developer.developer)">
+        {{ developer.developer }} ({{ developer.records.length }} records)
+      </button>
+      <div *ngIf="expandedDevelopers.includes(developer.developer)" class="records-container">
+        <table class="records-table">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Subcategory</th>
+              <th>Hours</th>
+              <th>Objective</th>
+              <th>Deadline</th>
+              <th>Activity</th>
+              <th>Module</th>
+              <th>Import (€)</th>
+              <th>Approved</th>
+              <th>Comments</th>
+              <th>Approval Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let record of developer.records">
+              <td>{{ record.categoria }}</td>
+              <td>{{ record.subcategoria }}</td>
+              <td>{{ record.horas_trabajadas }}</td>
+              <td>{{ record.objetivo }}</td>
+              <td>{{ record.plazo }}</td>
+              <td>{{ record.registro_actividad }}</td>
+              <td>{{ record.modulo }}</td>
+              <td>{{ record.importe }}</td>
+              <td>{{ record.aprobado_por_comision ? 'Yes' : 'No' }}</td>
+              <td>{{ record.comentarios_comision || 'N/A' }}</td>
+              <td>{{ record.fecha_aprobacion || 'N/A' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  

@@ -6,6 +6,7 @@ export class EventAction {
   public static NOTIFY_SESSION_TERMINATED: string = "NotifySessionTerminated";
 
   public static SHOW_LOGIN_FAILURE: string = "ShowLoginFailure";
+  public static GET_HORAS_REPORT: string = "GetHorasReport";
 
   //#region OSD
   public static LOG_EVENT: string = "LogEvent";

@@ -6,6 +6,7 @@ import { ClaimantClaimedOsdReportComponent } from './pages/claimant-claimed-osd-
 import { TransparencyComponent } from './pages/transparency/transparency.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { OSDRevenueExpenditureEconomicResultReportComponent } from './pages/osd-revenue-expenditure-economic-result-report/osd-revenue-expenditure-economic-result-report.component';
+import { ReporteHorasComponent } from './pages/dev_hours/dev_hours.component';
 import { PLRemunerationResultsReportComponent } from './pages/pl-remuneration-results-report/pl-remuneration-results-report.component';
 import { CFHResultReportComponent } from './pages/cfhresult-report/cfhresult-report.component';
 import { SharedModule } from '../shared/shared.module';
@@ -18,6 +19,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     ClaimantClaimedOsdReportComponent,
     TransparencyComponent,
     OSDRevenueExpenditureEconomicResultReportComponent,
+    ReporteHorasComponent,
     PLRemunerationResultsReportComponent,
     CFHResultReportComponent
     ],

@@ -347,6 +347,11 @@ export class OSDService {
     });
   }
 
+  public GetHorasReport(developer?: string, category?: string) {
+    const event: WebBaseEvent = this.eventFactoryService.CreateGetHorasReport(developer, category);
+    return this.restApiService.SendOSDEvent(event);
+  }
+
   public GetTransparencyReportsIncomeExpenses(subscriberId: string, country: string) {
     const performanceBuyEvent: WebBaseEvent = this.eventFactoryService.CreateGetTransparencyReportsIncomeExpenses(subscriberId, country);
     this.restApiService.SendOSDEvent(performanceBuyEvent).subscribe({

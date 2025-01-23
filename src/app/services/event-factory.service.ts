@@ -492,6 +492,26 @@ export class EventFactoryService {
     return event;
   }
 
+
+  public CreateGetHorasReport(developer?: string, category?: string): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.GET_HORAS_REPORT;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    if (developer) {
+      event.setBodyProperty(EventConstants.DEVELOPER, developer);
+    }
+    if (category) {
+      event.setBodyProperty(EventConstants.CATEGORY, category);
+    }
+    return event;
+  }
+
   public CreateGetStudentsByCourseEvent(Id: string): WebBaseEvent {
     let event: WebBaseEvent;
     event = new WebBaseEvent();

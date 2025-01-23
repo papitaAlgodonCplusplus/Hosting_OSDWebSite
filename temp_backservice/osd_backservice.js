@@ -11,25 +11,25 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Production
-// const pool = new Pool({
-//   user: process.env.DB_USER,
-//   host: process.env.DB_HOST,
-//   database: process.env.DB_NAME,
-//   password: process.env.DB_PASSWORD,
-//   port: 5432,
-//   ssl: {
-//     rejectUnauthorized: false
-//   }
-// });
+const pool = new Pool({
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: 5432,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
 
 // Development
-const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'osdlogic',
-  password: 'sapwd2023',
-  port: 5432
-});
+// const pool = new Pool({
+//   user: 'postgres',
+//   host: 'localhost',
+//   database: 'osdlogic',
+//   password: 'sapwd2023',
+//   port: 5432
+// });
 
 const createWebBaseEvent = (body, sessionKey = null, securityToken = null, action = 'Response') => ({
   Body: body,
@@ -220,6 +220,22 @@ app.post('/api/events/processOSDEvent', async (req, res) => {
 
       case 'LogEvent':
         await handleLogUserAction(event, res);
+        break;
+
+      case 'GetDatabaseChangeLogs':
+        await handleGetDatabaseChangeLogs(event, res);
+        break;
+
+      case 'GetUserActionLogs':
+        await handleGetUserActionLogs(event, res);
+        break;
+
+      case 'GetUsers':
+        await handleGetUsers(event, res);
+        break;
+
+      case 'GetHorasReport':
+        await handleGetHorasReport(event, res);
         break;
 
       default:
@@ -1658,8 +1674,6 @@ const handleGetPerformancesProjectManagerById = async (event, res) => {
 
     const performancesFreeProfessionalResult = await pool.query(performancesFreeProfessionalQuery, [projectManagerId]);
     const performancesBuyResult = await pool.query(performancesBuyQuery, [projectManagerId]);
-    📝 Result performancesBuyResult: ${JSON.stringify(performancesBuyResult.rows, null, 2)}`);
-
     const performancesFreeProfessionalDto = performancesFreeProfessionalResult.rows.map(pfp => ({
       ...pfp,
       SummaryTypeName: null,
@@ -2793,6 +2807,168 @@ const handleGetCourseByUserId = async (event, res) => {
     }, event.SessionKey, event.SecurityToken, 'GetCourseByUserId'));
   }
 };
+
+const handleGetUsers = async (event, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM osduser');
+    res.status(200).json(createWebBaseEvent({
+      GET_USERS_SUCCESS: true,
+      users: result.rows
+    }, event.SessionKey, event.SecurityToken, 'GetUsers'));
+  } catch (error) {
+    console.error('❌ Error fetching users:', error);
+    res.status(500).json(createWebBaseEvent({
+      GET_USERS_SUCCESS: false,
+      GET_USERS_MESSAGE: 'Server error fetching users.',
+    }, event.SessionKey, event.SecurityToken, 'GetUsers'));
+  }
+};
+
+const handleGetHorasReport = async (event, res) => {
+  try {
+    // Extract filtering parameters from the event body
+    const developer = event.Body?.Developer; // Optional filter by developer name
+    const category = event.Body?.Category; // Optional filter by category
+
+    // Base SQL query
+    let query = `
+      SELECT id, usuario_id, nombre_miembro, rol, categoria, subcategoria, horas_trabajadas,
+             objetivo, plazo, registro_actividad, formulario_pantalla, modulo, importe,
+             aprobado_por_comision, comentarios_comision, fecha_aprobacion
+      FROM reporte_horas
+    `;
+    const queryParams = [];
+
+    // Add filters dynamically based on provided parameters
+    if (developer && category) {
+      query += ` WHERE nombre_miembro ILIKE $1 AND categoria ILIKE $2`;
+      queryParams.push(`%${developer}%`, `%${category}%`);
+    } else if (developer) {
+      query += ` WHERE nombre_miembro ILIKE $1`;
+      queryParams.push(`%${developer}%`);
+    } else if (category) {
+      query += ` WHERE categoria ILIKE $1`;
+      queryParams.push(`%${category}%`);
+    }
+
+    // Add ordering by deadline (plazo) and a default limit
+    query += ` ORDER BY plazo ASC LIMIT 100`;
+
+    // Execute the query
+    const reportResult = await pool.query(query, queryParams);
+
+    // Respond with the retrieved report data
+    return res.status(200).json(createWebBaseEvent({
+      GET_HORAS_REPORT_SUCCESS: true,
+      report: reportResult.rows,
+    }, event.SessionKey, event.SecurityToken, 'GetHorasReport'));
+
+  } catch (error) {
+    console.error('❌ Error fetching horas report:', error);
+
+    // Handle errors
+    return res.status(500).json(createWebBaseEvent({
+      GET_HORAS_REPORT_SUCCESS: false,
+      GET_HORAS_REPORT_MESSAGE: 'Server error fetching horas report.',
+    }, event.SessionKey, event.SecurityToken, 'GetHorasReport'));
+  }
+};
+
+const handleGetUserActionLogs = async (event, res) => {
+  try {
+    // Extract any filtering parameters from the event if needed
+    const userId = event.Body?.SelectedUserId; // Optional filtering by user ID
+    const limit = event.Body?.Limit || 100; // Default limit to 100 logs
+    // Construct the SQL query
+    let query = `
+      SELECT id, user_id, action, page_url, element_clicked, additional_info, timestamp
+      FROM user_action_logs
+    `;
+    const queryParams = [];
+
+    // Add filtering by user ID if provided
+    if (userId) {
+      query += ` WHERE user_id = $1`;
+      queryParams.push(userId);
+    }
+
+    // Add ordering and limit
+    query += ` ORDER BY timestamp DESC LIMIT $${queryParams.length + 1}`;
+    queryParams.push(limit);
+
+    // Execute the query
+    const logsResult = await pool.query(query, queryParams);
+
+    // Respond with the retrieved logs
+    return res.status(200).json(createWebBaseEvent({
+      GET_USER_ACTION_LOGS_SUCCESS: true,
+      logs: logsResult.rows,
+    }, event.SessionKey, event.SecurityToken, 'GetUserActionLogs'));
+
+  } catch (error) {
+    console.error('❌ Error fetching user action logs:', error);
+
+    // Handle any errors that occur
+    return res.status(500).json(createWebBaseEvent({
+      GET_USER_ACTION_LOGS_SUCCESS: false,
+      GET_USER_ACTION_LOGS_MESSAGE: 'Server error fetching user action logs.',
+    }, event.SessionKey, event.SecurityToken, 'GetUserActionLogs'));
+  }
+};
+
+const handleGetDatabaseChangeLogs = async (event, res) => {
+  try {
+    // Extract optional UserId from the event body
+    const userId = event.Body?.SelectedUserId;
+
+    // Build the base query
+    let changeLogsQuery = `
+      SELECT id, table_name, operation_type, row_data, change_time
+      FROM database_change_logs
+    `;
+
+    // Add filtering by user ID if provided
+    const params = [];
+    if (userId) {
+      changeLogsQuery += `
+        WHERE row_data->>'user_id' = $1
+      `;
+      params.push(userId);
+    }
+
+    // Add ordering to the query
+    changeLogsQuery += `
+      ORDER BY change_time DESC
+    `;
+
+    // Execute the query
+    const changeLogsResult = await pool.query(changeLogsQuery, params);
+
+    // Check if logs exist
+    if (changeLogsResult.rows.length === 0) {
+      return res.status(404).json(createWebBaseEvent({
+        GET_DATABASE_CHANGE_LOGS_SUCCESS: false,
+        GET_DATABASE_CHANGE_LOGS_MESSAGE: 'No database change logs found.',
+      }, event.SessionKey, event.SecurityToken, 'GetDatabaseChangeLogs'));
+    }
+
+    // Format and return the logs
+    return res.status(200).json(createWebBaseEvent({
+      GET_DATABASE_CHANGE_LOGS_SUCCESS: true,
+      logs: changeLogsResult.rows,
+    }, event.SessionKey, event.SecurityToken, 'GetDatabaseChangeLogs'));
+
+  } catch (error) {
+    console.error('❌ Error fetching database change logs:', error);
+
+    // Handle errors gracefully
+    return res.status(500).json(createWebBaseEvent({
+      GET_DATABASE_CHANGE_LOGS_SUCCESS: false,
+      GET_DATABASE_CHANGE_LOGS_MESSAGE: 'Server error fetching database change logs.',
+    }, event.SessionKey, event.SecurityToken, 'GetDatabaseChangeLogs'));
+  }
+};
+
 
 const handleLogUserAction = async (req, res) => {
   try {
