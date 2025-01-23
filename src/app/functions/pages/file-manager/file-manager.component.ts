@@ -84,7 +84,6 @@ export class FileManagerComponent implements OnInit, OnDestroy {
       this.store.dispatch(UiActions.hideLeftSidebar());
 
       this.claim$.subscribe(claim => {
-        "Claim is: ", claim);
         this.fileManager = this.fillForm(claim);
         this.claimId = claim.Id;
         this.claim = claim;
@@ -145,7 +144,6 @@ export class FileManagerComponent implements OnInit, OnDestroy {
         CreditingDate: creditingDate
       };
 
-      'Submitting addPerformanceUpdate with payload:', payload);
       await this.osdEventService.addPerformanceUpdate(payload);
 
       this.closeAddUpdateModal();
@@ -330,8 +328,6 @@ export class FileManagerComponent implements OnInit, OnDestroy {
       ...this.closeClaimfileForm.value,
       finalRating: rating
     };
-
-    'Finalizing claim with rating:', rating, ' and form:', payload, ' and claimId:', this.claim?.id);
 
     // Now call your service method
     this.osdEventService.CloseClaimFile(payload, this.claim?.id, this.user.Id);

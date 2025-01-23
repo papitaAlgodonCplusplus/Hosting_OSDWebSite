@@ -28,7 +28,6 @@ export class SwitchLanguagesComponent implements OnInit {
     } else {
       this.languageCode = "es";
     }
-    this.languageCode);
     this.translate.use(this.languageCode);
   }    
 }

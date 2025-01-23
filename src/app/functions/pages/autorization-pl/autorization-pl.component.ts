@@ -119,7 +119,6 @@ export class AutorizationPlComponent implements OnDestroy {
     });
 
     Promise.all(displayedItemsPromises).then(updatedItems => {
-      "Found users", updatedItems.map(item => item.user.Body?.user));
       this.displayedItems = updatedItems.map(item => item.user.Body?.user);
     });
   }

@@ -29,7 +29,6 @@ export class FpManagementComponent implements OnInit {
     this.osdService.GetFreeProfessionalsDataEvent();
     this.osdService.getFreeProfessionalsList().then((response: any) => {
       response.forEach((professional: any) => {
-        "Professional Acronym: ", professional.FreeprofessionaltypeAcronym); // Debugging
         const professionalGroup = this.fb.group({
           name: [professional.username, Validators.required],
           serviceRates: [parseFloat(professional.servicerates) || 0, Validators.required],

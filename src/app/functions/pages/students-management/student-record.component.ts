@@ -46,7 +46,6 @@ export class StudentRecordComponent implements OnInit {
           students = [students];
         }
         students.forEach((student: any) => {
-          'Student:', student);
           const studentGroup = this.fb.group({
             name: [student.name || '', Validators.required],
             attendance: [student.assistance ?? '', [Validators.required, Validators.min(0), Validators.max(100)]],
@@ -68,7 +67,6 @@ export class StudentRecordComponent implements OnInit {
     this.students.removeAt(index);
     this.OSDEventService.deleteStudentRecord(student_name).subscribe({
       complete: () => {
-        '✅ Student record deleted successfully');
       },
       error: (error: any) => {
         console.error('❌ Error deleting student record:', error);
@@ -102,7 +100,6 @@ export class StudentRecordComponent implements OnInit {
 
     this.OSDEventService.updateStudentRecords(this.studentForm.value).subscribe({
       complete: () => {
-        '✅ Student records updated successfully');
         this.router.navigate(['/home']);
       },
       error: (error: any) => {
