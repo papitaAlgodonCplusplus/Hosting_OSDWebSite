@@ -3,6 +3,7 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { ModalActions } from 'src/app/store/actions';
 import { ModalSelectors } from 'src/app/store/selectors';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'shared-alert',
@@ -15,13 +16,15 @@ export class AlertComponent {
   alertOpen$: Observable<boolean> = this.store.select(ModalSelectors.alertOpen);
   alertType$: Observable<string> = this.store.select(ModalSelectors.alertType);
   alertPosition$: Observable<string> = this.store.select(ModalSelectors.alertPosition);
-
-  constructor(private store: Store) { }
+  constructor(private store: Store, private translate: TranslateService) { }
 
   ngOnInit() {
-    this.store.dispatch(ModalActions.addAlertMessage({
-      alertMessage:  'Processing...'
-    }));
+    this.translate.get('success_message').subscribe((translatedMessage: string) => {
+      this.store.dispatch(ModalActions.addAlertMessage({
+        alertMessage: `✅ ${translatedMessage}`,
+      }));
+    });
+
     setTimeout(() => {
       this.toggleSuccessAlert();
     }, 5000);

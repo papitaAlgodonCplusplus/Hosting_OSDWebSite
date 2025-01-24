@@ -10,7 +10,6 @@
         <th class="p-5 border text-yellow-500 font-normal">{{ 'CFHIncomes' | translate }} (€)</th>
         <th class="p-5 border text-yellow-500 font-normal">{{ 'numberOfStudents' | translate }}</th>
         <th class="p-5 border text-yellow-500 font-normal">{{ 'graduatedPassedStudents' | translate }}</th>
-        <th class="p-5 border text-yellow-500 font-normal">{{ 'benefitsPassedStudents' | translate }}</th>
       </tr>
     </thead>
     <tbody>
@@ -32,14 +31,12 @@
         <td class="p-5 border text-center">€{{ reports.formadorConsultor.online.cfhIngresos }}</td>
         <td class="p-5 border text-center">{{ reports.formadorConsultor.online.alumnos }}</td>
         <td class="p-5 border text-center">{{ reports.formadorConsultor.online.alumnosAprobados }}</td>
-        <td class="p-5 border text-center">{{ reports.formadorConsultor.online.beneficios }}</td>
       </tr>
       <tr *ngIf="expandedRow === 'formadorConsultor'">
         <td class="p-5 border text-center font-medium text-darkslategray">Presencial</td>
         <td class="p-5 border text-center">€{{ reports.formadorConsultor.presencial.cfhIngresos }}</td>
         <td class="p-5 border text-center">{{ reports.formadorConsultor.presencial.alumnos }}</td>
         <td class="p-5 border text-center">{{ reports.formadorConsultor.presencial.alumnosAprobados }}</td>
-        <td class="p-5 border text-center">{{ reports.formadorConsultor.presencial.beneficios }}</td>
       </tr>
 
       <!-- Tecnico OSD -->
@@ -60,14 +57,12 @@
         <td class="p-5 border text-center">€{{ reports.tecnicoOSD.online.cfhIngresos }}</td>
         <td class="p-5 border text-center">{{ reports.tecnicoOSD.online.alumnos }}</td>
         <td class="p-5 border text-center">{{ reports.tecnicoOSD.online.alumnosAprobados }}</td>
-        <td class="p-5 border text-center">{{ reports.tecnicoOSD.online.beneficios }}</td>
       </tr>
       <tr *ngIf="expandedRow === 'tecnicoOSD'">
         <td class="p-5 border text-center font-medium text-darkslategray">Presencial</td>
         <td class="p-5 border text-center">€{{ reports.tecnicoOSD.presencial.cfhIngresos }}</td>
         <td class="p-5 border text-center">{{ reports.tecnicoOSD.presencial.alumnos }}</td>
         <td class="p-5 border text-center">{{ reports.tecnicoOSD.presencial.alumnosAprobados }}</td>
-        <td class="p-5 border text-center">{{ reports.tecnicoOSD.presencial.beneficios }}</td>
       </tr>
     </tbody>
   </table>

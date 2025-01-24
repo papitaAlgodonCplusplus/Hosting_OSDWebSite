@@ -103,8 +103,8 @@
                         <option value="" disabled selected hidden>{{ 'Filtrar por Área de trabajo' | translate }}
                         </option>
                         <option value="">{{ 'Mostrar todos' | translate }}</option>
-                        <option *ngFor="let type of professionalTypes" [value]="type.name">
-                            {{ type.name | translate }}
+                        <option *ngFor="let type of professionalTypes" [value]="type.acronym">
+                            {{ type.acronym | translate }}
                         </option>
                     </select>
                 </div>
@@ -114,9 +114,6 @@
                         <tr>
                             <th scope="col" class="px-6 py-3">
                                 {{'FreeProfessional' | translate}}
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                {{'Code' | translate}}
                             </th>
                             <th scope="col" class="px-6 py-3">
                                 {{ 'Workspace' | translate }}
@@ -130,13 +127,10 @@
                         <tr class="border-y border-gray-700"
                             *ngFor="let fp of filteredProfessionalsFree; let i = index">
                             <th class="text-center border-y px-4 py-2">
-                                {{fp.Name}}
+                                {{fp.username}}
                             </th>
                             <th class="text-center border-y px-4 py-2">
-                                {{fp.Code}}
-                            </th>
-                            <th class="text-center border-y px-4 py-2">
-                                {{fp.FreeprofessionaltypeName | translate}}
+                                {{fp.FreeprofessionaltypeAcronym | translate}}
                             </th>
                             <td class="text-center border-y px-4 py-2">
                                 <button (click)="selectProfessionalFree(fp)" class="rounded-xl p-2">

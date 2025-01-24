@@ -18,4 +18,5 @@ export class Subscriber {
     paytpv: string = "";
     servicerates: string = "";
     userid: string = "";
+    clienttype: string = "";
 }

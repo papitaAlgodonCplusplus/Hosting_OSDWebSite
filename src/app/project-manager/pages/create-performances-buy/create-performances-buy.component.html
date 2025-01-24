@@ -2,71 +2,71 @@
     <div
         class="w-full text-darkslategray text-start py-3 text-xl font-medium space-x-3 animate__animated animate__fadeInLeft">
         <span class="pl-5 pr-3 py-1 bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden">
-            {{'compra' | translate}}</span>
+            {{ 'compra' | translate }}</span>
     </div>
     <form [formGroup]="performanceForm" autocomplete="off" class="h-full w-full flex flex-col p-3">
-        <div class=" flex flex-wrap items-center">
-
+        <div class="flex flex-wrap items-center">
             <shared-input-field [readOnly]="isViewPerformance" class="w-full md:w-1/2" fieldName="Date"
-                label="{{'Date' | translate}}" inputType="date" [formGroup]="performanceForm"
+                label="{{ 'Date' | translate }}" inputType="date" [formGroup]="performanceForm"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
             <shared-simple-dropdown [readOnly]="isViewPerformance" class="w-full md:w-1/2" fieldName="SummaryTypeId"
-                label="{{'Summary'|translate}}" inputType="text" [formGroup]="performanceForm"
+                label="{{ 'Summary' | translate }}" inputType="text" [formGroup]="performanceForm"
                 [selectedItem]="selectedSummaryType" [dropdownItems]="summaryTypes"
                 [bgColor]="'bg-white-lightbone'"></shared-simple-dropdown>
+
+            <shared-input-field [readOnly]="true" (click)="openModal()" class="w-full md:w-1/2"
+                fieldName="FreeProfessionalCode" label="{{ 'Assigned free professional' | translate }}"
+                [formGroup]="performanceForm">
+            </shared-input-field>
+
+            <shared-input-field *ngIf="false" class="w-full md:w-1/2" fieldName="FreeProfessionalAssignedId"
+                [formGroup]="performanceForm">
+            </shared-input-field>
         </div>
 
         <div *ngIf="documentName != ''" class="flex flex-col items-center justify-center space-x-2 w-full">
             <input type="file" id="JustifyingDocument" formControlName="JustifyingDocument" class="hidden"
                 (change)="displayFileName($event)">
             <label for="JustifyingDocument" class="block text-gray-700 mb-1 cursor-pointer">
-                {{'justifyingDocument' | translate}}
+                {{ 'justifyingDocument' | translate }}
             </label>
-            <div class=" flex flex-col">
+            <div class="flex flex-col">
                 <label for="JustifyingDocument"
                     class="cursor-pointer py-2 px-4 border hover:bg-gray-100 focus:outline-none focus:ring focus:border-blue-300">
-                    {{'seleccionar_archivo' | translate}}
-                </label>
-                <label (click)="downloadPdf(performance.JustifyingDocumentBytes)" *ngIf="!isViewPerformance" class="cursor-pointer p-2 text-sm bg-darkslategray text-white rounded-xl">
-                    {{'Download' | translate}}
+                    {{ 'seleccionar_archivo' | translate }}
                 </label>
             </div>
-            <span class="ml-2 text-darkslategray">{{this.documentName}}</span>
+            <span class="ml-2 text-darkslategray">{{ documentName }}</span>
         </div>
 
         <div class="flex flex-col space-y-2 py-2">
-
             <span class="border-b font-medium text-start text-darkslategray">
-                {{'Solicitud productos/servicios'|translate}}</span>
+                {{ 'Solicitud productos/servicios' | translate }}</span>
 
             <div class="flex flex-wrap">
-                <shared-input-field [readOnly]="isViewPerformance" class="w-full md:w-1/2" fieldName="ProductServiceId"
-                    label="{{'Identificación Producto/Servicio' | translate}}" inputType="text"
-                    [formGroup]="performanceForm" ></shared-input-field>
-
                 <shared-input-field [readOnly]="isViewPerformance" class="w-full md:w-1/2" fieldName="MinimumUnits"
-                    label="{{'Unidades min-max' | translate}}" inputType="number"
+                    label="{{ 'Unidades min-max' | translate }}" inputType="number"
                     [formGroup]="performanceForm"></shared-input-field>
 
                 <shared-input-field [readOnly]="isViewPerformance" class="w-full md:w-1/2" fieldName="MaximumUnits"
-                    label="{{'Unidades max-min' | translate}}" inputType="number"
+                    label="{{ 'Unidades max-min' | translate }}" inputType="number"
                     [formGroup]="performanceForm"></shared-input-field>
 
                 <shared-input-field [readOnly]="isViewPerformance" class="w-full md:w-1/2" fieldName="UnitaryCost"
-                    label="{{'Coste Unitario' | translate}}" inputType="number"
+                    label="{{ 'Coste Unitario' | translate }}" inputType="number"
                     [formGroup]="performanceForm"></shared-input-field>
 
                 <shared-input-field [readOnly]="isViewPerformance" class="w-full md:w-1/2" fieldName="ShelfLife"
-                    label="{{'Vida util' | translate}}" inputType="text"
+                    label="{{ 'Vida util' | translate }}" inputType="text"
                     [formGroup]="performanceForm"></shared-input-field>
-
             </div>
         </div>
     </form>
+
     <div class="flex flex-row space-x-3 justify-end mt-12 font-medium p-3">
         <button routerLink="/project-manager" class="p-2 rounded-xl bg-line text-darkslategray" i18n="@@signin">
-            {{'regresar' | translate}}
+            {{ 'regresar' | translate }}
         </button>
         <div *ngIf="isCreatePerformance">
             <shared-confirmation-button (click)="onSubmit()" [ButtonName]="'CreatePerformance'"></shared-confirmation-button>
@@ -74,9 +74,71 @@
 
         <div *ngIf="!isViewPerformance && !isCreatePerformance">
             <button (click)="modifyPerformance()" class="p-2 bg-darkslategray text-line rounded-xl">
-                {{'Modified'|translate}}
+                {{ 'Modified' | translate }}
             </button>
         </div>
+    </div>
 
+    <!-- Modal for selecting free professional -->
+    <div *ngIf="showModal" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
+        <div class="bg-opacity-75 bg-black absolute inset-0"></div>
+        <div class="relative z-50 bg-white shadow-md space-y-1 rounded-xl p-3">
+            <div class="justify-center">
+                <div class="p-3 flex flex-col items-center">
+                    <div class="w-full flex justify-end">
+                        <select [(ngModel)]="selectedType" class="mb-3 p-2 border bg-white rounded-lg"
+                            (change)="applyFilter()">
+                            <option value="" disabled selected hidden>{{ 'Filtrar por Área de trabajo' | translate }}
+                            </option>
+                            <option value="">{{ 'Mostrar todos' | translate }}</option>
+                            <option *ngFor="let type of professionalTypes" [value]="type.acronym">
+                                {{ type.acronym | translate }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <table class="w-full rtl:text-right text-slate-950 text-center">
+                        <thead class="font-medium text-darkslategray">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">
+                                    {{ 'FreeProfessional' | translate }}
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    {{ 'Workspace' | translate }}
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    {{ 'Select' | translate }}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-y border-gray-700"
+                                *ngFor="let fp of filteredProfessionalsFree; let i = index">
+                                <th class="text-center border-y px-4 py-2">
+                                    {{ fp.username }}
+                                </th>
+                                <th class="text-center border-y px-4 py-2">
+                                    {{ fp.FreeprofessionaltypeAcronym | translate }}
+                                </th>
+                                <td class="text-center border-y px-4 py-2">
+                                    <button (click)="selectProfessionalFree(fp)" class="rounded-xl p-2">
+                                        <i class="fas fa-check-circle text-xl animate-bounce text-green-500"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <mat-paginator [length]="filteredProfessionalsFree.length" [pageSize]="10"
+                        (page)="onPageChange($event)"></mat-paginator>
+
+                    <div class="font-medium p-3 rounded-xl cursor-pointer text-end w-full">
+                        <a (click)="closeModal()" class="items-center text-darkslategray bg-line rounded-xl p-2">
+                            {{ 'cancelar' | translate }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

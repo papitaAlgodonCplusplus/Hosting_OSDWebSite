@@ -44,6 +44,7 @@ export class SubAuthorizedComponent implements OnDestroy {
         this.subscribers = subscribers;
 
         this.items.forEach(item => {
+          console.log(this.subscribers)
           const matchingSubscriber = this.subscribers.find(sub => sub.userId === item.id);
           if (matchingSubscriber) {
            
@@ -74,8 +75,8 @@ export class SubAuthorizedComponent implements OnDestroy {
     this.displayedItems = this.items.slice(startIndex, endIndex);
   }
 
-  selectUser(userId: string) {
-    const foundUser: UserInfo = this.displayedItems.find(item => item.id === userId);
+  selectUser(user: any) {
+    const foundUser: UserInfo = this.displayedItems.find(item => item.userid === user.userid);
     if (foundUser.Isauthorized) {
       this.isAuthorized = true
     }
@@ -88,16 +89,15 @@ export class SubAuthorizedComponent implements OnDestroy {
     userDTO.Name = foundUser.name.trim();
     userDTO.Email = foundUser.email;
     this.user = userDTO;
-
-    var subscriber = this.subscribers.find(item => item.id === userId);
+    var subscriber = this.subscribers.find(item => item.userid === item.userid);
     const subscriberDTO: Subscriber = {} as Subscriber;
-    subscriberDTO.clientType = subscriber.clienttype
     this.subscriber = subscriberDTO;
 
     this.showAuthorizatedModal = true;
   }
 
   onConfirmHandler() {
+    console.log(this.userId)
     this.osdEventService.changingUsdUserAutorizationStatusEvent(this.userId);
     const newItems = this.items.map(item => {
       if (item.Id === this.userId) {

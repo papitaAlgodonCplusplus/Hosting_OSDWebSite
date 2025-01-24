@@ -1,0 +1,130 @@
+-- Step 1: Handle subscribercustomer constraint
+ALTER TABLE subscribercustomer
+DROP CONSTRAINT subscribercustomer_userid_fkey;
+
+ALTER TABLE subscribercustomer
+ADD CONSTRAINT subscribercustomer_userid_fkey
+FOREIGN KEY (userid) REFERENCES osduser(id) ON DELETE CASCADE;
+
+-- Step 2: Handle freeprofessional constraint (userid foreign key)
+ALTER TABLE freeprofessional
+DROP CONSTRAINT freeprofessional_userid_fkey;
+
+ALTER TABLE freeprofessional
+ADD CONSTRAINT freeprofessional_userid_fkey
+FOREIGN KEY (userid) REFERENCES osduser(id) ON DELETE CASCADE;
+
+-- Step 3: Handle claimant constraint
+ALTER TABLE claimant
+DROP CONSTRAINT claimant_userid_fkey;
+
+ALTER TABLE claimant
+ADD CONSTRAINT claimant_userid_fkey
+FOREIGN KEY (userid) REFERENCES osduser(id) ON DELETE CASCADE;
+
+-- Step 4: Handle freeprofessional constraint (fk_cfh_id foreign key)
+ALTER TABLE freeprofessional
+DROP CONSTRAINT fk_cfh_id;
+
+ALTER TABLE freeprofessional
+ADD CONSTRAINT fk_cfh_id
+FOREIGN KEY (cfh_id) REFERENCES osduser(id) ON DELETE CASCADE;
+
+-- Step 5: Handle subscribercustomerfreeprofessionalprocessor constraint (subscribercustomerid foreign key)
+ALTER TABLE subscribercustomerfreeprofessionalprocessor
+DROP CONSTRAINT subscribercustomerfreeprofessionalpro_subscribercustomerid_fkey;
+
+ALTER TABLE subscribercustomerfreeprofessionalprocessor
+ADD CONSTRAINT subscribercustomerfreeprofessionalpro_subscribercustomerid_fkey
+FOREIGN KEY (subscribercustomerid) REFERENCES subscribercustomer(id) ON DELETE CASCADE;
+
+-- Step 6: Handle subscribercustomerfreeprofessionaltrainer constraint (subscribercustomerid foreign key)
+ALTER TABLE subscribercustomerfreeprofessionaltrainer
+DROP CONSTRAINT subscribercustomerfreeprofessionaltra_subscribercustomerid_fkey;
+
+ALTER TABLE subscribercustomerfreeprofessionaltrainer
+ADD CONSTRAINT subscribercustomerfreeprofessionaltra_subscribercustomerid_fkey
+FOREIGN KEY (subscribercustomerid) REFERENCES subscribercustomer(id) ON DELETE CASCADE;
+
+-- Step 7: Handle claim_file constraint (subscriberclaimedid foreign key)
+ALTER TABLE claim_file
+DROP CONSTRAINT claim_file_subscriberclaimedid_fkey;
+
+ALTER TABLE claim_file
+ADD CONSTRAINT claim_file_subscriberclaimedid_fkey
+FOREIGN KEY (subscriberclaimedid) REFERENCES subscribercustomer(id) ON DELETE CASCADE;
+
+-- Step 8: Handle claim_file constraint (claimantid foreign key)
+ALTER TABLE claim_file
+DROP CONSTRAINT claim_file_claimantid_fkey;
+
+ALTER TABLE claim_file
+ADD CONSTRAINT claim_file_claimantid_fkey
+FOREIGN KEY (claimantid) REFERENCES claimant(id) ON DELETE CASCADE;
+
+-- Step 9: Handle performance_buy constraint
+ALTER TABLE performance_buy
+DROP CONSTRAINT performance_buy_freeprofessionalid_fkey;
+
+ALTER TABLE performance_buy
+ADD CONSTRAINT performance_buy_freeprofessionalid_fkey
+FOREIGN KEY (freeprofessionalid) REFERENCES freeprofessional(id) ON DELETE CASCADE;
+
+-- Step 10: Handle performance_freeprofessional constraint (freeprofessionalassignedid foreign key)
+ALTER TABLE performance_freeprofessional
+DROP CONSTRAINT performance_freeprofessional_freeprofessionalassignedid_fkey;
+
+ALTER TABLE performance_freeprofessional
+ADD CONSTRAINT performance_freeprofessional_freeprofessionalassignedid_fkey
+FOREIGN KEY (freeprofessionalassignedid) REFERENCES freeprofessional(id) ON DELETE CASCADE;
+
+-- Step 11: Handle project_performance_freeprofessional_assigned constraint
+ALTER TABLE project_performance_freeprofessional_assigned
+DROP CONSTRAINT project_performance_freeprofessional_as_freeprofessionalid_fkey;
+
+ALTER TABLE project_performance_freeprofessional_assigned
+ADD CONSTRAINT project_performance_freeprofessional_as_freeprofessionalid_fkey
+FOREIGN KEY (freeprofessionalid) REFERENCES freeprofessional(id) ON DELETE CASCADE;
+
+-- Step 12: Handle performance_freeprofessional constraint (freeprofessionalcreatedperformanceid foreign key)
+ALTER TABLE performance_freeprofessional
+DROP CONSTRAINT performance_freeprofessional_freeprofessionalcreatedperfor_fkey;
+
+ALTER TABLE performance_freeprofessional
+ADD CONSTRAINT performance_freeprofessional_freeprofessionalcreatedperfor_fkey
+FOREIGN KEY (freeprofessionalcreatedperformanceid) REFERENCES freeprofessional(id) ON DELETE CASCADE;
+
+-- Step 13: Handle subscribercustomerfreeprofessionalprocessor constraint (freeprofessionalid foreign key)
+ALTER TABLE subscribercustomerfreeprofessionalprocessor
+DROP CONSTRAINT subscribercustomerfreeprofessionalproce_freeprofessionalid_fkey;
+
+ALTER TABLE subscribercustomerfreeprofessionalprocessor
+ADD CONSTRAINT subscribercustomerfreeprofessionalproce_freeprofessionalid_fkey
+FOREIGN KEY (freeprofessionalid) REFERENCES freeprofessional(id) ON DELETE CASCADE;
+
+-- Step 14: Handle subscribercustomerfreeprofessionaltrainer constraint (freeprofessionalid foreign key)
+ALTER TABLE subscribercustomerfreeprofessionaltrainer
+DROP CONSTRAINT subscribercustomerfreeprofessionaltrain_freeprofessionalid_fkey;
+
+ALTER TABLE subscribercustomerfreeprofessionaltrainer
+ADD CONSTRAINT subscribercustomerfreeprofessionaltrain_freeprofessionalid_fkey
+FOREIGN KEY (freeprofessionalid) REFERENCES freeprofessional(id) ON DELETE CASCADE;
+
+-- Step 15: Handle freeprofessional_claim constraint
+ALTER TABLE freeprofessional_claim
+DROP CONSTRAINT freeprofessional_claim_freeprofessionalid_fkey;
+
+ALTER TABLE freeprofessional_claim
+ADD CONSTRAINT freeprofessional_claim_freeprofessionalid_fkey
+FOREIGN KEY (freeprofessionalid) REFERENCES freeprofessional(id) ON DELETE CASCADE;
+
+-- Step 16: Handle performance_claim_control constraint (claimid foreign key)
+ALTER TABLE performance_claim_control
+DROP CONSTRAINT performance_claim_control_claimid_fkey;
+
+ALTER TABLE performance_claim_control
+ADD CONSTRAINT performance_claim_control_claimid_fkey
+FOREIGN KEY (claimid) REFERENCES claim_file(id) ON DELETE CASCADE;
+
+DELETE FROM osduser
+WHERE id != 'e77b5172-f726-4c1d-9f9e-d2dbd77e03c9';

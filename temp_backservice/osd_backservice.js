@@ -238,6 +238,22 @@ app.post('/api/events/processOSDEvent', async (req, res) => {
         await handleGetHorasReport(event, res);
         break;
 
+      case 'AddPerformanceFreeProfessional':
+        await handleAddPerformanceFreeProfessional(event, res);
+        break;
+
+      case 'AddSummaryType':
+        await handleAddSummaryType(event, res);
+        break;
+
+      case 'CreateProject':
+        await handleCreateProject(event, res);
+        break;
+
+      case 'CreatePerformanceBuy':
+        await handleCreatePerformanceBuy(event, res);
+        break;
+
       default:
         res.status(400).json(createWebBaseEvent({
           SUCCESS: false,
@@ -825,22 +841,30 @@ const handleGetClaims = async (event, res) => {
         GET_CLAIMS_MESSAGE: 'User ID is required.',
       }, event.SessionKey, event.SecurityToken, 'GettingClaims'));
     }
-
     const claimsQuery = `
     SELECT cf.*, u.accounttype, u.identity, u.name, u.firstsurname, u.middlesurname, u.city, 
-           u.companyname, u.address, u.zipcode, u.country, u.landline, u.mobilephone, u.email, 
-           u.password, u.web, u.isauthorized, u.isadmin
+         u.companyname, u.address, u.zipcode, u.country, u.landline, u.mobilephone, u.email, 
+         u.password, u.web, u.isauthorized, u.isadmin
     FROM claim_file cf
     LEFT JOIN osduser u ON cf.subscriberclaimedid = u.id
     LEFT JOIN subscribercustomer sc ON cf.subscriberclaimedid = sc.id
     WHERE cf.claimantid = $1 
-          OR sc.userid = $1
-          OR cf.processor_id = (
-            SELECT id 
-            FROM freeprofessional 
-            WHERE userid = $1
-          )
-  `;
+        OR sc.userid = $1
+        OR cf.processor_id = (
+        SELECT id 
+        FROM freeprofessional 
+        WHERE userid = $1
+        )
+        OR cf.id IN (
+        SELECT claimid 
+        FROM freeprofessional_claim 
+        WHERE freeprofessionalid = (
+          SELECT id 
+          FROM freeprofessional 
+          WHERE userid = $1
+        )
+        )
+    `;
 
     const claimsResult = await pool.query(claimsQuery, [userId]);
 
@@ -1290,7 +1314,6 @@ const handleGetSubPerformanceById = async (event, res) => {
       }, event.SessionKey, event.SecurityToken, 'GetSubPerformanceById'));
     }
 
-
     const subPerformanceQuery = `
       SELECT *
       FROM project_performance_freeprofessional_assigned
@@ -1388,12 +1411,15 @@ const handleGettingFreeProfessionalsTR = async (event, res) => {
     const subscriberId = getFreeProfessionalTREvent.SubscriberId;
 
 
-    const subscribercustomerfreeprofessionalprocessors = await pool.query(`
-      SELECT freeprofessionalid
-      FROM subscribercustomerfreeprofessionalprocessor
-      WHERE subscribercustomerid = $1
-    `, [subscriberId]);
+    // const subscribercustomerfreeprofessionalprocessors = await pool.query(`
+    //   SELECT freeprofessionalid
+    //   FROM subscribercustomerfreeprofessionalprocessor
+    //   WHERE subscribercustomerid = $1
+    // `, [subscriberId]);
 
+    const subscribercustomerfreeprofessionalprocessors = await pool.query(`
+        SELECT * FROM subscribercustomerfreeprofessionalprocessor`);
+    
     const freeProfessionalsDTO = [];
     const usersDTO = [];
 
@@ -1449,7 +1475,6 @@ const handleChangingOsdUserAutorizationStatus = async (event, res) => {
     }
 
     let osdUser = userQuery.rows[0];
-
     const usersInCountryQuery = await pool.query('SELECT COUNT(*) FROM osduser WHERE LOWER(TRIM(country)) = LOWER(TRIM($1))', [osdUser.country]);
     const getNumberOfUsers = parseInt(usersInCountryQuery.rows[0].count, 10);
 
@@ -1464,6 +1489,9 @@ const handleChangingOsdUserAutorizationStatus = async (event, res) => {
       const accountTypeQuery = await pool.query('SELECT * FROM accounttype WHERE id = $1', [osdUser.accounttype]);
       const accountType = accountTypeQuery.rows[0];
 
+      const countryCode = osdUser.country.toUpperCase().trim();
+      const year = new Date().getFullYear();
+
       if (accountType.type === 'FreeProfessional') {
         const freeProfessionalQuery = await pool.query('SELECT * FROM freeprofessional WHERE userid = $1', [osdUser.id]);
         const freeProfessional = freeProfessionalQuery.rows[0];
@@ -1472,8 +1500,6 @@ const handleChangingOsdUserAutorizationStatus = async (event, res) => {
         const freeProfessionalType = freeProfessionalTypeQuery.rows[0];
 
         const acronym = freeProfessionalType.acronym;
-        const countryCode = osdUser.country.toUpperCase().trim();
-        const year = new Date().getFullYear();
 
         if (acronym === 'Accounting_Technician') {
           osdUser.code = `${countryCode}/AC/${getNumberOfUsers}/${year}`;
@@ -1623,12 +1649,13 @@ const handleGetUnassignedSubscribers = async (event, res) => {
 
     for (const subscriber of subscribersList.rows) {
       const osduser = await pool.query(`
-        SELECT companyname
+        SELECT companyname, name
         FROM osduser
         WHERE id = $1
       `, [subscriber.userid]);
 
       subscriber.companyName = osduser.rows[0]?.companyname || null;
+      subscriber.name = osduser.rows[0]?.name || null;
       subscriberUnassignedListDTO.push(subscriber);
     }
 
@@ -2531,7 +2558,7 @@ const handleUserRegistration = async (event, res) => {
         `${personalForm.country}/IT/1/2025`,
         accountTypeId,
         personalForm.identity,
-        personalForm.companyName,
+        personalForm.name || personalForm.companyName,
         personalForm.firstSurname,
         personalForm.middleSurname,
         personalForm.city,
@@ -2821,6 +2848,246 @@ const handleGetUsers = async (event, res) => {
       GET_USERS_SUCCESS: false,
       GET_USERS_MESSAGE: 'Server error fetching users.',
     }, event.SessionKey, event.SecurityToken, 'GetUsers'));
+  }
+};
+
+const handleCreatePerformanceBuy = async (event, res) => {
+  try {
+    const performanceBuyEvent = event.Body;
+    const performanceBuy = {
+      Id: uuidv4(),
+      Projectmanagerid: performanceBuyEvent.ProjectManagerId,
+      Summarytypeid: performanceBuyEvent.SummaryId,
+      Freeprofessionalid: performanceBuyEvent.FreeProfessionalAssignedId,
+      Date: performanceBuyEvent.Date,
+      ProductserviceId: performanceBuyEvent.ProductServiceId,
+      MinimumUnits: performanceBuyEvent.MinimumUnits,
+      MaximumUnits: performanceBuyEvent.MaximumUnits,
+      UnitaryCost: performanceBuyEvent.UnitaryCost,
+      ShelfLife: performanceBuyEvent.ShelfLife,
+      JustifyingDocument: performanceBuyEvent.JustifyingDocument,
+      JustifyingDocumentBytes: performanceBuyEvent.JustifyingDocumentBytes ? Buffer.from(performanceBuyEvent.JustifyingDocumentBytes, 'base64') : null
+    };
+
+    const performanceBuyCountQuery = await pool.query(
+      'SELECT COUNT(*) FROM performance_buy WHERE projectmanagerid = $1',
+      [performanceBuyEvent.ProjectManagerId]
+    );
+
+    const performanceBuyCount = parseInt(performanceBuyCountQuery.rows[0].count, 10);
+    performanceBuy.Code = `BUY/${performanceBuyCount + 1}/${new Date().getFullYear()}`;
+    const insertQuery = `
+      INSERT INTO performance_buy (
+        id, code, projectmanagerid, summarytypeid, freeprofessionalid, date, productservice_id,
+        minimumunits, maximumunits, unitarycost, shelflife, justifying_document, justifying_document_bytes
+      ) VALUES (
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
+      )
+    `;
+
+    await pool.query(insertQuery, [
+      performanceBuy.Id,
+      performanceBuy.Code,
+      performanceBuy.Projectmanagerid,
+      performanceBuy.Summarytypeid,
+      performanceBuy.Freeprofessionalid,
+      performanceBuy.Date,
+      uuidv4(),
+      performanceBuy.MinimumUnits,
+      performanceBuy.MaximumUnits,
+      performanceBuy.UnitaryCost,
+      performanceBuy.ShelfLife,
+      performanceBuy.JustifyingDocument,
+      performanceBuy.JustifyingDocumentBytes
+    ]);
+
+    res.status(200).json(createWebBaseEvent({
+      ADD_PERFORMANCE_BUY_SUCCESS: true,
+      ADD_PERFORMANCE_BUY_MESSAGE: 'Performance buy was successfully created.',
+    }, event.SessionKey, event.SecurityToken, 'CreatePerformanceBuy'));
+
+  } catch (error) {
+    console.error('❌ Error creating performance buy:', error);
+    res.status(500).json(createWebBaseEvent({
+      ADD_PERFORMANCE_BUY_SUCCESS: false,
+      ADD_PERFORMANCE_BUY_MESSAGE: 'Server error creating performance buy.',
+    }, event.SessionKey, event.SecurityToken, 'CreatePerformanceBuy'));
+  }
+};
+
+const handleCreateProject = async (event, res) => {
+  try {
+    const createProjectEvent = event.Body;
+    const projectmanager = {
+      Id: uuidv4(),
+      Objective: createProjectEvent.Objective,
+      ExpectedHours: parseFloat(createProjectEvent.ExpectedHours),
+      EconomicBudget: parseFloat(createProjectEvent.EconomicBudget),
+      Startdate: new Date(createProjectEvent.StartDate),
+      Enddate: createProjectEvent.EndDate ? new Date(createProjectEvent.EndDate) : null,
+      ExpensesEmployeesVolunteers: parseFloat(createProjectEvent.ExpensesEmployeesVolunteers) || 0,
+      SupplierExpensesPurchases: parseFloat(createProjectEvent.SupplierExpensesPurchases) || 0,
+      HoursExecuted: parseFloat(createProjectEvent.HoursExecuted) || 0
+    };
+
+    const insertQuery = `
+      INSERT INTO projectmanager (
+        id, objective, expected_hours, economic_budget, startdate, enddate, 
+        expensesemployeesvolunteers, supplierexpensespurchases, hours_executed
+      ) VALUES (
+        $1, $2, $3, $4, $5, $6, $7, $8, $9
+      )
+    `;
+
+    await pool.query(insertQuery, [
+      projectmanager.Id,
+      projectmanager.Objective,
+      projectmanager.ExpectedHours,
+      projectmanager.EconomicBudget,
+      projectmanager.Startdate,
+      projectmanager.Enddate,
+      projectmanager.ExpensesEmployeesVolunteers,
+      projectmanager.SupplierExpensesPurchases,
+      projectmanager.HoursExecuted
+    ]);
+
+    res.status(200).json(createWebBaseEvent({
+      CREATE_PROJECT_SUCCESS: true,
+      CREATE_PROJECT_MESSAGE: 'Project created successfully.',
+      project: projectmanager
+    }, event.SessionKey, event.SecurityToken, 'CreateProject'));
+
+  } catch (error) {
+    console.error('❌ Error creating project:', error);
+    res.status(500).json(createWebBaseEvent({
+      CREATE_PROJECT_SUCCESS: false,
+      CREATE_PROJECT_MESSAGE: 'Server error creating project.',
+    }, event.SessionKey, event.SecurityToken, 'CreateProject'));
+  }
+};
+
+const handleAddSummaryType = async (event, res) => {
+  try {
+    const addSummaryTypeEvent = event.Body;
+    if (addSummaryTypeEvent.SummaryType === "PerformanceBuy") {
+      const summaryTypeBuy = {
+        Id: uuidv4(),
+        Summary: addSummaryTypeEvent.SummaryName
+      };
+      await pool.query(
+        `INSERT INTO summarytypeperformancebuy (id, summary) VALUES ($1, $2)`,
+        [summaryTypeBuy.Id, summaryTypeBuy.Summary]
+      );
+    } else if (addSummaryTypeEvent.SummaryType === "PerformanceFP") {
+      const summaryTypeFP = {
+        Id: uuidv4(),
+        Summary: addSummaryTypeEvent.SummaryName
+      };
+      await pool.query(
+        `INSERT INTO summarytypeperformancefreeprofessional (id, summary) VALUES ($1, $2)`,
+        [summaryTypeFP.Id, summaryTypeFP.Summary]
+      );
+    }
+
+    res.status(200).json(createWebBaseEvent({
+      ADD_SUMMARY_TYPE_SUCCESS: true,
+      ADD_SUMMARY_TYPE_MESSAGE: 'The summary was successfully added.'
+    }, event.SessionKey, event.SecurityToken, 'AddSummaryType'));
+
+  } catch (error) {
+    console.error('❌ Error adding summary type:', error);
+    res.status(500).json(createWebBaseEvent({
+      ADD_SUMMARY_TYPE_SUCCESS: false,
+      ADD_SUMMARY_TYPE_MESSAGE: 'Server error adding summary type.'
+    }, event.SessionKey, event.SecurityToken, 'AddSummaryType'));
+  }
+};
+
+const handleAddPerformanceFreeProfessional = async (event, res) => {
+  try {
+    const addPerformancFPEvent = event.Body;
+    const performanceFreeprofessional = {
+      Id: uuidv4(),
+      Projectmanagerid: addPerformancFPEvent.ProjectManagerId,
+      Summarytypeid: addPerformancFPEvent.SummaryId,
+      StartDate: addPerformancFPEvent.StartDate,
+      EndDate: addPerformancFPEvent.EndDate,
+      JustifyingDocument: addPerformancFPEvent.JustifyingDocument,
+      JustifyingDocumentBytes: addPerformancFPEvent.JustifyingDocumentBytes ? Buffer.from(addPerformancFPEvent.JustifyingDocumentBytes, 'base64') : null,
+      Freeprofessionalcreatedperformanceid: null,
+      Freeprofessionalassignedid: addPerformancFPEvent.FreeProfessionalAssignedId,
+      EstimatedTransportExpenses: parseFloat(addPerformancFPEvent.ForecastTravelExpenses),
+      EstimatedTransportHours: addPerformancFPEvent.ForecastTravelTime,
+      EstimatedWorkHours: addPerformancFPEvent.ForecastWorkHours,
+      TotalForecastData: parseFloat(addPerformancFPEvent.TotalForecastData)
+    };
+
+    const freeProfessionalQuery = await pool.query(
+      'SELECT id FROM freeprofessional WHERE userid = $1 OR id = $1',
+      [addPerformancFPEvent.FreeProfessionalAssignedId]
+    );
+
+    if (freeProfessionalQuery.rows.length === 0) {
+      console.warn('⚠️ Free professional not found for user ID:', addPerformancFPEvent.FreeProfessionalAssignedId);
+      return res.status(404).json(createWebBaseEvent({
+        ADD_PERFORMANCE_FREE_PROFESSIONAL_SUCCESS: false,
+        ADD_PERFORMANCE_FREE_PROFESSIONAL_MESSAGE: 'Free professional not found.',
+      }, event.SessionKey, event.SecurityToken, 'AddPerformanceFreeProfessional'));
+    }
+
+    performanceFreeprofessional.Freeprofessionalcreatedperformanceid = freeProfessionalQuery.rows[0].id;
+
+    const performanceFreeProfessionalCountQuery = await pool.query(
+      'SELECT COUNT(*) FROM performance_freeprofessional WHERE projectmanagerid = $1',
+      [addPerformancFPEvent.ProjectManagerId]
+    );
+    const performanceBuyCountQuery = await pool.query(
+      'SELECT COUNT(*) FROM performance_buy WHERE projectmanagerid = $1',
+      [addPerformancFPEvent.ProjectManagerId]
+    );
+
+    const performanceFreeProfessionalCount = parseInt(performanceFreeProfessionalCountQuery.rows[0].count, 10);
+    const performanceBuyCount = parseInt(performanceBuyCountQuery.rows[0].count, 10);
+    performanceFreeprofessional.Code = `GETP/${performanceBuyCount + performanceFreeProfessionalCount + 1}/${new Date().getFullYear()}`;
+
+    const insertQuery = `
+      INSERT INTO performance_freeprofessional (
+        id, code, projectmanagerid, summarytypeid, start_date, end_date, justifying_document,
+        justifying_document_bytes, freeprofessionalcreatedperformanceid, freeprofessionalassignedid,
+        estimated_transport_expenses, estimated_transport_hours, estimated_work_hours, total_forecast_data
+      ) VALUES (
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14
+      )
+    `;
+
+    await pool.query(insertQuery, [
+      performanceFreeprofessional.Id,
+      performanceFreeprofessional.Code,
+      performanceFreeprofessional.Projectmanagerid,
+      performanceFreeprofessional.Summarytypeid,
+      performanceFreeprofessional.StartDate,
+      performanceFreeprofessional.EndDate,
+      performanceFreeprofessional.JustifyingDocument,
+      performanceFreeprofessional.JustifyingDocumentBytes,
+      performanceFreeprofessional.Freeprofessionalcreatedperformanceid,
+      performanceFreeprofessional.Freeprofessionalassignedid,
+      performanceFreeprofessional.EstimatedTransportExpenses,
+      performanceFreeprofessional.EstimatedTransportHours,
+      performanceFreeprofessional.EstimatedWorkHours,
+      performanceFreeprofessional.TotalForecastData
+    ]);
+
+    res.status(200).json(createWebBaseEvent({
+      ADD_PERFORMANCE_FREE_PROFESSIONAL_SUCCESS: true,
+      ADD_PERFORMANCE_FREE_PROFESSIONAL_MESSAGE: 'Performance free professional was successfully created.',
+    }, event.SessionKey, event.SecurityToken, 'AddPerformanceFreeProfessional'));
+
+  } catch (error) {
+    console.error('❌ Error adding performance free professional:', error);
+    res.status(500).json(createWebBaseEvent({
+      ADD_PERFORMANCE_FREE_PROFESSIONAL_SUCCESS: false,
+      ADD_PERFORMANCE_FREE_PROFESSIONAL_MESSAGE: 'Server error adding performance free professional.',
+    }, event.SessionKey, event.SecurityToken, 'AddPerformanceFreeProfessional'));
   }
 };
 
@@ -3134,7 +3401,7 @@ const handleGetSubscribers = async (event, res) => {
       NULL AS scuserid,
       NULL AS trainerAssigned
       FROM osduser u
-      WHERE u.accounttype = '063e12fa-33db-47f3-ac96-a5bdb08ede61'
+      WHERE u.accounttype = '063e12fa-33db-47f3-ac96-a5bdb08ede61' OR u.accounttype =  '8e539a42-4108-4be6-8f77-2d16671d1069'
     `);
 
     res.status(200).json(createWebBaseEvent({
@@ -3154,7 +3421,7 @@ const handleGetSubscribers = async (event, res) => {
 
 app.get('/api/courses', async (req, res) => {
   try {
-    const result = await pool.query('SELECT id, title FROM Courses');
+    const result = await pool.query('SELECT id, title, mode FROM Courses');
     res.status(200).json({
       success: true,
       courses: result.rows

@@ -11,6 +11,7 @@ import { DatePipe } from '@angular/common';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { FreeProfessional } from 'src/app/functions/models/FreeProfessional';
+import { FreeProfessionalType } from '../../Models/freeprofessionalType';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -22,26 +23,41 @@ export class CreatePerformancesBuyComponent implements OnDestroy {
 
   performanceForm: FormGroup;
   documentName: string | undefined;
-  performance$: Observable<PerformanceBuy> = this.store.select(PerformanceSelectors.performanceBuy)
+  performance$: Observable<PerformanceBuy> = this.store.select(PerformanceSelectors.performanceBuy);
   performanceBuy!: PerformanceBuy;
   performance!: any;
   showButtons: boolean = true;
   selectedSummaryType: string | undefined;
   summaryTypes: DropDownItem[] = [];
- projectManagerSelectedObservable$: Observable<string> = this.store.select(PerformanceSelectors.projectManagerId)
-  projectManagerSelected: string = "";
-  modifiedPerformanceBuy: any;
-  isCreatePerformance: boolean = false;
-  isViewPerformance: boolean = true;
+  projectManagerSelectedObservable$: Observable<string> = this.store.select(PerformanceSelectors.projectManagerId);
+  projectManagerSelected: string = '';
   documentFile: File | null = null;
   documentBytes: Uint8Array | null = null;
-  documentUrl: string | null = null;
+  isViewPerformance: boolean = false;
+  isCreatePerformance: boolean = false;
 
-  constructor(private store: Store,
+  // FreeProfessional-related variables
+  professionalTypes: FreeProfessionalType[] = [
+    { id: '1bfc42c6-0d32-4270-99ed-99567bc7a562', name: 'Accounting Technician', acronym: 'TC' },
+    { id: '2fc2a66a-69ca-4832-a90e-1ff590b80d24', name: 'Processor', acronym: 'TR' },
+    { id: '3d4a9c5e-f6d9-42a9-bef7-3e121fe622b0', name: 'IT administrators', acronym: 'INFIT' },
+    { id: '4e1477bf-e13c-084b-3bff-1149f3ab3f3b', name: 'OSD Systems Engineer', acronym: 'ISOSD' },
+    { id: '4fbeb4e3-a284-44ef-ac65-a70a0620b1c9', name: 'Marketing', acronym: 'TM' },
+    { id: '87db7d48-ee2a-4494-8627-9cb9e377de21', name: 'Technical Director', acronym: 'DT' },
+    { id: 'afdc95b1-271e-4788-a00a-d40081d7314f', name: 'Citizen service', acronym: 'TS' },
+    { id: 'eea2312e-6a85-4ab6-85ff-0864547e3870', name: 'Trainer', acronym: 'FC' },
+    { id: 'f7a8c9d3-6e2b-4a5f-9bcd-2e4d9f3a7b21', name: 'Kuarc Technician', acronym: 'TK' }
+  ];
+  filteredProfessionalsFree!: FreeProfessional[];
+  professionalsFree!: FreeProfessional[];
+  selectedType: string = '';
+  showModal: boolean = false;
+
+  constructor(
+    private store: Store,
     private osdEventService: OSDService,
     private formBuilder: FormBuilder,
     private datePipe: DatePipe,
-    private OSDEventService: OSDService,
     private OSDDataService: OSDDataService,
     private authService: AuthenticationService,
     private translate: TranslateService,
@@ -53,99 +69,144 @@ export class CreatePerformancesBuyComponent implements OnDestroy {
     setTimeout(() => {
       this.store.dispatch(UiActions.hideLeftSidebar());
       this.store.dispatch(UiActions.hideFooter());
-      this.OSDEventService.GetSummaryTypes();
-      this.OSDEventService.GetFreeProfessionalsDataEvent();
+      this.osdEventService.GetSummaryTypes();
+      this.osdEventService.GetFreeProfessionalsDataEvent();
     }, 0);
 
     this.performance$.subscribe(performance => {
-      this.performance = performance
-      if(Object.keys(this.performance).length > 0){
-        this.performanceForm = this.fillForm(performance)
+      this.performance = performance;
+      if (Object.keys(this.performance).length > 0) {
+        this.performanceForm = this.fillForm(performance);
       }
-    })
+    });
 
     this.OSDDataService.SummaryTypesPerformanceBuyList$.subscribe(summaryTypes => {
       summaryTypes.forEach(items => {
-        var entityDropDownItem: DropDownItem = { value: items.Summary, key: items.Id };
+        var entityDropDownItem: DropDownItem = { value: items.summary, key: items.id };
         this.summaryTypes.push(entityDropDownItem);
       });
     });
 
+    this.osdEventService.getFreeProfessionalsList().then(freeProfessionals => {
+      this.filteredProfessionalsFree = freeProfessionals;
+      this.professionalsFree = freeProfessionals;
+    });
+
     this.projectManagerSelectedObservable$.subscribe(id => {
       this.projectManagerSelected = id;
-    })
-
-    this.OSDEventService.getFreeProfessionalsList().then(freeProfessionals => {
-      if (this.authService.userInfo) {
-        if (freeProfessionals) {
-          const freeProfessional: FreeProfessional | undefined = freeProfessionals?.find(fp => fp.Userid === this.authService.userInfo?.Id);
-          if (freeProfessional?.FreeprofessionaltypeAcronym == "DT" || freeProfessional?.FreeprofessionaltypeAcronym == "INFIT") {
-            this.isViewPerformance = false;
-          }
-        }
-      }
     });
+  }
+
+
+  displayFileName(event: Event): void {
+    const input = event.target as HTMLInputElement;
+
+    if (input?.files && input.files.length > 0) {
+      this.documentFile = input.files[0];
+
+      if (this.documentFile.type !== 'application/pdf') {
+        if (this.translate.currentLang == "en") {
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "The document must be in PDF format" }));
+          this.store.dispatch(ModalActions.openAlert());
+        } else {
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "El documento debe de estar en formato PDF" }));
+          this.store.dispatch(ModalActions.openAlert());
+        }
+        this.documentFile = null;
+        this.documentName = '';
+        return;
+      }
+
+      const maxSizeInKB = 1000;
+      const maxSizeInBytes = maxSizeInKB * 1024;
+      if (this.documentFile.size > maxSizeInBytes) {
+        if (this.translate.currentLang == "en") {
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "The document exceeds 1000kb" }));
+          this.store.dispatch(ModalActions.openAlert());
+        } else {
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "El documento sobrepasa los 1000kb" }));
+          this.store.dispatch(ModalActions.openAlert());
+        }
+
+        this.documentFile = null;
+        this.documentName = '';
+        return;
+      }
+
+      this.documentName = this.documentFile.name;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        const arrayBuffer = reader.result as ArrayBuffer;
+        this.documentBytes = new Uint8Array(arrayBuffer);
+      };
+      reader.readAsArrayBuffer(this.documentFile);
+    }
   }
 
   ngOnDestroy() {
     setTimeout(() => {
       this.store.dispatch(UiActions.showAll());
-      this.store.dispatch(PerformanceActions.setPerformanceBuy({ performanceBuy: {} as PerformanceBuy }))
+      this.store.dispatch(PerformanceActions.setPerformanceBuy({ performanceBuy: {} as PerformanceBuy }));
     }, 0);
-  }
-
-  private fillForm(performance : PerformanceBuy): FormGroup {
-    this.isCreatePerformance = false;
-
-    const fechaOriginal = performance.Date;
-    const fechaFormateada = this.datePipe.transform(fechaOriginal, 'yyyy-MM-dd');
-    this.documentName = this.performance.JustifyingDocument;
-    const form = this.formBuilder.group({
-      Date: [fechaFormateada, [Validators.required]],
-      ProductServiceId: [performance.ProductServiceId, [Validators.required]],
-      MinimumUnits: [performance.MinimumUnits, [Validators.required]],
-      MaximumUnits: [performance.MaximumUnits, [Validators.required]],
-      UnitaryCost: [performance.UnitaryCost, [Validators.required]],
-      ShelfLife: [performance.ShelfLife, [Validators.required]],
-      SummaryTypeId: [performance.SummaryTypeId, [Validators.required]],
-      JustifyingDocument: [performance.JustifyingDocument, [Validators.required]]
-    });
-    return form;
   }
 
   private createForm(): FormGroup {
     this.isCreatePerformance = true
-    const form = this.formBuilder.group({
+    return this.formBuilder.group({
       Date: ['', [Validators.required]],
-      ProductServiceId: ['', []],
       MinimumUnits: ['', [Validators.required]],
       MaximumUnits: ['', [Validators.required]],
       UnitaryCost: ['', [Validators.required]],
       ShelfLife: ['', [Validators.required]],
       JustifyingDocument: ['', [Validators.required]],
-      SummaryTypeId: ['', [Validators.required]]
+      SummaryTypeId: ['', [Validators.required]],
+      FreeProfessionalAssignedId: ['', [Validators.required]], // New field
+      FreeProfessionalCode: ['', [Validators.required]] // New field
     });
-    return form;
   }
 
-  onSubmit(): void {
+  private fillForm(performance: PerformanceBuy): FormGroup {
+    this.isCreatePerformance = false;
+    const formattedDate = this.datePipe.transform(performance.Date, 'yyyy-MM-dd');
+    this.documentName = performance.JustifyingDocument;
+    return this.formBuilder.group({
+      Date: [formattedDate, [Validators.required]],
+      MinimumUnits: [performance.MinimumUnits, [Validators.required]],
+      MaximumUnits: [performance.MaximumUnits, [Validators.required]],
+      UnitaryCost: [performance.UnitaryCost, [Validators.required]],
+      ShelfLife: [performance.ShelfLife, [Validators.required]],
+      SummaryTypeId: [performance.SummaryTypeId, [Validators.required]],
+      JustifyingDocument: [performance.JustifyingDocument, [Validators.required]],
+      FreeProfessionalAssignedId: [performance.FreeProfessionalAssignedId, [Validators.required]],
+      FreeProfessionalCode: [performance.FreeProfessionalCode, [Validators.required]]
+    });
+  }
+
+  selectProfessionalFree(professional: FreeProfessional): void {
+    this.performanceForm.patchValue({
+      FreeProfessionalCode: professional.username,
+      FreeProfessionalAssignedId: professional.id
+    });
+    this.showModal = false;
+  }
+
+  closeModal() {
+    this.showModal = false;
+  }
+
+  onPageChange(event: any) {
+    const startIndex = event.pageIndex * event.pageSize;
+    const endIndex = startIndex + event.pageSize;
+    this.filteredProfessionalsFree.slice(startIndex, endIndex);
+  }
+
+  modifyPerformance(): void {
     if (this.performanceForm.invalid) {
       this.performanceForm.markAllAsTouched();
       return;
     }
-    
-    this.store.dispatch(UiActions.toggleConfirmationButton())
-
-    if(this.documentBytes != null){
-      if (this.projectManagerSelected) {
-        if(this.documentBytes != null){
-          const documentBase64 = this.convertUint8ArrayToBase64(this.documentBytes);
-          this.OSDEventService.performanceBuy(this.performanceForm.value, this.projectManagerSelected, documentBase64);
-        }else{
-          this.OSDEventService.performanceBuy(this.performanceForm.value, this.projectManagerSelected, "");
-        }
-      }
-    }
+    this.osdEventService.modifyPerformanceBuy(this.performanceForm.value, this.projectManagerSelected, this.performance.Id);
   }
 
   convertUint8ArrayToBase64(uint8Array: Uint8Array): string {
@@ -157,85 +218,34 @@ export class CreatePerformancesBuyComponent implements OnDestroy {
     return window.btoa(binary);
   }
 
-  convertBase64ToBlob(base64: string, contentType: string = 'application/pdf'): Blob {
-    const byteCharacters = atob(base64); 
-    const byteNumbers = new Array(byteCharacters.length);
-    for (let i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt(i);
-    }
-    const byteArray = new Uint8Array(byteNumbers);
-    return new Blob([byteArray], { type: contentType }); 
-  }
-  
-  downloadPdf(base64String: string) {
-  
-    try {
-      const blob = this.convertBase64ToBlob(base64String, 'application/pdf');
-
-      const url = window.URL.createObjectURL(blob);
-  
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'document.pdf';
-      a.click();
-
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error('Error al descargar el PDF:', error);
-    }
-  }
-
-  modifyPerformance(): void {
+  onSubmit(): void {
     if (this.performanceForm.invalid) {
       this.performanceForm.markAllAsTouched();
       return;
     }
-    this.OSDEventService.modifyPerformanceBuy(this.performanceForm.value, this.projectManagerSelected, this.performance.Id);
+
+    this.store.dispatch(UiActions.toggleConfirmationButton())
+    if (this.projectManagerSelected) {
+      if (this.documentBytes != null) {
+        const documentBase64 = this.convertUint8ArrayToBase64(this.documentBytes);
+        this.osdEventService.performanceBuy(this.performanceForm.value, this.projectManagerSelected, documentBase64);
+      } else {
+        this.osdEventService.performanceBuy(this.performanceForm.value, this.projectManagerSelected, "");
+      }
+    }
   }
 
-  displayFileName(event: Event): void {
-    const input = event.target as HTMLInputElement;
-  
-    if (input?.files && input.files.length > 0) {
-      this.documentFile = input.files[0];
-  
-      if (this.documentFile.type !== 'application/pdf') {
-        if (this.translate.currentLang == "en"){
-          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "The document must be in PDF format" }));
-          this.store.dispatch(ModalActions.openAlert());
-        }else{
-          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "El documento debe de estar en formato PDF" }));
-          this.store.dispatch(ModalActions.openAlert());
-        }
-        this.documentFile = null;
-        this.documentName = '';
-        return;
-      }
-  
-      const maxSizeInKB = 1000;
-      const maxSizeInBytes = maxSizeInKB * 1024;
-      if (this.documentFile.size > maxSizeInBytes) {
-        if (this.translate.currentLang == "en"){
-          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "The document exceeds 1000kb" }));
-          this.store.dispatch(ModalActions.openAlert());
-        }else{
-          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "El documento sobrepasa los 1000kb" }));
-          this.store.dispatch(ModalActions.openAlert());
-        }
+  openModal() {
+    this.showModal = true;
+  }
 
-        this.documentFile = null;
-        this.documentName = '';
-        return;
-      }
-  
-      this.documentName = this.documentFile.name;
-  
-      const reader = new FileReader();
-      reader.onload = () => {
-        const arrayBuffer = reader.result as ArrayBuffer;
-        this.documentBytes = new Uint8Array(arrayBuffer);
-      };
-      reader.readAsArrayBuffer(this.documentFile);
+  applyFilter(): void {
+    if (this.selectedType) {
+      this.filteredProfessionalsFree = this.professionalsFree.filter(fp =>
+        fp.FreeprofessionaltypeAcronym.toLowerCase() === this.selectedType.toLowerCase()
+      );
+    } else {
+      this.filteredProfessionalsFree = this.professionalsFree;
     }
   }
 }

@@ -7,7 +7,8 @@
     <div class="fixed top-[3.7rem] left-0 h-full bg-white border-r-2 p-3 animate__animated animate__fadeInRight z-50"
         [ngClass]="{'w-6': openSideBar, 'w-72': !openSideBar}">
 
-        <div *ngIf="openSideBar" (click)="toggleSideBar()" class="text-darkslategray absolute left-[2rem] top-[5rem] text-xl">
+        <div *ngIf="openSideBar" (click)="toggleSideBar()"
+            class="text-darkslategray absolute left-[2rem] top-[5rem] text-xl">
             <i class="fa-solid fa-chevron-right cursor-pointer"></i>
         </div>
 
@@ -70,21 +71,21 @@
             <div class="text-center flex flex-row items-center space-x-3 px-1 p-2">
                 <div class="flex-1 flex items-center justify-end space-x-3" *ngIf="isAdmin && projectSelected != ''">
                     <div *ngIf="showOptions" class="animate__animated animate__fadeInRight flex flex-row space-x-3">
-                        <a routerLink="/project-manager/create-performances-buy"
+                        <!-- <a routerLink="/project-manager/create-performances-buy"
                             class="cursor-pointer px-2 py-1 text-xl bg-line text-darkslategray rounded-full">
                             <i class="fa-solid fa-cart-shopping"></i>
-                        </a>
-                        <a routerLink="/project-manager/create-performances"
+                        </a> -->
+                        <!-- <a routerLink="/project-manager/create-performances"
                             class="cursor-pointer px-2 py-1 text-xl bg-line text-darkslategray rounded-full">
                             <i class="fa-solid fa-user-tie"></i>
-                        </a>
+                        </a> -->
                     </div>
-                    <button *ngIf="isAdmin" class="flex items-center bg-darkslategray p-2 rounded-lg text-line text-sm"
+                    <!-- <button *ngIf="isAdmin" class="flex items-center bg-darkslategray p-2 rounded-lg text-line text-sm"
                         (click)="showOptionsPerformance()">
                         <i class="fas animate-pulse pr-3"
                             [ngClass]="{'fa-chevron-right': showOptions, 'fa-chevron-left': !showOptions}"></i>
                         {{'CreatePerformance' | translate}}
-                    </button>
+                    </button> -->
                 </div>
             </div>
 
@@ -111,10 +112,10 @@
                         <td class="border-y px-2 py-2">{{pf.code}}</td>
                         <td class="border-y px-2 py-2">{{pf.SummaryTypeName}}</td>
 
-                        <td *ngIf="pf.Type.trim() === 'Performance Free Professional'"
+                        <!-- <td *ngIf="pf.Type.trim() === 'Performance Free Professional'"
                             class="border-y px-2 py-2 hover:underline" (click)="viewSubPerformances(pf.id)">
                             Ver Subactuaciones
-                        </td>
+                        </td> -->
                     </tr>
                 </tbody>
             </table>
@@ -124,6 +125,14 @@
     </div>
 
     <div class="flex flex-row space-x-3 justify-end py-3 px-3">
+        <button *ngIf="projectSelected" class="bg-blue-500 font-medium p-2 rounded-xl flex items-center text-white"
+            (click)="createNewPerformanceFP()">
+            {{'create_new_performance_fp' | translate}}
+        </button>
+        <button *ngIf="projectSelected" class="bg-blue-500 font-medium p-2 rounded-xl flex items-center text-white"
+            (click)="createNewPerformancePurchase()">
+            {{'create_new_performance_purchase' | translate}}
+        </button>
         <button [routerLink]="isUser ? '/home' : '/reports'"
             class="bg-line font-medium p-2 rounded-xl flex items-center text-darkslategray">
             {{'regresar' | translate}}

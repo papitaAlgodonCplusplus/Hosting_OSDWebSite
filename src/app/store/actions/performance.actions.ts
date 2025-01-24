@@ -50,3 +50,8 @@ export const setProjecTManagerId = createAction(
   '[ProjectManagerId] set project manager id',
   props<{projectManagerId: string}>()
 );
+
+export const setProjectSelected = createAction(
+  '[Project] Set project selected',
+  props<{ projectSelected: string }>()
+);

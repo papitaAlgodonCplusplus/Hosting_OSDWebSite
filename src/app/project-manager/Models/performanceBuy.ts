@@ -1,6 +1,8 @@
 export class PerformanceBuy {
     Id: string = "";
     id: string = "";
+    FreeProfessionalAssignedId: string = "";
+    FreeProfessionalCode: string = "";
     Code: string = "";
     code: string = "";
     ProjectManagerId: string = "";

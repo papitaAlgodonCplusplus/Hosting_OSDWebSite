@@ -62,14 +62,12 @@ export class ProjectManagementDossierComponent implements OnDestroy {
       this.osdEventService.GetProjects();
       this.user = this.authService.userInfo;
       if (this.user) {
-        if (this.user.AccountType == 'FreeProfessional') {
-          if (this.user.Isadmin) {
-            this.isAdmin = true;
-            this.showOptionsPerformance()
-          }
-          else {
-            this.isUser = true
-          }
+        if (this.user.isadmin) {
+          this.isAdmin = true;
+          this.showOptionsPerformance()
+        }
+        else {
+          this.isUser = true
         }
       }
     }, 0);
@@ -98,6 +96,16 @@ export class ProjectManagementDossierComponent implements OnDestroy {
       this.store.dispatch(PerformanceActions.setSubPerformance({ subPerformance: subPerformance }))
       this.router.navigate(['/project-manager/response-to-performance'])
     }
+  }
+
+  createNewPerformanceFP() {
+    this.store.dispatch(PerformanceActions.setProjectSelected({ projectSelected: this.projectSelected }));
+    this.router.navigate(['/project-manager/create-performances']);
+  }
+
+  createNewPerformancePurchase() {
+    this.store.dispatch(PerformanceActions.setProjectSelected({ projectSelected: this.projectSelected }));
+    this.router.navigate(['/project-manager/create-performances-buy']);
   }
 
   sortDateLowestHighest(ascending: boolean = true) {
@@ -169,8 +177,8 @@ export class ProjectManagementDossierComponent implements OnDestroy {
       const project = this.allProjects.find(element => element.id === id);
       if (project) {
         this.formProjectManager = this.createForm(project);
-        this.store.dispatch(PerformanceActions.setProjecTManagerId({ projectManagerId: project.Id }));
-        this.projectSelected = project.Id;
+        this.store.dispatch(PerformanceActions.setProjecTManagerId({ projectManagerId: project.id }));
+        this.projectSelected = project.id;
         this.osdEventService.getPerformancesProjectManagerById(id);
         this.loadPerformance();
         this.openSideBar = false;
@@ -181,13 +189,15 @@ export class ProjectManagementDossierComponent implements OnDestroy {
   loadPerformance() {
     this.loadProjectManager = true;
     setTimeout(() => {
-      this.osdDataService.performanceFreeProfessionalList$.pipe(take(1)).subscribe(performance => {
-        this.performances = performance as showPerformance[];
-        this.performances.forEach(pf => pf.Type = "Performance Free Professional");
-        this.performancesFreeProfessional = performance;
+      this.osdDataService.performanceFreeProfessionalList$.pipe(take(1)).subscribe(performanceFree => {
+        this.performancesFreeProfessional = performanceFree;
+        this.performancesFreeProfessional.forEach(pf => pf.Type = "Performance Free Professional");
 
-        this.osdDataService.performanceBuyList$.pipe(take(1)).subscribe(performance => {
-          this.performancesBuy = performance;
+        this.osdDataService.performanceBuyList$.pipe(take(1)).subscribe(performanceBuy => {
+          this.performancesBuy = performanceBuy;
+          this.performancesBuy.forEach(pb => pb.Type = "Performance Buy");
+
+          this.performances = [...this.performancesFreeProfessional, ...this.performancesBuy];
           this.loadProjectManager = false;
           this.updateDisplayedItems();
         });

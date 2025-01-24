@@ -21,10 +21,10 @@
             <tbody>
                 <tr class="border-y border-gray-700" *ngFor="let sub of subscribers; let i = index">
                     <th class="text-center border-y px-4 py-2">
-                        {{sub.companyName}}
+                        {{sub.name}}
                     </th>
                     <th class="text-center border-y px-4 py-2">
-                        {{sub.clientType}}
+                        {{sub.clienttype}}
                     </th>
                     <td class="text-center border-y px-4 py-2">
                         <button (click)="selectSubscriber(sub.id)" class="rounded-xl p-2 bg-darkslategray text-line">

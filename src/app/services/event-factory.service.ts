@@ -475,6 +475,7 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT, performanceForm.JustifyingDocument);
     event.setBodyProperty(EventConstants.JUSTIFYING_DOCUMENT_BYTES, documentBase64);
     event.setBodyProperty(EventConstants.SUMMARY_ID, performanceForm.SummaryTypeId);
+    event.setBodyProperty(EventConstants.FREE_PROFESSIONAL_ASSIGNED_ID, performanceForm.FreeProfessionalAssignedId);
     return event;
   }
 

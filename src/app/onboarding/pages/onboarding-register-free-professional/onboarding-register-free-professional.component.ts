@@ -116,7 +116,8 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
         if (response.success && response.courses.length) {
           this.courses = response.courses.map((course: any) => ({
             value: course.title,
-            key: course.id
+            key: course.id,
+            mode: course.mode
           }));
           this.cdr.detectChanges();
         }

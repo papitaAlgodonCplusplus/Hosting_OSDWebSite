@@ -38,15 +38,22 @@ export class CreatePerformancesComponent {
   documentUrl: string | null = null;
   documentName!: string;
 
-  professionalTypes: FreeProfessionalType[] = [{ id: '1bfc42c6-0d32-4270-99ed-99567bc7a524', name: 'Accounting Technician' },
-  { id: '2fc2a06a-69ca-4832-a90e-1ff590b80d24', name: 'Processor' },
-  { id: 'eea2312e-6a85-4ab6-85ff-0864547e3870', name: 'Trainer' },
-  { id: '4fbeb4e3-a284-44ef-ac65-a70a0620b1c9', name: 'Marketing ' },
-  { id: 'afdc95b1-271e-4788-a00a-d40081d7314f', name: 'Citizen service' }];
+  professionalTypes: FreeProfessionalType[] = [
+    { id: '1bfc42c6-0d32-4270-99ed-99567bc7a562', name: 'Accounting Technician', acronym: 'TC' },
+    { id: '2fc2a66a-69ca-4832-a90e-1ff590b80d24', name: 'Processor', acronym: 'TR' },
+    { id: '3d4a9c5e-f6d9-42a9-bef7-3e121fe622b0', name: 'IT administrators', acronym: 'INFIT' },
+    { id: '4e1477bf-e13c-084b-3bff-1149f3ab3f3b', name: 'OSD Systems Engineer', acronym: 'ISOSD' },
+    { id: '4fbeb4e3-a284-44ef-ac65-a70a0620b1c9', name: 'Marketing', acronym: 'TM' },
+    { id: '87db7d48-ee2a-4494-8627-9cb9e377de21', name: 'Technical Director', acronym: 'DT' },
+    { id: 'afdc95b1-271e-4788-a00a-d40081d7314f', name: 'Citizen service', acronym: 'TS' },
+    { id: 'eea2312e-6a85-4ab6-85ff-0864547e3870', name: 'Trainer', acronym: 'FC' },
+    { id: 'f7a8c9d3-6e2b-4a5f-9bcd-2e4d9f3a7b21', name: 'Kuarc Technician', acronym: 'TK' }
+  ];
+
   selectedType: string = '';
   filteredProfessionalsFree!: FreeProfessional[];
   professionalsFree!: FreeProfessional[];
-  isViewPerformance: boolean = true;
+  isViewPerformance: boolean = false;
   isCreatePerformance: boolean = false;
 
   constructor(private store: Store,
@@ -84,18 +91,11 @@ export class CreatePerformancesComponent {
     this.OSDEventService.getFreeProfessionalsList().then(freeProfessionals => {
       this.filteredProfessionalsFree = freeProfessionals;
       this.professionalsFree = freeProfessionals;
-      if (this.authService.userInfo) {
-        if (freeProfessionals) {
-          const freeProfessional: FreeProfessional | undefined = freeProfessionals?.find(fp => fp.userid === this.authService.userInfo?.Id);
-          if (freeProfessional?.FreeprofessionaltypeAcronym == "DT" || freeProfessional?.FreeprofessionaltypeAcronym == "INFIT") {
-            this.isViewPerformance = false;
-          }
-        }
-      }
     });
 
     this.projectManagerSelectedObservable$.subscribe(id => {
       this.projectManagerSelected = id;
+      this.store.dispatch(PerformanceActions.setProjectSelected({ projectSelected: this.projectManagerSelected }));
     });
   }
 
@@ -202,17 +202,12 @@ export class CreatePerformancesComponent {
       return;
     }
     this.store.dispatch(UiActions.toggleConfirmationButton())
-
-    if (this.documentBytes != null) {
-
-
-      if (this.projectManagerSelected) {
-        if (this.documentBytes != null) {
-          const documentBase64 = this.convertUint8ArrayToBase64(this.documentBytes);
-          this.OSDEventService.addPerformanceFreeProfessional(this.performanceForm.value, this.projectManagerSelected, documentBase64);
-        } else {
-          this.OSDEventService.addPerformanceFreeProfessional(this.performanceForm.value, this.projectManagerSelected, "");
-        }
+    if (this.projectManagerSelected) {
+      if (this.documentBytes != null) {
+        const documentBase64 = this.convertUint8ArrayToBase64(this.documentBytes);
+        this.OSDEventService.addPerformanceFreeProfessional(this.performanceForm.value, this.projectManagerSelected, documentBase64);
+      } else {
+        this.OSDEventService.addPerformanceFreeProfessional(this.performanceForm.value, this.projectManagerSelected, "");
       }
     }
 
@@ -359,7 +354,7 @@ export class CreatePerformancesComponent {
 
   selectProfessionalFree(professionalsFree: FreeProfessional) {
     this.performanceForm.patchValue({
-      FreeProfessionalCode: professionalsFree.Code, FreeProfessionalAssignedId: professionalsFree.Id
+      FreeProfessionalCode: professionalsFree.username, FreeProfessionalAssignedId: professionalsFree.id
     })
     this.showModal = false;
   }
@@ -373,7 +368,7 @@ export class CreatePerformancesComponent {
   applyFilter() {
     if (this.selectedType) {
       this.filteredProfessionalsFree = this.professionalsFree.filter(fp =>
-        fp.FreeprofessionaltypeName.toLowerCase() === this.selectedType.toLowerCase()
+        fp.FreeprofessionaltypeAcronym.toLowerCase() === this.selectedType.toLowerCase()
       );
     } else {
       this.filteredProfessionalsFree = this.professionalsFree;

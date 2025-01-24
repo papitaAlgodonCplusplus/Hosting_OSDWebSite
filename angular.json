@@ -17,6 +17,7 @@
       "prefix": "app",
       "architect": {
         "build": {
+          "warnings": false,
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "i18nMissingTranslation": "error",
