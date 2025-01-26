@@ -29,8 +29,9 @@
                             <td class="p-2 border-y text-center">{{claim.facts | truncate:100}}</td>
                             <td class="p-2 border-y text-center"> <i class="fa-solid fa-circle pr-3"
                                     [ngClass]="{'text-red-500' : claim.status == 'Unassigned',
-                                                                               'text-yellow-500' : claim.status == 'Running',
-                                                                               'text-green-500' : claim.status == 'Completed'}"></i>{{ claim.status | translate }}</td>
+                                                'text-yellow-500' : claim.status == 'Running',
+                                                'text-green-500' : claim.status == 'Completed',
+                                                'text-blue-500' : claim.status == 'Falta Información'}"></i>{{ claim.status | translate }}</td>
                             <td class="p-2 border-y text-center">{{ claim.datecreated | date:'medium' }}</td>
                         </tr>
                     </tbody>

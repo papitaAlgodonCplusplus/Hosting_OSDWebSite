@@ -1,94 +1,126 @@
 <div class="flex flex-col justify-end items-end h-full">
+    <!-- Title Section -->
     <div
         class="w-full text-darkslategray text-start py-3 text-xl font-medium space-x-3 animate__animated animate__fadeInLeft">
         <span class="pl-5 pr-3 py-1 bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden">
-            {{'TitlePerformance' | translate}}</span>
+            {{ 'TitlePerformance' | translate }}
+        </span>
     </div>
+
+    <!-- Main Form -->
     <form [formGroup]="performanceForm" autocomplete="off" class="w-full h-full px-10 py-2">
 
+        <!-- 1) Basic Fields -->
         <div class="flex flex-wrap items-center">
+            <!-- Start Date -->
             <shared-input-field [readOnly]="isViewPerformance" class="w-full md:w-1/2" fieldName="Start_Date"
-                label="{{'start_date'|translate}}" inputType="date" [formGroup]="performanceForm"
+                label="{{ 'start_date' | translate }}" inputType="date" [formGroup]="performanceForm"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
+            <!-- End Date -->
             <shared-input-field [readOnly]="isViewPerformance" class="w-full md:w-1/2" fieldName="End_Date"
-                label="{{'end_date'|translate}}" inputType="date" [formGroup]="performanceForm"
+                label="{{ 'end_date' | translate }}" inputType="date" [formGroup]="performanceForm"
                 [bgColor]="'bg-white-lightbone'"></shared-input-field>
 
+            <!-- FreeProfessional Code (Opens Modal) -->
             <shared-input-field [readOnly]="true" (click)="openModal()" class="w-full md:w-1/2"
-                fieldName="FreeProfessionalCode" label="{{'Assigned free professional'|translate}}"
-                [formGroup]="performanceForm">
-            </shared-input-field>
+                fieldName="FreeProfessionalCode" label="{{ 'Assigned free professional' | translate }}"
+                [formGroup]="performanceForm"></shared-input-field>
 
+            <!-- Hidden field for the ID (if needed) -->
             <shared-input-field *ngIf="false" class="w-full md:w-1/2" fieldName="FreeProfessionalAssignedId"
-                [formGroup]="performanceForm">
-            </shared-input-field>
+                [formGroup]="performanceForm"></shared-input-field>
 
+            <!-- Summary -->
             <shared-simple-dropdown [readOnly]="isViewPerformance" class="w-full md:w-1/2" fieldName="SummaryId"
-                label="{{'Summary'|translate}}" inputType="text" [formGroup]="performanceForm"
-                [selectedItem]="selectedSummaryType" [dropdownItems]="summaryTypes"
-                [bgColor]="'bg-white-lightbone'"></shared-simple-dropdown>
+                label="{{ 'Summary' | translate }}" [formGroup]="performanceForm" [selectedItem]="selectedSummaryType"
+                [dropdownItems]="summaryTypes" [bgColor]="'bg-white-lightbone'"></shared-simple-dropdown>
 
+            <!-- Justifying Document Upload (PDF) -->
             <div *ngIf="documentName != ''" class="flex flex-col items-center justify-center space-x-2 w-full">
                 <input type="file" id="JustifyingDocument" formControlName="JustifyingDocument" class="hidden"
-                    (change)="displayFileName($event)" [disabled]="isViewPerformance">
+                    (change)="displayFileName($event)" [disabled]="isViewPerformance" />
                 <label for="JustifyingDocument" class="block text-gray-700 mb-1 cursor-pointer">
-                    {{'justifyingDocument' | translate}}
+                    {{ 'justifyingDocument' | translate }}
                 </label>
-                <div class=" flex flex-col">
+                <div class="flex flex-col">
                     <label for="JustifyingDocument"
                         class="cursor-pointer py-2 px-4 border hover:bg-gray-100 focus:outline-none focus:ring focus:border-blue-300">
-                        {{'seleccionar_archivo' | translate}}
+                        {{ 'seleccionar_archivo' | translate }}
                     </label>
                 </div>
-                <span class="ml-2 text-darkslategray">{{documentName}}</span>
+                <span class="ml-2 text-darkslategray">{{ documentName }}</span>
             </div>
+        </div>
 
+        <!-- 2) Forecast Data -->
+        <div class="flex flex-row space-x-3 text-darkslategray border-b mt-3 text-start p-2">
+            <h1>{{ 'ForecastData' | translate }}</h1>
+            <span>(Formato de horas deber ser 0:00)</span>
         </div>
-        <div class="flex flex-row space-x-3 text-darkslategray border-b mt-3 text-start p-2 ">
-            <h1>
-                {{'ForecastData' | translate}}
-            </h1>
-            <span class="">(Formato de horas deber ser 0:00)</span>
-        </div>
+
         <div class="flex flex-wrap pt-3">
+            <!-- Forecast Work Hours (HH:MM) -->
             <shared-time-input-component [readOnly]="isViewPerformance" class="w-full md:w-1/2"
-                fieldName="ForecastWorkHours" label="{{'ForecastWorkHours'|translate}}" inputType="time"
-                [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'" (input)="verifiedFormat()">
-            </shared-time-input-component>
+                fieldName="ForecastWorkHours" label="{{ 'ForecastWorkHours' | translate }}" inputType="time"
+                [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"
+                (input)="verifiedFormat()"></shared-time-input-component>
 
+            <!-- Forecast Travel Time (HH:MM) -->
             <shared-time-input-component [readOnly]="isViewPerformance" class="w-full md:w-1/2"
-                fieldName="ForecastTravelTime" label="{{'ForecastTravelTime'|translate}}" inputType="time"
-                [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'" (input)="verifiedFormat()">
-            </shared-time-input-component>
+                fieldName="ForecastTravelTime" label="{{ 'ForecastTravelTime' | translate }}" inputType="time"
+                [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"
+                (input)="verifiedFormat()"></shared-time-input-component>
 
+            <!-- Forecast Travel Expenses -->
             <shared-input-field [readOnly]="isViewPerformance" class="w-full md:w-1/2"
-                fieldName="ForecastTravelExpenses" label="{{'ForecastTravelExpenses'|translate}}" inputType="text"
+                fieldName="ForecastTravelExpenses" label="{{ 'ForecastTravelExpenses' | translate }}" inputType="text"
                 [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"
                 (change)="verifiedFormat()"></shared-input-field>
 
+            <!-- Total de gastos previstos -->
             <shared-input-field [readOnly]="isViewPerformance" class="w-full md:w-1/2" fieldName="TotalForecastData"
-                label="{{'Total de gastos previstos'|translate}}" inputType="text" [formGroup]="performanceForm"
+                label="{{ 'Total de gastos previstos' | translate }}" inputType="text" [formGroup]="performanceForm"
                 [bgColor]="'bg-white-lightbone'" [readOnly]="true"></shared-input-field>
+        </div>
 
+        <!-- 3) Developer Fields (show only if canAddDeveloperPerformance is true) -->
+        <div *ngIf="canAddDeveloperPerformance" class="flex flex-wrap pt-3">
+            <!-- Developer Category -->
+            <shared-simple-dropdown class="w-full md:w-1/2" fieldName="developer_category" label="Developer Category"
+                inputType="text" [formGroup]="performanceForm" [dropdownItems]="developer_categoryOptions"
+                [bgColor]="'bg-white-lightbone'"></shared-simple-dropdown>
+
+            <!-- Developer Module -->
+            <shared-simple-dropdown class="w-full md:w-1/2" fieldName="developer_module" label="Developer Module"
+                inputType="text" [formGroup]="performanceForm" [dropdownItems]="developer_moduleOptions"
+                [bgColor]="'bg-white-lightbone'"></shared-simple-dropdown>
+
+            <!-- Developer Activity (text field) -->
+            <shared-input-field class="w-full md:w-1/2" fieldName="developer_activity" label="Activity" inputType="text"
+                [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
         </div>
     </form>
-    <div class="flex flex-row justify-end space-x-2 p-3 font-medium">
 
+    <!-- Action Buttons -->
+    <div class="flex flex-row justify-end space-x-2 p-3 font-medium">
         <button routerLink="/project-manager" class="p-2 bg-line text-darkslategray rounded-xl">
-            {{'regresar' | translate}}
+            {{ 'regresar' | translate }}
         </button>
 
+        <!-- Create Performance Button (if isCreatePerformance) -->
         <div *ngIf="isCreatePerformance">
-            <shared-confirmation-button (click)="onSubmit()" [ButtonName]="'CreatePerformance'"></shared-confirmation-button>
+            <shared-confirmation-button (click)="onSubmit()"
+                [ButtonName]="'CreatePerformance'"></shared-confirmation-button>
         </div>
 
+        <!-- Modify Performance Button -->
         <div>
-            <button *ngIf="!isViewPerformance && !isCreatePerformance" (click)="modifyPerformance()" class="p-2 bg-darkslategray text-line rounded-xl">
-                {{'Modified'|translate}}
+            <button *ngIf="!isViewPerformance && !isCreatePerformance" (click)="modifyPerformance()"
+                class="p-2 bg-darkslategray text-line rounded-xl">
+                {{ 'Modified' | translate }}
             </button>
         </div>
-
     </div>
 </div>
 

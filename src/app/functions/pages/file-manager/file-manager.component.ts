@@ -15,6 +15,8 @@ import { UserInfo } from 'src/app/models/userInfo';
 import { EventConstants } from 'src/app/models/eventConstants';
 import { FreeProfessional } from '../../models/FreeProfessional';
 import { DatePipe } from '@angular/common';
+import { BackblazeService } from 'src/app/services/backblaze.service';
+import { app } from 'server';
 
 @Component({
   selector: 'app-file-manager',
@@ -38,6 +40,7 @@ export class FileManagerComponent implements OnInit, OnDestroy {
   isClaimant: boolean = false;
   isFreeProfessional: boolean = false;
   isAssignedClaim: boolean = false;
+  isUserProcessor: boolean = false;
   showModalRatings: boolean = false;
   showModalPerformances: boolean = false;
   showAddUpdateModal: boolean = false;
@@ -56,7 +59,8 @@ export class FileManagerComponent implements OnInit, OnDestroy {
     private router: Router,
     private datePipe: DatePipe,
     private changeDetectorRef: ChangeDetectorRef,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private backblazeService: BackblazeService,
   ) {
     // Main forms
     this.fileManager = this.createForm();
@@ -64,12 +68,17 @@ export class FileManagerComponent implements OnInit, OnDestroy {
 
     // "Add Update" form
     this.addUpdateForm = this.formBuilder.group({
-      status: ['', Validators.required],
+      status: [''],
       document: [''],
-      summary: ['', Validators.required],
-      improvementSavings: ['', Validators.required],
-      amountPaid: ['', Validators.required],
-      creditingDate: ['', Validators.required]
+      summary: [''],
+      improvementSavings: [''],
+      amountPaid: [''],
+      creditingDate: [''],
+      askForMoreInfo: [false],
+      factsUpdate: [''],
+      solutionSuggestion: [''],
+      appeal: [''],
+      complaint: ['']
     });
 
     // NEW: Finalize Form for user rating 0-5
@@ -102,7 +111,73 @@ export class FileManagerComponent implements OnInit, OnDestroy {
       if (this.authenticationService.userInfo) {
         this.user = this.authenticationService.userInfo;
       }
+
+      if (this.user.FreeProfessionalTypeID === '2fc2a66a-69ca-4832-a90e-1ff590b80d24') {
+        this.isUserProcessor = true;
+      }
+      if (this.user.FreeProfessionalTypeID === "eea2312e-6a85-4ab6-85ff-0864547e3870") {
+        this.isSubscriber = true;
+        this.isAssignedClaim = true;
+        this.isUserProcessor = true;
+        this.isClaimant = true;
+      }
+      if (this.user.AccountType === "ApprovedTrainingCenter") {
+        this.isSubscriber = true;
+      }
+
+      // Subscribe to the checkbox changes
+      this.addUpdateForm.get('askForMoreInfo')?.valueChanges.subscribe((checked: boolean) => {
+        if (checked) {
+          // Disable fields you want blocked
+          this.addUpdateForm.get('status')?.disable();
+          this.addUpdateForm.get('document')?.disable();
+          this.addUpdateForm.get('improvementSavings')?.disable();
+          this.addUpdateForm.get('amountPaid')?.disable();
+          this.addUpdateForm.get('creditingDate')?.disable();
+        } else {
+          // Re-enable them if unchecked
+          this.addUpdateForm.get('status')?.enable();
+          this.addUpdateForm.get('document')?.enable();
+          this.addUpdateForm.get('improvementSavings')?.enable();
+          this.addUpdateForm.get('amountPaid')?.enable();
+          this.addUpdateForm.get('creditingDate')?.enable();
+        }
+      });
     }, 0);
+  }
+
+  downloadSelectedFile() {
+    const fileId = this.claim.documentfile1id;
+    if (!fileId) {
+      return;
+    }
+
+    this.backblazeService.authorizeAccount().subscribe(response => {
+      const apiUrl = response.apiUrl;
+      const authorizationToken = response.authorizationToken;
+
+      this.backblazeService.getDownloadUrl(apiUrl, authorizationToken, fileId).subscribe(downloadResponse => {
+        const downloadUrl = downloadResponse.downloadUrl;
+        const fileName = downloadResponse.fileName;
+        if (!downloadUrl || !fileName) {
+          return;
+        }
+
+        this.backblazeService.downloadFile(downloadUrl, fileName, authorizationToken).subscribe(blob => {
+          const downloadURL = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = downloadURL;
+          link.download = fileName;
+          link.click();
+        }, error => {
+          console.error(error);
+        });
+      }, error => {
+        console.error(error);
+      });
+    }, error => {
+      console.error(error);
+    });
   }
 
   ngOnDestroy() {
@@ -131,6 +206,12 @@ export class FileManagerComponent implements OnInit, OnDestroy {
       return;
     }
 
+    const formData = this.addUpdateForm.value;
+    if (formData.status === 'Falta Información' && !formData.factsUpdate) {
+      alert('Please provide updated facts.');
+      return;
+    }
+
     const { status, document, summary, improvementSavings, amountPaid, creditingDate } = this.addUpdateForm.value;
 
     try {
@@ -141,14 +222,25 @@ export class FileManagerComponent implements OnInit, OnDestroy {
         Summary: summary,
         ImprovementSavings: improvementSavings,
         AmountPaid: amountPaid,
-        CreditingDate: creditingDate
+        CreditingDate: creditingDate,
+        askForMoreInfo: false,
+        FactsUpdate: formData.factsUpdate || null,
+        appeal: formData.appeal || null,
+        complaint: formData.complaint || null,
+        solutionSuggestion: formData.solutionSuggestion || null
       };
+
+      if (this.addUpdateForm.value.askForMoreInfo) {
+        payload.askForMoreInfo = true;
+      } else {
+        payload.askForMoreInfo = false;
+      }
 
       await this.osdEventService.addPerformanceUpdate(payload);
 
       this.closeAddUpdateModal();
     } catch (error) {
-      console.error('Error submitting update:', error);
+
     }
   }
 
@@ -184,24 +276,28 @@ export class FileManagerComponent implements OnInit, OnDestroy {
   }
 
   private fillForm(claim: Claim): FormGroup {
-    return this.formBuilder.group({
-      code: [claim.code],
-      claimant: [this.translate.instant(claim.claimtype)],
-      state: [this.translate.instant(claim.status)],
-      subscriber: [claim.namecompanysubscriberclaimed],
-      amountClaimed: ['€ ' + claim.amountclaimed],
-      facts: [claim.facts],
-      valuationSubscriber: [claim.valuationsubscriber || 0],
-      valuationClaimant: [claim.valuationclaimant || 0],
-      valuationFreeProfessionals: [claim.valuationfreeprofessionals || 0],
+    const formGroup = this.formBuilder.group({
+      code: [claim?.code || ''],
+      claimant: [this.translate.instant(claim?.claimtype || '')],
+      state: [this.translate.instant(claim?.status || '')],
+      subscriber: [claim?.namecompanysubscriberclaimed || ''],
+      amountClaimed: ['€ ' + (claim?.amountclaimed || 0)],
+      facts: [claim?.facts || ''],
+      valuationSubscriber: [claim?.valuationsubscriber || 0],
+      valuationClaimant: [claim?.valuationclaimant || 0],
+      valuationFreeProfessionals: [claim?.valuationfreeprofessionals || 0],
+      complaint: [claim?.complaint || ''],
+      appeal: [claim?.appeal || ''],
+      solution_suggestion: [claim?.solution_suggestion || ''],
     });
+    return formGroup;
   }
 
   private createCloseClaimFileForm(): FormGroup {
     return this.formBuilder.group({
       AAsavingsPP: ['', [Validators.required]],
       creditingDate: ['', [Validators.required]],
-      AmountPaid: ['', [Validators.required]],
+      AmountPaid: ['', [Validators.required]]
     });
   }
 
@@ -214,7 +310,7 @@ export class FileManagerComponent implements OnInit, OnDestroy {
     return this.formBuilder.group({
       AAsavingsPP: ['€ ' + claim.improvementsavings, [Validators.required]],
       creditingDate: [formatedStartDate, [Validators.required]],
-      AmountPaid: ['€ ' + claim.amountpaid, [Validators.required]],
+      AmountPaid: ['€ ' + claim.amountpaid, [Validators.required]]
     });
   }
 

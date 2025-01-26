@@ -76,19 +76,17 @@
                             {{'CFH' | translate}}</span>
                     </a>
                 </li>
-                <li class="mb-2">
-                    <a class="cursor-pointer" (click)="changeReport('dev_hours')" (click)="toggleLeftSidebar()">
-                        <span
-                            class="px-5 py-1 transition duration-300 ease-in-out hover:bg-line rounded-r-full whitespace-nowrap overflow-hidden">2.3.
-                            {{'DEV_HOURS' | translate}}</span>
-                    </a>
-                </li>
             </ul>
         </div>
         <a class="mb-4 cursor-pointer" routerLink="/project-manager">
             <span
                 class="px-3 py-1 transition duration-300 ease-in-out hover:bg-line rounded-r-full whitespace-nowrap overflow-hidden">3.
                 {{'transparent_project' | translate}}</span>
+        </a>
+        <a class="cursor-pointer" (click)="changeReport('dev_hours')" (click)="toggleLeftSidebar()">
+            <span
+                class="px-5 py-1 transition duration-300 ease-in-out hover:bg-line rounded-r-full whitespace-nowrap overflow-hidden">3.1.
+                {{'DEV_HOURS' | translate}}</span>
         </a>
     </div>
 </div>

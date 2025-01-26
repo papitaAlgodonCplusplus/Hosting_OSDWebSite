@@ -1,53 +1,192 @@
-<div class="flex justify-center flex-col space-y-1 ">
+<div class="flex justify-center flex-col space-y-1">
+    <!-- TITLE -->
     <div class="text-darkslategray text-start py-3 text-xl font-medium animate__animated animate__fadeInLeft">
         <span class="pl-5 pr-3 py-1 bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden">
-            {{'authorizeCustomers' | translate}} </span>
+            {{ 'authorizeCustomers' | translate }}
+        </span>
     </div>
 
+    <!-- Authorized Modal (existing) -->
     <shared-authorized-modal [isAuthorized]="isAuthorized" [personalDataObject]="user" [message]="''"
         [accountDataObject]="subscriber" [showModal]="showAuthorizatedModal" (confirm)="onConfirmHandler()"
         (cancel)="onCancelHandler()">
     </shared-authorized-modal>
 
+    <!-- TABLE -->
     <div class="flex justify-center flex-col p-5">
         <div class="overflow-x-auto">
             <table class="table-auto w-full">
                 <thead>
                     <tr class="text-darkslategray">
-                        <th class="px-2 py-2" style="width: 30%;">{{'Formador asignado' | translate}}</th>
-                        <th class="px-2 py-2" style="width: 30%;">{{'Identity' | translate}}</th>
-                        <th class="px-2 py-2" style="width: 30%;">{{'SubscriberCustomer' | translate}} </th>
-                        <th class="px-2" style="width: 30%;">{{'actions' | translate}}</th>
-                        <th class="px-2" style="width: 30%;">{{'authorized' | translate}}</th>
+                        <th class="px-2 py-2" style="width: 20%;">
+                            {{ 'Formador asignado' | translate }}
+                        </th>
+                        <th class="px-2 py-2" style="width: 15%;">
+                            {{ 'Code' | translate }}
+                        </th>
+                        <th class="px-2 py-2" style="width: 20%;">
+                            {{ 'SubscriberCustomer' | translate }}
+                        </th>
+                        <th class="px-2" style="width: 15%;">
+                            {{ 'actions' | translate }}
+                        </th>
+                        <th class="px-2" style="width: 15%;">
+                            {{ 'authorized' | translate }}
+                        </th>
+                        <!-- NEW COLUMN: See Info -->
+                        <th class="px-2" style="width: 15%;">
+                            {{ 'See Info' | translate }}
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let item of displayedItems">
+                        <!-- Trainer Assigned -->
                         <td class="text-center border-y px-2 py-2">
                             {{ item.trainerassigned ? item.trainerassigned : 'Sin asignar' }}
                         </td>
-                        <td class="text-center border-y px-2  py-2">{{ item.identity }}</td>
-                        <td class="text-center border-y px-2 py-2">{{ item.name }}</td>
-                        <td class="text-center space-x-2 border-y py-2">
-                            <button (click)="selectUser(item)" class="underline text-darkslategray text-sm"><i
-                                    class="fas fa-check-circle text-xl animate-bounce"></i></button>
-                        </td>
+
+                        <!-- Code -->
                         <td class="text-center border-y px-2 py-2">
-                            <i class="fa-solid fa-circle"
-                                [ngClass]="{'text-green-500': item.isauthorized, 'text-red-600': !item.isauthorized}">
+                            {{ item.code }}
+                        </td>
+
+                        <!-- Subscriber/Client Name -->
+                        <td class="text-center border-y px-2 py-2">
+                            {{ item.name }} {{ item.firstsurname }} {{ item.middlesurname ? item.middlesurname : '' }}
+                        </td>
+
+                        <!-- Actions: existing "Select" -->
+                        <td class="text-center space-x-2 border-y py-2">
+                            <button (click)="selectUser(item)" class="underline text-darkslategray text-sm">
+                                <i class="fas fa-check-circle text-xl animate-bounce"></i>
+                            </button>
+                        </td>
+
+                        <!-- Authorized (red/green icon) -->
+                        <td class="text-center border-y px-2 py-2">
+                            <i class="fa-solid fa-circle" [ngClass]="{
+                    'text-green-500': item.isauthorized,
+                    'text-red-600': !item.isauthorized
+                  }">
                             </i>
+                        </td>
+
+                        <!-- NEW ACTION: "See Info" -->
+                        <td class="text-center border-y px-2 py-2">
+                            <button (click)="viewSubscriberInfo(item)" class="underline text-darkslategray text-sm">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
-        <mat-paginator [length]="items.length" [pageSize]="10" (page)="onPageChange($event)"></mat-paginator>
+        <mat-paginator [length]="items.length" [pageSize]="10" (page)="onPageChange($event)">
+        </mat-paginator>
     </div>
 </div>
 
+<!-- Return Button -->
 <div class="font-medium rounded-xl w-full flex items-end justify-end p-3">
     <button class="px-2 py-1 bg-line text-darkslategray rounded-lg" routerLink="/home">
-        {{'regresar' | translate}}
+        {{ 'regresar' | translate }}
     </button>
+</div>
+
+<!-- NEW MODAL: Show Subscriber Info -->
+<div *ngIf="showSubscriberInfo" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
+    <!-- Blackout overlay, alpha 0.8 -->
+    <div class="bg-opacity-80 bg-black absolute inset-0"></div>
+
+    <!-- Modal content -->
+    <!-- Added .modern-modal custom class -->
+    <!-- NEW MODAL: Show Subscriber Info -->
+    <div *ngIf="showSubscriberInfo" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
+        <div class="bg-opacity-30 bg-black absolute inset-0"></div>
+
+        <!-- Modal content -->
+        <div class="modern-modal relative z-50 bg-white shadow-md rounded-xl max-w-xl w-full">
+            <!-- Header with 'X' -->
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold text-darkslategray">
+                    {{ 'Subscriber Info' | translate }}
+                </h2>
+                <button (click)="closeInfoModal()" class="close-modal-btn text-gray-600 hover:text-gray-900">
+                    <i class="fa-solid fa-times text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Subscriber Data in a Table -->
+            <table class="subscriber-table">
+                <thead>
+                    <tr>
+                        <th>{{ 'Field' | translate }}</th>
+                        <th>{{ 'Value' | translate }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>ID</strong></td>
+                        <td>{{ selectedSubscriber?.id }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>{{ 'Email' | translate }}</strong></td>
+                        <td>{{ selectedSubscriber?.email }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>{{ 'Name' | translate }}</strong></td>
+                        <td>{{ selectedSubscriber?.name }} {{ selectedSubscriber?.firstsurname }} {{
+                            selectedSubscriber?.middlesurname ? selectedSubscriber?.middlesurname : '' }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>{{ 'Country' | translate }}</strong></td>
+                        <td>{{ selectedSubscriber?.country }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>{{ 'Free Professional Type' | translate }}</strong></td>
+                        <td>{{ selectedSubscriber?.FreeprofessionaltypeAcronym }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>{{ 'ID File' | translate }}</strong></td>
+                        <td>
+                            <div class="flex flex-col space-y-1">
+                                <button id="downloadButton" type="button" class="cursor-pointer px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg shadow-md 
+                                  hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 
+                                  transition ease-in-out duration-150" (click)="downloadSelectedFile('identification')">
+                                    {{ 'Download' | translate }}
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>{{ 'Curriculum File' | translate }}</strong></td>
+                        <td>
+                            <div class="flex flex-col space-y-1">
+                                <button id="downloadButton" type="button" class="cursor-pointer px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg shadow-md 
+                                  hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 
+                                  transition ease-in-out duration-150" (click)="downloadSelectedFile('curriculum')">
+                                    {{ 'Download' | translate }}
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>{{ 'Civilliability Insurance File' | translate }}</strong></td>
+                        <td>
+                            <div class="flex flex-col space-y-1">
+                                <button id="downloadButton" type="button" class="cursor-pointer px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg shadow-md 
+                                  hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 
+                                  transition ease-in-out duration-150" (click)="downloadSelectedFile('civilliability')">
+                                    {{ 'Download' | translate }}
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <!-- Additional rows can go here if needed -->
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>

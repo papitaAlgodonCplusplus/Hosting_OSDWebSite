@@ -2,9 +2,12 @@ export class Subscriber {
     id: string = "";
     scid: string = "";
     userId: string = "";
+    firstsurname: string = "";
+    middlesurname: string = "";
     clientType: string = "";
     companyName: string = "";
     trainerAssigned: string = "";
+    email: string = "";
     country: string = "";
     FreeprofessionaltypeAcronym: string = "";
     civilliabilityinsurancefileid: string = "";

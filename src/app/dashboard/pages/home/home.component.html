@@ -1,39 +1,100 @@
-<shared-confirmation-modal *ngIf="!user.Isauthorized" [showModal]="true" [message]="message"
-    [messageType]="'success'"></shared-confirmation-modal>
+<!-- SHOW MODAL IF USER NOT AUTHORIZED -->
+<shared-confirmation-modal
+  *ngIf="!user.Isauthorized"
+  [showModal]="true"
+  [message]="message"
+  [messageType]="'success'"
+></shared-confirmation-modal>
 
-<!-- Unauthorized User Section -->
+<!-- UNAUTHORIZED SECTION -->
 <div *ngIf="!user.Isauthorized" class="h-full bg-gradient-to-b from-gray-100 to-gray-300">
-    <div class="flex flex-col items-center justify-center space-y-6 font-medium h-full text-center">
-        <h1 class="text-3xl font-bold text-darkslategray">{{ 'HOME.WELCOME_TITLE' | translate }}</h1>
-        <p class="text-lg text-gray-700 max-w-md">
-            {{ 'HOME.ACCOUNT_PENDING_APPROVAL' | translate }}
-        </p>
-        <div>
-            <span class="text-darkslategray text-base">{{ 'HOME.RETURN_LOGIN' | translate }}</span>
-        </div>
-        <div routerLink="/auth"
-            class="bg-yellow-500 hover:bg-yellow-600 text-darkslategray p-3 rounded-xl cursor-pointer animate-bounce shadow-lg transition duration-300">
-            <i class="text-3xl fa-solid fa-lock"></i>
-            <span class="ml-2 font-semibold">{{ 'HOME.LOGIN_BUTTON' | translate }}</span>
-        </div>
+  <div class="flex flex-col items-center justify-center space-y-6 font-medium h-full text-center">
+    <h1 class="text-3xl font-bold text-darkslategray">
+      {{ 'HOME.WELCOME_TITLE' | translate }}
+    </h1>
+    <p class="text-lg text-gray-700 max-w-md">
+      {{ 'HOME.ACCOUNT_PENDING_APPROVAL' | translate }}
+    </p>
+    <div>
+      <span class="text-darkslategray text-base">{{ 'HOME.RETURN_LOGIN' | translate }}</span>
     </div>
+    <div
+      routerLink="/auth"
+      class="bg-yellow-500 hover:bg-yellow-600 text-darkslategray p-3 rounded-xl cursor-pointer animate-bounce shadow-lg transition duration-300"
+    >
+      <i class="text-3xl fa-solid fa-lock"></i>
+      <span class="ml-2 font-semibold">{{ 'HOME.LOGIN_BUTTON' | translate }}</span>
+    </div>
+  </div>
 </div>
 
-<!-- Authorized User Section -->
+<!-- AUTHORIZED SECTION -->
 <div *ngIf="user.Isauthorized" class="h-full bg-white">
-    <div class="flex flex-col items-center justify-center py-10 px-5 space-y-5 text-center">
-        <h1 class="text-4xl font-extrabold text-darkslategray">{{ 'HOME.WELCOME_BACK' | translate }}</h1>
-        <p class="text-lg text-gray-600 max-w-2xl">
-            {{ 'HOME.INSTRUCTION' | translate }}
-        </p>
-        <div class="grid grid-cols-2 gap-6">
-            <!-- Menu Options -->
-            <div *ngFor="let option of menuOptions" [routerLink]="option.path" 
-                class="flex items-center justify-center p-5 text-white rounded-lg shadow-md cursor-pointer transition duration-300"
-                [ngClass]="option.color">
-                <i [class]="'fa-solid ' + option.icon + ' text-2xl'"></i>
-                <span class="ml-3">{{ option.name | translate }}</span>
-            </div>
+  <div class="flex flex-col items-center justify-center py-10 px-5 space-y-5 text-center">
+    <h1 class="text-4xl font-extrabold text-darkslategray">
+      {{ 'HOME.WELCOME_BACK' | translate }}
+    </h1>
+    <p class="text-lg text-gray-600 max-w-2xl">
+      {{ 'HOME.INSTRUCTION' | translate }}
+    </p>
+
+    <!-- If user is NOT our special ID, show normal 2-col layout -->
+    <ng-container *ngIf="user.Id !== 'e77b5172-f726-4c1d-9f9e-d2dbd77e03c9'; else groupedLayout">
+      <div class="grid grid-cols-2 gap-6 justify-center items-center">
+        <!-- Loop for all items in menuOptions -->
+        <div
+          *ngFor="let option of menuOptions"
+          [routerLink]="option.path"
+          class="flex items-center justify-center p-5 text-white rounded-lg shadow-md cursor-pointer transition duration-300"
+          [ngClass]="option.color"
+        >
+          <i [class]="'fa-solid ' + option.icon + ' text-2xl'"></i>
+          <span class="ml-3">{{ option.name | translate }}</span>
         </div>
-    </div>
+      </div>
+    </ng-container>
+
+    <!-- Grouped layout if user == special ID -->
+    <ng-template #groupedLayout>
+      <!-- 
+        3) Use the categories array from TS. 
+        We'll only show a category if it actually has matching options.
+      -->
+      <ng-container *ngFor="let cat of categories">
+        <!-- Filter out the actual items for the current category -->
+        <ng-container
+          *ngIf="getOptionsForCategory(cat.optionNames).length > 0"
+        >
+          <!-- Category Title -->
+          <h2 class="text-lg font-bold text-yellow-600 mb-2">
+            {{ cat.title }}
+          </h2>
+
+          <!--
+            We choose the container class based on how many items are in
+            this category. If there's more than one item, use 2 columns.
+            If there's only one, use single-option styling.
+          -->
+          <div
+            [ngClass]="
+              getOptionsForCategory(cat.optionNames).length > 1
+                ? 'category-container mb-6'
+                : 'single-option mb-6'
+            "
+          >
+            <!-- Loop each option in this category -->
+            <div
+              *ngFor="let option of getOptionsForCategory(cat.optionNames)"
+              [routerLink]="option.path"
+              class="flex items-center justify-center p-5 text-white rounded-lg shadow-md cursor-pointer transition duration-300"
+              [ngClass]="option.color"
+            >
+              <i [class]="'fa-solid ' + option.icon + ' text-2xl'"></i>
+              <span class="ml-3">{{ option.name | translate }}</span>
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+    </ng-template>
+  </div>
 </div>

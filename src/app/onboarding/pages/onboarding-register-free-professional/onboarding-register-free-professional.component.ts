@@ -58,7 +58,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   isProcessor: boolean = false;
   countries: DropDownItem[] = [];
   selectedCountries: string | undefined;
-  uploadFile: boolean = false;
+  uploadFile: boolean = true;
   courses: DropDownItem[] = [];
   selectedCourse: string | undefined;
   showCourseDropdown: boolean = false;
@@ -126,6 +126,39 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
         console.error('Error fetching courses:', error);
       }
     );
+  }
+
+  get cfhOptions() {
+    // First, map the original courses array into an array of { display, value }
+    const mapped = this.courses.map((c) => {
+      // Example c.value: "course_name (some_content) (some_other_part)"
+      // Suppose you want the piece inside the first parentheses:
+      let extracted = '';
+      if (c.value) {
+        const parts = c.value.split('(');
+        // e.g. ["course_name ", "some_content) ", "some_other_part)"]
+        if (parts.length >= 2) {
+          extracted = parts[1].replace(')', '').trim();
+        }
+      }
+      return {
+        display: extracted, // The label to show (e.g. "AlexCFH")
+        value: c.key        // The actual key or ID behind the scenes
+      };
+    });
+
+    // 2) Filter out duplicates in 'display' using a Set
+    const unique: { display: string; value: string }[] = [];
+    const seen = new Set<string>(); // track distinct display values
+
+    mapped.forEach((item) => {
+      if (!seen.has(item.display)) {
+        seen.add(item.display);
+        unique.push(item);
+      }
+    });
+
+    return unique; // Only distinct labels remain
   }
 
   trackByKey(index: number, item: any): string {
@@ -230,7 +263,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   }
 
   private createAccountForm(): FormGroup {
-    const accountForm = this.formBuilder.group({
+    return this.formBuilder.group({
       workspace: ['', [Validators.required]],
       pricePerHour: [''],
       IdentificationFileName: ['', [Validators.required]],
@@ -241,10 +274,54 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
       CivilLiabilityInsuranceFileId: [''],
       servicerates: [''],
       payTPV: [''],
+      // We remove the single 'course' definition (or keep it but see below)
+      courseTitle: [''],
+      courseMode: [''],
+      courseCFH: [''],
+
+      // This will hold the final combined string
       course: [''],
+
       courseCheckbox: [false],
     });
-    return accountForm;
+  }
+
+  get distinctModes(): string[] {
+    if (!this.courses) return [];
+
+    // Gather modes into a Set to remove duplicates
+    const modeSet = new Set<string>();
+
+    // Each course has a 'mode' property
+    this.courses.forEach(course => {
+      if (course.mode) {
+        modeSet.add(course.mode);
+      }
+    });
+
+    // Return as an array
+    return Array.from(modeSet);
+  }
+
+
+  get distinctTitles(): string[] {
+    if (!this.courses) return [];
+    return Array.from(new Set(this.courses.map(c => {
+      const parts = c.value.split('(');
+      return parts[0].trim();
+    })));
+  }
+
+  updateCourseString() {
+    const { courseTitle, courseMode, courseCFH } = this.accountForm.value;
+    const combined_string = `${courseTitle} (${courseCFH})`;
+    for (let course of this.courses) {
+      if (course.value === combined_string && course.mode === courseMode) {
+        this.accountForm.patchValue({ course: course.key });
+        break;
+      }
+    }
+    this.accountForm.patchValue({ course: courseCFH });
   }
 
   private createPersonalForm(): FormGroup {
@@ -268,12 +345,13 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     });
     return personalForm;
   }
+  
 
   onSubmit(): void {
     const workspace = this.accountForm.value.workspace;
     const userEmail = this.personalForm.value.email;
     const selectedCourse = this.accountForm.value.course;
-  
+
     // Validate forms
     if (this.accountForm.invalid || this.personalForm.invalid) {
       this.accountForm.markAllAsTouched();
@@ -281,22 +359,22 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
       const alertMsg = this.translate.currentLang === "en"
         ? "There are missing fields to fill out"
         : "Faltan campos por llenar";
-  
+
       this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: alertMsg }));
       this.store.dispatch(ModalActions.openAlert());
       return;
     }
-  
+
     // Validate acceptance of terms
     if (!this.personalForm.value.acceptConditions) {
       this.isAcceptConditions = true;
       return;
     }
-  
+
     this.uploadFile = true;
     this.store.dispatch(UiActions.toggleConfirmationButton());
     localStorage.setItem('userEmail', userEmail);
-  
+
     if (workspace === 'eea2312e-6a85-4ab6-85ff-0864547e3870') {
       this.http.post(`${this.apiUrl}/check-approval`, { email: userEmail, course_id: selectedCourse })
         .subscribe((response: any) => {
@@ -336,7 +414,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
         });
     }
   }
-  
+
   CheckIfIsTr() {
     this.selectedWorkspace = this.accountForm.value.workspace;
     if (this.selectedWorkspace === "2fc2a66a-69ca-4832-a90e-1ff590b80d24") {

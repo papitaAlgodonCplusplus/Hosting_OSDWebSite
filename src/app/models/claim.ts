@@ -21,6 +21,9 @@ export interface Claim {
     CreditingDate: string;
     AmountPaid: string;
     ImprovementSavings: string;
+    complaint: string;
+    appeal: string;
+    solution_suggestion: string;
 
     id: string;
     code: string;

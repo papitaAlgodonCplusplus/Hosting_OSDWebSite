@@ -27,4 +27,7 @@ export class ResponseToPerformanceFreeProfessional {
   technicalDirectorDate: string = "";
   technicalDirectorWorkHours: string = "";
   totalFreeProfessionalData: string = "";
+  developer_category: string = "";
+  developer_module: string = "";
+  developer_activity: string = "";
 }

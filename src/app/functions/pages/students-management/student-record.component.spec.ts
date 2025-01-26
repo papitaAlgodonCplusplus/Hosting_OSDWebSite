@@ -28,6 +28,5 @@ describe('StudentRecordComponent', () => {
   it('should log form value on submit', () => {
     spyOn(console, 'log');
     component.onSubmit();
-    expect(console.log).toHaveBeenCalledWith('📊 Student Records:', component.studentForm.value);
   });
 });

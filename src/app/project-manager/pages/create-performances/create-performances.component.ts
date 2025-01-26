@@ -20,18 +20,19 @@ import { AuthenticationService } from 'src/app/services/authentication.service';
   templateUrl: './create-performances.component.html',
   styleUrls: ['./create-performances.component.css']
 })
-
 export class CreatePerformancesComponent {
   projectManagerSelected: string = "";
-  projectManagerSelectedObservable$: Observable<string> = this.store.select(PerformanceSelectors.projectManagerId)
+  canAddDeveloperPerformance: boolean = false; // if true => show extra fields
+  projectManagerSelectedObservable$: Observable<string> = this.store.select(PerformanceSelectors.projectManagerId);
   performanceFreeProfessional$: Observable<PerformanceFreeProfessional> = this.store.select(PerformanceSelectors.performanceFreeProfessional);
   performanceFP!: PerformanceFreeProfessional;
+
   performanceForm: FormGroup;
   selectedSummaryType: string | undefined;
   summaryTypes: DropDownItem[] = [];
   justifyingDocument!: string;
   DocumentIncreaseWorkingHours!: string;
-  incorrectFormat: boolean = false
+  incorrectFormat: boolean = false;
   showModal: boolean = false;
   documentFile: File | null = null;
   documentBytes: Uint8Array | null = null;
@@ -56,14 +57,35 @@ export class CreatePerformancesComponent {
   isViewPerformance: boolean = false;
   isCreatePerformance: boolean = false;
 
-  constructor(private store: Store,
+  // NEW: Developer Category and Module options (for the 2 new dropdowns)
+  developer_categoryOptions: DropDownItem[] = [
+    { key: 'forms', value: 'Edición Formularios' },
+    { key: 'security', value: 'Seguridad y Privacidad' },
+    { key: 'functionality', value: 'Funcionalidad de aplicación' },
+    { key: 'videos', value: 'Contratos y Videos' },
+    { key: 'continuous', value: 'Mejora Continua' }
+  ];
+
+  developer_moduleOptions: DropDownItem[] = [
+    { key: 'formativo', value: 'Gestor Formativo' },
+    { key: 'expediente', value: 'Gestor Expediente' },
+    { key: 'transparencia', value: 'Gestor Transparencia' },
+    { key: 'economico', value: 'Gestor Economico' },
+    { key: 'osd', value: 'Gestor OSD' },
+    { key: 'usuarios', value: 'Gestor Usuarios/Perfiles' }
+  ];
+
+  constructor(
+    private store: Store,
     private formBuilder: FormBuilder,
     private OSDEventService: OSDService,
     private OSDDataService: OSDDataService,
     private datePipe: DatePipe,
     private authService: AuthenticationService,
-    private translate: TranslateService,) {
-    this.performanceForm = this.createForm()
+    private translate: TranslateService,
+  ) {
+    // Build the form once in the constructor
+    this.performanceForm = this.createForm();
   }
 
   ngOnInit() {
@@ -84,9 +106,9 @@ export class CreatePerformancesComponent {
     this.performanceFreeProfessional$.subscribe(performance => {
       this.performanceFP = performance;
       if (Object.keys(this.performanceFP).length > 0) {
-        this.performanceForm = this.fillform(this.performanceFP)
+        this.performanceForm = this.fillform(this.performanceFP);
       }
-    })
+    });
 
     this.OSDEventService.getFreeProfessionalsList().then(freeProfessionals => {
       this.filteredProfessionalsFree = freeProfessionals;
@@ -97,14 +119,148 @@ export class CreatePerformancesComponent {
       this.projectManagerSelected = id;
       this.store.dispatch(PerformanceActions.setProjectSelected({ projectSelected: this.projectManagerSelected }));
     });
+
+    // Example: If projectManagerSelected is some known ID => canAddDeveloperPerformance = true
+    // You had: if (this.projectManagerSelected === '065d461a-cc09-4162-b4e9-f121c11d3348') ...
+    if (this.projectManagerSelected === '065d461a-cc09-4162-b4e9-f121c11d3348') {
+      this.canAddDeveloperPerformance = true;
+    }
   }
 
   ngOnDestroy() {
     setTimeout(() => {
       this.store.dispatch(UiActions.showAll());
-      this.store.dispatch(PerformanceActions.setPerformanceFreeProfessional({ performanceFreeProfessional: {} as PerformanceFreeProfessional }))
+      this.store.dispatch(PerformanceActions.setPerformanceFreeProfessional({ performanceFreeProfessional: {} as PerformanceFreeProfessional }));
     }, 0);
   }
+
+  // UPDATED: The createForm method includes the 3 new optional fields
+  // but they're only used if canAddDeveloperPerformance is true in the UI logic.
+  private createForm(): FormGroup {
+    this.isCreatePerformance = true;
+    return this.formBuilder.group({
+      Start_Date: ['', [Validators.required]],
+      End_Date: ['', [Validators.required]],
+      FreeProfessionalAssignedId: ['', [Validators.required]],
+      FreeProfessionalCode: ['', [Validators.required]],
+      SummaryId: ['', [Validators.required]],
+      JustifyingDocument: ['', [Validators.required]],
+      ForecastTravelExpenses: ['', [Validators.required]],
+      ForecastTravelTime: ['', [Validators.required]],
+      ForecastWorkHours: ['', [Validators.required]],
+      TotalForecastData: ['', [Validators.required]],
+      developer_category: [''],
+      developer_module: [''],
+      developer_activity: ['']
+    });
+  }
+
+  fillform(performance: PerformanceFreeProfessional): FormGroup {
+    this.isCreatePerformance = false;
+    this.justifyingDocument = performance.justifying_document;
+
+    let originalDate = performance.start_date;
+    let formatedStartDate = this.datePipe.transform(originalDate, 'yyyy-MM-dd');
+
+    let originalDTDate = performance.end_date;
+    let formatedEndDate = this.datePipe.transform(originalDTDate, 'yyyy-MM-dd');
+
+    return this.formBuilder.group({
+      Start_Date: [formatedStartDate, [Validators.required]],
+      End_Date: [formatedEndDate, [Validators.required]],
+      JustifyingDocument: [performance.justifying_document, [Validators.required]],
+      FreeProfessionalCode: [performance.FreeProfessionalAssignedCode, [Validators.required]],
+      SummaryId: [performance.summarytypeid, [Validators.required]],
+      freeProfessionalId: [performance.freeprofessionalassignedid, [Validators.required]],
+
+      ForecastTravelExpenses: [performance.estimated_transport_expenses, [Validators.required]],
+      ForecastTravelTime: [performance.estimated_transport_hours, [Validators.required]],
+      ForecastWorkHours: [performance.estimated_work_hours, [Validators.required]],
+      TotalForecastData: [performance.total_forecast_data, [Validators.required]],
+      developer_category: [performance.developer_category || ''],
+      developer_module: [performance.developer_module || ''],
+      developer_activity: [performance.developer_activity || '']
+    });
+  }
+
+  // CHANGED: onSubmit will only send the 3 developer fields if canAddDeveloperPerformance = true
+  onSubmit(): void {
+    if (this.performanceForm.invalid) {
+      this.performanceForm.markAllAsTouched();
+      return;
+    }
+    this.store.dispatch(UiActions.toggleConfirmationButton());
+
+    if (this.projectManagerSelected) {
+      // Build up the data to send
+      const formData = { ...this.performanceForm.value };
+
+      // If canAddDeveloperPerformance == false, remove developer fields before sending
+      if (!this.canAddDeveloperPerformance) {
+        delete formData.developer_category;
+        delete formData.developer_module;
+        delete formData.developer_activity;
+      }
+
+      if (this.documentBytes != null) {
+        const documentBase64 = this.convertUint8ArrayToBase64(this.documentBytes);
+        this.OSDEventService.addPerformanceFreeProfessional(formData, this.projectManagerSelected, documentBase64);
+      } else {
+        this.OSDEventService.addPerformanceFreeProfessional(formData, this.projectManagerSelected, "");
+      }
+    }
+  }
+
+  modifyPerformance(): void {
+    if (this.performanceForm.invalid) {
+      this.performanceForm.markAllAsTouched();
+      return;
+    }
+    // For modifying, do something similar if you want to exclude developer fields
+    // when canAddDeveloperPerformance == false:
+    const formData = { ...this.performanceForm.value };
+    if (!this.canAddDeveloperPerformance) {
+      delete formData.developer_category;
+      delete formData.developer_module;
+      delete formData.developer_activity;
+    }
+
+    this.OSDEventService.modifyPerformanceFreeProfessional(
+      formData,
+      this.projectManagerSelected,
+      this.performanceFP.id
+    );
+  }
+
+  convertUint8ArrayToBase64(uint8Array: Uint8Array): string {
+    let binary = '';
+    const len = uint8Array.byteLength;
+    for (let i = 0; i < len; i++) {
+      binary += String.fromCharCode(uint8Array[i]);
+    }
+    return window.btoa(binary);
+  }
+
+  verifiedFormat() {
+    const formValues = this.performanceForm.value;
+    let travelTime, workHours, transportExpenses;
+
+    travelTime = formValues.ForecastTravelTime;
+    workHours = formValues.ForecastWorkHours;
+    transportExpenses = formValues.ForecastTravelExpenses;
+
+    const isTravelTimeValid = this.validarHora(travelTime);
+    const isWorkHoursValid = this.validarHora(workHours);
+
+    if (isTravelTimeValid && isWorkHoursValid && transportExpenses >= 0) {
+      this.totalExpectedDataExpenses(formValues);
+      this.incorrectFormat = false;
+    } else {
+      this.incorrectFormat = true;
+      this.performanceForm.patchValue({ TotalForecastData: '' });
+    }
+  }
+
 
   displayFileName(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -149,144 +305,6 @@ export class CreatePerformancesComponent {
         this.documentBytes = new Uint8Array(arrayBuffer);
       };
       reader.readAsArrayBuffer(this.documentFile);
-    }
-  }
-
-  private createForm(): FormGroup {
-    this.isCreatePerformance = true
-    const form = this.formBuilder.group({
-      Start_Date: ['', [Validators.required]],
-      End_Date: ['', [Validators.required]],
-      FreeProfessionalAssignedId: ['', [Validators.required]],
-      FreeProfessionalCode: ['', [Validators.required]],
-      SummaryId: ['', [Validators.required]],
-      JustifyingDocument: ['', [Validators.required]],
-      ForecastTravelExpenses: ['', [Validators.required]],
-      ForecastTravelTime: ['', [Validators.required]],
-      ForecastWorkHours: ['', [Validators.required]],
-      TotalForecastData: ['', [Validators.required]]
-    });
-    return form;
-  }
-
-  fillform(performance: PerformanceFreeProfessional): FormGroup {
-
-    this.isCreatePerformance = false;
-
-    this.justifyingDocument = performance.justifying_document;
-
-    let originalDate = performance.start_date;
-    let formatedStartDate = this.datePipe.transform(originalDate, 'yyyy-MM-dd');
-
-    let originalDTDate = performance.end_date;
-    let formatedEndDate = this.datePipe.transform(originalDTDate, 'yyyy-MM-dd');
-
-    const form = this.formBuilder.group({
-      Start_Date: [formatedStartDate, [Validators.required]],
-      End_Date: [formatedEndDate, [Validators.required]],
-      JustifyingDocument: [performance.justifying_document, [Validators.required]],
-      FreeProfessionalCode: [performance.FreeProfessionalAssignedCode, [Validators.required]],
-      SummaryId: [performance.summarytypeid, [Validators.required]],
-      freeProfessionalId: [performance.freeprofessionalassignedid, [Validators.required]],
-      ForecastTravelExpenses: [performance.estimated_transport_expenses, [Validators.required]],
-      ForecastTravelTime: [performance.estimated_transport_hours, [Validators.required]],
-      ForecastWorkHours: [performance.estimated_work_hours, [Validators.required]],
-      TotalForecastData: [performance.total_forecast_data, [Validators.required]]
-    });
-    return form;
-  }
-
-  onSubmit(): void {
-    if (this.performanceForm.invalid) {
-      this.performanceForm.markAllAsTouched();
-      return;
-    }
-    this.store.dispatch(UiActions.toggleConfirmationButton())
-    if (this.projectManagerSelected) {
-      if (this.documentBytes != null) {
-        const documentBase64 = this.convertUint8ArrayToBase64(this.documentBytes);
-        this.OSDEventService.addPerformanceFreeProfessional(this.performanceForm.value, this.projectManagerSelected, documentBase64);
-      } else {
-        this.OSDEventService.addPerformanceFreeProfessional(this.performanceForm.value, this.projectManagerSelected, "");
-      }
-    }
-
-  }
-
-  convertUint8ArrayToBase64(uint8Array: Uint8Array): string {
-    let binary = '';
-    const len = uint8Array.byteLength;
-    for (let i = 0; i < len; i++) {
-      binary += String.fromCharCode(uint8Array[i]);
-    }
-    return window.btoa(binary);
-  }
-
-  convertBase64ToBlob(base64: string, contentType: string = 'application/pdf'): Blob {
-    const byteCharacters = atob(base64);
-    const byteNumbers = new Array(byteCharacters.length);
-    for (let i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt(i);
-    }
-    const byteArray = new Uint8Array(byteNumbers);
-    return new Blob([byteArray], { type: contentType });
-  }
-
-  downloadPdf(base64String: string) {
-
-    try {
-      const blob = this.convertBase64ToBlob(base64String, 'application/pdf');
-
-      const url = window.URL.createObjectURL(blob);
-
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'document.pdf';
-      a.click();
-
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error('Error al descargar el PDF:', error);
-    }
-  }
-
-  getInvalidFields(): string[] {
-    const invalidFields: string[] = [];
-    const formControls = this.performanceForm.controls;
-    for (const key in formControls) {
-      const control = formControls[key];
-      if (control.invalid) {
-        invalidFields.push(key);
-      }
-    }
-    return invalidFields;
-  }
-
-  modifyPerformance(): void {
-    if (this.performanceForm.invalid) {
-      this.performanceForm.markAllAsTouched();
-      return;
-    }
-    this.OSDEventService.modifyPerformanceFreeProfessional(this.performanceForm.value, this.projectManagerSelected, this.performanceFP.id);
-  }
-
-  verifiedFormat() {
-    const formValues = this.performanceForm.value;
-    let travelTime, workHours, transportExpenses;
-
-    travelTime = formValues.ForecastTravelTime;
-    workHours = formValues.ForecastWorkHours;
-    transportExpenses = formValues.ForecastTravelExpenses;
-
-    const isTravelTimeValid = this.validarHora(travelTime);
-    const isWorkHoursValid = this.validarHora(workHours);
-
-    if (isTravelTimeValid && isWorkHoursValid && transportExpenses >= 0) {
-      this.totalExpectedDataExpenses(formValues);
-      this.incorrectFormat = false;
-    } else {
-      this.incorrectFormat = true;
-      this.performanceForm.patchValue({ TotalForecastData: '' });
     }
   }
 

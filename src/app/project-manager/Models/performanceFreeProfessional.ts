@@ -50,4 +50,7 @@ export class PerformanceFreeProfessional {
   total_forecast_data: string = "";
   Type: string = "FreeProfessional";
   type: string = "FreeProfessional";
+  developer_category: string = "";
+  developer_module: string = "";
+  developer_activity: string = "";
 }

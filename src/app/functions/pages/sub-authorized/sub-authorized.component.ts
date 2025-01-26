@@ -1,34 +1,91 @@
-import { Component, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { ModalActions, UiActions } from 'src/app/store/actions';
 import { OSDDataService } from 'src/app/services/osd-data.service';
 import { UserInfo } from 'src/app/models/userInfo';
-
 import { TranslateService } from '@ngx-translate/core';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { Subscriber } from '../../models/Subscriber';
+import { BackblazeService } from 'src/app/services/backblaze.service';
 
 @Component({
   selector: 'app-sub-authorized',
   templateUrl: './sub-authorized.component.html',
   styleUrls: ['./sub-authorized.component.css']
 })
-
 export class SubAuthorizedComponent implements OnDestroy {
   items: any[] = [];
   displayedItems: any[] = [];
+
+  // Existing modal for authorizing
   showAuthorizatedModal: boolean = false;
   messageModal: string = this.translate.instant('MessageModalAuthorizedCostumer');
   user!: any;
-  subscribers: any[] = [];
-  subscriber: any;
-  userId!: string;
-  isAuthorized!: boolean
+  subscribers: Subscriber[] = [];
+  subscriber!: Subscriber;
 
-  constructor(private store: Store, private osdDataService: OSDDataService,
+  userId!: string;
+  isAuthorized!: boolean;
+
+  // NEW PROPERTIES: for "See Info" modal
+  showSubscriberInfo: boolean = false;
+  selectedSubscriber: Subscriber | null = null;
+
+  constructor(
+    private store: Store,
+    private osdDataService: OSDDataService,
     private translate: TranslateService,
+    private backblazeService: BackblazeService,
     private osdEventService: OSDService
   ) { }
+
+  downloadSelectedFile(document_type: string) {
+    if (!document_type) {
+      return;
+    }
+    let fileId = '';
+    switch (document_type) {
+      case 'identification':
+        fileId = this.selectedSubscriber?.identificationfileid || '';
+        break;
+      case 'civilliability':
+        fileId = this.selectedSubscriber?.civilliabilityinsurancefileid || '';
+        break;
+      case 'curriculum':
+        fileId = this.selectedSubscriber?.curriculumvitaefileid || '';
+        break;
+    }
+    if (fileId === '') {
+      return;
+    }
+
+    this.backblazeService.authorizeAccount().subscribe(response => {
+      const apiUrl = response.apiUrl;
+      const authorizationToken = response.authorizationToken;
+
+      this.backblazeService.getDownloadUrl(apiUrl, authorizationToken, fileId).subscribe(downloadResponse => {
+        const downloadUrl = downloadResponse.downloadUrl;
+        const fileName = downloadResponse.fileName;
+        if (!downloadUrl || !fileName) {
+          return;
+        }
+
+        this.backblazeService.downloadFile(downloadUrl, fileName, authorizationToken).subscribe(blob => {
+          const downloadURL = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = downloadURL;
+          link.download = fileName;
+          link.click();
+        }, error => {
+          console.error(error);
+        });
+      }, error => {
+        console.error(error);
+      });
+    }, error => {
+      console.error(error);
+    });
+  }
 
   ngOnInit(): void {
     setTimeout(() => {
@@ -37,20 +94,21 @@ export class SubAuthorizedComponent implements OnDestroy {
       this.store.dispatch(UiActions.hideFooter());
     }, 0);
 
+    // Observing the users subscribers
     this.osdDataService.getOsdUsersSubscribersSuccess$.subscribe(osdUsersSubscribers => {
       this.items = osdUsersSubscribers;
 
+      // Observing all subscribers
       this.osdDataService.getSubscribersSuccess$.subscribe(subscribers => {
         this.subscribers = subscribers;
 
+        // If you want to set 'trainerAssigned' from the subscriber object, do it here
         this.items.forEach(item => {
-          console.log(this.subscribers)
-          const matchingSubscriber = this.subscribers.find(sub => sub.userId === item.id);
+          const matchingSubscriber = this.subscribers.find(
+            sub => sub.userId === item.id
+          );
           if (matchingSubscriber) {
-           
-            item.trainerAssigned = matchingSubscriber.trainerAssigned;
-          } else {
-
+            item.trainerassigned = matchingSubscriber.trainerAssigned;
           }
         });
 
@@ -75,42 +133,99 @@ export class SubAuthorizedComponent implements OnDestroy {
     this.displayedItems = this.items.slice(startIndex, endIndex);
   }
 
+  // Existing "Select" user => open authorized modal
   selectUser(user: any) {
-    const foundUser: UserInfo = this.displayedItems.find(item => item.userid === user.userid);
+    const foundUser: UserInfo = this.displayedItems.find(
+      item => item.userid === user.userid
+    );
     if (foundUser.Isauthorized) {
-      this.isAuthorized = true
+      this.isAuthorized = true;
+    } else {
+      this.isAuthorized = false;
     }
-    else {
-      this.isAuthorized = false
-    }
+
     this.userId = foundUser.userid;
     const userDTO: UserInfo = {} as UserInfo;
     userDTO.Identity = foundUser.identity;
     userDTO.Name = foundUser.name.trim();
     userDTO.Email = foundUser.email;
     this.user = userDTO;
-    var subscriber = this.subscribers.find(item => item.userid === item.userid);
-    const subscriberDTO: Subscriber = {} as Subscriber;
-    this.subscriber = subscriberDTO;
 
+    // Assign subscriber, though your existing code sets it but doesn't do much with it yet
+    const subscriber = this.subscribers.find(
+      sub => sub.userid === foundUser.userid
+    );
+
+    // Just in case
+    const subscriberDTO: Subscriber = {} as Subscriber;
+    if (subscriber) {
+      subscriberDTO.id = subscriber.id;
+      subscriberDTO.userId = subscriber.userId;
+      subscriberDTO.name = subscriber.name;
+      // etc. fill as needed
+    }
+
+    this.subscriber = subscriberDTO;
     this.showAuthorizatedModal = true;
   }
 
   onConfirmHandler() {
-    console.log(this.userId)
+    // Example: call the service to authorize the user
     this.osdEventService.changingUsdUserAutorizationStatusEvent(this.userId);
+
+    // Update items array locally for the new Isauthorized state
     const newItems = this.items.map(item => {
       if (item.Id === this.userId) {
-        return { ...item, Isauthorized: "true" };
+        return { ...item, Isauthorized: true };
       }
       return item;
     });
     this.items = newItems;
-    this.updateDisplayedItems()
+
+    this.updateDisplayedItems();
     this.showAuthorizatedModal = false;
   }
 
   onCancelHandler() {
-    this.showAuthorizatedModal = false
+    this.showAuthorizatedModal = false;
+  }
+
+  // NEW METHOD: "See Info" -> display subscriber details in a modal
+  viewSubscriberInfo(item: any) {
+    // If you already have a matching subscriber from `this.subscribers`,
+    // you can look it up, or if 'item' is already a subscriber, just cast it:
+    const matchingSubscriber = this.subscribers.find(
+      sub => sub.userId === item.id
+    );
+
+    if (matchingSubscriber) {
+      this.selectedSubscriber = matchingSubscriber;
+    } else {
+      // fallback to item if item is basically the same data
+      // just ensure it has the same shape as Subscriber
+      this.selectedSubscriber = {
+        ...new Subscriber(),
+        id: item.identity,
+        userId: item.id,
+        name: item.name,
+        firstsurname: item.firstsurname || '',
+        middlesurname: item.middlesurname || '',
+        email: item.email || '',
+        companyName: item.companyName || '',
+        trainerAssigned: item.trainerassigned || '',
+        country: item.country || '',
+        FreeprofessionaltypeAcronym: item.FreeprofessionaltypeAcronym || '',
+        identificationfileid: item.identificationfileid || '',
+        civilliabilityinsurancefileid: item.civilliabilityinsurancefileid || '',
+        curriculumvitaefileid: item.curriculumvitaefileid || '',
+      };
+    }
+
+    this.showSubscriberInfo = true;
+  }
+
+  closeInfoModal() {
+    this.showSubscriberInfo = false;
+    this.selectedSubscriber = null;
   }
 }

@@ -42,14 +42,19 @@ export class UploadfileComponent {
   }
 
   onFileSelected(event: Event) {
+    
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
-      this.selectedFile = input.files[0]
-      this.fileName = input.files[0].name
+      
+      this.selectedFile = input.files[0];
+      this.fileName = input.files[0].name;
       this.formGroup.patchValue({
         [this.fieldName]: input.files[0].name
       });
+      
+      this.uploadSelectedFile();
     } else {
+      
       this.fileName = '';
     }
   }
@@ -65,30 +70,34 @@ export class UploadfileComponent {
 
   uploadSelectedFile() {
     if (this.selectedFile) {
+      
       this.backblazeService.authorizeAccount().subscribe(response => {
+        
         const apiUrl = response.apiUrl;
         const authorizationToken = response.authorizationToken;
 
         this.backblazeService.getUploadUrl(apiUrl, authorizationToken, this.bucketId).subscribe(uploadResponse => {
+          
           const uploadUrl = uploadResponse.uploadUrl;
           const uploadAuthToken = uploadResponse.authorizationToken;
 
           this.backblazeService.uploadFile(uploadUrl, uploadAuthToken, this.selectedFile.name, this.selectedFile).subscribe(uploadResult => {
-            const fileId = uploadResult.fileId
+            
+            const fileId = uploadResult.fileId;
 
             this.fileUploaded.emit({ typeFile: this.typeFile, fileId: fileId });
 
           }, error => {
-            console.error('Error al subir el archivo:', error);
+            
           });
         }, error => {
-          console.error('Error al obtener la URL de subida:', error);
+          
         });
       }, error => {
-        console.error('Error al autorizar la cuenta:', error);
+        
       });
     } else {
-      console.error('No se ha seleccionado un archivo');
+      
     }
   }
 

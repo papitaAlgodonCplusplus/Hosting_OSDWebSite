@@ -50,7 +50,9 @@ export class EventConstants {
   public static PASSWORD: string = "Password";
   public static EMAIL_VERIFICATION_CODE: string = "EmailVerificationCode";
   public static DEVICE_IDENTIFIER: string = "DeviceIdentifier";
-
+  public static DEVELOPER_CATEGORY: string = "developer_category";
+  public static DEVELOPER_MODULE: string = "developer_module";
+  public static DEVELOPER_ACTIVITY: string = "developer_activity";
   public static ACTION_REGISTER_SUCCESS: string = "ActionRegisterSuccess";
   public static ACTION_REGISTER_RESULT_MESSAGE: string = "ActionRegisterResultMessage";
 

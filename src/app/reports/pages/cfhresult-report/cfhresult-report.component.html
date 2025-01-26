@@ -7,7 +7,9 @@
     <thead>
       <tr>
         <th class="p-5 border text-yellow-500 font-normal">{{ 'exercise' | translate }} 2024</th>
-        <th class="p-5 border text-yellow-500 font-normal">{{ 'CFHIncomes' | translate }} (€)</th>
+        <th class="p-5 border text-yellow-500 font-normal">{{ 'cfhIncomes' | translate }} (€)</th>
+        <th class="p-5 border text-yellow-500 font-normal">{{ 'freeProfIncomes' | translate }} (€)</th>
+        <th class="p-5 border text-yellow-500 font-normal">{{ 'osdIncomes' | translate }} (€)</th>
         <th class="p-5 border text-yellow-500 font-normal">{{ 'numberOfStudents' | translate }}</th>
         <th class="p-5 border text-yellow-500 font-normal">{{ 'graduatedPassedStudents' | translate }}</th>
       </tr>
@@ -15,54 +17,123 @@
     <tbody>
       <!-- Formador/Consultor -->
       <tr (click)="toggleRow('formadorConsultor')" class="cursor-pointer">
-        <td colspan="5" class="p-5 border text-center font-medium text-darkslategray">
+        <td colspan="6" class="p-5 border text-center font-medium text-darkslategray">
           Formador/Consultor
           <span class="float-right">
-            <i
-              [class.fa-chevron-down]="expandedRow === 'formadorConsultor'"
-              [class.fa-chevron-right]="expandedRow !== 'formadorConsultor'"
-              class="fa"
-            ></i>
+            <i [class.fa-chevron-down]="expandedRow === 'formadorConsultor'"
+              [class.fa-chevron-right]="expandedRow !== 'formadorConsultor'" class="fa"></i>
           </span>
         </td>
       </tr>
       <tr *ngIf="expandedRow === 'formadorConsultor'">
-        <td class="p-5 border text-center font-medium text-darkslategray">Online</td>
-        <td class="p-5 border text-center">€{{ reports.formadorConsultor.online.cfhIngresos }}</td>
-        <td class="p-5 border text-center">{{ reports.formadorConsultor.online.alumnos }}</td>
-        <td class="p-5 border text-center">{{ reports.formadorConsultor.online.alumnosAprobados }}</td>
+        <!-- 1) Exercise: "Online" label -->
+        <td class="p-5 border text-center font-medium text-darkslategray">
+          Online
+        </td>
+
+        <!-- 2) CFH Incomes: 30% of cfhIngresos -->
+        <td class="p-5 border text-center">
+          €{{ (reports.formadorConsultor.online.cfhIngresos * 0.30) | number:'1.2-2' }}
+        </td>
+
+        <!-- 3) Free Professional Incomes: 40% -->
+        <td class="p-5 border text-center">
+          €{{ (reports.formadorConsultor.online.cfhIngresos * 0.40) | number:'1.2-2' }}
+        </td>
+
+        <!-- 4) OSD Incomes: 30% -->
+        <td class="p-5 border text-center">
+          €{{ (reports.formadorConsultor.online.cfhIngresos * 0.30) | number:'1.2-2' }}
+        </td>
+
+        <!-- 5) Number of Students -->
+        <td class="p-5 border text-center">
+          {{ reports.formadorConsultor.online.alumnos }}
+        </td>
+
+        <!-- 6) Graduated/Passed Students -->
+        <td class="p-5 border text-center">
+          {{ reports.formadorConsultor.online.alumnosAprobados }}
+        </td>
       </tr>
       <tr *ngIf="expandedRow === 'formadorConsultor'">
-        <td class="p-5 border text-center font-medium text-darkslategray">Presencial</td>
-        <td class="p-5 border text-center">€{{ reports.formadorConsultor.presencial.cfhIngresos }}</td>
-        <td class="p-5 border text-center">{{ reports.formadorConsultor.presencial.alumnos }}</td>
-        <td class="p-5 border text-center">{{ reports.formadorConsultor.presencial.alumnosAprobados }}</td>
+        <td class="p-5 border text-center font-medium text-darkslategray">
+          Presencial
+        </td>
+        <td class="p-5 border text-center">
+          €{{ (reports.formadorConsultor.presencial.cfhIngresos * 0.10) | number:'1.2-2' }}
+        </td>
+        <td class="p-5 border text-center">
+          €{{ (reports.formadorConsultor.presencial.cfhIngresos * 0.80) | number:'1.2-2' }}
+        </td>
+        <td class="p-5 border text-center">
+          €{{ (reports.formadorConsultor.presencial.cfhIngresos * 0.10) | number:'1.2-2' }}
+        </td>
+        <td class="p-5 border text-center">
+          {{ reports.formadorConsultor.presencial.alumnos }}
+        </td>
+        <td class="p-5 border text-center">
+          {{ reports.formadorConsultor.presencial.alumnosAprobados }}
+        </td>
       </tr>
 
       <!-- Tecnico OSD -->
       <tr (click)="toggleRow('tecnicoOSD')" class="cursor-pointer">
-        <td colspan="5" class="p-5 border text-center font-medium text-darkslategray">
+        <td colspan="6" class="p-5 border text-center font-medium text-darkslategray">
           Tecnico OSD
           <span class="float-right">
-            <i
-              [class.fa-chevron-down]="expandedRow === 'tecnicoOSD'"
-              [class.fa-chevron-right]="expandedRow !== 'tecnicoOSD'"
-              class="fa"
-            ></i>
+            <i [class.fa-chevron-down]="expandedRow === 'tecnicoOSD'"
+              [class.fa-chevron-right]="expandedRow !== 'tecnicoOSD'" class="fa"></i>
           </span>
         </td>
       </tr>
       <tr *ngIf="expandedRow === 'tecnicoOSD'">
         <td class="p-5 border text-center font-medium text-darkslategray">Online</td>
-        <td class="p-5 border text-center">€{{ reports.tecnicoOSD.online.cfhIngresos }}</td>
-        <td class="p-5 border text-center">{{ reports.tecnicoOSD.online.alumnos }}</td>
-        <td class="p-5 border text-center">{{ reports.tecnicoOSD.online.alumnosAprobados }}</td>
+
+        <!-- 2) CFH Incomes: 30% of cfhIngresos -->
+        <td class="p-5 border text-center">
+          €{{ (reports.tecnicoOSD.online.cfhIngresos * 0.30) | number:'1.2-2' }}
+        </td>
+
+        <!-- 3) Free Professional Incomes: 40% -->
+        <td class="p-5 border text-center">
+          €{{ (reports.tecnicoOSD.online.cfhIngresos * 0.40) | number:'1.2-2' }}
+        </td>
+
+        <!-- 4) OSD Incomes: 30% -->
+        <td class="p-5 border text-center">
+          €{{ (reports.tecnicoOSD.online.cfhIngresos * 0.30) | number:'1.2-2' }}
+        </td>
+
+        <!-- 5) Number of Students -->
+        <td class="p-5 border text-center">
+          {{ reports.tecnicoOSD.online.alumnos }}
+        </td>
+
+        <!-- 6) Graduated/Passed Students -->
+        <td class="p-5 border text-center">
+          {{ reports.tecnicoOSD.online.alumnosAprobados }}
+        </td>
       </tr>
       <tr *ngIf="expandedRow === 'tecnicoOSD'">
-        <td class="p-5 border text-center font-medium text-darkslategray">Presencial</td>
-        <td class="p-5 border text-center">€{{ reports.tecnicoOSD.presencial.cfhIngresos }}</td>
-        <td class="p-5 border text-center">{{ reports.tecnicoOSD.presencial.alumnos }}</td>
-        <td class="p-5 border text-center">{{ reports.tecnicoOSD.presencial.alumnosAprobados }}</td>
+        <td class="p-5 border text-center font-medium text-darkslategray">
+          Presencial
+        </td>
+        <td class="p-5 border text-center">
+          €{{ (reports.tecnicoOSD.presencial.cfhIngresos * 0.10) | number:'1.2-2' }}
+        </td>
+        <td class="p-5 border text-center">
+          €{{ (reports.tecnicoOSD.presencial.cfhIngresos * 0.80) | number:'1.2-2' }}
+        </td>
+        <td class="p-5 border text-center">
+          €{{ (reports.tecnicoOSD.presencial.cfhIngresos * 0.10) | number:'1.2-2' }}
+        </td>
+        <td class="p-5 border text-center">
+          {{ reports.tecnicoOSD.presencial.alumnos }}
+        </td>
+        <td class="p-5 border text-center">
+          {{ reports.tecnicoOSD.presencial.alumnosAprobados }}
+        </td>
       </tr>
     </tbody>
   </table>

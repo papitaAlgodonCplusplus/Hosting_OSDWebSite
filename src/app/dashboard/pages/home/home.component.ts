@@ -12,13 +12,82 @@ import { UserInfo } from 'src/app/models/userInfo';
 @Component({
   selector: 'dashboard-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css'],
+
+  /* 
+    We can embed our styles directly here instead of using separate .css files.
+    The key classes are:
+      .category-container -> 2 columns
+      .single-option -> 1 column, centered
+  */
+  styles: [`
+    /* Two-column layout for categories with multiple items */
+    .category-container {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* Single item, centered layout */
+    .single-option {
+      display: grid;
+      grid-template-columns: 1fr;
+      justify-items: center; /* horizontally center the item */
+      gap: 1.5rem;
+    }
+  `]
 })
 export class HomeComponent implements OnInit, OnDestroy {
   user!: UserInfo;
   showModal: boolean = false;
   message!: string;
   menuOptions: MenuOption[] = [];
+
+  // --------------------------------------------
+  // 1) Define your categories in a simple array
+  // --------------------------------------------
+  // Each category object has a 'title' and an array of 'optionNames' that
+  // belong to that category. The 'optionNames' must match what you have in
+  // your MenuOption model for 'option.name'.
+  categories = [
+    {
+      title: '1. GESTOR USUARIOS',
+      optionNames: [
+        'authorizeCustomers',
+        'Assign_client_to_Trainer',
+        'fp_management',
+        'edit_user_profile',
+      ]
+    },
+    {
+      title: '2. GESTOR EXPEDIENTES',
+      optionNames: [
+        'Assign_Processor_to_Claim',
+        'logs'
+      ]
+    },
+    {
+      title: '3. GESTOR FORMACION OSD',
+      optionNames: [
+        'administer_users'
+      ]
+    },
+    {
+      title: '4. GESTOR ECONOMICO',
+      optionNames: [
+        'accounting_services',
+        'accounting'
+      ]
+    },
+    {
+      title: '5. GETP -GESTOR ETICO y TRANSPARENTE de PROYECTO-',
+      optionNames: [
+        'assignarProyectoAFC',
+        'gestorPersonasPL',
+        'gestorProveedoresBS',
+        'transparent_project'
+      ]
+    }
+  ];
 
   constructor(
     private authenticationService: AuthenticationService,
@@ -102,18 +171,27 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private setUnauthorizedMessage(): void {
     this.translate.get(this.user.AccountType).subscribe((translatedValue: string) => {
-      const messageKey = this.translate.currentLang === 'en' 
-        ? 'Your account has been successfully created, but has not yet been authorized. Once approved, you will receive your ' 
-        : 'Tu cuenta ha sido creada con éxito, pero aún no ha sido autorizada. Una vez aprobada, recibirás tu código de ';
+      const messageKey =
+        this.translate.currentLang === 'en'
+          ? 'Your account has been successfully created, but has not yet been authorized. Once approved, you will receive your '
+          : 'Tu cuenta ha sido creada con éxito, pero aún no ha sido autorizada. Una vez aprobada, recibirás tu código de ';
+
       this.message = `${messageKey}${translatedValue} code`;
     });
   }
 
+  // ----------------------------------------------------------------
+  // 2) Helper function to filter menuOptions by category array
+  // ----------------------------------------------------------------
+  // We pass in an array of "optionNames" and return the actual matching
+  // MenuOptions from this.menuOptions
+  getOptionsForCategory(optionNames: string[]): MenuOption[] {
+    return this.menuOptions.filter((option) => optionNames.includes(option.name));
+  }
+
   ngOnDestroy(): void {
     setTimeout(() => {
-      this.store.dispatch(
-        MenuOptionsActions.setMenuOptions({ menuOptions: [] })
-      );
+      this.store.dispatch(MenuOptionsActions.setMenuOptions({ menuOptions: [] }));
     }, 0);
   }
 }

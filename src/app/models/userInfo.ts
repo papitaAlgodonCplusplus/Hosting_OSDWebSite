@@ -24,4 +24,5 @@ export interface UserInfo {
   companyName: string;
   Country: string;
   country: string;
+  FreeProfessionalTypeID: string;
 }
