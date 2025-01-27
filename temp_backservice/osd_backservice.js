@@ -2600,13 +2600,15 @@ const handleUserRegistration = async (event, res) => {
 
     // Check required fields
     if (!personalForm?.email || !personalForm?.password) {
+      console.error("❌ Missing email or password.");
       return res.status(400).json({
         success: false,
         message: 'Email and password are required for registration.'
       });
     }
 
-    // See if user exists by email
+    // Check if user exists by email
+    console.log(`📩 Checking if user exists with email: ${personalForm.email}`);
     const userExists = await pool.query(
       'SELECT * FROM osduser WHERE email = $1',
       [personalForm.email]
@@ -2617,13 +2619,17 @@ const handleUserRegistration = async (event, res) => {
     // If user does not exist, create it
     if (userExists.rows.length === 0) {
       userId = uuidv4();
+      console.log(`🆕 Creating new user with ID: ${userId}`);
 
+      // Fetch account type ID
+      console.log(`📂 Fetching account type for: ${event.Body?.AccountType}`);
       const accountTypeResult = await pool.query(
         'SELECT id FROM accounttype WHERE type = $1',
         [event.Body?.AccountType]
       );
 
       if (accountTypeResult.rows.length === 0) {
+        console.error(`❌ Unknown account type: ${event.Body?.AccountType}`);
         return res.status(400).json({
           success: false,
           message: `Unknown account type: ${event.Body?.AccountType}`
@@ -2632,14 +2638,15 @@ const handleUserRegistration = async (event, res) => {
 
       const accountTypeId = accountTypeResult.rows[0].id;
 
-      // Count rows in osduser with the same accountTypeId
+      // Count rows for generating code
+      console.log(`📊 Counting users with account type ID: ${accountTypeId}`);
       const countResult = await pool.query(
         'SELECT COUNT(*) AS count FROM osduser WHERE accounttype = $1',
         [accountTypeId]
       );
       const rowCount = parseInt(countResult.rows[0].count) + 1;
 
-      // Generate code based on accountTypeId
+      // Generate code based on account type
       let codePrefix;
       switch (accountTypeId) {
         case '063e12fa-33db-47f3-ac96-a5bdb08ede61':
@@ -2658,17 +2665,33 @@ const handleUserRegistration = async (event, res) => {
           codePrefix = `${personalForm.country}/IT/${rowCount}/2025`;
       }
 
+      // Handle referral ID
       let referId = null;
       if (accountForm.emailOfRefer) {
+        console.log(`📩 Checking referral email: ${accountForm.emailOfRefer}`);
         const referResult = await pool.query(
           'SELECT id FROM osduser WHERE email = $1',
           [accountForm.emailOfRefer]
         );
         if (referResult.rows.length > 0) {
           referId = referResult.rows[0].id;
+          console.log(`✅ Found referral ID: ${referId}`);
+        } else {
+          console.warn(`⚠️ Referral email not found: ${accountForm.emailOfRefer}`);
         }
       }
 
+      // Validate referId is a valid UUID or null
+      if (referId && !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(referId)) {
+        console.error(`❌ Invalid referral ID format: ${referId}`);
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid referral ID format.'
+        });
+      }
+
+      // Insert new user into osduser
+      console.log(`📝 Inserting new user into osduser table.`);
       const insertOsdUserQuery = `
         INSERT INTO osduser (
           id, code, accounttype, identity, name, firstsurname, middlesurname, city,
@@ -2702,50 +2725,19 @@ const handleUserRegistration = async (event, res) => {
         false,
         false,
         accountForm.cfhOffer,
-        referId
+        referId || null
       ]);
 
       userId = osdUserResult.rows[0].id;
+      console.log(`✅ User created with ID: ${userId}`);
     } else {
       userId = userExists.rows[0].id;
+      console.log(`🔄 User already exists with ID: ${userId}`);
     }
 
-
-    const accountTypeId = accountForm.accountType || personalForm.accountType;
-
-    if (accountTypeId === '8e539a42-4108-4be6-8f77-2d16671d1069') {
-      const coursesResult = await pool.query('SELECT * FROM courses');
-      const insertedCourseIds = new Set();
-      for (const course of coursesResult.rows) {
-        const newCourseId = uuidv4();
-
-        if (insertedCourseIds.has(newCourseId)) {
-          console.error(`❌ Duplicate newCourseId detected: ${newCourseId}. Stopping the insertion process.`);
-          break;
-        }
-
-        const newTitle = `${course.title} (${personalForm.companyName})`;
-
-        await pool.query(
-          `INSERT INTO courses (
-        id, osduser_id, title, cost, mode
-        ) VALUES (
-        $1, $2, $3, $4, $5F
-        )`,
-          [
-            newCourseId,
-            userId,
-            newTitle,
-            course.cost,
-            course.mode
-          ]
-        );
-        insertedCourseIds.add(newCourseId);
-      }
-    }
-
-    // Insert into freeprofessional if account type is 'FreeProfessional'
+    // Handle specific account types (e.g., courses or freeprofessional)
     if (event.Body?.AccountType === 'FreeProfessional') {
+      console.log(`🛠️ Inserting into freeprofessional table for FreeProfessional account.`);
       const insertFreeProfessionalQuery = `
         INSERT INTO freeprofessional (
           id, userid, freeprofessionaltypeid, identificationfileid,
@@ -2755,7 +2747,7 @@ const handleUserRegistration = async (event, res) => {
         ) VALUES (
           $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12
         )
-        RETURNING id, userid, freeprofessionaltypeid, course_id;
+        RETURNING id;
       `;
 
       await pool.query(insertFreeProfessionalQuery, [
@@ -2773,53 +2765,27 @@ const handleUserRegistration = async (event, res) => {
         accountForm.course || null
       ]);
 
-
-      // Insert into student_records if courseCheckbox is checked
-      if (accountForm.courseCheckbox === true && accountForm.course) {
-        const insertStudentRecordQuery = `
-          INSERT INTO student_records (
-            id, name, email, phone, address, city, state, zip, country, status,
-            type, notes, date, user_id, course_id
-          ) VALUES (
-            $1, $2, $3, $4, $5, $6, $7, $8, $9, 'Pending',
-            'Regular', '', CURRENT_TIMESTAMP, $10, $11
-          );
-        `;
-
-
-        await pool.query(insertStudentRecordQuery, [
-          uuidv4(),
-          personalForm.name,
-          personalForm.email,
-          personalForm.mobilePhone,
-          personalForm.address,
-          personalForm.city,
-          '', // State
-          personalForm.zipCode,
-          personalForm.country,
-          userId,
-          accountForm.course
-        ]);
-      }
-
-      return res.json({
-        success: true,
-        message: 'Your account has been created successfully!'
-      });
+      console.log(`✅ FreeProfessional record created for user ID: ${userId}`);
     }
-    
-    } catch (error) {
-      console.error(`❌ Error processing action 'RegisterCustomer':`, error);
-      return res.status(500).json({
-        success: false,
-        message: `Internal server error: ${error.message}`
-      });
-    }
-  };
 
-  async function handleGetFreeProfessionals(event, res) {
-    try {
-      const result = await pool.query(`
+    // Return success response
+    return res.json({
+      success: true,
+      message: 'Your account has been created successfully!'
+    });
+
+  } catch (error) {
+    console.error(`❌ Error processing user registration:`, error);
+    return res.status(500).json({
+      success: false,
+      message: `Internal server error: ${error.message}`
+    });
+  }
+};
+
+async function handleGetFreeProfessionals(event, res) {
+  try {
+    const result = await pool.query(`
       SELECT
         fp.id,
         fp.userid,
@@ -2841,60 +2807,60 @@ const handleUserRegistration = async (event, res) => {
       LEFT JOIN osduser u ON fp.userid = u.id
     `);
 
-      return res.json(
-        createWebBaseEvent(
-          {
-            GET_FREE_PROFESSIONALS_SUCCESS: true,
-            ListFreeProfessionals: result.rows,
-          },
-          event.SessionKey,
-          event.SecurityToken,
-          'GetFreeProfessionals'
-        )
-      );
-    } catch (error) {
-      console.error('Error in handleGetFreeProfessionals:', error);
-      return res.status(500).json(
-        createWebBaseEvent(
-          {
-            GET_FREE_PROFESSIONALS_SUCCESS: false,
-            GET_FREE_PROFESSIONALS_MESSAGE: 'Server error.',
-          },
-          event.SessionKey,
-          event.SecurityToken,
-          'GetFreeProfessionals'
-        )
-      );
-    }
+    return res.json(
+      createWebBaseEvent(
+        {
+          GET_FREE_PROFESSIONALS_SUCCESS: true,
+          ListFreeProfessionals: result.rows,
+        },
+        event.SessionKey,
+        event.SecurityToken,
+        'GetFreeProfessionals'
+      )
+    );
+  } catch (error) {
+    console.error('Error in handleGetFreeProfessionals:', error);
+    return res.status(500).json(
+      createWebBaseEvent(
+        {
+          GET_FREE_PROFESSIONALS_SUCCESS: false,
+          GET_FREE_PROFESSIONALS_MESSAGE: 'Server error.',
+        },
+        event.SessionKey,
+        event.SecurityToken,
+        'GetFreeProfessionals'
+      )
+    );
   }
+}
 
-  const handleGetCourseByUserId = async (event, res) => {
-    try {
-      const userId = event.Body?.UserId;
+const handleGetCourseByUserId = async (event, res) => {
+  try {
+    const userId = event.Body?.UserId;
 
-      if (!userId) {
-        return res.status(400).json(createWebBaseEvent({
-          GET_COURSE_BY_USERID_SUCCESS: false,
-          GET_COURSE_BY_USERID_MESSAGE: 'User ID is required.',
-        }, event.SessionKey, event.SecurityToken, 'GetCourseByUserId'));
-      }
+    if (!userId) {
+      return res.status(400).json(createWebBaseEvent({
+        GET_COURSE_BY_USERID_SUCCESS: false,
+        GET_COURSE_BY_USERID_MESSAGE: 'User ID is required.',
+      }, event.SessionKey, event.SecurityToken, 'GetCourseByUserId'));
+    }
 
 
-      let courseQuery;
-      let queryParams;
+    let courseQuery;
+    let queryParams;
 
-      // Check if the user ID matches the special case
-      if (userId === 'e77b5172-f726-4c1d-9f9e-d2dbd77e03c9') {
+    // Check if the user ID matches the special case
+    if (userId === 'e77b5172-f726-4c1d-9f9e-d2dbd77e03c9') {
 
-        // Query to fetch all courses
-        courseQuery = `
+      // Query to fetch all courses
+      courseQuery = `
         SELECT id, osduser_id, title, cost, mode
         FROM courses
       `;
-        queryParams = [];
-      } else {
-        // Query to fetch courses for a specific professor
-        const professorCoursesQuery = `
+      queryParams = [];
+    } else {
+      // Query to fetch courses for a specific professor
+      const professorCoursesQuery = `
         SELECT course_id
         FROM professores
         WHERE professor_id = $1
@@ -2904,102 +2870,102 @@ const handleUserRegistration = async (event, res) => {
         WHERE osduser_id = $1
       `;
 
-        const professorCoursesResult = await pool.query(professorCoursesQuery, [userId]);
-        if (professorCoursesResult.rows.length === 0) {
-          return res.status(404).json(createWebBaseEvent({
-            GET_COURSE_BY_USERID_SUCCESS: false,
-            GET_COURSE_BY_USERID_MESSAGE: 'No courses found for this professor.',
-          }, event.SessionKey, event.SecurityToken, 'GetCourseByUserId'));
-        }
+      const professorCoursesResult = await pool.query(professorCoursesQuery, [userId]);
+      if (professorCoursesResult.rows.length === 0) {
+        return res.status(404).json(createWebBaseEvent({
+          GET_COURSE_BY_USERID_SUCCESS: false,
+          GET_COURSE_BY_USERID_MESSAGE: 'No courses found for this professor.',
+        }, event.SessionKey, event.SecurityToken, 'GetCourseByUserId'));
+      }
 
-        const courseIds = professorCoursesResult.rows.map(row => row.course_id);
+      const courseIds = professorCoursesResult.rows.map(row => row.course_id);
 
-        // Ensure courseIds are UUID strings and properly formatted
-        const formattedCourseIds = courseIds.map(id => id.trim());
+      // Ensure courseIds are UUID strings and properly formatted
+      const formattedCourseIds = courseIds.map(id => id.trim());
 
 
-        if (formattedCourseIds.length === 0) {
-          return res.status(404).json(createWebBaseEvent({
-            GET_COURSE_BY_USERID_SUCCESS: false,
-            GET_COURSE_BY_USERID_MESSAGE: 'No valid course IDs found for this professor.',
-          }, event.SessionKey, event.SecurityToken, 'GetCourseByUserId'));
-        }
+      if (formattedCourseIds.length === 0) {
+        return res.status(404).json(createWebBaseEvent({
+          GET_COURSE_BY_USERID_SUCCESS: false,
+          GET_COURSE_BY_USERID_MESSAGE: 'No valid course IDs found for this professor.',
+        }, event.SessionKey, event.SecurityToken, 'GetCourseByUserId'));
+      }
 
-        courseQuery = `
+      courseQuery = `
         SELECT id, osduser_id, title, cost, mode
         FROM courses
         WHERE id = ANY($1::uuid[])
       `;
-        queryParams = [formattedCourseIds];
-      }
+      queryParams = [formattedCourseIds];
+    }
 
-      const courseResult = await pool.query(courseQuery, queryParams);
+    const courseResult = await pool.query(courseQuery, queryParams);
 
-      if (courseResult.rows.length === 0) {
-        return res.status(404).json(createWebBaseEvent({
-          GET_COURSE_BY_USERID_SUCCESS: false,
-          GET_COURSE_BY_USERID_MESSAGE: 'No course details found.',
-        }, event.SessionKey, event.SecurityToken, 'GetCourseByUserId'));
-      }
-
-
-      return res.status(200).json(createWebBaseEvent({
-        GET_COURSE_BY_USERID_SUCCESS: true,
-        courses: courseResult.rows
-      }, event.SessionKey, event.SecurityToken, 'GetCourseByUserId'));
-
-    } catch (error) {
-      console.error('❌ Error fetching course by user ID:', error);
-
-      return res.status(500).json(createWebBaseEvent({
+    if (courseResult.rows.length === 0) {
+      return res.status(404).json(createWebBaseEvent({
         GET_COURSE_BY_USERID_SUCCESS: false,
-        GET_COURSE_BY_USERID_MESSAGE: 'Server error fetching course by user ID.',
+        GET_COURSE_BY_USERID_MESSAGE: 'No course details found.',
       }, event.SessionKey, event.SecurityToken, 'GetCourseByUserId'));
     }
-  };
 
-  const handleGetUsers = async (event, res) => {
-    try {
-      const result = await pool.query('SELECT * FROM osduser');
-      res.status(200).json(createWebBaseEvent({
-        GET_USERS_SUCCESS: true,
-        users: result.rows
-      }, event.SessionKey, event.SecurityToken, 'GetUsers'));
-    } catch (error) {
-      console.error('❌ Error fetching users:', error);
-      res.status(500).json(createWebBaseEvent({
-        GET_USERS_SUCCESS: false,
-        GET_USERS_MESSAGE: 'Server error fetching users.',
-      }, event.SessionKey, event.SecurityToken, 'GetUsers'));
-    }
-  };
 
-  const handleCreatePerformanceBuy = async (event, res) => {
-    try {
-      const performanceBuyEvent = event.Body;
-      const performanceBuy = {
-        Id: uuidv4(),
-        Projectmanagerid: performanceBuyEvent.ProjectManagerId,
-        Summarytypeid: performanceBuyEvent.SummaryId,
-        Freeprofessionalid: performanceBuyEvent.FreeProfessionalAssignedId,
-        Date: performanceBuyEvent.Date,
-        ProductserviceId: performanceBuyEvent.ProductServiceId,
-        MinimumUnits: performanceBuyEvent.MinimumUnits,
-        MaximumUnits: performanceBuyEvent.MaximumUnits,
-        UnitaryCost: performanceBuyEvent.UnitaryCost,
-        ShelfLife: performanceBuyEvent.ShelfLife,
-        JustifyingDocument: performanceBuyEvent.JustifyingDocument,
-        JustifyingDocumentBytes: performanceBuyEvent.JustifyingDocumentBytes ? Buffer.from(performanceBuyEvent.JustifyingDocumentBytes, 'base64') : null
-      };
+    return res.status(200).json(createWebBaseEvent({
+      GET_COURSE_BY_USERID_SUCCESS: true,
+      courses: courseResult.rows
+    }, event.SessionKey, event.SecurityToken, 'GetCourseByUserId'));
 
-      const performanceBuyCountQuery = await pool.query(
-        'SELECT COUNT(*) FROM performance_buy WHERE projectmanagerid = $1',
-        [performanceBuyEvent.ProjectManagerId]
-      );
+  } catch (error) {
+    console.error('❌ Error fetching course by user ID:', error);
 
-      const performanceBuyCount = parseInt(performanceBuyCountQuery.rows[0].count, 10);
-      performanceBuy.Code = `BUY/${performanceBuyCount + 1}/${new Date().getFullYear()}`;
-      const insertQuery = `
+    return res.status(500).json(createWebBaseEvent({
+      GET_COURSE_BY_USERID_SUCCESS: false,
+      GET_COURSE_BY_USERID_MESSAGE: 'Server error fetching course by user ID.',
+    }, event.SessionKey, event.SecurityToken, 'GetCourseByUserId'));
+  }
+};
+
+const handleGetUsers = async (event, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM osduser');
+    res.status(200).json(createWebBaseEvent({
+      GET_USERS_SUCCESS: true,
+      users: result.rows
+    }, event.SessionKey, event.SecurityToken, 'GetUsers'));
+  } catch (error) {
+    console.error('❌ Error fetching users:', error);
+    res.status(500).json(createWebBaseEvent({
+      GET_USERS_SUCCESS: false,
+      GET_USERS_MESSAGE: 'Server error fetching users.',
+    }, event.SessionKey, event.SecurityToken, 'GetUsers'));
+  }
+};
+
+const handleCreatePerformanceBuy = async (event, res) => {
+  try {
+    const performanceBuyEvent = event.Body;
+    const performanceBuy = {
+      Id: uuidv4(),
+      Projectmanagerid: performanceBuyEvent.ProjectManagerId,
+      Summarytypeid: performanceBuyEvent.SummaryId,
+      Freeprofessionalid: performanceBuyEvent.FreeProfessionalAssignedId,
+      Date: performanceBuyEvent.Date,
+      ProductserviceId: performanceBuyEvent.ProductServiceId,
+      MinimumUnits: performanceBuyEvent.MinimumUnits,
+      MaximumUnits: performanceBuyEvent.MaximumUnits,
+      UnitaryCost: performanceBuyEvent.UnitaryCost,
+      ShelfLife: performanceBuyEvent.ShelfLife,
+      JustifyingDocument: performanceBuyEvent.JustifyingDocument,
+      JustifyingDocumentBytes: performanceBuyEvent.JustifyingDocumentBytes ? Buffer.from(performanceBuyEvent.JustifyingDocumentBytes, 'base64') : null
+    };
+
+    const performanceBuyCountQuery = await pool.query(
+      'SELECT COUNT(*) FROM performance_buy WHERE projectmanagerid = $1',
+      [performanceBuyEvent.ProjectManagerId]
+    );
+
+    const performanceBuyCount = parseInt(performanceBuyCountQuery.rows[0].count, 10);
+    performanceBuy.Code = `BUY/${performanceBuyCount + 1}/${new Date().getFullYear()}`;
+    const insertQuery = `
       INSERT INTO performance_buy (
         id, code, projectmanagerid, summarytypeid, freeprofessionalid, date, productservice_id,
         minimumunits, maximumunits, unitarycost, shelflife, justifying_document, justifying_document_bytes
@@ -3008,52 +2974,52 @@ const handleUserRegistration = async (event, res) => {
       )
     `;
 
-      await pool.query(insertQuery, [
-        performanceBuy.Id,
-        performanceBuy.Code,
-        performanceBuy.Projectmanagerid,
-        performanceBuy.Summarytypeid,
-        performanceBuy.Freeprofessionalid,
-        performanceBuy.Date,
-        uuidv4(),
-        performanceBuy.MinimumUnits,
-        performanceBuy.MaximumUnits,
-        performanceBuy.UnitaryCost,
-        performanceBuy.ShelfLife,
-        performanceBuy.JustifyingDocument,
-        performanceBuy.JustifyingDocumentBytes
-      ]);
+    await pool.query(insertQuery, [
+      performanceBuy.Id,
+      performanceBuy.Code,
+      performanceBuy.Projectmanagerid,
+      performanceBuy.Summarytypeid,
+      performanceBuy.Freeprofessionalid,
+      performanceBuy.Date,
+      uuidv4(),
+      performanceBuy.MinimumUnits,
+      performanceBuy.MaximumUnits,
+      performanceBuy.UnitaryCost,
+      performanceBuy.ShelfLife,
+      performanceBuy.JustifyingDocument,
+      performanceBuy.JustifyingDocumentBytes
+    ]);
 
-      res.status(200).json(createWebBaseEvent({
-        ADD_PERFORMANCE_BUY_SUCCESS: true,
-        ADD_PERFORMANCE_BUY_MESSAGE: 'Performance buy was successfully created.',
-      }, event.SessionKey, event.SecurityToken, 'CreatePerformanceBuy'));
+    res.status(200).json(createWebBaseEvent({
+      ADD_PERFORMANCE_BUY_SUCCESS: true,
+      ADD_PERFORMANCE_BUY_MESSAGE: 'Performance buy was successfully created.',
+    }, event.SessionKey, event.SecurityToken, 'CreatePerformanceBuy'));
 
-    } catch (error) {
-      console.error('❌ Error creating performance buy:', error);
-      res.status(500).json(createWebBaseEvent({
-        ADD_PERFORMANCE_BUY_SUCCESS: false,
-        ADD_PERFORMANCE_BUY_MESSAGE: 'Server error creating performance buy.',
-      }, event.SessionKey, event.SecurityToken, 'CreatePerformanceBuy'));
-    }
-  };
+  } catch (error) {
+    console.error('❌ Error creating performance buy:', error);
+    res.status(500).json(createWebBaseEvent({
+      ADD_PERFORMANCE_BUY_SUCCESS: false,
+      ADD_PERFORMANCE_BUY_MESSAGE: 'Server error creating performance buy.',
+    }, event.SessionKey, event.SecurityToken, 'CreatePerformanceBuy'));
+  }
+};
 
-  const handleCreateProject = async (event, res) => {
-    try {
-      const createProjectEvent = event.Body;
-      const projectmanager = {
-        Id: uuidv4(),
-        Objective: createProjectEvent.Objective,
-        ExpectedHours: parseFloat(createProjectEvent.ExpectedHours),
-        EconomicBudget: parseFloat(createProjectEvent.EconomicBudget),
-        Startdate: new Date(createProjectEvent.StartDate),
-        Enddate: createProjectEvent.EndDate ? new Date(createProjectEvent.EndDate) : null,
-        ExpensesEmployeesVolunteers: parseFloat(createProjectEvent.ExpensesEmployeesVolunteers) || 0,
-        SupplierExpensesPurchases: parseFloat(createProjectEvent.SupplierExpensesPurchases) || 0,
-        HoursExecuted: parseFloat(createProjectEvent.HoursExecuted) || 0
-      };
+const handleCreateProject = async (event, res) => {
+  try {
+    const createProjectEvent = event.Body;
+    const projectmanager = {
+      Id: uuidv4(),
+      Objective: createProjectEvent.Objective,
+      ExpectedHours: parseFloat(createProjectEvent.ExpectedHours),
+      EconomicBudget: parseFloat(createProjectEvent.EconomicBudget),
+      Startdate: new Date(createProjectEvent.StartDate),
+      Enddate: createProjectEvent.EndDate ? new Date(createProjectEvent.EndDate) : null,
+      ExpensesEmployeesVolunteers: parseFloat(createProjectEvent.ExpensesEmployeesVolunteers) || 0,
+      SupplierExpensesPurchases: parseFloat(createProjectEvent.SupplierExpensesPurchases) || 0,
+      HoursExecuted: parseFloat(createProjectEvent.HoursExecuted) || 0
+    };
 
-      const insertQuery = `
+    const insertQuery = `
       INSERT INTO projectmanager (
         id, objective, expected_hours, economic_budget, startdate, enddate, 
         expensesemployeesvolunteers, supplierexpensespurchases, hours_executed
@@ -3062,143 +3028,143 @@ const handleUserRegistration = async (event, res) => {
       )
     `;
 
-      await pool.query(insertQuery, [
-        projectmanager.Id,
-        projectmanager.Objective,
-        projectmanager.ExpectedHours,
-        projectmanager.EconomicBudget,
-        projectmanager.Startdate,
-        projectmanager.Enddate,
-        projectmanager.ExpensesEmployeesVolunteers,
-        projectmanager.SupplierExpensesPurchases,
-        projectmanager.HoursExecuted
-      ]);
+    await pool.query(insertQuery, [
+      projectmanager.Id,
+      projectmanager.Objective,
+      projectmanager.ExpectedHours,
+      projectmanager.EconomicBudget,
+      projectmanager.Startdate,
+      projectmanager.Enddate,
+      projectmanager.ExpensesEmployeesVolunteers,
+      projectmanager.SupplierExpensesPurchases,
+      projectmanager.HoursExecuted
+    ]);
 
-      res.status(200).json(createWebBaseEvent({
-        CREATE_PROJECT_SUCCESS: true,
-        CREATE_PROJECT_MESSAGE: 'Project created successfully.',
-        project: projectmanager
-      }, event.SessionKey, event.SecurityToken, 'CreateProject'));
+    res.status(200).json(createWebBaseEvent({
+      CREATE_PROJECT_SUCCESS: true,
+      CREATE_PROJECT_MESSAGE: 'Project created successfully.',
+      project: projectmanager
+    }, event.SessionKey, event.SecurityToken, 'CreateProject'));
 
-    } catch (error) {
-      console.error('❌ Error creating project:', error);
-      res.status(500).json(createWebBaseEvent({
-        CREATE_PROJECT_SUCCESS: false,
-        CREATE_PROJECT_MESSAGE: 'Server error creating project.',
-      }, event.SessionKey, event.SecurityToken, 'CreateProject'));
-    }
-  };
+  } catch (error) {
+    console.error('❌ Error creating project:', error);
+    res.status(500).json(createWebBaseEvent({
+      CREATE_PROJECT_SUCCESS: false,
+      CREATE_PROJECT_MESSAGE: 'Server error creating project.',
+    }, event.SessionKey, event.SecurityToken, 'CreateProject'));
+  }
+};
 
-  const handleAddSummaryType = async (event, res) => {
-    try {
-      const addSummaryTypeEvent = event.Body;
-      if (addSummaryTypeEvent.SummaryType === "PerformanceBuy") {
-        const summaryTypeBuy = {
-          Id: uuidv4(),
-          Summary: addSummaryTypeEvent.SummaryName
-        };
-        await pool.query(
-          `INSERT INTO summarytypeperformancebuy (id, summary) VALUES ($1, $2)`,
-          [summaryTypeBuy.Id, summaryTypeBuy.Summary]
-        );
-      } else if (addSummaryTypeEvent.SummaryType === "PerformanceFP") {
-        const summaryTypeFP = {
-          Id: uuidv4(),
-          Summary: addSummaryTypeEvent.SummaryName
-        };
-        await pool.query(
-          `INSERT INTO summarytypeperformancefreeprofessional (id, summary) VALUES ($1, $2)`,
-          [summaryTypeFP.Id, summaryTypeFP.Summary]
-        );
-      }
-
-      res.status(200).json(createWebBaseEvent({
-        ADD_SUMMARY_TYPE_SUCCESS: true,
-        ADD_SUMMARY_TYPE_MESSAGE: 'The summary was successfully added.'
-      }, event.SessionKey, event.SecurityToken, 'AddSummaryType'));
-
-    } catch (error) {
-      console.error('❌ Error adding summary type:', error);
-      res.status(500).json(createWebBaseEvent({
-        ADD_SUMMARY_TYPE_SUCCESS: false,
-        ADD_SUMMARY_TYPE_MESSAGE: 'Server error adding summary type.'
-      }, event.SessionKey, event.SecurityToken, 'AddSummaryType'));
-    }
-  };
-
-  const handleAddPerformanceFreeProfessional = async (event, res) => {
-    try {
-
-
-      const addPerformancFPEvent = event.Body;
-
-      // 1) Prepare the data, set optional fields to null if not provided
-      const performanceFreeprofessional = {
+const handleAddSummaryType = async (event, res) => {
+  try {
+    const addSummaryTypeEvent = event.Body;
+    if (addSummaryTypeEvent.SummaryType === "PerformanceBuy") {
+      const summaryTypeBuy = {
         Id: uuidv4(),
-        Projectmanagerid: addPerformancFPEvent.ProjectManagerId,
-        Summarytypeid: addPerformancFPEvent.SummaryId,
-        StartDate: addPerformancFPEvent.StartDate,
-        EndDate: addPerformancFPEvent.EndDate,
-        JustifyingDocument: addPerformancFPEvent.JustifyingDocument,
-        JustifyingDocumentBytes: addPerformancFPEvent.JustifyingDocumentBytes
-          ? Buffer.from(addPerformancFPEvent.JustifyingDocumentBytes, 'base64')
-          : null,
-        Freeprofessionalcreatedperformanceid: null,
-        Freeprofessionalassignedid: addPerformancFPEvent.FreeProfessionalAssignedId,
-        EstimatedTransportExpenses: parseFloat(addPerformancFPEvent.ForecastTravelExpenses),
-        EstimatedTransportHours: addPerformancFPEvent.ForecastTravelTime,
-        EstimatedWorkHours: addPerformancFPEvent.ForecastWorkHours,
-        TotalForecastData: parseFloat(addPerformancFPEvent.TotalForecastData),
-
-        // 2) NEW FIELDS: fallback to null if not provided
-        developer_category: addPerformancFPEvent.developer_category || null,
-        developer_module: addPerformancFPEvent.developer_module || null,
-        developer_activity: addPerformancFPEvent.developer_activity || null
+        Summary: addSummaryTypeEvent.SummaryName
       };
-
-
-
-      // 3) Ensure freeprofessional row actually exists
-      const freeProfessionalQuery = await pool.query(
-        'SELECT id FROM freeprofessional WHERE userid = $1 OR id = $1',
-        [addPerformancFPEvent.FreeProfessionalAssignedId]
+      await pool.query(
+        `INSERT INTO summarytypeperformancebuy (id, summary) VALUES ($1, $2)`,
+        [summaryTypeBuy.Id, summaryTypeBuy.Summary]
       );
-
-      if (freeProfessionalQuery.rows.length === 0) {
-        console.warn(
-          '⚠️ Free professional not found for user ID:',
-          addPerformancFPEvent.FreeProfessionalAssignedId
-        );
-        return res.status(404).json(
-          createWebBaseEvent({
-            ADD_PERFORMANCE_FREE_PROFESSIONAL_SUCCESS: false,
-            ADD_PERFORMANCE_FREE_PROFESSIONAL_MESSAGE: 'Free professional not found.',
-          }, event.SessionKey, event.SecurityToken, 'AddPerformanceFreeProfessional')
-        );
-      }
-
-      performanceFreeprofessional.Freeprofessionalcreatedperformanceid = freeProfessionalQuery.rows[0].id;
-
-
-
-      // 4) Generate unique code
-      const performanceFreeProfessionalCountQuery = await pool.query(
-        'SELECT COUNT(*) FROM performance_freeprofessional WHERE projectmanagerid = $1',
-        [addPerformancFPEvent.ProjectManagerId]
+    } else if (addSummaryTypeEvent.SummaryType === "PerformanceFP") {
+      const summaryTypeFP = {
+        Id: uuidv4(),
+        Summary: addSummaryTypeEvent.SummaryName
+      };
+      await pool.query(
+        `INSERT INTO summarytypeperformancefreeprofessional (id, summary) VALUES ($1, $2)`,
+        [summaryTypeFP.Id, summaryTypeFP.Summary]
       );
-      const performanceBuyCountQuery = await pool.query(
-        'SELECT COUNT(*) FROM performance_buy WHERE projectmanagerid = $1',
-        [addPerformancFPEvent.ProjectManagerId]
+    }
+
+    res.status(200).json(createWebBaseEvent({
+      ADD_SUMMARY_TYPE_SUCCESS: true,
+      ADD_SUMMARY_TYPE_MESSAGE: 'The summary was successfully added.'
+    }, event.SessionKey, event.SecurityToken, 'AddSummaryType'));
+
+  } catch (error) {
+    console.error('❌ Error adding summary type:', error);
+    res.status(500).json(createWebBaseEvent({
+      ADD_SUMMARY_TYPE_SUCCESS: false,
+      ADD_SUMMARY_TYPE_MESSAGE: 'Server error adding summary type.'
+    }, event.SessionKey, event.SecurityToken, 'AddSummaryType'));
+  }
+};
+
+const handleAddPerformanceFreeProfessional = async (event, res) => {
+  try {
+
+
+    const addPerformancFPEvent = event.Body;
+
+    // 1) Prepare the data, set optional fields to null if not provided
+    const performanceFreeprofessional = {
+      Id: uuidv4(),
+      Projectmanagerid: addPerformancFPEvent.ProjectManagerId,
+      Summarytypeid: addPerformancFPEvent.SummaryId,
+      StartDate: addPerformancFPEvent.StartDate,
+      EndDate: addPerformancFPEvent.EndDate,
+      JustifyingDocument: addPerformancFPEvent.JustifyingDocument,
+      JustifyingDocumentBytes: addPerformancFPEvent.JustifyingDocumentBytes
+        ? Buffer.from(addPerformancFPEvent.JustifyingDocumentBytes, 'base64')
+        : null,
+      Freeprofessionalcreatedperformanceid: null,
+      Freeprofessionalassignedid: addPerformancFPEvent.FreeProfessionalAssignedId,
+      EstimatedTransportExpenses: parseFloat(addPerformancFPEvent.ForecastTravelExpenses),
+      EstimatedTransportHours: addPerformancFPEvent.ForecastTravelTime,
+      EstimatedWorkHours: addPerformancFPEvent.ForecastWorkHours,
+      TotalForecastData: parseFloat(addPerformancFPEvent.TotalForecastData),
+
+      // 2) NEW FIELDS: fallback to null if not provided
+      developer_category: addPerformancFPEvent.developer_category || null,
+      developer_module: addPerformancFPEvent.developer_module || null,
+      developer_activity: addPerformancFPEvent.developer_activity || null
+    };
+
+
+
+    // 3) Ensure freeprofessional row actually exists
+    const freeProfessionalQuery = await pool.query(
+      'SELECT id FROM freeprofessional WHERE userid = $1 OR id = $1',
+      [addPerformancFPEvent.FreeProfessionalAssignedId]
+    );
+
+    if (freeProfessionalQuery.rows.length === 0) {
+      console.warn(
+        '⚠️ Free professional not found for user ID:',
+        addPerformancFPEvent.FreeProfessionalAssignedId
       );
+      return res.status(404).json(
+        createWebBaseEvent({
+          ADD_PERFORMANCE_FREE_PROFESSIONAL_SUCCESS: false,
+          ADD_PERFORMANCE_FREE_PROFESSIONAL_MESSAGE: 'Free professional not found.',
+        }, event.SessionKey, event.SecurityToken, 'AddPerformanceFreeProfessional')
+      );
+    }
 
-      const performanceFreeProfessionalCount = parseInt(performanceFreeProfessionalCountQuery.rows[0].count, 10);
-      const performanceBuyCount = parseInt(performanceBuyCountQuery.rows[0].count, 10);
-      performanceFreeprofessional.Code = `GETP/${performanceBuyCount + performanceFreeProfessionalCount + 1}/${new Date().getFullYear()}`;
+    performanceFreeprofessional.Freeprofessionalcreatedperformanceid = freeProfessionalQuery.rows[0].id;
 
 
 
-      // 5) Insert into DB, adding the new columns at the end
-      const insertQuery = `
+    // 4) Generate unique code
+    const performanceFreeProfessionalCountQuery = await pool.query(
+      'SELECT COUNT(*) FROM performance_freeprofessional WHERE projectmanagerid = $1',
+      [addPerformancFPEvent.ProjectManagerId]
+    );
+    const performanceBuyCountQuery = await pool.query(
+      'SELECT COUNT(*) FROM performance_buy WHERE projectmanagerid = $1',
+      [addPerformancFPEvent.ProjectManagerId]
+    );
+
+    const performanceFreeProfessionalCount = parseInt(performanceFreeProfessionalCountQuery.rows[0].count, 10);
+    const performanceBuyCount = parseInt(performanceBuyCountQuery.rows[0].count, 10);
+    performanceFreeprofessional.Code = `GETP/${performanceBuyCount + performanceFreeProfessionalCount + 1}/${new Date().getFullYear()}`;
+
+
+
+    // 5) Insert into DB, adding the new columns at the end
+    const insertQuery = `
       INSERT INTO performance_freeprofessional (
         id,
         code,
@@ -3224,55 +3190,55 @@ const handleUserRegistration = async (event, res) => {
       )
     `;
 
-      await pool.query(insertQuery, [
-        performanceFreeprofessional.Id,
-        performanceFreeprofessional.Code,
-        performanceFreeprofessional.Projectmanagerid,
-        performanceFreeprofessional.Summarytypeid,
-        performanceFreeprofessional.StartDate,
-        performanceFreeprofessional.EndDate,
-        performanceFreeprofessional.JustifyingDocument,
-        performanceFreeprofessional.JustifyingDocumentBytes,
-        performanceFreeprofessional.Freeprofessionalcreatedperformanceid,
-        performanceFreeprofessional.Freeprofessionalassignedid,
-        performanceFreeprofessional.EstimatedTransportExpenses,
-        performanceFreeprofessional.EstimatedTransportHours,
-        performanceFreeprofessional.EstimatedWorkHours,
-        performanceFreeprofessional.TotalForecastData,
-        performanceFreeprofessional.developer_category,
-        performanceFreeprofessional.developer_module,
-        performanceFreeprofessional.developer_activity
-      ]);
+    await pool.query(insertQuery, [
+      performanceFreeprofessional.Id,
+      performanceFreeprofessional.Code,
+      performanceFreeprofessional.Projectmanagerid,
+      performanceFreeprofessional.Summarytypeid,
+      performanceFreeprofessional.StartDate,
+      performanceFreeprofessional.EndDate,
+      performanceFreeprofessional.JustifyingDocument,
+      performanceFreeprofessional.JustifyingDocumentBytes,
+      performanceFreeprofessional.Freeprofessionalcreatedperformanceid,
+      performanceFreeprofessional.Freeprofessionalassignedid,
+      performanceFreeprofessional.EstimatedTransportExpenses,
+      performanceFreeprofessional.EstimatedTransportHours,
+      performanceFreeprofessional.EstimatedWorkHours,
+      performanceFreeprofessional.TotalForecastData,
+      performanceFreeprofessional.developer_category,
+      performanceFreeprofessional.developer_module,
+      performanceFreeprofessional.developer_activity
+    ]);
 
 
 
-      // 6) Return success
-      return res.status(200).json(
-        createWebBaseEvent({
-          ADD_PERFORMANCE_FREE_PROFESSIONAL_SUCCESS: true,
-          ADD_PERFORMANCE_FREE_PROFESSIONAL_MESSAGE: 'Performance free professional was successfully created.',
-        }, event.SessionKey, event.SecurityToken, 'AddPerformanceFreeProfessional')
-      );
+    // 6) Return success
+    return res.status(200).json(
+      createWebBaseEvent({
+        ADD_PERFORMANCE_FREE_PROFESSIONAL_SUCCESS: true,
+        ADD_PERFORMANCE_FREE_PROFESSIONAL_MESSAGE: 'Performance free professional was successfully created.',
+      }, event.SessionKey, event.SecurityToken, 'AddPerformanceFreeProfessional')
+    );
 
-    } catch (error) {
-      console.error('❌ Error adding performance free professional:', error);
-      return res.status(500).json(
-        createWebBaseEvent({
-          ADD_PERFORMANCE_FREE_PROFESSIONAL_SUCCESS: false,
-          ADD_PERFORMANCE_FREE_PROFESSIONAL_MESSAGE: 'Server error adding performance free professional.',
-        }, event.SessionKey, event.SecurityToken, 'AddPerformanceFreeProfessional')
-      );
-    }
-  };
+  } catch (error) {
+    console.error('❌ Error adding performance free professional:', error);
+    return res.status(500).json(
+      createWebBaseEvent({
+        ADD_PERFORMANCE_FREE_PROFESSIONAL_SUCCESS: false,
+        ADD_PERFORMANCE_FREE_PROFESSIONAL_MESSAGE: 'Server error adding performance free professional.',
+      }, event.SessionKey, event.SecurityToken, 'AddPerformanceFreeProfessional')
+    );
+  }
+};
 
-  const handleGetHorasReport = async (event, res) => {
-    try {
-      // Extract filtering parameters from the event body
-      const developer = event.Body?.Developer; // Optional filter by developer name
-      const category = event.Body?.Category;   // Optional filter by category
+const handleGetHorasReport = async (event, res) => {
+  try {
+    // Extract filtering parameters from the event body
+    const developer = event.Body?.Developer; // Optional filter by developer name
+    const category = event.Body?.Category;   // Optional filter by category
 
-      // Base SQL query (columns removed, 'plazo' -> 'fecha')
-      let query = `
+    // Base SQL query (columns removed, 'plazo' -> 'fecha')
+    let query = `
       SELECT
         id,
         nombre_miembro,
@@ -3286,208 +3252,208 @@ const handleUserRegistration = async (event, res) => {
         aprobado_por_comision
       FROM reporte_horas
     `;
-      const queryParams = [];
+    const queryParams = [];
 
-      // Add filters dynamically based on provided parameters
-      if (developer && category) {
-        query += ` WHERE nombre_miembro ILIKE $1 AND categoria ILIKE $2`;
-        queryParams.push(`%${developer}%`, `%${category}%`);
-      } else if (developer) {
-        query += ` WHERE nombre_miembro ILIKE $1`;
-        queryParams.push(`%${developer}%`);
-      } else if (category) {
-        query += ` WHERE categoria ILIKE $1`;
-        queryParams.push(`%${category}%`);
-      }
-
-      // Order by the newly renamed 'fecha' column, with a default limit
-      query += ` ORDER BY fecha ASC LIMIT 100`;
-
-      // Execute the query
-      const reportResult = await pool.query(query, queryParams);
-
-      // Respond with the retrieved report data
-      return res.status(200).json(
-        createWebBaseEvent(
-          {
-            GET_HORAS_REPORT_SUCCESS: true,
-            report: reportResult.rows,
-          },
-          event.SessionKey,
-          event.SecurityToken,
-          'GetHorasReport'
-        )
-      );
-    } catch (error) {
-      console.error('❌ Error fetching horas report:', error);
-
-      // Handle errors
-      return res.status(500).json(
-        createWebBaseEvent(
-          {
-            GET_HORAS_REPORT_SUCCESS: false,
-            GET_HORAS_REPORT_MESSAGE: 'Server error fetching horas report.',
-          },
-          event.SessionKey,
-          event.SecurityToken,
-          'GetHorasReport'
-        )
-      );
+    // Add filters dynamically based on provided parameters
+    if (developer && category) {
+      query += ` WHERE nombre_miembro ILIKE $1 AND categoria ILIKE $2`;
+      queryParams.push(`%${developer}%`, `%${category}%`);
+    } else if (developer) {
+      query += ` WHERE nombre_miembro ILIKE $1`;
+      queryParams.push(`%${developer}%`);
+    } else if (category) {
+      query += ` WHERE categoria ILIKE $1`;
+      queryParams.push(`%${category}%`);
     }
-  };
 
-  const handleGetUserActionLogs = async (event, res) => {
-    try {
-      // Extract any filtering parameters from the event if needed
-      const userId = event.Body?.SelectedUserId; // Optional filtering by user ID
-      const limit = event.Body?.Limit || 100; // Default limit to 100 logs
-      // Construct the SQL query
-      let query = `
+    // Order by the newly renamed 'fecha' column, with a default limit
+    query += ` ORDER BY fecha ASC LIMIT 100`;
+
+    // Execute the query
+    const reportResult = await pool.query(query, queryParams);
+
+    // Respond with the retrieved report data
+    return res.status(200).json(
+      createWebBaseEvent(
+        {
+          GET_HORAS_REPORT_SUCCESS: true,
+          report: reportResult.rows,
+        },
+        event.SessionKey,
+        event.SecurityToken,
+        'GetHorasReport'
+      )
+    );
+  } catch (error) {
+    console.error('❌ Error fetching horas report:', error);
+
+    // Handle errors
+    return res.status(500).json(
+      createWebBaseEvent(
+        {
+          GET_HORAS_REPORT_SUCCESS: false,
+          GET_HORAS_REPORT_MESSAGE: 'Server error fetching horas report.',
+        },
+        event.SessionKey,
+        event.SecurityToken,
+        'GetHorasReport'
+      )
+    );
+  }
+};
+
+const handleGetUserActionLogs = async (event, res) => {
+  try {
+    // Extract any filtering parameters from the event if needed
+    const userId = event.Body?.SelectedUserId; // Optional filtering by user ID
+    const limit = event.Body?.Limit || 100; // Default limit to 100 logs
+    // Construct the SQL query
+    let query = `
       SELECT id, user_id, action, page_url, element_clicked, additional_info, timestamp
       FROM user_action_logs
     `;
-      const queryParams = [];
+    const queryParams = [];
 
-      // Add filtering by user ID if provided
-      if (userId) {
-        query += ` WHERE user_id = $1`;
-        queryParams.push(userId);
-      }
-
-      // Add ordering and limit
-      query += ` ORDER BY timestamp DESC LIMIT $${queryParams.length + 1}`;
-      queryParams.push(limit);
-
-      // Execute the query
-      const logsResult = await pool.query(query, queryParams);
-
-      // Respond with the retrieved logs
-      return res.status(200).json(createWebBaseEvent({
-        GET_USER_ACTION_LOGS_SUCCESS: true,
-        logs: logsResult.rows,
-      }, event.SessionKey, event.SecurityToken, 'GetUserActionLogs'));
-
-    } catch (error) {
-      console.error('❌ Error fetching user action logs:', error);
-
-      // Handle any errors that occur
-      return res.status(500).json(createWebBaseEvent({
-        GET_USER_ACTION_LOGS_SUCCESS: false,
-        GET_USER_ACTION_LOGS_MESSAGE: 'Server error fetching user action logs.',
-      }, event.SessionKey, event.SecurityToken, 'GetUserActionLogs'));
+    // Add filtering by user ID if provided
+    if (userId) {
+      query += ` WHERE user_id = $1`;
+      queryParams.push(userId);
     }
-  };
 
-  const handleGetDatabaseChangeLogs = async (event, res) => {
-    try {
-      // Extract optional UserId from the event body
-      const userId = event.Body?.SelectedUserId;
+    // Add ordering and limit
+    query += ` ORDER BY timestamp DESC LIMIT $${queryParams.length + 1}`;
+    queryParams.push(limit);
 
-      // Build the base query
-      let changeLogsQuery = `
+    // Execute the query
+    const logsResult = await pool.query(query, queryParams);
+
+    // Respond with the retrieved logs
+    return res.status(200).json(createWebBaseEvent({
+      GET_USER_ACTION_LOGS_SUCCESS: true,
+      logs: logsResult.rows,
+    }, event.SessionKey, event.SecurityToken, 'GetUserActionLogs'));
+
+  } catch (error) {
+    console.error('❌ Error fetching user action logs:', error);
+
+    // Handle any errors that occur
+    return res.status(500).json(createWebBaseEvent({
+      GET_USER_ACTION_LOGS_SUCCESS: false,
+      GET_USER_ACTION_LOGS_MESSAGE: 'Server error fetching user action logs.',
+    }, event.SessionKey, event.SecurityToken, 'GetUserActionLogs'));
+  }
+};
+
+const handleGetDatabaseChangeLogs = async (event, res) => {
+  try {
+    // Extract optional UserId from the event body
+    const userId = event.Body?.SelectedUserId;
+
+    // Build the base query
+    let changeLogsQuery = `
       SELECT id, table_name, operation_type, row_data, change_time
       FROM database_change_logs
     `;
 
-      // Add filtering by user ID if provided
-      const params = [];
-      if (userId) {
-        changeLogsQuery += `
+    // Add filtering by user ID if provided
+    const params = [];
+    if (userId) {
+      changeLogsQuery += `
         WHERE row_data->>'user_id' = $1
       `;
-        params.push(userId);
-      }
+      params.push(userId);
+    }
 
-      // Add ordering to the query
-      changeLogsQuery += `
+    // Add ordering to the query
+    changeLogsQuery += `
       ORDER BY change_time DESC
     `;
 
-      // Execute the query
-      const changeLogsResult = await pool.query(changeLogsQuery, params);
+    // Execute the query
+    const changeLogsResult = await pool.query(changeLogsQuery, params);
 
-      // Check if logs exist
-      if (changeLogsResult.rows.length === 0) {
-        return res.status(404).json(createWebBaseEvent({
-          GET_DATABASE_CHANGE_LOGS_SUCCESS: false,
-          GET_DATABASE_CHANGE_LOGS_MESSAGE: 'No database change logs found.',
-        }, event.SessionKey, event.SecurityToken, 'GetDatabaseChangeLogs'));
-      }
-
-      // Format and return the logs
-      return res.status(200).json(createWebBaseEvent({
-        GET_DATABASE_CHANGE_LOGS_SUCCESS: true,
-        logs: changeLogsResult.rows,
-      }, event.SessionKey, event.SecurityToken, 'GetDatabaseChangeLogs'));
-
-    } catch (error) {
-      console.error('❌ Error fetching database change logs:', error);
-
-      // Handle errors gracefully
-      return res.status(500).json(createWebBaseEvent({
+    // Check if logs exist
+    if (changeLogsResult.rows.length === 0) {
+      return res.status(404).json(createWebBaseEvent({
         GET_DATABASE_CHANGE_LOGS_SUCCESS: false,
-        GET_DATABASE_CHANGE_LOGS_MESSAGE: 'Server error fetching database change logs.',
+        GET_DATABASE_CHANGE_LOGS_MESSAGE: 'No database change logs found.',
       }, event.SessionKey, event.SecurityToken, 'GetDatabaseChangeLogs'));
     }
-  };
+
+    // Format and return the logs
+    return res.status(200).json(createWebBaseEvent({
+      GET_DATABASE_CHANGE_LOGS_SUCCESS: true,
+      logs: changeLogsResult.rows,
+    }, event.SessionKey, event.SecurityToken, 'GetDatabaseChangeLogs'));
+
+  } catch (error) {
+    console.error('❌ Error fetching database change logs:', error);
+
+    // Handle errors gracefully
+    return res.status(500).json(createWebBaseEvent({
+      GET_DATABASE_CHANGE_LOGS_SUCCESS: false,
+      GET_DATABASE_CHANGE_LOGS_MESSAGE: 'Server error fetching database change logs.',
+    }, event.SessionKey, event.SecurityToken, 'GetDatabaseChangeLogs'));
+  }
+};
 
 
-  const handleLogUserAction = async (req, res) => {
-    try {
-      const { userId, action, pageUrl, elementClicked, additionalInfo } = req.Body?.LogData || {};
+const handleLogUserAction = async (req, res) => {
+  try {
+    const { userId, action, pageUrl, elementClicked, additionalInfo } = req.Body?.LogData || {};
 
-      if (!userId || !action) {
-        return res.status(400).json({ success: false, message: 'User ID and action are required.' });
-      }
+    if (!userId || !action) {
+      return res.status(400).json({ success: false, message: 'User ID and action are required.' });
+    }
 
-      // Format additionalInfo as a JSON string
-      const formattedAdditionalInfo = additionalInfo ? JSON.stringify(additionalInfo) : null;
+    // Format additionalInfo as a JSON string
+    const formattedAdditionalInfo = additionalInfo ? JSON.stringify(additionalInfo) : null;
 
-      const logQuery = `
+    const logQuery = `
       INSERT INTO user_action_logs (user_id, action, page_url, element_clicked, additional_info)
       VALUES ($1, $2, $3, $4, $5)
     `;
-      await pool.query(logQuery, [
-        userId,
-        action,
-        pageUrl || null,
-        elementClicked || null,
-        formattedAdditionalInfo
-      ]);
+    await pool.query(logQuery, [
+      userId,
+      action,
+      pageUrl || null,
+      elementClicked || null,
+      formattedAdditionalInfo
+    ]);
 
-      res.status(200).json({ success: true, message: 'Action logged successfully.' });
-    } catch (error) {
-      console.error('Error logging user action:', error);
-      res.status(500).json({ success: false, message: 'Server error logging action.' });
+    res.status(200).json({ success: true, message: 'Action logged successfully.' });
+  } catch (error) {
+    console.error('Error logging user action:', error);
+    res.status(500).json({ success: false, message: 'Server error logging action.' });
+  }
+};
+
+
+const handleGetStudentsByCourse = async (event, res) => {
+  try {
+    const userId = event.Body?.Id;
+
+    if (!userId) {
+      return res.status(400).json(createWebBaseEvent({
+        GET_STUDENTS_BY_COURSE_SUCCESS: false,
+        GET_STUDENTS_BY_COURSE_MESSAGE: 'User ID is required.',
+      }, event.SessionKey, event.SecurityToken, 'GetStudentsByCourse'));
     }
-  };
 
 
-  const handleGetStudentsByCourse = async (event, res) => {
-    try {
-      const userId = event.Body?.Id;
+    let studentsQuery;
+    let studentsResult;
 
-      if (!userId) {
-        return res.status(400).json(createWebBaseEvent({
-          GET_STUDENTS_BY_COURSE_SUCCESS: false,
-          GET_STUDENTS_BY_COURSE_MESSAGE: 'User ID is required.',
-        }, event.SessionKey, event.SecurityToken, 'GetStudentsByCourse'));
-      }
-
-
-      let studentsQuery;
-      let studentsResult;
-
-      if (userId === 'e77b5172-f726-4c1d-9f9e-d2dbd77e03c9') {
-        studentsQuery = `
+    if (userId === 'e77b5172-f726-4c1d-9f9e-d2dbd77e03c9') {
+      studentsQuery = `
         SELECT sr.*, c.title AS course_name
         FROM student_records sr
         LEFT JOIN courses c ON sr.course_id = c.id
       `;
-        studentsResult = await pool.query(studentsQuery);
-      } else {
-        // Step 1: Fetch course IDs where the professor is teaching
-        const professorCoursesQuery = `
+      studentsResult = await pool.query(studentsQuery);
+    } else {
+      // Step 1: Fetch course IDs where the professor is teaching
+      const professorCoursesQuery = `
         SELECT course_id
         FROM professores
         WHERE professor_id = $1
@@ -3497,48 +3463,48 @@ const handleUserRegistration = async (event, res) => {
         WHERE osduser_id = $1
       `;
 
-        const professorCoursesResult = await pool.query(professorCoursesQuery, [userId]);
+      const professorCoursesResult = await pool.query(professorCoursesQuery, [userId]);
 
-        if (professorCoursesResult.rows.length === 0) {
-          return res.status(404).json(createWebBaseEvent({
-            GET_STUDENTS_BY_COURSE_SUCCESS: false,
-            GET_STUDENTS_BY_COURSE_MESSAGE: 'No courses found for this professor.',
-          }, event.SessionKey, event.SecurityToken, 'GetStudentsByCourse'));
-        }
+      if (professorCoursesResult.rows.length === 0) {
+        return res.status(404).json(createWebBaseEvent({
+          GET_STUDENTS_BY_COURSE_SUCCESS: false,
+          GET_STUDENTS_BY_COURSE_MESSAGE: 'No courses found for this professor.',
+        }, event.SessionKey, event.SecurityToken, 'GetStudentsByCourse'));
+      }
 
-        const courseIds = professorCoursesResult.rows.map(row => row.course_id);
+      const courseIds = professorCoursesResult.rows.map(row => row.course_id);
 
 
-        // Step 2: Fetch students enrolled in these courses along with course names
-        studentsQuery = `
+      // Step 2: Fetch students enrolled in these courses along with course names
+      studentsQuery = `
         SELECT sr.*, c.title AS course_name
         FROM student_records sr
         LEFT JOIN courses c ON sr.course_id = c.id
         WHERE sr.course_id = ANY($1::uuid[])
       `;
 
-        studentsResult = await pool.query(studentsQuery, [courseIds]);
-      }
-
-
-      return res.status(200).json(createWebBaseEvent({
-        GET_STUDENTS_BY_COURSE_SUCCESS: true,
-        students: studentsResult.rows
-      }, event.SessionKey, event.SecurityToken, 'GetStudentsByCourse'));
-
-    } catch (error) {
-      console.error('❌ Error fetching students by course:', error);
-
-      return res.status(500).json(createWebBaseEvent({
-        GET_STUDENTS_BY_COURSE_SUCCESS: false,
-        GET_STUDENTS_BY_COURSE_MESSAGE: 'Server error fetching students by course.',
-      }, event.SessionKey, event.SecurityToken, 'GetStudentsByCourse'));
+      studentsResult = await pool.query(studentsQuery, [courseIds]);
     }
-  };
 
-  const handleGetSubscribers = async (event, res) => {
-    try {
-      const result = await pool.query(`
+
+    return res.status(200).json(createWebBaseEvent({
+      GET_STUDENTS_BY_COURSE_SUCCESS: true,
+      students: studentsResult.rows
+    }, event.SessionKey, event.SecurityToken, 'GetStudentsByCourse'));
+
+  } catch (error) {
+    console.error('❌ Error fetching students by course:', error);
+
+    return res.status(500).json(createWebBaseEvent({
+      GET_STUDENTS_BY_COURSE_SUCCESS: false,
+      GET_STUDENTS_BY_COURSE_MESSAGE: 'Server error fetching students by course.',
+    }, event.SessionKey, event.SecurityToken, 'GetStudentsByCourse'));
+  }
+};
+
+const handleGetSubscribers = async (event, res) => {
+  try {
+    const result = await pool.query(`
       SELECT
       fp.id,
       fp.userid,
@@ -3621,36 +3587,36 @@ const handleUserRegistration = async (event, res) => {
       WHERE u.accounttype = '063e12fa-33db-47f3-ac96-a5bdb08ede61' OR u.accounttype =  '8e539a42-4108-4be6-8f77-2d16671d1069'
     `);
 
-      res.status(200).json(createWebBaseEvent({
-        GET_SUBSCRIBERS_SUCCESS: true,
-        subscribers: result.rows
-      }, event.SessionKey, event.SecurityToken, 'GetSubscribers'));
+    res.status(200).json(createWebBaseEvent({
+      GET_SUBSCRIBERS_SUCCESS: true,
+      subscribers: result.rows
+    }, event.SessionKey, event.SecurityToken, 'GetSubscribers'));
 
-    } catch (error) {
-      console.error('❌ Error fetching subscribers:', error);
-      res.status(500).json(createWebBaseEvent({
-        GET_SUBSCRIBERS_SUCCESS: false,
-        GET_SUBSCRIBERS_MESSAGE: 'Server error fetching subscribers.',
-      }, event.SessionKey, event.SecurityToken, 'GetSubscribers'));
-    }
-  };
+  } catch (error) {
+    console.error('❌ Error fetching subscribers:', error);
+    res.status(500).json(createWebBaseEvent({
+      GET_SUBSCRIBERS_SUCCESS: false,
+      GET_SUBSCRIBERS_MESSAGE: 'Server error fetching subscribers.',
+    }, event.SessionKey, event.SecurityToken, 'GetSubscribers'));
+  }
+};
 
 
-  app.get('/api/courses', async (req, res) => {
-    try {
-      const result = await pool.query('SELECT id, title, mode FROM Courses');
-      res.status(200).json({
-        success: true,
-        courses: result.rows
-      });
-    } catch (error) {
-      console.error('❌ Error fetching courses:', error);
-      res.status(500).json({
-        success: false,
-        message: 'Error fetching courses'
-      });
-    }
-  });
+app.get('/api/courses', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT id, title, mode FROM Courses');
+    res.status(200).json({
+      success: true,
+      courses: result.rows
+    });
+  } catch (error) {
+    console.error('❌ Error fetching courses:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching courses'
+    });
+  }
+});
 
-  app.listen(port, () => {
-  });
+app.listen(port, () => {
+});
