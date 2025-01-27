@@ -9,7 +9,7 @@ export class BackblazeService {
   // Development API URL
   // private backendUrl = 'http://localhost:3000';
   // Production API URL
-  private backendUrl = 'https://hosting-osdwebsite-1.onrender.com/api';
+  private backendUrl = 'https://hosting-osdwebsite-1.onrender.com';
 
   constructor(private http: HttpClient) { }
 
