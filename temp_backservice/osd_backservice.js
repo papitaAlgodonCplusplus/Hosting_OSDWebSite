@@ -6,7 +6,6 @@ const { v4: uuidv4 } = require('uuid'); // For TraceIdentifier
 
 const app = express();
 const port = 5000;
-
 app.use(cors());
 app.use(bodyParser.json());
 
@@ -31,6 +30,7 @@ const pool = new Pool({
 //   port: 5432
 // });
 
+
 const createWebBaseEvent = (body, sessionKey = null, securityToken = null, action = 'Response') => ({
   Body: body,
   TraceIdentifier: uuidv4(),
@@ -45,7 +45,13 @@ const createWebBaseEvent = (body, sessionKey = null, securityToken = null, actio
 app.post('/api/control/connect', async (req, res) => {
   try {
     // Optional: Check database connection
+    if (!process.env.DB_USER || !process.env.DB_HOST || !process.env.DB_NAME || !process.env.DB_PASSWORD) {
+      console.error('Database environment variables are not properly set.');
+      process.exit(1); // Exit with error
+    }
+    
     await pool.query('SELECT 1');
+    
 
     res.status(200).json({
       success: true,
