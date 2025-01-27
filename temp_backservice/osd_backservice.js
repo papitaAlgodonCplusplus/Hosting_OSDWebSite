@@ -2768,6 +2768,34 @@ const handleUserRegistration = async (event, res) => {
       console.log(`✅ FreeProfessional record created for user ID: ${userId}`);
     }
 
+    // Insert into student_records if courseCheckbox is checked
+    if (accountForm.courseCheckbox === true && accountForm.course) {
+      const insertStudentRecordQuery = `
+          INSERT INTO student_records (
+            id, name, email, phone, address, city, state, zip, country, status,
+            type, notes, date, user_id, course_id
+          ) VALUES (
+            $1, $2, $3, $4, $5, $6, $7, $8, $9, 'Pending',
+            'Regular', '', CURRENT_TIMESTAMP, $10, $11
+          );
+        `;
+
+
+      await pool.query(insertStudentRecordQuery, [
+        uuidv4(),
+        personalForm.name,
+        personalForm.email,
+        personalForm.mobilePhone,
+        personalForm.address,
+        personalForm.city,
+        '', // State
+        personalForm.zipCode,
+        personalForm.country,
+        userId,
+        accountForm.course
+      ]);
+    }
+    
     // Return success response
     return res.json({
       success: true,
