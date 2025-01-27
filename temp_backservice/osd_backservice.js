@@ -2737,7 +2737,7 @@ const handleUserRegistration = async (event, res) => {
 
     // Handle specific account types (e.g., courses or freeprofessional)
     if (event.Body?.AccountType === 'FreeProfessional') {
-      console.log(`🛠️ Inserting into freeprofessional table for FreeProfessional account.`);
+      console.log(`🛠️ Inserting into freeprofessional table for FreeProfessional account.`, userId, accountForm)
       const insertFreeProfessionalQuery = `
         INSERT INTO freeprofessional (
           id, userid, freeprofessionaltypeid, identificationfileid,
