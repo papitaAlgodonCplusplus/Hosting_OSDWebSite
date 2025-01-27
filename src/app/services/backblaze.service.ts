@@ -23,6 +23,7 @@ export class BackblazeService {
   }
 
   uploadFile(uploadUrl: string, authorizationToken: string, fileName: string, file: Blob): Observable<any> {
+    console.log('uploadUrl', uploadUrl, 'authorizationToken', authorizationToken, 'fileName', fileName, 'file', file);
     const formData = new FormData();
     formData.append('fileData', file);
     formData.append('fileName', fileName);

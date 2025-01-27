@@ -70,34 +70,38 @@ export class UploadfileComponent {
 
   uploadSelectedFile() {
     if (this.selectedFile) {
+      console.log('Selected file:', this.selectedFile.name);
       
       this.backblazeService.authorizeAccount().subscribe(response => {
+        console.log('Account authorized:', response);
         
         const apiUrl = response.apiUrl;
         const authorizationToken = response.authorizationToken;
 
         this.backblazeService.getUploadUrl(apiUrl, authorizationToken, this.bucketId).subscribe(uploadResponse => {
+          console.log('Upload URL obtained:', uploadResponse);
           
           const uploadUrl = uploadResponse.uploadUrl;
           const uploadAuthToken = uploadResponse.authorizationToken;
 
           this.backblazeService.uploadFile(uploadUrl, uploadAuthToken, this.selectedFile.name, this.selectedFile).subscribe(uploadResult => {
+            console.log('File uploaded successfully:', uploadResult);
             
             const fileId = uploadResult.fileId;
 
             this.fileUploaded.emit({ typeFile: this.typeFile, fileId: fileId });
 
           }, error => {
-            
+            console.error('Error uploading file:', error);
           });
         }, error => {
-          
+          console.error('Error obtaining upload URL:', error);
         });
       }, error => {
-        
+        console.error('Error authorizing account:', error);
       });
     } else {
-      
+      console.error('No file selected for upload.');
     }
   }
 
