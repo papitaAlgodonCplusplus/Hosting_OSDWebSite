@@ -10,25 +10,25 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Production
-const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: 5432,
-  ssl: {
-    rejectUnauthorized: false
-  }
-});
+// const pool = new Pool({
+//   user: process.env.DB_USER,
+//   host: process.env.DB_HOST,
+//   database: process.env.DB_NAME,
+//   password: process.env.DB_PASSWORD,
+//   port: 5432,
+//   ssl: {
+//     rejectUnauthorized: false
+//   }
+// });
 
 // Development
-// const pool = new Pool({
-//   user: 'postgres',
-//   host: 'localhost',
-//   database: 'osdlogic',
-//   password: 'sapwd2023',
-//   port: 5432
-// });
+const pool = new Pool({
+  user: 'postgres',
+  host: 'localhost',
+  database: 'osdlogic',
+  password: 'sapwd2023',
+  port: 5432
+});
 
 
 const createWebBaseEvent = (body, sessionKey = null, securityToken = null, action = 'Response') => ({
@@ -44,15 +44,7 @@ const createWebBaseEvent = (body, sessionKey = null, securityToken = null, actio
 
 app.post('/api/control/connect', async (req, res) => {
   try {
-    // Optional: Check database connection
-    if (!process.env.DB_USER || !process.env.DB_HOST || !process.env.DB_NAME || !process.env.DB_PASSWORD) {
-      console.error('Database environment variables are not properly set.');
-      process.exit(1); // Exit with error
-    }
-
     await pool.query('SELECT 1');
-
-
     res.status(200).json({
       success: true,
       message: 'API connection successful',

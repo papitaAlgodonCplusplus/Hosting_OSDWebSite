@@ -11,6 +11,7 @@ app.use(express.json());
 
 // Endpoint para autorizar la cuenta de Backblaze
 app.get('/authorize', async (req, res) => {
+  console.log('Autorizando cuenta de Backblaze...');
   const accountId = '0055738d4931ced000000000d';  // Reemplaza con tu Account ID de Backblaze
   const applicationKey = 'K005vHrgizyOMTX4aOalnxVUcICyb+Q';  // Reemplaza con tu Application Key de Backblaze
 
