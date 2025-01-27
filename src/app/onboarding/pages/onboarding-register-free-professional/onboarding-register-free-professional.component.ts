@@ -318,11 +318,9 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     for (let course of this.courses) {
       if (course.value === combined_string && course.mode === courseMode) {
         console.log('Found course:', course);
-        this.accountForm.patchValue({ course: course.key });
         break;
       }
     }
-    this.accountForm.patchValue({ course: courseCFH });
   }
 
   private createPersonalForm(): FormGroup {
