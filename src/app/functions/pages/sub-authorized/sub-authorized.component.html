@@ -95,35 +95,30 @@
     </button>
 </div>
 
-<!-- NEW MODAL: Show Subscriber Info -->
 <div *ngIf="showSubscriberInfo" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
-    <!-- Blackout overlay, alpha 0.8 -->
+    <!-- Blackout overlay -->
     <div class="bg-opacity-80 bg-black absolute inset-0"></div>
 
     <!-- Modal content -->
-    <!-- Added .modern-modal custom class -->
-    <!-- NEW MODAL: Show Subscriber Info -->
-    <div *ngIf="showSubscriberInfo" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
-        <div class="bg-opacity-30 bg-black absolute inset-0"></div>
+    <div class="modern-modal relative z-50 bg-white shadow-md rounded-xl max-w-6xl w-full p-6">
+        <!-- Header with 'X' -->
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-semibold text-darkslategray">
+                {{ 'Subscriber Info' | translate }}
+            </h2>
+            <button (click)="closeInfoModal()" class="close-modal-btn text-gray-600 hover:text-gray-900">
+                <i class="fa-solid fa-times text-lg"></i>
+            </button>
+        </div>
 
-        <!-- Modal content -->
-        <div class="modern-modal relative z-50 bg-white shadow-md rounded-xl max-w-xl w-full">
-            <!-- Header with 'X' -->
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-semibold text-darkslategray">
-                    {{ 'Subscriber Info' | translate }}
-                </h2>
-                <button (click)="closeInfoModal()" class="close-modal-btn text-gray-600 hover:text-gray-900">
-                    <i class="fa-solid fa-times text-lg"></i>
-                </button>
-            </div>
-
-            <!-- Subscriber Data in a Table -->
-            <table class="subscriber-table">
+        <!-- Subscriber Data in Three Columns -->
+        <div class="grid grid-cols-3 gap-6">
+            <!-- Column 1 -->
+            <table class="subscriber-table w-full">
                 <thead>
                     <tr>
-                        <th>{{ 'Field' | translate }}</th>
-                        <th>{{ 'Value' | translate }}</th>
+                        <th class="text-left font-bold">{{ 'Field' | translate }}</th>
+                        <th class="text-left font-bold">{{ 'Value' | translate }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -145,9 +140,61 @@
                         <td>{{ selectedSubscriber?.country }}</td>
                     </tr>
                     <tr>
-                        <td><strong>{{ 'Free Professional Type' | translate }}</strong></td>
-                        <td>{{ selectedSubscriber?.FreeprofessionaltypeAcronym }}</td>
+                        <td><strong>{{ 'City' | translate }}</strong></td>
+                        <td>{{ selectedSubscriber?.city }}</td>
                     </tr>
+                    <tr>
+                        <td><strong>{{ 'Company Name' | translate }}</strong></td>
+                        <td>{{ selectedSubscriber?.companyName }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Column 2 -->
+            <table class="subscriber-table w-full">
+                <thead>
+                    <tr>
+                        <th class="text-left font-bold">{{ 'Field' | translate }}</th>
+                        <th class="text-left font-bold">{{ 'Value' | translate }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>{{ 'Address' | translate }}</strong></td>
+                        <td>{{ selectedSubscriber?.address }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>{{ 'Zip Code' | translate }}</strong></td>
+                        <td>{{ selectedSubscriber?.zipCode }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>{{ 'Landline' | translate }}</strong></td>
+                        <td>{{ selectedSubscriber?.landline }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>{{ 'Mobile Phone' | translate }}</strong></td>
+                        <td>{{ selectedSubscriber?.mobilePhone }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>{{ 'Web' | translate }}</strong></td>
+                        <td>{{ selectedSubscriber?.web }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>{{ 'Referrer' | translate }}</strong></td>
+                        <td>{{ selectedSubscriber?.referrer }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Column 3 -->
+            <table class="subscriber-table w-full">
+                <thead>
+                    <tr>
+                        <th class="text-left font-bold">{{ 'Field' | translate }}</th>
+                        <th class="text-left font-bold">{{ 'Value' | translate }}</th>
+                    </tr>
+                </thead>
+                <tbody>
                     <tr>
                         <td><strong>{{ 'ID File' | translate }}</strong></td>
                         <td>
@@ -184,7 +231,6 @@
                             </div>
                         </td>
                     </tr>
-                    <!-- Additional rows can go here if needed -->
                 </tbody>
             </table>
         </div>

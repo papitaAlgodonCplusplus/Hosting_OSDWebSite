@@ -22,4 +22,11 @@ export class Subscriber {
     servicerates: string = "";
     userid: string = "";
     clienttype: string = "";
+    city?: string;
+    address?: string;
+    zipCode?: string;
+    landline?: string;
+    mobilePhone?: string;
+    web?: string;
+    referrer?: string;
 }

@@ -192,8 +192,6 @@ export class SubAuthorizedComponent implements OnDestroy {
 
   // NEW METHOD: "See Info" -> display subscriber details in a modal
   viewSubscriberInfo(item: any) {
-    // If you already have a matching subscriber from `this.subscribers`,
-    // you can look it up, or if 'item' is already a subscriber, just cast it:
     const matchingSubscriber = this.subscribers.find(
       sub => sub.userId === item.id
     );
@@ -201,8 +199,7 @@ export class SubAuthorizedComponent implements OnDestroy {
     if (matchingSubscriber) {
       this.selectedSubscriber = matchingSubscriber;
     } else {
-      // fallback to item if item is basically the same data
-      // just ensure it has the same shape as Subscriber
+      // Ensure fallback item is shaped correctly
       this.selectedSubscriber = {
         ...new Subscriber(),
         id: item.identity,
@@ -211,13 +208,21 @@ export class SubAuthorizedComponent implements OnDestroy {
         firstsurname: item.firstsurname || '',
         middlesurname: item.middlesurname || '',
         email: item.email || '',
-        companyName: item.companyName || '',
+        companyName: item.companyname || '',
         trainerAssigned: item.trainerassigned || '',
         country: item.country || '',
         FreeprofessionaltypeAcronym: item.FreeprofessionaltypeAcronym || '',
         identificationfileid: item.identificationfileid || '',
         civilliabilityinsurancefileid: item.civilliabilityinsurancefileid || '',
         curriculumvitaefileid: item.curriculumvitaefileid || '',
+        // Newly added fields
+        city: item.city || '',
+        address: item.address || '',
+        zipCode: item.zipcode || '',
+        landline: item.landline || '',
+        mobilePhone: item.mobilephone || '',
+        web: item.web || '',
+        referrer: item.refeer || '',
       };
     }
 

@@ -854,14 +854,13 @@ const handleGetClaims = async (event, res) => {
       [userId]
     );
 
-    if (freeProfessionalTypeQuery.rows.length === 0) {
-      return res.status(404).json(createWebBaseEvent({
-        GET_CLAIMS_SUCCESS: false,
-        GET_CLAIMS_MESSAGE: 'Free professional not found for this user.',
-      }, event.SessionKey, event.SecurityToken, 'GettingClaims'));
-    }
 
-    const freeProfessionalTypeId = freeProfessionalTypeQuery.rows[0].freeprofessionaltypeid;
+    let freeProfessionalTypeId;
+    if (freeProfessionalTypeQuery.rows.length === 0) {
+      freeProfessionalTypeId = null;
+    } else {
+      freeProfessionalTypeId = freeProfessionalTypeQuery.rows[0].freeprofessionaltypeid;
+    }
 
     let claimsQuery;
     let queryParams = [];
@@ -1944,9 +1943,10 @@ const handleAddPerformanceUpdate = async (event, res) => {
       summary,
       type,
       typeperformance,
-      usertypeperformance
+      usertypeperformance,
+      filetype
       ) VALUES (
-      $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
+      $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12
       ) RETURNING *;
     `;
 
@@ -1973,7 +1973,8 @@ const handleAddPerformanceUpdate = async (event, res) => {
       performanceData.Summary || existingPerformance.summary,
       performanceData.type || existingPerformance.type || 8,
       performanceData.typePerformance || existingPerformance.typeperformance || 'Complaint',
-      performanceData.userTypePerformance || existingPerformance.usertypeperformance || 'CLAIMANT'
+      performanceData.userTypePerformance || existingPerformance.usertypeperformance || 'CLAIMANT',
+      performanceData.FileType || existingPerformance.filetype || 'txt'
     ]);
 
     // Update claim_file with new fields
@@ -2206,7 +2207,7 @@ const handleGetPerformancesClaimById = async (event, res) => {
     }
 
     const performanceClaimQuery = `
-      SELECT id, code, claimid, status
+      SELECT *
       FROM performance_claim_control
       WHERE claimid = $1
     `;
@@ -2622,7 +2623,34 @@ const handleUserRegistration = async (event, res) => {
           message: `Unknown account type: ${event.Body?.AccountType}`
         });
       }
+
       const accountTypeId = accountTypeResult.rows[0].id;
+
+      // Count rows in osduser with the same accountTypeId
+      const countResult = await pool.query(
+        'SELECT COUNT(*) AS count FROM osduser WHERE accounttype = $1',
+        [accountTypeId]
+      );
+      const rowCount = parseInt(countResult.rows[0].count) + 1;
+
+      // Generate code based on accountTypeId
+      let codePrefix;
+      switch (accountTypeId) {
+        case '063e12fa-33db-47f3-ac96-a5bdb08ede61':
+          codePrefix = `${personalForm.country}/CL/${rowCount}/2025`;
+          break;
+        case '0c61160c-d087-42b6-9fa0-1fc8673a00b2':
+          codePrefix = `${personalForm.country}/PL/${rowCount}/2025`;
+          break;
+        case '7b04ef6e-b6b6-4b4c-98e5-3008512f610e':
+          codePrefix = `${personalForm.country}/R/${rowCount}/2025`;
+          break;
+        case '8e539a42-4108-4be6-8f77-2d16671d1069':
+          codePrefix = `${personalForm.country}/CFH/${rowCount}/2025`;
+          break;
+        default:
+          codePrefix = `${personalForm.country}/IT/${rowCount}/2025`;
+      }
 
       let referId = null;
       if (accountForm.emailOfRefer) {
@@ -2647,10 +2675,9 @@ const handleUserRegistration = async (event, res) => {
         RETURNING id;
       `;
 
-
       const osdUserResult = await pool.query(insertOsdUserQuery, [
         userId,
-        `${personalForm.country}/IT/1/2025`,
+        codePrefix,
         accountTypeId,
         personalForm.identity,
         personalForm.name || personalForm.companyName,
@@ -2677,109 +2704,12 @@ const handleUserRegistration = async (event, res) => {
       userId = userExists.rows[0].id;
     }
 
-
-    const accountTypeId = accountForm.accountType || personalForm.accountType;
-
-    if (accountTypeId === '8e539a42-4108-4be6-8f77-2d16671d1069') {
-      const coursesResult = await pool.query('SELECT * FROM courses');
-      const insertedCourseIds = new Set();
-      for (const course of coursesResult.rows) {
-        const newCourseId = uuidv4();
-
-        if (insertedCourseIds.has(newCourseId)) {
-          console.error(`❌ Duplicate newCourseId detected: ${newCourseId}. Stopping the insertion process.`);
-          break;
-        }
-
-        const newTitle = `${course.title} (${personalForm.companyName})`;
-
-        await pool.query(
-          `INSERT INTO courses (
-        id, osduser_id, title, cost, mode
-        ) VALUES (
-        $1, $2, $3, $4, $5F
-        )`,
-          [
-            newCourseId,
-            userId,
-            newTitle,
-            course.cost,
-            course.mode
-          ]
-        );
-        insertedCourseIds.add(newCourseId);
-      }
-    }
-
-    // Insert into freeprofessional if account type is 'FreeProfessional'
-    if (event.Body?.AccountType === 'FreeProfessional') {
-      const insertFreeProfessionalQuery = `
-        INSERT INTO freeprofessional (
-          id, userid, freeprofessionaltypeid, identificationfileid,
-          identificationfilename, curriculumvitaefileid, curriculumvitaefilename,
-          civilliabilityinsurancefileid, civilliabilityinsurancefilename,
-          servicerates, paytpv, course_id
-        ) VALUES (
-          $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12
-        )
-        RETURNING id, userid, freeprofessionaltypeid, course_id;
-      `;
-
-      await pool.query(insertFreeProfessionalQuery, [
-        uuidv4(),
-        userId,
-        accountForm.workspace,
-        accountForm.IdentificationFileId,
-        accountForm.IdentificationFileName,
-        accountForm.CurriculumVitaeFileId,
-        accountForm.CurriculumVitaeFileName,
-        accountForm.CivilLiabilityInsuranceFileId,
-        accountForm.CivilLiabilityInsuranceFileName,
-        accountForm.servicerates,
-        accountForm.payTPV,
-        accountForm.course || null
-      ]);
-
-
-      // Insert into student_records if courseCheckbox is checked
-      if (accountForm.courseCheckbox === true && accountForm.course) {
-        const insertStudentRecordQuery = `
-          INSERT INTO student_records (
-            id, name, email, phone, address, city, state, zip, country, status,
-            type, notes, date, user_id, course_id
-          ) VALUES (
-            $1, $2, $3, $4, $5, $6, $7, $8, $9, 'Pending',
-            'Regular', '', CURRENT_TIMESTAMP, $10, $11
-          );
-        `;
-
-
-        await pool.query(insertStudentRecordQuery, [
-          uuidv4(),
-          personalForm.name,
-          personalForm.email,
-          personalForm.mobilePhone,
-          personalForm.address,
-          personalForm.city,
-          '', // State
-          personalForm.zipCode,
-          personalForm.country,
-          userId,
-          accountForm.course
-        ]);
-      }
-
-      return res.json({
-        success: true,
-        message: 'Your account has been created successfully!'
-      });
-    }
+    // Remaining logic for handling account type-specific operations
 
     return res.json({
       success: true,
       message: 'Your account has been created successfully!'
     });
-
   } catch (error) {
     console.error(`❌ Error processing action 'RegisterCustomer':`, error);
     return res.status(500).json({
@@ -3532,6 +3462,14 @@ const handleGetSubscribers = async (event, res) => {
       u.code,
       u.firstsurname,
       u.middlesurname,
+      u.city,
+      u.companyname,
+      u.address,
+      u.zipcode,
+      u.landline,
+      u.mobilephone,
+      u.web,
+      u.refeer,
       sc.clienttype,
       sc.id AS scid,
       sc.userid AS scuserid,
@@ -3569,6 +3507,14 @@ const handleGetSubscribers = async (event, res) => {
       u.code,
       u.firstsurname,
       u.middlesurname,
+      u.city,
+      u.companyname,
+      u.address,
+      u.zipcode,
+      u.landline,
+      u.mobilephone,
+      u.web,
+      u.refeer,
       NULL AS clienttype,
       NULL AS scid,
       NULL AS scuserid,

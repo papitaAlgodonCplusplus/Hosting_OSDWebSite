@@ -87,6 +87,22 @@ export class FileManagerComponent implements OnInit, OnDestroy {
     });
   }
 
+  onFileUpload(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64String = reader.result as string;
+        this.addUpdateForm.patchValue({ document: base64String });
+      };
+      reader.onerror = (error) => {
+        console.error("Error reading file: ", error);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
   ngOnInit() {
     setTimeout(() => {
       this.store.dispatch(UiActions.hideFooter());
@@ -146,8 +162,10 @@ export class FileManagerComponent implements OnInit, OnDestroy {
     }, 0);
   }
 
-  downloadSelectedFile() {
-    const fileId = this.claim.documentfile1id;
+  downloadSelectedFile(nothing: any) {
+    let fileId: string;
+    fileId = this.claim.documentfile1id;
+   
     if (!fileId) {
       return;
     }
@@ -215,10 +233,14 @@ export class FileManagerComponent implements OnInit, OnDestroy {
     const { status, document, summary, improvementSavings, amountPaid, creditingDate } = this.addUpdateForm.value;
 
     try {
+      // Extract filetype from the document field
+      const filetype = document ? document.split('.').pop() : null;
+
       const payload = {
         ClaimId: this.claim.id,
         NewStatus: status,
         Document: document,
+        FileType: filetype, // Add filetype to the payload
         Summary: summary,
         ImprovementSavings: improvementSavings,
         AmountPaid: amountPaid,
@@ -236,13 +258,15 @@ export class FileManagerComponent implements OnInit, OnDestroy {
         payload.askForMoreInfo = false;
       }
 
+      console.log("Add Update payload", payload);
       await this.osdEventService.addPerformanceUpdate(payload);
 
       this.closeAddUpdateModal();
     } catch (error) {
-
+      console.error("Error submitting update:", error);
     }
   }
+
 
   /** ==============================
    *    Finalize Claim (Rating)

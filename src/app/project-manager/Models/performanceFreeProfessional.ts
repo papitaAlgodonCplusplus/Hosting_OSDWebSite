@@ -53,4 +53,8 @@ export class PerformanceFreeProfessional {
   developer_category: string = "";
   developer_module: string = "";
   developer_activity: string = "";
+  filetype: string = "";
+  file_type: string = "";
+  fileType: string = "";
+  FileType: string = "";
 }

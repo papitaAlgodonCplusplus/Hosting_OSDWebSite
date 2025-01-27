@@ -32,7 +32,7 @@
         <input formControlName="code" type="text" class="w-full bg-white-lightbone" [readonly]="true"
           [placeholder]="this.claim?.code" />
       </div>
-      
+
       <div class="flex flex-col items-center space-y-1">
         <!-- Label for the button -->
         <label for="downloadButton" class="text-sm text-gray-700 font-medium">
@@ -42,7 +42,7 @@
         <!-- Modified Button -->
         <button id="downloadButton" type="button" class="cursor-pointer px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg shadow-md 
           hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 
-          transition ease-in-out duration-150" (click)="downloadSelectedFile()">
+          transition ease-in-out duration-150" (click)="downloadSelectedFile('')">
           {{ 'Download' | translate }}
         </button>
       </div>
@@ -178,7 +178,7 @@
           <div *ngIf="!isSubscriber" class="flex flex-col w-full">
             <label for="performanceDocument" class="font-semibold mb-1">Document</label>
             <input formControlName="document" id="performanceDocument" class="border border-gray-300 rounded-md p-2"
-              type="file" />
+              type="file" (change)="onFileUpload($event)" />
           </div>
 
           <!-- Summary / Reason Field -->
@@ -270,14 +270,16 @@
               <th class="py-2">{{ 'Date' | translate }}</th>
               <th class="py-2">{{ 'Type' | translate }}</th>
               <th class="py-2">{{ 'status' | translate }}</th>
+              <th class="py-2">{{ 'Summary' | translate }}</th>
             </tr>
           </thead>
           <tbody>
             <tr class="border-t text-center" *ngFor="let performance of displayedItems; let i = index">
               <td class="p-3">{{ performance.code }}</td>
-              <td class="p-3">{{ claim?.datecreated | date:'dd-MM-yyyy' }}</td>
+              <td class="p-3">{{ performance.dateperformance | date:'dd-MM-yyyy' }}</td>
               <td class="p-3">{{ claim?.claimtype }}</td>
               <td class="p-3">{{ performance.status | translate }}</td>
+              <td class="p-3">{{ performance.summary | translate }}</td>
             </tr>
           </tbody>
         </table>

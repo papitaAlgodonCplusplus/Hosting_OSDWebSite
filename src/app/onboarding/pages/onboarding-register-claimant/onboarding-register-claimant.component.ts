@@ -60,7 +60,7 @@ export class OnboardingRegisterClaimantComponent {
     this.personalForm = this.createPersonalForm();
     this.accountForm = this.createAccountForm();
   }
-  
+
   async loadUserInfo() {
     var userInfo = this.authenticationService.userInfo;
     if (userInfo) {
@@ -182,10 +182,15 @@ export class OnboardingRegisterClaimantComponent {
       if (this.selectorRegistry) {
         this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, "Claimant").subscribe(() => {
           setTimeout(() => {
-          // Wait 5 seconds for database update
           }, 5000);
         });
+
+        // Wait 5 seconds to ensure the user is created
+        setTimeout(async () => {
+          await new Promise(resolve => setTimeout(resolve, 5000));
+        }, 5000);
       }
+
       if (this.personalForm.value.identity) {
         this.accountForm.addControl(EventConstants.CLAIMANT_ID, new FormControl(this.personalForm.value.identity));
       } else if (this.user) {

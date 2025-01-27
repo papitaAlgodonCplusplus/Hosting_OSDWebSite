@@ -63,7 +63,22 @@ export class CreatePerformancesComponent {
     { key: 'security', value: 'Seguridad y Privacidad' },
     { key: 'functionality', value: 'Funcionalidad de aplicación' },
     { key: 'videos', value: 'Contratos y Videos' },
-    { key: 'continuous', value: 'Mejora Continua' }
+    { key: 'continuous', value: 'Mejora Continua' },
+    { key: 'update', value: 'Actualización' },
+    { key: 'development', value: 'Desarrollo' },
+    { key: 'administration', value: 'Administración' },
+    { key: 'maintenance', value: 'Mantenimiento' },
+    { key: 'user_navigation', value: 'Navegación Usuario' },
+    { key: 'Edición Formularios', value: 'Edición Formularios' },
+    { key: 'Seguridad y Privacidad', value: 'Seguridad y Privacidad' },
+    { key: 'Funcionalidad de aplicación', value: 'Funcionalidad de aplicación' },
+    { key: 'Contratos y Videos', value: 'Contratos y Videos' },
+    { key: 'Mejora Continua', value: 'Mejora Continua' },
+    { key: 'Actualización', value: 'Actualización' },
+    { key: 'Desarrollo', value: 'Desarrollo' },
+    { key: 'Administración', value: 'Administración' },
+    { key: 'Mantenimiento', value: 'Mantenimiento' },
+    { key: 'Navegación Usuario', value: 'Navegación Usuario' }
   ];
 
   developer_moduleOptions: DropDownItem[] = [
@@ -72,7 +87,13 @@ export class CreatePerformancesComponent {
     { key: 'transparencia', value: 'Gestor Transparencia' },
     { key: 'economico', value: 'Gestor Economico' },
     { key: 'osd', value: 'Gestor OSD' },
-    { key: 'usuarios', value: 'Gestor Usuarios/Perfiles' }
+    { key: 'usuarios', value: 'Gestor Usuarios/Perfiles' },
+    { key: 'Gestor Formativo', value: 'Gestor Formativo' },
+    { key: 'Gestor Expediente', value: 'Gestor Expediente' },
+    { key: 'Gestor Transparencia', value: 'Gestor Transparencia' },
+    { key: 'Gestor Economico', value: 'Gestor Economico' },
+    { key: 'Gestor OSD', value: 'Gestor OSD' },
+    { key: 'Gestor Usuarios/Perfiles', value: 'Gestor Usuarios/Perfiles' }
   ];
 
   constructor(
@@ -106,6 +127,7 @@ export class CreatePerformancesComponent {
     this.performanceFreeProfessional$.subscribe(performance => {
       this.performanceFP = performance;
       if (Object.keys(this.performanceFP).length > 0) {
+        console.log(this.performanceFP);
         this.performanceForm = this.fillform(this.performanceFP);
       }
     });

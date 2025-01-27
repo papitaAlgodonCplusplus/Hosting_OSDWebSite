@@ -4,104 +4,117 @@
 
 /* 1) Animate the modal with a scale + fade from below. */
 @keyframes fadeInScale {
-    0% {
+  0% {
       opacity: 0;
       transform: translateY(20px) scale(0.85);
-    }
-    100% {
+  }
+  100% {
       opacity: 1;
       transform: translateY(0) scale(1);
-    }
   }
-  
-  /*
-    2) The main modal container:
-       - Subtle gradient background
-       - Rounded corners
-       - Box-shadow
-       - Extra padding
-       - 'fadeInScale' animation
-  */
-  .modern-modal {
-    position: relative;
-    animation: fadeInScale 0.4s ease forwards;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-    /* A more colorful gradient: */
-    background: linear-gradient(135deg, #ffffff 0%, #f1f5ff 100%);
-    border-radius: 1rem;
-    border: 1px solid #ddd;
-    padding: 2rem;
-    max-width: 600px;
+}
+
+/*
+2) The main modal container:
+   - Subtle gradient background
+   - Rounded corners
+   - Box-shadow
+   - Extra padding
+   - 'fadeInScale' animation
+*/
+.modern-modal {
+  position: relative;
+  animation: fadeInScale 0.4s ease forwards;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  /* A more colorful gradient: */
+  background: linear-gradient(135deg, #ffffff 0%, #f1f5ff 100%);
+  border-radius: 1rem;
+  border: 1px solid #ddd;
+  padding: 2rem;
+  max-width: 1300px; /* Increased width to accommodate two columns */
+}
+
+/*
+3) The button to close the modal (the "X")
+   - Slight hover transform
+   - Color transition
+*/
+.close-modal-btn {
+  cursor: pointer;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+.close-modal-btn:hover {
+  color: #e11d48; /* bright red hover */
+  transform: scale(1.1);
+}
+
+/*
+4) Optional overlay class (override Tailwind's .bg-opacity-80 .bg-black if you prefer):
+*/
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  /* If you want the overlay to fade in, define a fadeOverlay keyframe */
+}
+
+/* (Optional) fadeOverlay keyframe if needed
+@keyframes fadeOverlay {
+0% { opacity: 0; }
+100% { opacity: 1; }
+}
+*/
+
+/*
+5) TABLE STYLING for a neat, elegant look
+   - Round borders
+   - Colorful header
+   - Subtle box shadow
+*/
+.subscriber-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 0.5rem;
+  overflow: hidden; /* ensures the rounded corners remain visible */
+  background: linear-gradient(135deg, #f0f9ff 0%, #e3f2fd 100%);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem; /* Added spacing between the two tables */
+}
+
+.subscriber-table thead {
+  background-color: #2196f3; /* a vibrant blue */
+  color: #fff;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Ensure equal spacing across three columns */
+  gap: 2rem; /* Adjust gap to create proper spacing */
+}
+
+.subscriber-table {
+  width: 100%; /* Make sure the table takes the full width of the grid column */
+  border-collapse: collapse;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e3f2fd 100%);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.subscriber-table th,
+.subscriber-table td {
+  padding: 0.75rem 1rem; /* Ensure padding is consistent */
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  word-break: break-word; /* Prevent text from overflowing */
+}
+
+/* Responsive grid for smaller screens */
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr; /* Stack columns vertically */
   }
-  
-  /*
-    3) The button to close the modal (the "X")
-       - Slight hover transform
-       - Color transition
-  */
-  .close-modal-btn {
-    cursor: pointer;
-    transition: color 0.2s ease, transform 0.2s ease;
-  }
-  .close-modal-btn:hover {
-    color: #e11d48; /* bright red hover */
-    transform: scale(1.1);
-  }
-  
-  /*
-    4) Optional overlay class (override Tailwind's .bg-opacity-80 .bg-black if you prefer):
-  */
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.8);
-    /* If you want the overlay to fade in, define a fadeOverlay keyframe */
-  }
-  
-  /* (Optional) fadeOverlay keyframe if needed
-  @keyframes fadeOverlay {
-    0% { opacity: 0; }
-    100% { opacity: 1; }
-  }
-  */
-  
-  /* 
-    5) TABLE STYLING for a neat, elegant look
-       - Round borders
-       - Colorful header
-       - Subtle box shadow
-  */
+
   .subscriber-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    border-radius: 0.5rem;
-    overflow: hidden; /* ensures the rounded corners remain visible */
-    background: linear-gradient(135deg, #f0f9ff 0%, #e3f2fd 100%);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem; /* Add spacing between stacked tables */
   }
-  
-  .subscriber-table thead {
-    background-color: #2196f3; /* a vibrant blue */
-    color: #fff;
-  }
-  
-  .subscriber-table th,
-  .subscriber-table td {
-    padding: 0.75rem 1rem;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  /* Make the first column slightly narrower, if desired */
-  .subscriber-table th:nth-child(1),
-  .subscriber-table td:nth-child(1) {
-    width: 30%;
-    font-weight: 600; 
-  }
-  
-  .subscriber-table th:last-child,
-  .subscriber-table td:last-child {
-    border-right: none;
-  }
-  
+}
