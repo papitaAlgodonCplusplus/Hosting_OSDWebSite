@@ -425,6 +425,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   }
 
   handleFileUploaded(event: { typeFile: string, fileId: string }): void {
+    console.log('File uploaded:', event);
     if (event.typeFile === "Identification") {
       this.accountForm.patchValue({
         IdentificationFileId: event.fileId
