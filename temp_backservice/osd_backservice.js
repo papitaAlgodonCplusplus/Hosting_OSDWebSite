@@ -3613,7 +3613,7 @@ const handleGetSubscribers = async (event, res) => {
       NULL AS scuserid,
       NULL AS trainerAssigned
       FROM osduser u
-      WHERE u.accounttype = '063e12fa-33db-47f3-ac96-a5bdb08ede61' OR u.accounttype =  '8e539a42-4108-4be6-8f77-2d16671d1069'
+      WHERE u.accounttype = '063e12fa-33db-47f3-ac96-a5bdb08ede61' OR u.accounttype =  '8e539a42-4108-4be6-8f77-2d16671d1069' OR u.accounttype = '7b04ef6e-b6b6-4b4c-98e5-3008512f610e'
     `);
 
     res.status(200).json(createWebBaseEvent({
