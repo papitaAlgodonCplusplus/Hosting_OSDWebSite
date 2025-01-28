@@ -163,7 +163,7 @@ export class OnboardingRegisterClaimantComponent {
   }
 
   onSubmit(): void {
-    if (this.selectorRegistry === true && !this.personalForm.invalid) {
+    if (this.selectorRegistry === true) {
       this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, "Claimant").subscribe(() => {
         setTimeout(() => {
         }, 5000);
