@@ -113,19 +113,6 @@
             </form>
         </div>
 
-        <div id="InfoDiv" *ngIf="selectorRegistry"
-            class="w-full flex flex-row justify-center font-medium text-darkslategray">
-            <a [ngClass]="{'text-line' : showPersonalInfo}"
-                class="transition duration-300 ease-in-out flex items-center cursor-pointer mt-2 p-2 " type="button"
-                (click)="toggleForm()"><i class="fa-solid fa-chevron-left animate-pulse pr-2"></i>
-                {{'regresar' | translate}} </a>
-
-            <a [ngClass]="{'text-line' : !showPersonalInfo}"
-                class="transition duration-300 ease-in-out flex items-center cursor-pointer mt-2 p-2" type="button"
-                (click)="toggleForm()">
-                {{'continue' | translate}} <i class="fa-solid fa-chevron-right animate-pulse pl-2"></i></a>
-        </div>
-
         <form [formGroup]="personalForm" autocomplete="off" class="w-full">
             <div *ngIf="!(isValidToken$ | async)" class="p-3 flex flex-col justify-start">
                 <div class="flex flex-row space-x-3">

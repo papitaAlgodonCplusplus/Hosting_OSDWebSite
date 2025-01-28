@@ -13,6 +13,7 @@ import { OSDService } from 'src/app/services/osd-event.services';
 import { ValidationsService } from 'src/app/services/validations.service';
 import { UiActions } from 'src/app/store/actions';
 import { AuthSelectors } from 'src/app/store/selectors';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register-claimant',
@@ -49,6 +50,7 @@ export class OnboardingRegisterClaimantComponent {
   constructor(
     private store: Store,
     private formBuilder: FormBuilder,
+    private router: Router,
     private validationsService: ValidationsService,
     private translate: TranslateService,
     private osdEventService: OSDService,
@@ -161,11 +163,20 @@ export class OnboardingRegisterClaimantComponent {
   }
 
   onSubmit(): void {
-    if (this.accountForm.invalid && this.personalForm.invalid && this.selectorRegistry === true) {
-      this.personalForm.markAllAsTouched();
-      this.accountForm.markAllAsTouched();
-      return;
-    } else if (this.accountForm.invalid && this.selectorRegistry === false) {
+    if (this.selectorRegistry === true && !this.personalForm.invalid) {
+      this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, "Claimant").subscribe(() => {
+        setTimeout(() => {
+        }, 5000);
+      });
+      // Wait 5 seconds to ensure the user is created
+      setTimeout(async () => {
+        await new Promise(resolve => setTimeout(resolve, 5000));
+      }, 5000);
+
+      this.router.navigate(['/auth']);
+    }
+
+    if (this.accountForm.invalid && this.selectorRegistry === false) {
       this.accountForm.markAllAsTouched();
       return;
     }
@@ -179,18 +190,6 @@ export class OnboardingRegisterClaimantComponent {
     this.store.dispatch(UiActions.toggleConfirmationButton());
 
     setTimeout(() => {
-      if (this.selectorRegistry) {
-        this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, "Claimant").subscribe(() => {
-          setTimeout(() => {
-          }, 5000);
-        });
-
-        // Wait 5 seconds to ensure the user is created
-        setTimeout(async () => {
-          await new Promise(resolve => setTimeout(resolve, 5000));
-        }, 5000);
-      }
-
       if (this.personalForm.value.identity) {
         this.accountForm.addControl(EventConstants.CLAIMANT_ID, new FormControl(this.personalForm.value.identity));
       } else if (this.user) {
