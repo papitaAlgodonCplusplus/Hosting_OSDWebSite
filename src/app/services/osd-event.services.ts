@@ -1044,6 +1044,7 @@ export class OSDService {
         var actionGetSusbscribersResultMessage = webBaseEvent.getBodyProperty(EventConstants.LIST_SUBSCRIBERS);
         const osdUsersSubscribersModels = actionGetOsdUsersSusbscriberResultMessage;
         const subscribersModels = actionGetSusbscribersResultMessage;
+        console.log(osdUsersSubscribersModels, subscribersModels);
         this.osdDataService.emitGetOsdUsersSubscribersSuccess(osdUsersSubscribersModels);
         this.osdDataService.emitGetSubscribersSuccess(subscribersModels);
       }

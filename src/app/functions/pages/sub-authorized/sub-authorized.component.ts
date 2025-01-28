@@ -129,11 +129,11 @@ export class SubAuthorizedComponent implements OnDestroy {
     // Observing the user's subscribers
     this.osdDataService.getOsdUsersSubscribersSuccess$.subscribe(osdUsersSubscribers => {
       this.items = osdUsersSubscribers;
+      console.log("Got subscribers", osdUsersSubscribers);
 
       // Observing all subscribers
       this.osdDataService.getSubscribersSuccess$.subscribe(subscribers => {
         this.subscribers = subscribers;
-        console.log("Got subscribers", subscribers);
 
         // Assign 'trainerAssigned' to items
         this.items.forEach(item => {
