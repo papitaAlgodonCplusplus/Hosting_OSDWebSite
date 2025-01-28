@@ -104,11 +104,11 @@ export class SubAuthorizedComponent implements OnDestroy {
   }
 
   groupSubscribersByUserType(): void {
-    const validUserTypes = ['CL', 'PL', 'R', 'CFH', 'IT', 'TC', 'R']; // Predefined USER_TYPE codes
+    const validUserTypes = ['CL', 'PL', 'R', 'CFH', 'IT', 'TC'];
 
     this.itemsGroupedByUserType = this.items.reduce((groups, item) => {
       const match = item.code.match(/.+\/([^\/]+)\/.+\/.+$/);
-      const userType = match && validUserTypes.includes(match[1]) ? match[1] : 'Unknown'; // Validate USER_TYPE
+      const userType = match && validUserTypes.includes(match[1]) ? match[1] : 'Unknown';
 
       if (!groups[userType]) {
         groups[userType] = [];
@@ -133,6 +133,7 @@ export class SubAuthorizedComponent implements OnDestroy {
       // Observing all subscribers
       this.osdDataService.getSubscribersSuccess$.subscribe(subscribers => {
         this.subscribers = subscribers;
+        console.log("Got subscribers", subscribers);
 
         // Assign 'trainerAssigned' to items
         this.items.forEach(item => {
