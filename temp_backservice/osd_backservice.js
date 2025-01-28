@@ -3,7 +3,6 @@ const { Pool } = require('pg');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const { v4: uuidv4 } = require('uuid'); // For TraceIdentifier
-const { add } = require('date-fns');
 
 const app = express();
 const port = 5000;
