@@ -104,7 +104,7 @@ export class SubAuthorizedComponent implements OnDestroy {
   }
 
   groupSubscribersByUserType(): void {
-    const validUserTypes = ['CL', 'PL', 'R', 'CFH', 'IT', 'TC']; // Predefined USER_TYPE codes
+    const validUserTypes = ['CL', 'PL', 'R', 'CFH', 'IT', 'TC', 'R']; // Predefined USER_TYPE codes
 
     this.itemsGroupedByUserType = this.items.reduce((groups, item) => {
       const match = item.code.match(/.+\/([^\/]+)\/.+\/.+$/);
