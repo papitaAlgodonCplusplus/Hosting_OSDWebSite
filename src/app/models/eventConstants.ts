@@ -52,6 +52,7 @@ export class EventConstants {
   public static DEVICE_IDENTIFIER: string = "DeviceIdentifier";
   public static DEVELOPER_CATEGORY: string = "developer_category";
   public static DEVELOPER_MODULE: string = "developer_module";
+  public static DEVELOPER_SCREEN_FORM: string = "developer_screen_form";
   public static DEVELOPER_ACTIVITY: string = "developer_activity";
   public static ACTION_REGISTER_SUCCESS: string = "ActionRegisterSuccess";
   public static ACTION_REGISTER_RESULT_MESSAGE: string = "ActionRegisterResultMessage";

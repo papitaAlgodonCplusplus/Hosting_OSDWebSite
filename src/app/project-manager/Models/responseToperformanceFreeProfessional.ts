@@ -29,5 +29,6 @@ export class ResponseToPerformanceFreeProfessional {
   totalFreeProfessionalData: string = "";
   developer_category: string = "";
   developer_module: string = "";
+  developer_screen_form: string = "";
   developer_activity: string = "";
 }

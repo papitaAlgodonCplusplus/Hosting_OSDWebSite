@@ -96,6 +96,14 @@ export class CreatePerformancesComponent {
     { key: 'Gestor Usuarios/Perfiles', value: 'Gestor Usuarios/Perfiles' }
   ];
 
+  developer_screen_formOptions: DropDownItem[] = [
+    { key: 'Administración', value: 'Administración' },
+    { key: 'Seguridad y Privacidad', value: 'Seguridad y Privacidad' },
+    { key: 'Edición Formularios', value: 'Edición Formularios' },
+    { key: 'Contratos y Videos', value: 'Contratos y Videos' },
+    { key: 'Informe mejora continua', value: 'Informe mejora continua' },
+  ];
+
   constructor(
     private store: Store,
     private formBuilder: FormBuilder,
@@ -173,6 +181,7 @@ export class CreatePerformancesComponent {
       TotalForecastData: ['', [Validators.required]],
       developer_category: [''],
       developer_module: [''],
+      developer_screen_form: [''],
       developer_activity: ['']
     });
   }
@@ -201,6 +210,7 @@ export class CreatePerformancesComponent {
       TotalForecastData: [performance.total_forecast_data, [Validators.required]],
       developer_category: [performance.developer_category || ''],
       developer_module: [performance.developer_module || ''],
+      developer_screen_form: [performance.developer_screen_form || ''],
       developer_activity: [performance.developer_activity || '']
     });
   }
@@ -221,6 +231,7 @@ export class CreatePerformancesComponent {
       if (!this.canAddDeveloperPerformance) {
         delete formData.developer_category;
         delete formData.developer_module;
+        delete formData.developer_screen_form;
         delete formData.developer_activity;
       }
 
@@ -244,6 +255,7 @@ export class CreatePerformancesComponent {
     if (!this.canAddDeveloperPerformance) {
       delete formData.developer_category;
       delete formData.developer_module;
+      delete formData.developer_screen_form;
       delete formData.developer_activity;
     }
 

@@ -15,76 +15,81 @@
     <!-- TABLE -->
     <div class="flex justify-center flex-col p-5">
         <div class="overflow-x-auto">
-            <table class="table-auto w-full">
-                <thead>
-                    <tr class="text-darkslategray">
-                        <th class="px-2 py-2" style="width: 20%;">
-                            {{ 'Formador asignado' | translate }}
-                        </th>
-                        <th class="px-2 py-2" style="width: 15%;">
-                            {{ 'Code' | translate }}
-                        </th>
-                        <th class="px-2 py-2" style="width: 20%;">
-                            {{ 'SubscriberCustomer' | translate }}
-                        </th>
-                        <th class="px-2" style="width: 15%;">
-                            {{ 'actions' | translate }}
-                        </th>
-                        <th class="px-2" style="width: 15%;">
-                            {{ 'authorized' | translate }}
-                        </th>
-                        <!-- NEW COLUMN: See Info -->
-                        <th class="px-2" style="width: 15%;">
-                            {{ 'See Info' | translate }}
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let item of displayedItems">
-                        <!-- Trainer Assigned -->
-                        <td class="text-center border-y px-2 py-2">
-                            {{ item.trainerassigned ? item.trainerassigned : 'Sin asignar' }}
-                        </td>
+            <ng-container *ngFor="let userType of itemsGroupedByUserType | keyvalue">
+                <!-- Group Header -->
+                <div class="text-darkslategray text-start py-3 text-lg font-semibold">
+                    {{ getUserTypeDisplayName(userType.key) }} <!-- Display mapped name -->
+                </div>
 
-                        <!-- Code -->
-                        <td class="text-center border-y px-2 py-2">
-                            {{ item.code }}
-                        </td>
+                <!-- Table for each USER_TYPE -->
+                <table class="table-auto w-full mb-5">
+                    <thead>
+                        <tr class="text-darkslategray">
+                            <th class="px-2 py-2" style="width: 20%;">
+                                {{ 'Formador asignado' | translate }}
+                            </th>
+                            <th class="px-2 py-2" style="width: 15%;">
+                                {{ 'Code' | translate }}
+                            </th>
+                            <th class="px-2 py-2" style="width: 20%;">
+                                {{ 'SubscriberCustomer' | translate }}
+                            </th>
+                            <th class="px-2" style="width: 15%;">
+                                {{ 'actions' | translate }}
+                            </th>
+                            <th class="px-2" style="width: 15%;">
+                                {{ 'authorized' | translate }}
+                            </th>
+                            <th class="px-2" style="width: 15%;">
+                                {{ 'See Info' | translate }}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of userType.value">
+                            <!-- Trainer Assigned -->
+                            <td class="text-center border-y px-2 py-2">
+                                {{ item.trainerassigned ? item.trainerassigned : 'Sin asignar' }}
+                            </td>
 
-                        <!-- Subscriber/Client Name -->
-                        <td class="text-center border-y px-2 py-2">
-                            {{ item.name }} {{ item.firstsurname }} {{ item.middlesurname ? item.middlesurname : '' }}
-                        </td>
+                            <!-- Code -->
+                            <td class="text-center border-y px-2 py-2">
+                                {{ item.code }}
+                            </td>
 
-                        <!-- Actions: existing "Select" -->
-                        <td class="text-center space-x-2 border-y py-2">
-                            <button (click)="selectUser(item)" class="underline text-darkslategray text-sm">
-                                <i class="fas fa-check-circle text-xl animate-bounce"></i>
-                            </button>
-                        </td>
+                            <!-- Subscriber/Client Name -->
+                            <td class="text-center border-y px-2 py-2">
+                                {{ item.name }} {{ item.firstsurname }} {{ item.middlesurname ? item.middlesurname : ''
+                                }}
+                            </td>
 
-                        <!-- Authorized (red/green icon) -->
-                        <td class="text-center border-y px-2 py-2">
-                            <i class="fa-solid fa-circle" [ngClass]="{
-                    'text-green-500': item.isauthorized,
-                    'text-red-600': !item.isauthorized
-                  }">
-                            </i>
-                        </td>
+                            <!-- Actions -->
+                            <td class="text-center space-x-2 border-y py-2">
+                                <button (click)="selectUser(item)" class="underline text-darkslategray text-sm">
+                                    <i class="fas fa-check-circle text-xl animate-bounce"></i>
+                                </button>
+                            </td>
 
-                        <!-- NEW ACTION: "See Info" -->
-                        <td class="text-center border-y px-2 py-2">
-                            <button (click)="viewSubscriberInfo(item)" class="underline text-darkslategray text-sm">
-                                <i class="fa-solid fa-eye"></i>
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                            <!-- Authorized (red/green icon) -->
+                            <td class="text-center border-y px-2 py-2">
+                                <i class="fa-solid fa-circle" [ngClass]="{
+                      'text-green-500': item.isauthorized,
+                      'text-red-600': !item.isauthorized
+                    }">
+                                </i>
+                            </td>
+
+                            <!-- "See Info" -->
+                            <td class="text-center border-y px-2 py-2">
+                                <button (click)="viewSubscriberInfo(item)" class="underline text-darkslategray text-sm">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </ng-container>
         </div>
-
-        <mat-paginator [length]="items.length" [pageSize]="10" (page)="onPageChange($event)">
-        </mat-paginator>
     </div>
 </div>
 
@@ -201,7 +206,8 @@
                             <div class="flex flex-col space-y-1">
                                 <button id="downloadButton" type="button" class="cursor-pointer px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg shadow-md 
                                   hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 
-                                  transition ease-in-out duration-150" (click)="downloadSelectedFile('identification')">
+                                  transition ease-in-out duration-150"
+                                    (click)="downloadSelectedFile('identification')">
                                     {{ 'Download' | translate }}
                                 </button>
                             </div>
@@ -225,7 +231,8 @@
                             <div class="flex flex-col space-y-1">
                                 <button id="downloadButton" type="button" class="cursor-pointer px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg shadow-md 
                                   hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 
-                                  transition ease-in-out duration-150" (click)="downloadSelectedFile('civilliability')">
+                                  transition ease-in-out duration-150"
+                                    (click)="downloadSelectedFile('civilliability')">
                                     {{ 'Download' | translate }}
                                 </button>
                             </div>

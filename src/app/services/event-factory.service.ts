@@ -166,6 +166,7 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.TOTAL_FORECAST_DATA, performanceFP.TotalForecastData);
     event.setBodyProperty(EventConstants.DEVELOPER_CATEGORY, performanceFP.developer_category);
     event.setBodyProperty(EventConstants.DEVELOPER_MODULE, performanceFP.developer_module);
+    event.setBodyProperty(EventConstants.DEVELOPER_SCREEN_FORM, performanceFP.developer_screen_form);
     event.setBodyProperty(EventConstants.DEVELOPER_ACTIVITY, performanceFP.developer_activity);
     return event;
   }
@@ -195,6 +196,7 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.TOTAL_FORECAST_DATA, performanceFP.TotalForecastData);
     event.setBodyProperty(EventConstants.DEVELOPER_CATEGORY, performanceFP.developer_category);
     event.setBodyProperty(EventConstants.DEVELOPER_MODULE, performanceFP.developer_module);
+    event.setBodyProperty(EventConstants.DEVELOPER_SCREEN_FORM, performanceFP.developer_screen_form);
     event.setBodyProperty(EventConstants.DEVELOPER_ACTIVITY, performanceFP.developer_activity);
     return event;
   }

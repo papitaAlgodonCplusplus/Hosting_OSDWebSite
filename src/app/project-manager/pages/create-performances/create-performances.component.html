@@ -99,6 +99,12 @@
             <!-- Developer Activity (text field) -->
             <shared-input-field class="w-full md:w-1/2" fieldName="developer_activity" label="Activity" inputType="text"
                 [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+
+
+            <!-- Screen / Form Module -->
+            <shared-simple-dropdown class="w-full md:w-1/2" fieldName="developer_screen_form" label="Developer Screen Form"
+                inputType="text" [formGroup]="performanceForm" [dropdownItems]="developer_screen_formOptions"
+                [bgColor]="'bg-white-lightbone'"></shared-simple-dropdown>
         </div>
     </form>
 

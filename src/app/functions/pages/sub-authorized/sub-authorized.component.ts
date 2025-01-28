@@ -16,6 +16,17 @@ import { BackblazeService } from 'src/app/services/backblaze.service';
 export class SubAuthorizedComponent implements OnDestroy {
   items: any[] = [];
   displayedItems: any[] = [];
+  // Map USER_TYPE codes to display names
+  userTypeDisplayNames: { [key: string]: string } = {
+    CL: 'Cliente',
+    PL: 'Profesional Libre',
+    R: 'Reclamante',
+    CFH: 'Centro de Formacion Homologado',
+    IT: 'Ingeniero Tecnico',
+    TC: 'Tecnico Contabilidad',
+    Unknown: 'Desconocido' // Default display name for unexpected types
+  };
+
 
   // Existing modal for authorizing
   showAuthorizatedModal: boolean = false;
@@ -23,6 +34,7 @@ export class SubAuthorizedComponent implements OnDestroy {
   user!: any;
   subscribers: Subscriber[] = [];
   subscriber!: Subscriber;
+  itemsGroupedByUserType: { [key: string]: any[] } = {};
 
   userId!: string;
   isAuthorized!: boolean;
@@ -87,6 +99,26 @@ export class SubAuthorizedComponent implements OnDestroy {
     });
   }
 
+  getUserTypeDisplayName(userType: string): string {
+    return this.userTypeDisplayNames[userType] || 'Desconocido';
+  }
+
+  groupSubscribersByUserType(): void {
+    const validUserTypes = ['CL', 'PL', 'R', 'CFH', 'IT', 'TC']; // Predefined USER_TYPE codes
+
+    this.itemsGroupedByUserType = this.items.reduce((groups, item) => {
+      const match = item.code.match(/.+\/([^\/]+)\/.+\/.+$/);
+      const userType = match && validUserTypes.includes(match[1]) ? match[1] : 'Unknown'; // Validate USER_TYPE
+
+      if (!groups[userType]) {
+        groups[userType] = [];
+      }
+      groups[userType].push(item);
+      return groups;
+    }, {});
+  }
+
+
   ngOnInit(): void {
     setTimeout(() => {
       this.osdEventService.GetSubscribers();
@@ -94,7 +126,7 @@ export class SubAuthorizedComponent implements OnDestroy {
       this.store.dispatch(UiActions.hideFooter());
     }, 0);
 
-    // Observing the users subscribers
+    // Observing the user's subscribers
     this.osdDataService.getOsdUsersSubscribersSuccess$.subscribe(osdUsersSubscribers => {
       this.items = osdUsersSubscribers;
 
@@ -102,7 +134,7 @@ export class SubAuthorizedComponent implements OnDestroy {
       this.osdDataService.getSubscribersSuccess$.subscribe(subscribers => {
         this.subscribers = subscribers;
 
-        // If you want to set 'trainerAssigned' from the subscriber object, do it here
+        // Assign 'trainerAssigned' to items
         this.items.forEach(item => {
           const matchingSubscriber = this.subscribers.find(
             sub => sub.userId === item.id
@@ -112,10 +144,12 @@ export class SubAuthorizedComponent implements OnDestroy {
           }
         });
 
+        this.groupSubscribersByUserType();
         this.updateDisplayedItems();
       });
     });
   }
+
 
   ngOnDestroy(): void {
     setTimeout(() => {

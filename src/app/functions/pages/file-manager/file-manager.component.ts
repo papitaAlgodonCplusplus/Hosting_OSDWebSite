@@ -137,6 +137,7 @@ export class FileManagerComponent implements OnInit, OnDestroy {
         this.isUserProcessor = true;
         this.isClaimant = true;
       }
+      console.log(this.user.AccountType, this.user.FreeProfessionalTypeID);
       if (this.user.AccountType === "ApprovedTrainingCenter") {
         this.isSubscriber = true;
       }
@@ -392,7 +393,6 @@ export class FileManagerComponent implements OnInit, OnDestroy {
   async assignValuation(claim: Claim) {
     const userInfo = this.authenticationService.userInfo;
     if (userInfo?.AccountType === "SubscriberCustomer") {
-      this.isSubscriber = true;
       if (claim.Valuationsubscriber === "0") {
         this.showModalRatings = true;
       }

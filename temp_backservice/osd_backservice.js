@@ -3,6 +3,7 @@ const { Pool } = require('pg');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const { v4: uuidv4 } = require('uuid'); // For TraceIdentifier
+const { add } = require('date-fns');
 
 const app = express();
 const port = 5000;
@@ -1289,6 +1290,9 @@ const handleModifyPerformanceFreeProfessional = async (event, res) => {
     if (addPerformancFPEvent.developer_module !== undefined) {
       performanceFreeprofessional.developer_module = addPerformancFPEvent.developer_module;
     }
+    if (addPerformancFPEvent.developer_screen_form !== undefined) {
+      performanceFreeprofessional.developer_screen_form = addPerformancFPEvent.developer_screen_form;
+    }
     if (addPerformancFPEvent.developer_category !== undefined) {
       performanceFreeprofessional.developer_category = addPerformancFPEvent.developer_category;
     }
@@ -1302,8 +1306,9 @@ const handleModifyPerformanceFreeProfessional = async (event, res) => {
        SET start_date = $1, end_date = $2, justifying_document = $3,
        freeprofessionalcreatedperformanceid = $4, estimated_transport_expenses = $5, estimated_transport_hours = $6,
        estimated_work_hours = $7, total_forecast_data = $8, summarytypeid = $9,
-       developer_module = $10, developer_category = $11, developer_activity = $12
-       WHERE id = $13`,
+       developer_module = $10, developer_category = $11, developer_activity = $12,
+       developer_screen_form = $13
+       WHERE id = $14`,
       [
         performanceFreeprofessional.start_date,
         performanceFreeprofessional.end_date,
@@ -1317,6 +1322,7 @@ const handleModifyPerformanceFreeProfessional = async (event, res) => {
         performanceFreeprofessional.developer_module,
         performanceFreeprofessional.developer_category,
         performanceFreeprofessional.developer_activity,
+        performanceFreeprofessional.developer_screen_form,
         performanceId
       ]
     );
@@ -1750,7 +1756,7 @@ const handleGetPerformancesProjectManagerById = async (event, res) => {
     const performancesFreeProfessionalQuery = `
       SELECT id, code, projectmanagerid, summarytypeid, start_date, end_date, justifying_document, 
              freeprofessionalcreatedperformanceid, freeprofessionalassignedid, estimated_transport_expenses, 
-             estimated_transport_hours, estimated_work_hours, total_forecast_data, justifying_document_bytes, developer_category, developer_module, developer_activity
+             estimated_transport_hours, estimated_work_hours, total_forecast_data, justifying_document_bytes, developer_category, developer_module, developer_screen_form, developer_activity
       FROM performance_freeprofessional
       WHERE projectmanagerid = $1
     `;
@@ -3139,6 +3145,7 @@ const handleAddPerformanceFreeProfessional = async (event, res) => {
       // 2) NEW FIELDS: fallback to null if not provided
       developer_category: addPerformancFPEvent.developer_category || null,
       developer_module: addPerformancFPEvent.developer_module || null,
+      developer_screen_form: addPerformancFPEvent.developer_screen_form || null,
       developer_activity: addPerformancFPEvent.developer_activity || null
     };
 
@@ -3202,11 +3209,12 @@ const handleAddPerformanceFreeProfessional = async (event, res) => {
         total_forecast_data,
         developer_category,
         developer_module,
+        developer_screen_form,
         developer_activity
       )
       VALUES (
         $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
-        $11, $12, $13, $14, $15, $16, $17
+        $11, $12, $13, $14, $15, $16, $17, $18
       )
     `;
 
@@ -3227,6 +3235,7 @@ const handleAddPerformanceFreeProfessional = async (event, res) => {
       performanceFreeprofessional.TotalForecastData,
       performanceFreeprofessional.developer_category,
       performanceFreeprofessional.developer_module,
+      performanceFreeprofessional.developer_screen_form,
       performanceFreeprofessional.developer_activity
     ]);
 
