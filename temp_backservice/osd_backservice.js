@@ -1542,9 +1542,6 @@ const handleChangingOsdUserAutorizationStatus = async (event, res) => {
     }
 
     let osdUser = userQuery.rows[0];
-    const usersInCountryQuery = await pool.query('SELECT COUNT(*) FROM osduser WHERE LOWER(TRIM(country)) = LOWER(TRIM($1))', [osdUser.country]);
-    const getNumberOfUsers = parseInt(usersInCountryQuery.rows[0].count, 10);
-
     if (osdUser.isauthorized) {
       return res.status(200).json(createWebBaseEvent({
         CHANGING_OSD_USER_AUTORIZATION_SUCCESS: true,
@@ -1552,44 +1549,7 @@ const handleChangingOsdUserAutorizationStatus = async (event, res) => {
       }, event.SessionKey, event.SecurityToken, 'ChangingOsdUserAutorizationStatus'));
     } else {
       osdUser.isauthorized = true;
-
-      const accountTypeQuery = await pool.query('SELECT * FROM accounttype WHERE id = $1', [osdUser.accounttype]);
-      const accountType = accountTypeQuery.rows[0];
-
-      const countryCode = osdUser.country.toUpperCase().trim();
-      const year = new Date().getFullYear();
-
-      if (accountType.type === 'FreeProfessional') {
-        const freeProfessionalQuery = await pool.query('SELECT * FROM freeprofessional WHERE userid = $1', [osdUser.id]);
-        const freeProfessional = freeProfessionalQuery.rows[0];
-
-        const freeProfessionalTypeQuery = await pool.query('SELECT * FROM freeprofessionaltype WHERE id = $1', [freeProfessional.freeprofessionaltypeid]);
-        const freeProfessionalType = freeProfessionalTypeQuery.rows[0];
-
-        const acronym = freeProfessionalType.acronym;
-
-        if (acronym === 'Accounting_Technician') {
-          osdUser.code = `${countryCode}/AC/${getNumberOfUsers}/${year}`;
-        } else if (acronym === 'Processor') {
-          osdUser.code = `${countryCode}/CH/${getNumberOfUsers}/${year}`;
-        } else if (acronym === 'IT_administrators') {
-          osdUser.code = `${countryCode}/IT/${getNumberOfUsers}/${year}`;
-        } else if (acronym === 'OSD_Systems_Engineer') {
-          osdUser.code = `${countryCode}/ISOSD/${getNumberOfUsers}/${year}`;
-        } else if (acronym === 'Marketing') {
-          osdUser.code = `${countryCode}/MK/${getNumberOfUsers}/${year}`;
-        } else if (acronym === 'Technical_Director') {
-          osdUser.code = `${countryCode}/DT-TM/${getNumberOfUsers}/${year}`;
-        } else if (acronym === 'Citizen_service') {
-          osdUser.code = `${countryCode}/CS/${getNumberOfUsers}/${year}`;
-        } else {
-          osdUser.code = `${countryCode}/TC/${getNumberOfUsers}/${year}`;
-        }
-      } else {
-        osdUser.code = `${countryCode}/CL/${getNumberOfUsers}/${year}`;
-      }
-
-      await pool.query('UPDATE osduser SET isauthorized = $1, code = $2 WHERE id = $3', [osdUser.isauthorized, osdUser.code, osdUser.id]);
+      await pool.query('UPDATE osduser SET isauthorized = $1 WHERE id = $2', [osdUser.isauthorized, osdUser.id]);
 
       return res.status(200).json(createWebBaseEvent({
         CHANGING_OSD_USER_AUTORIZATION_SUCCESS: true,
