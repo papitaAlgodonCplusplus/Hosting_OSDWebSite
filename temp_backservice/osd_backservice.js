@@ -2554,6 +2554,7 @@ const handleUserRegistration = async (event, res) => {
   try {
     const accountForm = event.Body?.AccountForm;
     const personalForm = event.Body?.PersonalForm;
+    let isClient = false;
 
     // Check required fields
     if (!personalForm?.email || !personalForm?.password) {
@@ -2608,6 +2609,7 @@ const handleUserRegistration = async (event, res) => {
       switch (accountTypeId) {
         case '063e12fa-33db-47f3-ac96-a5bdb08ede61':
           codePrefix = `${personalForm.country}/CL/${rowCount}/2025`;
+          isClient = true;
           break;
         case '0c61160c-d087-42b6-9fa0-1fc8673a00b2':
           codePrefix = `${personalForm.country}/PL/${rowCount}/2025`;
@@ -2692,6 +2694,22 @@ const handleUserRegistration = async (event, res) => {
       console.log(`🔄 User already exists with ID: ${userId}`);
     }
 
+    if (isClient) {
+      const subscriberCustomerQuery = `
+      SELECT id FROM subscribercustomer WHERE id = $1
+    `;
+      const subscriberCustomerResult = await pool.query(subscriberCustomerQuery, [userId]);
+      if (subscriberCustomerResult.rows.length === 0) {
+        const insertSubscriberCustomerQuery = `
+        INSERT INTO subscribercustomer (id, userid, clienttype)
+        VALUES ($1, $2, 'Subscriber')
+        `;
+        await pool.query(insertSubscriberCustomerQuery, [userId, userId]);
+
+        console.log(`✅ Subscriber customer record created for user ID: ${userId}`);
+      }
+    }
+
     // Handle specific account types (e.g., courses or freeprofessional)
     if (event.Body?.AccountType === 'FreeProfessional') {
       console.log(`🛠️ Inserting into freeprofessional table for FreeProfessional account.`, userId, accountForm)
@@ -2752,7 +2770,7 @@ const handleUserRegistration = async (event, res) => {
         accountForm.course
       ]);
     }
-    
+
     // Return success response
     return res.json({
       success: true,
