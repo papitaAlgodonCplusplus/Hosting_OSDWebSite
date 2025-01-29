@@ -192,7 +192,7 @@
           </div>
 
           <!-- Answer to Appeal Field -->
-          <div *ngIf="!isUserProcessor && !isTrainer" class="flex flex-col w-full">
+          <div *ngIf="!isUserProcessor && !isTrainer && !isClaimant" class="flex flex-col w-full">
             <label for="performanceAnswerToAppeal" class="font-semibold mb-1">
               {{ 'Answer_To_Appeal' | translate }}
             </label>
