@@ -271,30 +271,30 @@ app.post('/api/events/processOSDEvent', async (req, res) => {
 
 app.post('/api/check-approval', async (req, res) => {
   try {
-    const { email, course_id } = req.body;
-    if (!email || !course_id) {
-      return res.status(400).json({
-        success: false,
-        message: 'Email and course_id are required.'
-      });
-    }
+  //   const { email, course_id } = req.body;
+  //   if (!email || !course_id) {
+  //     return res.status(400).json({
+  //       success: false,
+  //       message: 'Email and course_id are required.'
+  //     });
+  //   }
 
-    const approvalQuery = `
-      SELECT sr.*
-      FROM student_records sr
-      INNER JOIN osduser u ON sr.user_id = u.id
-      WHERE u.email = $1
-        AND sr.course_id = $2
-        AND sr.status = 'Approved'
-    `;
+  //   const approvalQuery = `
+  //     SELECT sr.*
+  //     FROM student_records sr
+  //     INNER JOIN osduser u ON sr.user_id = u.id
+  //     WHERE u.email = $1
+  //       AND sr.course_id = $2
+  //       AND sr.status = 'Approved'
+  //   `;
 
-    const result = await pool.query(approvalQuery, [email, course_id]);
-    if (result.rows.length === 0) {
-      return res.status(200).json({
-        approved: false,
-        message: 'User is not approved for the selected course.'
-      });
-    }
+  //   const result = await pool.query(approvalQuery, [email, course_id]);
+  //   if (result.rows.length === 0) {
+  //     return res.status(200).json({
+  //       approved: false,
+  //       message: 'User is not approved for the selected course.'
+  //     });
+  //   }
 
     return res.status(200).json({
       approved: true,
@@ -2485,7 +2485,6 @@ const handleProfessorRegistration = async (event, res) => {
         message: 'Course not found.'
       });
     }
-
 
     // Insert into professores table
     const insertProfessorQuery = `
