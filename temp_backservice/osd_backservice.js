@@ -2486,18 +2486,6 @@ const handleProfessorRegistration = async (event, res) => {
       });
     }
 
-    // Check if professor is already assigned to this course
-    const existingProfessorQuery = await pool.query(
-      'SELECT * FROM professores WHERE professor_id = $1 AND course_id = $2',
-      [userId, courseId]
-    );
-
-    if (existingProfessorQuery.rows.length > 0) {
-      return res.status(400).json({
-        success: false,
-        message: 'Professor is already assigned to this course.'
-      });
-    }
 
     // Insert into professores table
     const insertProfessorQuery = `
