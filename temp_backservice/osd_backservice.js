@@ -30,7 +30,6 @@ const pool = new Pool({
 //   port: 5432
 // });
 
-
 const createWebBaseEvent = (body, sessionKey = null, securityToken = null, action = 'Response') => ({
   Body: body,
   TraceIdentifier: uuidv4(),
@@ -271,30 +270,30 @@ app.post('/api/events/processOSDEvent', async (req, res) => {
 
 app.post('/api/check-approval', async (req, res) => {
   try {
-  //   const { email, course_id } = req.body;
-  //   if (!email || !course_id) {
-  //     return res.status(400).json({
-  //       success: false,
-  //       message: 'Email and course_id are required.'
-  //     });
-  //   }
+    //   const { email, course_id } = req.body;
+    //   if (!email || !course_id) {
+    //     return res.status(400).json({
+    //       success: false,
+    //       message: 'Email and course_id are required.'
+    //     });
+    //   }
 
-  //   const approvalQuery = `
-  //     SELECT sr.*
-  //     FROM student_records sr
-  //     INNER JOIN osduser u ON sr.user_id = u.id
-  //     WHERE u.email = $1
-  //       AND sr.course_id = $2
-  //       AND sr.status = 'Approved'
-  //   `;
+    //   const approvalQuery = `
+    //     SELECT sr.*
+    //     FROM student_records sr
+    //     INNER JOIN osduser u ON sr.user_id = u.id
+    //     WHERE u.email = $1
+    //       AND sr.course_id = $2
+    //       AND sr.status = 'Approved'
+    //   `;
 
-  //   const result = await pool.query(approvalQuery, [email, course_id]);
-  //   if (result.rows.length === 0) {
-  //     return res.status(200).json({
-  //       approved: false,
-  //       message: 'User is not approved for the selected course.'
-  //     });
-  //   }
+    //   const result = await pool.query(approvalQuery, [email, course_id]);
+    //   if (result.rows.length === 0) {
+    //     return res.status(200).json({
+    //       approved: false,
+    //       message: 'User is not approved for the selected course.'
+    //     });
+    //   }
 
     return res.status(200).json({
       approved: true,
@@ -1430,16 +1429,23 @@ const handleGetSubPerformanceById = async (event, res) => {
 
 const handleAssignClaimsToFreeProfessionalTR = async (event, res) => {
   try {
+    console.log('📥 Received event:', event);
+
     const assignationFreeProfessionalToClaim = event.Body;
+    console.log('🔍 Extracted assignation details:', assignationFreeProfessionalToClaim);
+
     const freeprofessionalClaim = {
       Id: uuidv4(),
       Claimid: assignationFreeProfessionalToClaim.ClaimId,
       Freeprofessionalid: assignationFreeProfessionalToClaim.FreeProfessionalId
     };
+    console.log('🆔 Generated freeprofessionalClaim object:', freeprofessionalClaim);
 
     const claimQuery = await pool.query('SELECT * FROM claim_file WHERE id = $1', [freeprofessionalClaim.Claimid]);
+    console.log('🔍 Claim query result:', claimQuery.rows);
 
     if (claimQuery.rows.length === 0) {
+      console.warn('⚠️ Claim not found for ID:', freeprofessionalClaim.Claimid);
       return res.status(404).json(createWebBaseEvent({
         ASSIGN_CLAIMS_TO_FREE_PROFESSIONAL_TR_SUCCESS: false,
         ASSIGN_CLAIMS_TO_FREE_PROFESSIONAL_TR_MESSAGE: 'Claim not found.',
@@ -1448,14 +1454,27 @@ const handleAssignClaimsToFreeProfessionalTR = async (event, res) => {
 
     const claim = claimQuery.rows[0];
     claim.Status = 'Running';
+    console.log('🔄 Updated claim status to Running for claim ID:', freeprofessionalClaim.Claimid);
 
     await pool.query('UPDATE claim_file SET status = $1 WHERE id = $2', [claim.Status, freeprofessionalClaim.Claimid]);
+    console.log('✅ Claim status updated in database.');
+
+    const freeProfessionalResult = await pool.query('SELECT id FROM freeprofessional WHERE userid = $1', [freeprofessionalClaim.Freeprofessionalid]);
+    if (freeProfessionalResult.rows.length === 0) {
+      return res.status(404).json(createWebBaseEvent({
+        ASSIGN_CLAIMS_TO_FREE_PROFESSIONAL_TR_SUCCESS: false,
+        ASSIGN_CLAIMS_TO_FREE_PROFESSIONAL_TR_MESSAGE: 'Free professional not found.',
+      }, event.SessionKey, event.SecurityToken, 'AssignClaimsToFreeProfessionalTR'));
+    }
+
+    const freeProfessionalId = freeProfessionalResult.rows[0].id;
 
     await pool.query('INSERT INTO freeprofessional_claim (id, claimid, freeprofessionalid) VALUES ($1, $2, $3)', [
       freeprofessionalClaim.Id,
       freeprofessionalClaim.Claimid,
-      freeprofessionalClaim.Freeprofessionalid
+      freeProfessionalId
     ]);
+    console.log('✅ Freeprofessional claim inserted into database.');
 
     return res.status(200).json(createWebBaseEvent({
       ASSIGN_CLAIMS_TO_FREE_PROFESSIONAL_TR_SUCCESS: true,
@@ -1484,7 +1503,7 @@ const handleGettingFreeProfessionalsTR = async (event, res) => {
     // `, [subscriberId]);
 
     const subscribercustomerfreeprofessionalprocessors = await pool.query(`
-        SELECT * FROM subscribercustomerfreeprofessionalprocessor`);
+        SELECT * FROM freeprofessional`);
 
     const freeProfessionalsDTO = [];
     const usersDTO = [];
@@ -1493,8 +1512,8 @@ const handleGettingFreeProfessionalsTR = async (event, res) => {
       const freeProfessionals = await pool.query(`
         SELECT *
         FROM freeprofessional
-        WHERE id = $1
-      `, [subfpp.freeprofessionalid]);
+        WHERE freeprofessionaltypeid = $1
+      `, ['2fc2a66a-69ca-4832-a90e-1ff590b80d24']);
 
       for (const freeProfessional of freeProfessionals.rows) {
         const user = await pool.query(`
@@ -1874,6 +1893,8 @@ const handleAddPerformanceUpdate = async (event, res) => {
       }, event.SessionKey, event.SecurityToken, 'AddPerformanceUpdate'));
     }
 
+    console.log('performanceData:', performanceData);
+
     if (performanceData.askForMoreInfo & performanceData.askForMoreInfo === true) {
       const updateClaimFileQuery = `
         UPDATE claim_file
@@ -1950,7 +1971,8 @@ const handleAddPerformanceUpdate = async (event, res) => {
       facts = COALESCE($6, facts),
       solution_suggestion = COALESCE($7, solution_suggestion),
       appeal = COALESCE($8, appeal),
-      complaint = COALESCE($9, complaint)
+      complaint = COALESCE($9, complaint),
+      answer_to_appeal = COALESCE($10, answer_to_appeal)
       WHERE id = $5
       RETURNING *;
     `;
@@ -1964,7 +1986,8 @@ const handleAddPerformanceUpdate = async (event, res) => {
       performanceData.facts || null,
       performanceData.solutionSuggestion || null,
       performanceData.appeal || null,
-      performanceData.complaint || null
+      performanceData.complaint || null,
+      performanceData.answer_to_appeal || null
     ]);
 
 
@@ -2185,11 +2208,7 @@ const handleGetPerformancesClaimById = async (event, res) => {
 
 
     const claimFileQuery = `
-      SELECT
-        id, code, datecreated, status, subscriberclaimedid, claimantid, claimtype,
-        serviceprovided, facts, amountclaimed, documentfile1id, documentfile1name,
-        documentfile2id, documentfile2name, creditingdate, amountpaid, improvementsavings,
-        valuationsubscriber, valuationclaimant, valuationfreeprofessionals, complaint, appeal, solution_suggestion
+      SELECT *
       FROM claim_file
       WHERE id = $1
     `;
@@ -2543,6 +2562,8 @@ const handleUserRegistration = async (event, res) => {
     let isClient = false;
     let isClaimant = false;
 
+    console.log("📩 Account Form: ", accountForm, "📩 Personal Form: ", personalForm);
+
     // Check required fields
     if (!personalForm?.email || !personalForm?.password) {
       console.error("❌ Missing email or password.");
@@ -2643,10 +2664,10 @@ const handleUserRegistration = async (event, res) => {
         INSERT INTO osduser (
           id, code, accounttype, identity, name, firstsurname, middlesurname, city,
           companyname, address, zipcode, country, landline, mobilephone, email, password, web,
-          isauthorized, isadmin, offering_type, refeer
+          isauthorized, isadmin, offering_type, refeer, can_be_claimed
         ) VALUES (
           $1, $2, $3, $4, $5, $6, $7, $8,
-          $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21
+          $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22
         )
         RETURNING id;
       `;
@@ -2672,7 +2693,8 @@ const handleUserRegistration = async (event, res) => {
         isClaimant,
         false,
         accountForm.cfhOffer,
-        referId || null
+        referId || null,
+        accountForm.canBeClaimed === 'Yes'
       ]);
 
       if (accountTypeId === '8e539a42-4108-4be6-8f77-2d16671d1069') {
@@ -3561,6 +3583,7 @@ const handleGetSubscribers = async (event, res) => {
       u.mobilephone,
       u.web,
       u.refeer,
+      u.can_be_claimed,
       sc.clienttype,
       sc.id AS scid,
       sc.userid AS scuserid,
@@ -3606,6 +3629,7 @@ const handleGetSubscribers = async (event, res) => {
       u.mobilephone,
       u.web,
       u.refeer,
+      u.can_be_claimed,
       NULL AS clienttype,
       NULL AS scid,
       NULL AS scuserid,

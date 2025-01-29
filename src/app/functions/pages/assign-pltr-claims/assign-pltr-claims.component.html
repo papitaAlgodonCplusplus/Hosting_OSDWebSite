@@ -26,8 +26,7 @@
                         <td class="text-center border-y px-4 py-2">{{ claim.facts }}</td>
                         <td class="border-y px-3 py-2">{{ claim.datecreated | date:'yyyy-MM-dd' }}</td>
                         <td class="text-center border-y px-4 py-2">
-                            <button
-                                class="rounded-xl bg-line text-darkslategray p-2" (click)="openModal(claim)"
+                            <button class="rounded-xl bg-line text-darkslategray p-2" (click)="openModal(claim)"
                                 data-modal-target="default-modal">
                                 {{'assignProcessor' | translate}}
                             </button>
@@ -74,22 +73,30 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <ng-container *ngIf="users.length > 0; else isLoading">
-                            <tr *ngFor="let user of users; let i = index">
-                                <th class="text-center font-normal border-y px-4 py-2">
-                                    {{ user.code }}
-                                </th>
-                                <th class="text-center font-normal border-y px-4 py-2">
-                                    {{ (user.name ?? '') + " " + (user.firstname ?? '') + " " + (user.middlesurname ?? '') }}
-                                </th>
-                                <td class="text-center font-normal border-y px-4 py-2">
-                                    <button (click)="assignFreeProfessionalToClaim(claim.id, user.id)"
-                                        class="rounded-xl p-2 bg-darkslategray text-line">
-                                        {{ 'Select' | translate }}
-                                    </button>
+                        <ng-container *ngIf="users.length > 0; else noUsers">
+                        <tr *ngFor="let user of users; let i = index">
+                            <th class="text-center font-normal border-y px-4 py-2">
+                                {{ user.code }}
+                            </th>
+                            <th class="text-center font-normal border-y px-4 py-2">
+                                {{ (user.name ?? '') + " " + (user.firstname ?? '') + " " + (user.middlesurname ?? '')
+                                }}
+                            </th>
+                            <td class="text-center font-normal border-y px-4 py-2">
+                                <button (click)="assignFreeProfessionalToClaim(claim.id, user.id)"
+                                    class="rounded-xl p-2 bg-darkslategray text-line">
+                                    {{ 'Select' | translate }}
+                                </button>
+                            </td>
+                        </tr>
+                        </ng-container>
+                        <ng-template #noUsers>
+                            <tr class="text-center">
+                                <td colspan="3" class="text-darkslategray px-4 py-2">
+                                    {{ 'No users available' | translate }}
                                 </td>
                             </tr>
-                        </ng-container>
+                        </ng-template>
                         <ng-template #isLoading>
                             <tr class="text-center">
                                 <th></th>

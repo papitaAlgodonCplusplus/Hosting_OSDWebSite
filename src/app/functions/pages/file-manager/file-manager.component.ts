@@ -41,6 +41,7 @@ export class FileManagerComponent implements OnInit, OnDestroy {
   isFreeProfessional: boolean = false;
   isAssignedClaim: boolean = false;
   isUserProcessor: boolean = false;
+  isTrainer: boolean = false;
   showModalRatings: boolean = false;
   showModalPerformances: boolean = false;
   showAddUpdateModal: boolean = false;
@@ -78,7 +79,8 @@ export class FileManagerComponent implements OnInit, OnDestroy {
       factsUpdate: [''],
       solutionSuggestion: [''],
       appeal: [''],
-      complaint: ['']
+      complaint: [''],
+      answer_to_appeal: ['']
     });
 
     // NEW: Finalize Form for user rating 0-5
@@ -94,7 +96,7 @@ export class FileManagerComponent implements OnInit, OnDestroy {
       const reader = new FileReader();
       reader.onload = () => {
         const base64String = reader.result as string;
-        this.addUpdateForm.patchValue({ document: base64String });
+        this.addUpdateForm.patchValue({ document: "SomeDoc" });
       };
       reader.onerror = (error) => {
         console.error("Error reading file: ", error);
@@ -128,14 +130,14 @@ export class FileManagerComponent implements OnInit, OnDestroy {
         this.user = this.authenticationService.userInfo;
       }
 
+      console.log(this.user.AccountType, this.user.FreeProfessionalTypeID, this.user.AccountType);
       if (this.user.FreeProfessionalTypeID === '2fc2a66a-69ca-4832-a90e-1ff590b80d24') {
         this.isUserProcessor = true;
-      }
-      if (this.user.FreeProfessionalTypeID === "eea2312e-6a85-4ab6-85ff-0864547e3870") {
-        this.isSubscriber = true;
-      }
-      console.log(this.user.AccountType, this.user.FreeProfessionalTypeID);
-      if (this.user.AccountType === "ApprovedTrainingCenter") {
+      } else if (this.user.FreeProfessionalTypeID === "eea2312e-6a85-4ab6-85ff-0864547e3870") {
+        this.isTrainer = true;
+      } else if (this.user.AccountType === "Claimant") {
+        this.isClaimant = true;
+      } else if (this.user.AccountType === "ApprovedTrainingCenter" || this.user.AccountType === "SubscriberCustomer") {
         this.isSubscriber = true;
       }
 
@@ -148,6 +150,7 @@ export class FileManagerComponent implements OnInit, OnDestroy {
           this.addUpdateForm.get('improvementSavings')?.disable();
           this.addUpdateForm.get('amountPaid')?.disable();
           this.addUpdateForm.get('creditingDate')?.disable();
+          this.addUpdateForm.get('answer_to_appeal')?.disable();
         } else {
           // Re-enable them if unchecked
           this.addUpdateForm.get('status')?.enable();
@@ -155,6 +158,7 @@ export class FileManagerComponent implements OnInit, OnDestroy {
           this.addUpdateForm.get('improvementSavings')?.enable();
           this.addUpdateForm.get('amountPaid')?.enable();
           this.addUpdateForm.get('creditingDate')?.enable();
+          this.addUpdateForm.get('answer_to_appeal')?.enable();
         }
       });
     }, 0);
@@ -163,7 +167,7 @@ export class FileManagerComponent implements OnInit, OnDestroy {
   downloadSelectedFile(nothing: any) {
     let fileId: string;
     fileId = this.claim.documentfile1id;
-   
+
     if (!fileId) {
       return;
     }
@@ -247,7 +251,8 @@ export class FileManagerComponent implements OnInit, OnDestroy {
         FactsUpdate: formData.factsUpdate || null,
         appeal: formData.appeal || null,
         complaint: formData.complaint || null,
-        solutionSuggestion: formData.solutionSuggestion || null
+        solutionSuggestion: formData.solutionSuggestion || null,
+        answer_to_appeal: formData.answer_to_appeal || null,
       };
 
       if (this.addUpdateForm.value.askForMoreInfo) {
@@ -311,6 +316,7 @@ export class FileManagerComponent implements OnInit, OnDestroy {
       complaint: [claim?.complaint || ''],
       appeal: [claim?.appeal || ''],
       solution_suggestion: [claim?.solution_suggestion || ''],
+      answer_to_appeal: [claim?.answer_to_appeal || ''],
     });
     return formGroup;
   }

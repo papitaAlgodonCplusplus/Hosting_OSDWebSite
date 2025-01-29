@@ -50,6 +50,9 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
   }
 
   ngOnInit(): void {
+    this.accountForm.get('clientType')?.valueChanges.subscribe(clientType => {
+      this.onClientTypeChange(clientType);
+    });
     setTimeout(() => {
       this.countryService.getCountries().subscribe((data: any[]) => {
         let countriesList;
@@ -102,6 +105,12 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
     }, 0);
   }
 
+  onClientTypeChange(clientType: string): void {
+    this.accountForm.patchValue({
+      clientCanBeClaimed: clientType === 'Client Subscriber' ? 'Yes' : 'No'
+    });
+  }
+
   private createPersonalForm(): FormGroup {
     return this.formBuilder.group({
       companyName: ['', [Validators.required]],
@@ -127,7 +136,8 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
     return this.formBuilder.group({
       clientType: ['', [Validators.required]],
       showCodepl: [''],
-      emailOfRefer: [''], // Optional field
+      emailOfRefer: [''],
+      clientCanBeClaimed: [''],
     });
   }
 

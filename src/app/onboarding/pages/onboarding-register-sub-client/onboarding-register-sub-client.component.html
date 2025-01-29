@@ -1,15 +1,28 @@
 <div class="flex px-10 py-2 flex-col-reverse items-start w-full">
-
     <div class="flex flex-col py-3 bg-white text-black w-full lg:w-full">
-        <form [formGroup]="accountForm" (ngSubmit)="onSubmit()" autocomplete="off" class="flex flex-wrap items-center ">
+        <form [formGroup]="accountForm" (ngSubmit)="onSubmit()" autocomplete="off" class="flex flex-wrap items-center">
+            <div class="w-full flex items-center space-x-2 p-3 bg-gray-100 border border-gray-300 rounded-md mb-4">
+                <label>{{ 'Client Type' | translate }}:</label>
+
+                <label>
+                    <input type="radio" formControlName="clientType" [value]="'Client Subscriber'">
+                    {{ 'Client Subscriber' | translate }}
+                </label>
+
+                <label>
+                    <input type="radio" formControlName="clientType" [value]="'Solutions Only Customer'">
+                    {{ 'Solutions Only Customer' | translate }}
+                </label>
+            </div>
+
             <shared-simple-dropdown class="w-full md:w-1/2" fieldName="clientType" label="{{'type_client' | translate}}"
                 [formGroup]="accountForm" [dropdownItems]="clientType" [selectedItem]="selectedClientType">
             </shared-simple-dropdown>
-        
+
             <shared-input-field class="w-full md:w-1/2" fieldName="emailOfRefer"
                 label="{{'Email_of_Refer' | translate}}" inputType="text" [formGroup]="accountForm">
             </shared-input-field>
-        
+
             <shared-input-field *ngIf="false" (click)="openModal()" [readOnly]="true" class="w-full md:w-1/2"
                 fieldName="plCode" [formGroup]="accountForm">
             </shared-input-field>

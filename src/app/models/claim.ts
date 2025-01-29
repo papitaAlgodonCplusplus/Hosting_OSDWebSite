@@ -24,6 +24,7 @@ export interface Claim {
     complaint: string;
     appeal: string;
     solution_suggestion: string;
+    answer_to_appeal: string;
 
     id: string;
     code: string;

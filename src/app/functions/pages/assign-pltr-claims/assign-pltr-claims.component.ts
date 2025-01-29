@@ -74,20 +74,27 @@ export class AssignPLTRClaimsComponent implements OnDestroy {
       this.claims = claims
     },)
 
-    this.osdDataService.freeProfessionalTR$.subscribe(item => {
-      this.freeProfessionalsTr = item;
-    })
-
+    const tempArray: UserInfo[] = [];
     this.osdDataService.usersFreeProfessionalTR$.subscribe(item => {
-      this.users = item;
-    })
+      item.forEach(user => {
+        if (!tempArray.some(tempUser => tempUser.code === user.code)) {
+          tempArray.push(user);
+        }
+      });
+      this.users = tempArray;
+    });
   }
 
   assignFreeProfessionalToClaim(idClaim: string, idTR: string) {
     this.osdEventService.cleanClaimList();
-    var freeProfessional = this.freeProfessionalsTr.find(fp => fp.userid == idTR)
+    console.log(this.users, idTR)
+    var freeProfessional = this.users.find(fp => fp.id == idTR)
     if (freeProfessional) {
       this.osdEventService.assignFreeProfessionalsTRToClaim(idClaim, freeProfessional.id);
+      this.store.dispatch(
+        ModalActions.addAlertMessage({ alertMessage: "Registration successful!" })
+      );
+      this.store.dispatch(ModalActions.openAlert());
     }
     this.showModal = false;
   }

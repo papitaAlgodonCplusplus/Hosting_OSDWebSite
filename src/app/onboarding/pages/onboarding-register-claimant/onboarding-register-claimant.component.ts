@@ -101,7 +101,11 @@ export class OnboardingRegisterClaimantComponent {
     });
 
     this.osdDataService.getOsdUsersSubscribersSuccess$.subscribe(osdUsersSubscribers => {
-      this.subscribers = osdUsersSubscribers;
+      console.log("All subscribers", osdUsersSubscribers);
+      this.subscribers = osdUsersSubscribers.filter(subscriber => {
+        const match = subscriber.code.match(/.+\/([^\/]+)\/.+\/.+$/);
+        return match && (match[1] === 'CL' || match[1] === 'CFH') && subscriber.can_be_claimed;
+      });
       this.applyFilters();
     });
   }

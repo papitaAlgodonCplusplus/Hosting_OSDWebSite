@@ -24,5 +24,6 @@ export interface UserInfo {
   companyName: string;
   Country: string;
   country: string;
+  can_be_claimed: string;
   FreeProfessionalTypeID: string;
 }
