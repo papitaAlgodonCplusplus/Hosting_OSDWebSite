@@ -44,62 +44,6 @@
                     fieldName="workspace" label="{{'Workspace' | translate}}" [formGroup]="accountForm"
                     [dropdownItems]="workspace" [selectedItem]="selectedWorkspace">
                 </shared-simple-dropdown>
-
-                <shared-input-field class="w-full md:w-1/2" fieldName="pricePerHour"
-                    label="{{'price_per_hour (EUR)' | translate}}" inputType="text" [formGroup]="accountForm">
-                </shared-input-field>
-
-                <div *ngIf="showCourseCheckbox && selectedWorkspace !== 'eea2312e-6a85-4ab6-85ff-0864547e3870'"
-                    class="w-full md:w-1/2 flex items-center">
-                    <input type="checkbox" id="courseCheckbox" formControlName="courseCheckbox"
-                        (change)="onCheckBoxChange()"
-                        [disabled]="selectedWorkspace === 'eea2312e-6a85-4ab6-85ff-0864547e3870'">
-                    <label for="courseCheckbox" class="ml-2">
-                        {{ 'i_would_like_to_do_a_course' | translate }}
-                    </label>
-                </div>
-
-                <div *ngIf="showCourseDropdown" class="flex flex-col w-full gap-4 items-center">
-                    <!-- Course Title Select -->
-                    <div class="w-full md:w-1/2">
-                        <label for="courseTitle" class="text-darkgray">{{ 'Select_Course_Title' | translate }}</label>
-                        <select id="courseTitle" class="w-full p-2 border border-gray-300 rounded-lg"
-                            formControlName="courseTitle" (change)="updateCourseString()">
-                            <option [value]="''" disabled selected>{{ 'Select_Course_Title' | translate }}</option>
-                            <option *ngFor="let t of distinctTitles" [value]="t">
-                                {{ t }}
-                            </option>
-                        </select>
-                    </div>
-
-                    <!-- 2) Course Mode -->
-                    <div class="w-full md:w-1/2">
-                        <label for="courseMode" class="text-darkgray">{{ 'Select_Mode' | translate }}</label>
-                        <select id="courseMode" class="w-full p-2 border border-gray-300 rounded-lg"
-                            formControlName="courseMode" (change)="updateCourseString()">
-                            <option [value]="''" disabled selected>{{ 'Select_Mode' | translate }}</option>
-
-                            <!-- Now we loop over distinctModes instead of the full courses array -->
-                            <option *ngFor="let mode of distinctModes" [value]="mode">
-                                {{ mode }}
-                            </option>
-                        </select>
-                    </div>
-
-                    <!-- 3) Course Key (CFH) -->
-                    <div class="w-full md:w-1/2">
-                        <label for="courseCFH" class="text-darkgray">{{ 'Select_CFH' | translate}}</label>
-                        <select id="courseCFH" class="w-full p-2 border border-gray-300 rounded-lg"
-                            formControlName="courseCFH" (change)="updateCourseString()">
-                            <option [value]="''" disabled selected>
-                                {{ 'Select_CFH' | translate }}
-                            </option>
-                            <option *ngFor="let opt of cfhOptions" [value]="opt.display">
-                                {{ opt.display }}
-                            </option>
-                        </select>
-                    </div>
-                </div>
             </div>
 
             <div class="w-full flex flex-wrap justify-center gap-4">

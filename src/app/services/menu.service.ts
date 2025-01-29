@@ -53,6 +53,7 @@ export class MenuService {
       this.createMenuOption('authorizeCustomers', '/functions/sub-authorized', 'fa-check-circle', 'bg-green-500'),
       //this.createMenuOption('authorizeFreeProfessionals', '/functions/autorization-pl', 'fa-check-circle', 'bg-teal-500'),
       this.createMenuOption('Assign_Processor_to_Claim', '/functions/assign-pltr-claims', 'fa-user', 'bg-yellow-500'),
+      this.createMenuOption('file_claim', '/functions/claims-file', 'fa-file', 'bg-yellow-500'),
       //this.createMenuOption('accounting_services', '/functions/accounting-services', 'fa-calculator', 'bg-purple-500'),
       this.createMenuOption('edit_user_profile', '/functions/edit-my-info', 'fa-user-edit', 'bg-blue-500'),
       this.createMenuOption('administer_users', '/functions/students-management', 'fa-graduation-cap', 'bg-teal-500'),

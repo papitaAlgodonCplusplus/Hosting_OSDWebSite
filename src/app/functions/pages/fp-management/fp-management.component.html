@@ -8,16 +8,14 @@
           <th class="py-2 px-4">Nombre</th>
           <th class="py-2 px-4">Tarifas (EUR)</th>
           <th class="py-2 px-4">Tipo</th>
-          <th class="py-2 px-4">CFH Asociado</th>
           <th class="py-2 px-4">Clientes Referidos</th>
-          <th class="py-2 px-4">Ingreso Total Referencias (EUR)</th>
+          <th class="py-2 px-4">Ingreso Referencias (EUR)</th>
+          <th class="py-2 px-4">Ingreso Expedientes (EUR)</th>
+          <th class="py-2 px-4">Ingreso Marketing (EUR)</th>
         </tr>
       </thead>
       <tbody formArrayName="professionals">
-        <tr
-          *ngFor="let professional of professionals.controls; let i = index"
-          [formGroupName]="i"
-          [ngClass]="{
+        <tr *ngFor="let professional of professionals.controls; let i = index" [formGroupName]="i" [ngClass]="{
             'bg-tc': professional.value.FreeprofessionaltypeAcronym === 'TC',
             'bg-tr': professional.value.FreeprofessionaltypeAcronym === 'TR',
             'bg-infit': professional.value.FreeprofessionaltypeAcronym === 'INFIT',
@@ -27,61 +25,32 @@
             'bg-ts': professional.value.FreeprofessionaltypeAcronym === 'TS',
             'bg-fc': professional.value.FreeprofessionaltypeAcronym === 'FC',
             'bg-tk': professional.value.FreeprofessionaltypeAcronym === 'TK'
-          }"
-        >
+          }">
           <td class="p-2 border border-gray-300">
-            <input
-              type="text"
-              formControlName="name"
-              placeholder="Nombre"
-              class="w-full p-1 rounded bg-gray-100 cursor-not-allowed"
-              readonly
-            />
+            <input type="text" formControlName="name" placeholder="Nombre"
+              class="w-full p-1 rounded bg-gray-100 cursor-not-allowed" readonly />
           </td>
           <td class="p-2 border border-gray-300">
-            <input
-              type="number"
-              formControlName="serviceRates"
-              placeholder="Tarifas"
-              class="w-full p-1 rounded bg-gray-100 cursor-not-allowed"
-              readonly
-            />
+            <input type="number" formControlName="serviceRates" placeholder="Tarifas"
+              class="w-full p-1 rounded bg-gray-100 cursor-not-allowed" readonly />
           </td>
           <td class="p-2 border border-gray-300">
-            <input
-              type="text"
-              formControlName="type"
-              placeholder="Tipo"
-              class="w-full p-1 rounded bg-gray-100 cursor-not-allowed"
-              readonly
-            />
+            <input type="text" formControlName="type" placeholder="Tipo"
+              class="w-full p-1 rounded bg-gray-100 cursor-not-allowed" readonly />
           </td>
           <td class="p-2 border border-gray-300">
-            <input
-              type="text"
-              formControlName="cfhAssociated"
-              placeholder="CFH Asociado"
-              class="w-full p-1 rounded bg-gray-100 cursor-not-allowed"
-              readonly
-            />
+            <input type="number" formControlName="clientsReferred" placeholder="Clientes Referidos"
+              class="w-full p-1 rounded bg-gray-100 cursor-not-allowed" readonly />
           </td>
           <td class="p-2 border border-gray-300">
-            <input
-              type="number"
-              formControlName="clientsReferred"
-              placeholder="Clientes Referidos"
-              class="w-full p-1 rounded bg-gray-100 cursor-not-allowed"
-              readonly
-            />
+            <input type="text" formControlName="totalIncome" placeholder="Ingreso Total"
+              class="w-full p-1 rounded bg-gray-100 cursor-not-allowed" readonly />
           </td>
           <td class="p-2 border border-gray-300">
-            <input
-              type="text"
-              formControlName="totalIncome"
-              placeholder="Ingreso Total"
-              class="w-full p-1 rounded bg-gray-100 cursor-not-allowed"
-              readonly
-            />
+            <input type="number" value="0" class="w-full p-1 rounded bg-gray-100 cursor-not-allowed" readonly />
+          </td>
+          <td class="p-2 border border-gray-300">
+            <input type="number" value="0" class="w-full p-1 rounded bg-gray-100 cursor-not-allowed" readonly />
           </td>
         </tr>
       </tbody>

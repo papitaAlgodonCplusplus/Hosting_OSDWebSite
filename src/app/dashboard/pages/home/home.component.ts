@@ -56,13 +56,14 @@ export class HomeComponent implements OnInit, OnDestroy {
         'Assign_client_to_Trainer',
         'fp_management',
         'edit_user_profile',
+        'logs'
       ]
     },
     {
       title: '2. GESTOR EXPEDIENTES',
       optionNames: [
+        'file_claim',
         'Assign_Processor_to_Claim',
-        'logs'
       ]
     },
     {

@@ -50,6 +50,6 @@ export class FpManagementComponent implements OnInit {
   calculateIncome(serviceRates: number, clientsReferred: number): number {
     const osdIncomePerExpedient = 100; // Example fixed value
     const referredIncome = clientsReferred * (osdIncomePerExpedient * 0.1);
-    return (serviceRates + referredIncome);
+    return (referredIncome);
   }
 }

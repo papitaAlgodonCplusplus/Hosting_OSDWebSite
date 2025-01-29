@@ -34,7 +34,12 @@ export class SubAuthorizedComponent implements OnDestroy {
   user!: any;
   subscribers: Subscriber[] = [];
   subscriber!: Subscriber;
-  itemsGroupedByUserType: { [key: string]: any[] } = {};
+  itemsGroupedByUserType: { [key: string]: any[] } = {
+    Cliente: [],
+    CFH: [],
+    RestFreeProfessionals: [],
+    Reclamante: []
+  };
 
   userId!: string;
   isAuthorized!: boolean;
@@ -104,22 +109,45 @@ export class SubAuthorizedComponent implements OnDestroy {
   }
 
   groupSubscribersByUserType(): void {
-    const validUserTypes = ['CL', 'PL', 'R', 'CFH', 'IT', 'TC'];
+    const groupedItems: { [key: string]: any[] } = {
+      Cliente: [],
+      CFH: [],
+      RestFreeProfessionals: [],
+      Reclamante: [],
+    };
 
-    this.itemsGroupedByUserType = this.items.reduce((groups, item) => {
+    this.items.forEach(item => {
       const match = item.code.match(/.+\/([^\/]+)\/.+\/.+$/);
-      const userType = match && validUserTypes.includes(match[1]) ? match[1] : 'Unknown';
+      const userType = match && match[1] ? match[1] : 'Unknown';
 
-      if (!groups[userType]) {
-        groups[userType] = [];
+      if (userType === 'CL') {
+        groupedItems['Cliente'].push(item);
+      } else if (userType === 'CFH') {
+        groupedItems['CFH'].push(item);
+      } else if (userType === 'R') {
+        groupedItems['Reclamante'].push(item);
+      } else {
+        groupedItems['RestFreeProfessionals'].push(item);
       }
-      groups[userType].push(item);
-      return groups;
-    }, {});
+    });
+
+    // Assign the grouped items back to `itemsGroupedByUserType` in the specified order
+    this.itemsGroupedByUserType = {
+      Cliente: groupedItems['Cliente'],
+      CFH: groupedItems['CFH'],
+      RestFreeProfessionals: groupedItems['RestFreeProfessionals'],
+      Reclamante: groupedItems['Reclamante'],
+    };
   }
 
 
   ngOnInit(): void {
+    this.itemsGroupedByUserType = {
+      Cliente: [],
+      CFH: [],
+      RestFreeProfessionals: [],
+      Reclamante: [],
+    };
     setTimeout(() => {
       this.osdEventService.GetSubscribers();
       this.store.dispatch(UiActions.hideLeftSidebar());

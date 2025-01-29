@@ -863,8 +863,8 @@ const handleGetClaims = async (event, res) => {
     let claimsQuery;
     let queryParams = [];
 
-    if (freeProfessionalTypeId === 'eea2312e-6a85-4ab6-85ff-0864547e3870') {
-      // Retrieve all claims without the WHERE clause
+    console.log('freeProfessionalTypeId:', freeProfessionalTypeId, 'userId:', userId);
+    if (freeProfessionalTypeId === 'eea2312e-6a85-4ab6-85ff-0864547e3870' || userId === 'e77b5172-f726-4c1d-9f9e-d2dbd77e03c9') {
       claimsQuery = `
         SELECT cf.*, u.accounttype, u.identity, u.name, u.firstsurname, u.middlesurname, u.city, 
                u.companyname, u.address, u.zipcode, u.country, u.landline, u.mobilephone, u.email, 
@@ -874,7 +874,6 @@ const handleGetClaims = async (event, res) => {
         LEFT JOIN subscribercustomer sc ON cf.subscriberclaimedid = sc.id
       `;
     } else {
-      // Retrieve claims with the WHERE clause
       claimsQuery = `
         SELECT cf.*, u.accounttype, u.identity, u.name, u.firstsurname, u.middlesurname, u.city, 
                u.companyname, u.address, u.zipcode, u.country, u.landline, u.mobilephone, u.email, 
@@ -2555,6 +2554,7 @@ const handleUserRegistration = async (event, res) => {
     const accountForm = event.Body?.AccountForm;
     const personalForm = event.Body?.PersonalForm;
     let isClient = false;
+    let isClaimant = false;
 
     // Check required fields
     if (!personalForm?.email || !personalForm?.password) {
@@ -2616,6 +2616,7 @@ const handleUserRegistration = async (event, res) => {
           break;
         case '7b04ef6e-b6b6-4b4c-98e5-3008512f610e':
           codePrefix = `${personalForm.country}/R/${rowCount}/2025`;
+          isClaimant = true;
           break;
         case '8e539a42-4108-4be6-8f77-2d16671d1069':
           codePrefix = `${personalForm.country}/CFH/${rowCount}/2025`;
@@ -2681,11 +2682,42 @@ const handleUserRegistration = async (event, res) => {
         personalForm.email,
         personalForm.password,
         personalForm.web,
-        false,
+        isClaimant,
         false,
         accountForm.cfhOffer,
         referId || null
       ]);
+
+      if (accountTypeId === '8e539a42-4108-4be6-8f77-2d16671d1069') {
+        const coursesResult = await pool.query('SELECT * FROM courses');
+        const insertedCourseIds = new Set();
+        for (const course of coursesResult.rows) {
+          const newCourseId = uuidv4();
+
+          if (insertedCourseIds.has(newCourseId)) {
+            console.error(`❌ Duplicate newCourseId detected: ${newCourseId}. Stopping the insertion process.`);
+            break;
+          }
+
+          const newTitle = `${course.title} (${personalForm.companyName})`;
+
+          await pool.query(
+            `INSERT INTO courses (
+        id, osduser_id, title, cost, mode
+        ) VALUES (
+        $1, $2, $3, $4, $5F
+        )`,
+            [
+              newCourseId,
+              userId,
+              newTitle,
+              course.cost,
+              course.mode
+            ]
+          );
+          insertedCourseIds.add(newCourseId);
+        }
+      }
 
       userId = osdUserResult.rows[0].id;
       console.log(`✅ User created with ID: ${userId}`);
@@ -2742,6 +2774,7 @@ const handleUserRegistration = async (event, res) => {
 
       console.log(`✅ FreeProfessional record created for user ID: ${userId}`);
     }
+
 
     // Insert into student_records if courseCheckbox is checked
     if (accountForm.courseCheckbox === true && accountForm.course) {

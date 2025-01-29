@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
@@ -57,51 +57,38 @@ export class CreatePerformancesComponent {
   isViewPerformance: boolean = false;
   isCreatePerformance: boolean = false;
 
-  // NEW: Developer Category and Module options (for the 2 new dropdowns)
   developer_categoryOptions: DropDownItem[] = [
-    { key: 'forms', value: 'Edición Formularios' },
-    { key: 'security', value: 'Seguridad y Privacidad' },
-    { key: 'functionality', value: 'Funcionalidad de aplicación' },
-    { key: 'videos', value: 'Contratos y Videos' },
-    { key: 'continuous', value: 'Mejora Continua' },
-    { key: 'update', value: 'Actualización' },
-    { key: 'development', value: 'Desarrollo' },
-    { key: 'administration', value: 'Administración' },
-    { key: 'maintenance', value: 'Mantenimiento' },
-    { key: 'user_navigation', value: 'Navegación Usuario' },
     { key: 'Edición Formularios', value: 'Edición Formularios' },
+    { key: 'Funcionalidad aplicación', value: 'Funcionalidad aplicación' },
     { key: 'Seguridad y Privacidad', value: 'Seguridad y Privacidad' },
-    { key: 'Funcionalidad de aplicación', value: 'Funcionalidad de aplicación' },
-    { key: 'Contratos y Videos', value: 'Contratos y Videos' },
-    { key: 'Mejora Continua', value: 'Mejora Continua' },
-    { key: 'Actualización', value: 'Actualización' },
-    { key: 'Desarrollo', value: 'Desarrollo' },
-    { key: 'Administración', value: 'Administración' },
-    { key: 'Mantenimiento', value: 'Mantenimiento' },
+    { key: 'Actualización Contenidos', value: 'Actualización Contenidos' },
     { key: 'Navegación Usuario', value: 'Navegación Usuario' }
   ];
 
   developer_moduleOptions: DropDownItem[] = [
-    { key: 'formativo', value: 'Gestor Formativo' },
-    { key: 'expediente', value: 'Gestor Expediente' },
-    { key: 'transparencia', value: 'Gestor Transparencia' },
-    { key: 'economico', value: 'Gestor Economico' },
-    { key: 'osd', value: 'Gestor OSD' },
-    { key: 'usuarios', value: 'Gestor Usuarios/Perfiles' },
-    { key: 'Gestor Formativo', value: 'Gestor Formativo' },
-    { key: 'Gestor Expediente', value: 'Gestor Expediente' },
-    { key: 'Gestor Transparencia', value: 'Gestor Transparencia' },
-    { key: 'Gestor Economico', value: 'Gestor Economico' },
-    { key: 'Gestor OSD', value: 'Gestor OSD' },
-    { key: 'Gestor Usuarios/Perfiles', value: 'Gestor Usuarios/Perfiles' }
+    { key: 'Gestor Usuarios/Perfiles', value: 'Gestor Usuarios/Perfiles' },
+    { key: 'Gestor Expediente: Reclamación o Sugerencia de Mejora', value: 'Gestor Expediente: Reclamación o Sugerencia de Mejora' },
+    { key: 'Gestión Ética y Transparente de Proyecto', value: 'Gestión Ética y Transparente de Proyecto' },
+    { key: 'Gestor Mapa Recursos Naturales', value: 'Gestor Mapa Recursos Naturales' },
+    { key: 'Gestor Formación OSD', value: 'Gestor Formación OSD' },
+    { key: 'Transparencia Informes', value: 'Transparencia Informes' }
+  ];
+
+  developer_activityOptions: DropDownItem[] = [
+    { key: 'Desarrollo', value: 'Desarrollo' },
+    { key: 'Actualización (Mejora Continua)', value: 'Actualización (Mejora Continua)' },
+    { key: 'Mantenimiento', value: 'Mantenimiento' },
+    { key: 'Diseño gráfico', value: 'Diseño gráfico' },
+    { key: 'Documentación', value: 'Documentación' }
   ];
 
   developer_screen_formOptions: DropDownItem[] = [
-    { key: 'Administración', value: 'Administración' },
-    { key: 'Seguridad y Privacidad', value: 'Seguridad y Privacidad' },
-    { key: 'Edición Formularios', value: 'Edición Formularios' },
-    { key: 'Contratos y Videos', value: 'Contratos y Videos' },
-    { key: 'Informe mejora continua', value: 'Informe mejora continua' },
+    { key: 'Cliente', value: 'Cliente' },
+    { key: 'Profesional Libre', value: 'Profesional Libre' },
+    { key: 'Reclamante', value: 'Reclamante' },
+    { key: 'Centro de Formación Homologado', value: 'Centro de Formación Homologado' },
+    { key: 'RE Expediente', value: 'RE Expediente' },
+    { key: 'RE Actuación', value: 'RE Actuación' },
   ];
 
   constructor(
@@ -118,6 +105,9 @@ export class CreatePerformancesComponent {
   }
 
   ngOnInit() {
+    (this.performanceForm.get('developer_category') as FormArray).clear();
+    (this.performanceForm.get('developer_module') as FormArray).clear();
+    (this.performanceForm.get('developer_screen_form') as FormArray).clear();
     setTimeout(() => {
       this.store.dispatch(UiActions.hideFooter());
       this.store.dispatch(UiActions.hideLeftSidebar());
@@ -179,10 +169,10 @@ export class CreatePerformancesComponent {
       ForecastTravelTime: ['', [Validators.required]],
       ForecastWorkHours: ['', [Validators.required]],
       TotalForecastData: ['', [Validators.required]],
-      developer_category: [''],
-      developer_module: [''],
-      developer_screen_form: [''],
-      developer_activity: ['']
+      developer_category: this.formBuilder.array([]), // FormArray for checkboxes
+      developer_module: this.formBuilder.array([]), // FormArray for checkboxes
+      developer_screen_form: this.formBuilder.array([]), // FormArray for checkboxes
+      developer_activity: [''] // Dropdown remains as a FormControl
     });
   }
 
@@ -190,11 +180,8 @@ export class CreatePerformancesComponent {
     this.isCreatePerformance = false;
     this.justifyingDocument = performance.justifying_document;
 
-    let originalDate = performance.start_date;
-    let formatedStartDate = this.datePipe.transform(originalDate, 'yyyy-MM-dd');
-
-    let originalDTDate = performance.end_date;
-    let formatedEndDate = this.datePipe.transform(originalDTDate, 'yyyy-MM-dd');
+    let formatedStartDate = this.datePipe.transform(performance.start_date, 'yyyy-MM-dd');
+    let formatedEndDate = this.datePipe.transform(performance.end_date, 'yyyy-MM-dd');
 
     return this.formBuilder.group({
       Start_Date: [formatedStartDate, [Validators.required]],
@@ -203,18 +190,27 @@ export class CreatePerformancesComponent {
       FreeProfessionalCode: [performance.FreeProfessionalAssignedCode, [Validators.required]],
       SummaryId: [performance.summarytypeid, [Validators.required]],
       freeProfessionalId: [performance.freeprofessionalassignedid, [Validators.required]],
-
       ForecastTravelExpenses: [performance.estimated_transport_expenses, [Validators.required]],
       ForecastTravelTime: [performance.estimated_transport_hours, [Validators.required]],
       ForecastWorkHours: [performance.estimated_work_hours, [Validators.required]],
       TotalForecastData: [performance.total_forecast_data, [Validators.required]],
-      developer_category: [performance.developer_category || ''],
-      developer_module: [performance.developer_module || ''],
-      developer_screen_form: [performance.developer_screen_form || ''],
+      developer_category: this.formBuilder.array((Array.isArray(performance.developer_category) ? performance.developer_category : []).map(item => this.formBuilder.control(item))),
+      developer_module: this.formBuilder.array(Array.isArray(performance.developer_module) ? performance.developer_module : []),
+      developer_screen_form: this.formBuilder.array(Array.isArray(performance.developer_screen_form) ? performance.developer_screen_form : []),
       developer_activity: [performance.developer_activity || '']
     });
   }
 
+  toggleCheckbox(formArrayName: string, value: string): void {
+    const formArray: FormArray = this.performanceForm.get(formArrayName) as FormArray;
+    if (formArray.value.includes(value)) {
+      const index = formArray.value.indexOf(value);
+      formArray.removeAt(index);
+    } else {
+      formArray.push(this.formBuilder.control(value));
+    }
+  }
+  
   // CHANGED: onSubmit will only send the 3 developer fields if canAddDeveloperPerformance = true
   onSubmit(): void {
     if (this.performanceForm.invalid) {

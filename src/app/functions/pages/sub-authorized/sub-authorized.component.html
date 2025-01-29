@@ -15,71 +15,37 @@
     <!-- TABLE -->
     <div class="flex justify-center flex-col p-5">
         <div class="overflow-x-auto">
-            <ng-container *ngFor="let userType of itemsGroupedByUserType | keyvalue">
-                <!-- Group Header -->
+            <!-- Display Cliente group -->
+            <div *ngIf="itemsGroupedByUserType && itemsGroupedByUserType['Cliente'] && itemsGroupedByUserType['Cliente'].length > 0">
                 <div class="text-darkslategray text-start py-3 text-lg font-semibold">
-                    {{ getUserTypeDisplayName(userType.key) }} <!-- Display mapped name -->
+                    {{ 'Cliente' | translate }}
                 </div>
-
-                <!-- Table for each USER_TYPE -->
                 <table class="table-auto w-full mb-5">
                     <thead>
                         <tr class="text-darkslategray">
-                            <th class="px-2 py-2" style="width: 20%;">
-                                {{ 'Formador asignado' | translate }}
-                            </th>
-                            <th class="px-2 py-2" style="width: 15%;">
-                                {{ 'Code' | translate }}
-                            </th>
-                            <th class="px-2 py-2" style="width: 20%;">
-                                {{ 'SubscriberCustomer' | translate }}
-                            </th>
-                            <th class="px-2" style="width: 15%;">
-                                {{ 'actions' | translate }}
-                            </th>
-                            <th class="px-2" style="width: 15%;">
-                                {{ 'authorized' | translate }}
-                            </th>
-                            <th class="px-2" style="width: 15%;">
-                                {{ 'See Info' | translate }}
-                            </th>
+                            <th class="px-2 py-2" style="width: 20%;">{{ 'Formador asignado' | translate }}</th>
+                            <th class="px-2 py-2" style="width: 15%;">{{ 'Code' | translate }}</th>
+                            <th class="px-2 py-2" style="width: 20%;">{{ 'SubscriberCustomer' | translate }}</th>
+                            <th class="px-2" style="width: 15%;">{{ 'actions' | translate }}</th>
+                            <th class="px-2" style="width: 15%;">{{ 'authorized' | translate }}</th>
+                            <th class="px-2" style="width: 15%;">{{ 'See Info' | translate }}</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let item of userType.value">
-                            <!-- Trainer Assigned -->
-                            <td class="text-center border-y px-2 py-2">
-                                {{ item.trainerassigned ? item.trainerassigned : 'Sin asignar' }}
-                            </td>
-
-                            <!-- Code -->
-                            <td class="text-center border-y px-2 py-2">
-                                {{ item.code }}
-                            </td>
-
-                            <!-- Subscriber/Client Name -->
-                            <td class="text-center border-y px-2 py-2">
-                                {{ item.name }} {{ item.firstsurname }} {{ item.middlesurname ? item.middlesurname : ''
-                                }}
-                            </td>
-
-                            <!-- Actions -->
+                        <tr *ngFor="let item of itemsGroupedByUserType['Cliente']">
+                            <td class="text-center border-y px-2 py-2">{{ item.trainerassigned || 'Sin asignar' }}</td>
+                            <td class="text-center border-y px-2 py-2">{{ item.code }}</td>
+                            <td class="text-center border-y px-2 py-2">{{ item.name }} {{ item.firstsurname }} {{
+                                item.middlesurname || '' }}</td>
                             <td class="text-center space-x-2 border-y py-2">
                                 <button (click)="selectUser(item)" class="underline text-darkslategray text-sm">
                                     <i class="fas fa-check-circle text-xl animate-bounce"></i>
                                 </button>
                             </td>
-
-                            <!-- Authorized (red/green icon) -->
                             <td class="text-center border-y px-2 py-2">
-                                <i class="fa-solid fa-circle" [ngClass]="{
-                      'text-green-500': item.isauthorized,
-                      'text-red-600': !item.isauthorized
-                    }">
-                                </i>
+                                <i class="fa-solid fa-circle"
+                                    [ngClass]="{ 'text-green-500': item.isauthorized, 'text-red-600': !item.isauthorized }"></i>
                             </td>
-
-                            <!-- "See Info" -->
                             <td class="text-center border-y px-2 py-2">
                                 <button (click)="viewSubscriberInfo(item)" class="underline text-darkslategray text-sm">
                                     <i class="fa-solid fa-eye"></i>
@@ -88,7 +54,130 @@
                         </tr>
                     </tbody>
                 </table>
-            </ng-container>
+            </div>
+
+            <!-- Display CFH group -->
+            <div *ngIf="itemsGroupedByUserType && itemsGroupedByUserType['CFH'] && itemsGroupedByUserType['CFH'].length > 0">
+                <div class="text-darkslategray text-start py-3 text-lg font-semibold">
+                    {{ 'Centro de Formacion Homologado' | translate }}
+                </div>
+                <table class="table-auto w-full mb-5">
+                    <thead>
+                        <tr class="text-darkslategray">
+                            <th class="px-2 py-2" style="width: 20%;">{{ 'Formador asignado' | translate }}</th>
+                            <th class="px-2 py-2" style="width: 15%;">{{ 'Code' | translate }}</th>
+                            <th class="px-2 py-2" style="width: 20%;">{{ 'SubscriberCustomer' | translate }}</th>
+                            <th class="px-2" style="width: 15%;">{{ 'actions' | translate }}</th>
+                            <th class="px-2" style="width: 15%;">{{ 'authorized' | translate }}</th>
+                            <th class="px-2" style="width: 15%;">{{ 'See Info' | translate }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of itemsGroupedByUserType['CFH']">
+                            <td class="text-center border-y px-2 py-2">{{ item.trainerassigned || 'Sin asignar' }}</td>
+                            <td class="text-center border-y px-2 py-2">{{ item.code }}</td>
+                            <td class="text-center border-y px-2 py-2">{{ item.name }} {{ item.firstsurname }} {{
+                                item.middlesurname || '' }}</td>
+                            <td class="text-center space-x-2 border-y py-2">
+                                <button (click)="selectUser(item)" class="underline text-darkslategray text-sm">
+                                    <i class="fas fa-check-circle text-xl animate-bounce"></i>
+                                </button>
+                            </td>
+                            <td class="text-center border-y px-2 py-2">
+                                <i class="fa-solid fa-circle"
+                                    [ngClass]="{ 'text-green-500': item.isauthorized, 'text-red-600': !item.isauthorized }"></i>
+                            </td>
+                            <td class="text-center border-y px-2 py-2">
+                                <button (click)="viewSubscriberInfo(item)" class="underline text-darkslategray text-sm">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Display RestFreeProfessionals group -->
+            <div *ngIf="itemsGroupedByUserType && itemsGroupedByUserType['RestFreeProfessionals'] && itemsGroupedByUserType['RestFreeProfessionals'].length > 0">
+                <div class="text-darkslategray text-start py-3 text-lg font-semibold">
+                    {{ 'Free Professionals' | translate }}
+                </div>
+                <table class="table-auto w-full mb-5">
+                    <thead>
+                        <tr class="text-darkslategray">
+                            <th class="px-2 py-2" style="width: 20%;">{{ 'Formador asignado' | translate }}</th>
+                            <th class="px-2 py-2" style="width: 15%;">{{ 'Code' | translate }}</th>
+                            <th class="px-2 py-2" style="width: 20%;">{{ 'SubscriberCustomer' | translate }}</th>
+                            <th class="px-2" style="width: 15%;">{{ 'actions' | translate }}</th>
+                            <th class="px-2" style="width: 15%;">{{ 'authorized' | translate }}</th>
+                            <th class="px-2" style="width: 15%;">{{ 'See Info' | translate }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of itemsGroupedByUserType['RestFreeProfessionals']">
+                            <td class="text-center border-y px-2 py-2">{{ item.trainerassigned || 'Sin asignar' }}</td>
+                            <td class="text-center border-y px-2 py-2">{{ item.code }}</td>
+                            <td class="text-center border-y px-2 py-2">{{ item.name }} {{ item.firstsurname }} {{
+                                item.middlesurname || '' }}</td>
+                            <td class="text-center space-x-2 border-y py-2">
+                                <button (click)="selectUser(item)" class="underline text-darkslategray text-sm">
+                                    <i class="fas fa-check-circle text-xl animate-bounce"></i>
+                                </button>
+                            </td>
+                            <td class="text-center border-y px-2 py-2">
+                                <i class="fa-solid fa-circle"
+                                    [ngClass]="{ 'text-green-500': item.isauthorized, 'text-red-600': !item.isauthorized }"></i>
+                            </td>
+                            <td class="text-center border-y px-2 py-2">
+                                <button (click)="viewSubscriberInfo(item)" class="underline text-darkslategray text-sm">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Display Reclamante group -->
+            <div *ngIf="itemsGroupedByUserType && itemsGroupedByUserType['Reclamante'] && itemsGroupedByUserType['Reclamante'].length > 0">
+                <div class="text-darkslategray text-start py-3 text-lg font-semibold">
+                    {{ 'Reclamante' | translate }}
+                </div>
+                <table class="table-auto w-full mb-5">
+                    <thead>
+                        <tr class="text-darkslategray">
+                            <th class="px-2 py-2" style="width: 20%;">{{ 'Formador asignado' | translate }}</th>
+                            <th class="px-2 py-2" style="width: 15%;">{{ 'Code' | translate }}</th>
+                            <th class="px-2 py-2" style="width: 20%;">{{ 'SubscriberCustomer' | translate }}</th>
+                            <th class="px-2" style="width: 15%;">{{ 'actions' | translate }}</th>
+                            <th class="px-2" style="width: 15%;">{{ 'authorized' | translate }}</th>
+                            <th class="px-2" style="width: 15%;">{{ 'See Info' | translate }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of itemsGroupedByUserType['Reclamante']">
+                            <td class="text-center border-y px-2 py-2">{{ item.trainerassigned || 'Sin asignar' }}</td>
+                            <td class="text-center border-y px-2 py-2">{{ item.code }}</td>
+                            <td class="text-center border-y px-2 py-2">{{ item.name }} {{ item.firstsurname }} {{
+                                item.middlesurname || '' }}</td>
+                            <td class="text-center space-x-2 border-y py-2">
+                                <button (click)="selectUser(item)" class="underline text-darkslategray text-sm">
+                                    <i class="fas fa-check-circle text-xl animate-bounce"></i>
+                                </button>
+                            </td>
+                            <td class="text-center border-y px-2 py-2">
+                                <i class="fa-solid fa-circle"
+                                    [ngClass]="{ 'text-green-500': item.isauthorized, 'text-red-600': !item.isauthorized }"></i>
+                            </td>
+                            <td class="text-center border-y px-2 py-2">
+                                <button (click)="viewSubscriberInfo(item)" class="underline text-darkslategray text-sm">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

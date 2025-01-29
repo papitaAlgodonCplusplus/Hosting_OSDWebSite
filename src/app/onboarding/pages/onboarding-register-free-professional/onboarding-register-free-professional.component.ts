@@ -265,7 +265,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   private createAccountForm(): FormGroup {
     return this.formBuilder.group({
       workspace: ['', [Validators.required]],
-      pricePerHour: [''],
+      pricePerHour: ['60'],
       IdentificationFileName: ['', [Validators.required]],
       IdentificationFileId: [''],
       CurriculumVitaeFileName: ['', [Validators.required]],
@@ -274,14 +274,10 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
       CivilLiabilityInsuranceFileId: [''],
       servicerates: [''],
       payTPV: [''],
-      // We remove the single 'course' definition (or keep it but see below)
       courseTitle: [''],
       courseMode: [''],
       courseCFH: [''],
-
-      // This will hold the final combined string
       course: [''],
-
       courseCheckbox: [false],
     });
   }
@@ -352,6 +348,10 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     const selectedCourse = this.accountForm.value.course;
 
     // Validate forms
+    if (!this.personalForm.value.country) {
+      this.personalForm.get('country')?.setErrors({ required: true });
+      return;
+    }
     if (this.accountForm.invalid || this.personalForm.invalid) {
       this.accountForm.markAllAsTouched();
       this.personalForm.markAllAsTouched();

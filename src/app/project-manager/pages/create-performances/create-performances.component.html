@@ -53,6 +53,54 @@
             </div>
         </div>
 
+
+        <!-- 3) Developer Fields (show only if canAddDeveloperPerformance is true) -->
+        <div *ngIf="canAddDeveloperPerformance" class="flex flex-col pt-3">
+            <!-- Developer Category (dropdown) -->
+            <div class="flex justify-center w-full">
+                <shared-simple-dropdown class="w-full md:w-1/2" fieldName="developer_activity" label="Category"
+                    inputType="text" [formGroup]="performanceForm" [dropdownItems]="developer_activityOptions"
+                    [bgColor]="'bg-white-lightbone'">
+                </shared-simple-dropdown>
+            </div>
+
+            <!-- Checkbox Groups Container -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4 justify-center">
+                <!-- Developer Category -->
+                <div class="developer-checkbox-group">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-800 text-center">{{ 'DeveloperCategory' | translate }}</h3>
+                    <div *ngFor="let option of developer_categoryOptions" class="flex items-center mb-2 justify-center">
+                        <input type="checkbox"
+                            [checked]="performanceForm.get('developer_category')?.value?.includes(option.key)"
+                            (change)="toggleCheckbox('developer_category', option.key)">
+                        <label class="ml-2">{{ option.value }}</label>
+                    </div>
+                </div>
+
+                <!-- Developer Module -->
+                <div class="developer-checkbox-group">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-800 text-center">{{ 'DeveloperModule' | translate }}</h3>
+                    <div *ngFor="let option of developer_moduleOptions" class="flex items-center mb-2 justify-center">
+                        <input type="checkbox"
+                            [checked]="performanceForm.get('developer_module')?.value?.includes(option.key)"
+                            (change)="toggleCheckbox('developer_module', option.key)">
+                        <label class="ml-2">{{ option.value }}</label>
+                    </div>
+                </div>
+
+                <!-- Developer Screen/Form Module -->
+                <div class="developer-checkbox-group">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-800 text-center">{{ 'DeveloperScreenForm' | translate }}</h3>
+                    <div *ngFor="let option of developer_screen_formOptions" class="flex items-center mb-2 justify-center">
+                        <input type="checkbox"
+                            [checked]="performanceForm.get('developer_screen_form')?.value?.includes(option.key)"
+                            (change)="toggleCheckbox('developer_screen_form', option.key)">
+                        <label class="ml-2">{{ option.value }}</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- 2) Forecast Data -->
         <div class="flex flex-row space-x-3 text-darkslategray border-b mt-3 text-start p-2">
             <h1>{{ 'ForecastData' | translate }}</h1>
@@ -84,28 +132,6 @@
                 [bgColor]="'bg-white-lightbone'" [readOnly]="true"></shared-input-field>
         </div>
 
-        <!-- 3) Developer Fields (show only if canAddDeveloperPerformance is true) -->
-        <div *ngIf="canAddDeveloperPerformance" class="flex flex-wrap pt-3">
-            <!-- Developer Category -->
-            <shared-simple-dropdown class="w-full md:w-1/2" fieldName="developer_category" label="Developer Category"
-                inputType="text" [formGroup]="performanceForm" [dropdownItems]="developer_categoryOptions"
-                [bgColor]="'bg-white-lightbone'"></shared-simple-dropdown>
-
-            <!-- Developer Module -->
-            <shared-simple-dropdown class="w-full md:w-1/2" fieldName="developer_module" label="Developer Module"
-                inputType="text" [formGroup]="performanceForm" [dropdownItems]="developer_moduleOptions"
-                [bgColor]="'bg-white-lightbone'"></shared-simple-dropdown>
-
-            <!-- Developer Activity (text field) -->
-            <shared-input-field class="w-full md:w-1/2" fieldName="developer_activity" label="Activity" inputType="text"
-                [formGroup]="performanceForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
-
-
-            <!-- Screen / Form Module -->
-            <shared-simple-dropdown class="w-full md:w-1/2" fieldName="developer_screen_form" label="Developer Screen Form"
-                inputType="text" [formGroup]="performanceForm" [dropdownItems]="developer_screen_formOptions"
-                [bgColor]="'bg-white-lightbone'"></shared-simple-dropdown>
-        </div>
     </form>
 
     <!-- Action Buttons -->
