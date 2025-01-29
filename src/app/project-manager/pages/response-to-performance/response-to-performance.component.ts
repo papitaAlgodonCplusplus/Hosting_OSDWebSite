@@ -211,6 +211,10 @@ export class ResponseToPerformanceComponent implements OnDestroy {
     })
     this.store.dispatch(UiActions.toggleConfirmationButton())
     this.osdEventService.addResponseToPerformanceAssigned(this.responsePerformanceForm.value, performanceAssigned.Id)
+    this.store.dispatch(
+      ModalActions.addAlertMessage({ alertMessage: "Registration successful!" })
+    );
+    this.store.dispatch(ModalActions.openAlert());
   }
 
   modifySubPerformance(): void {

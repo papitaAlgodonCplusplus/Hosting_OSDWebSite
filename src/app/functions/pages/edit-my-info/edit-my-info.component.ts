@@ -5,6 +5,8 @@ import { OSDService } from 'src/app/services/osd-event.services';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { from } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { ModalActions, PerformanceActions, UiActions } from 'src/app/store/actions';
 
 @Component({
   selector: 'app-edit-my-info',
@@ -17,6 +19,7 @@ export class UserProfileEditComponent implements OnInit {
   user: any;
 
   constructor(
+    private store: Store,
     private fb: FormBuilder,
     private router: Router,
     private osdService: OSDService,
@@ -93,6 +96,10 @@ export class UserProfileEditComponent implements OnInit {
           verticalPosition: 'top',
           panelClass: ['success-snackbar']
         });
+        this.store.dispatch(
+          ModalActions.addAlertMessage({ alertMessage: "Registration successful!" })
+        );
+        this.store.dispatch(ModalActions.openAlert());
         this.router.navigate(['/home']);
       },
       error: (error: any) => {

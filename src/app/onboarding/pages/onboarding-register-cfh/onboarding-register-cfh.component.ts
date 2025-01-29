@@ -32,7 +32,7 @@ export class OnboardingRegisterCfhComponent {
   entity: DropDownItem[] = [
     { value: this.translate.instant('Public Entity'), key: "Public Entity" },
     { value: this.translate.instant('Private Entity'), key: "Private Entity" }
-  ];  selectedPLcode: string | undefined;
+  ]; selectedPLcode: string | undefined;
   plCode: DropDownItem[] = [];
   isAcceptConditions!: boolean;
   countries: DropDownItem[] = [];
@@ -67,13 +67,13 @@ export class OnboardingRegisterCfhComponent {
         'kuarcTechnicians'
       ]).subscribe((translations) => {
         this.entity = [
-          { value: translations['publicEntity'],  key: 'publicEntity' },
+          { value: translations['publicEntity'], key: 'publicEntity' },
           { value: translations['privateEntity'], key: 'privateEntity' }
         ];
-  
+
         this.cfhOfferOptions = [
           { value: translations['trainerConsultant'], key: 'F/C' },
-          { value: translations['kuarcTechnicians'],   key: 'Kuarc Technicians' }
+          { value: translations['kuarcTechnicians'], key: 'Kuarc Technicians' }
         ];
       });
       // Load countries
@@ -233,6 +233,10 @@ export class OnboardingRegisterCfhComponent {
       EventConstants.APPROVED_TRAINING_CENTER
     ).subscribe({
       next: (response: any) => {
+        this.store.dispatch(
+          ModalActions.addAlertMessage({ alertMessage: "Registration successful!" })
+        );
+        this.store.dispatch(ModalActions.openAlert());
         this.router.navigate(['/auth']);
       },
       error: (error: any) => {

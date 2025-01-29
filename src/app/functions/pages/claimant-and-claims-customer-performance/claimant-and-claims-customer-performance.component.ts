@@ -87,11 +87,11 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
     })
 
     if (this.performance.Id != null) {
-      if(this.accountType == "Claimant"){
+      if (this.accountType == "Claimant") {
         this.isViewPerformance = false;
         this.isModify = false;
         this.isHidden = true;
-      }else{
+      } else {
         this.isViewPerformance = true;
       }
     } else {
@@ -147,15 +147,15 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
 
   displayFileName(event: Event): void {
     const input = event.target as HTMLInputElement;
-  
+
     if (input?.files && input.files.length > 0) {
       this.documentFile = input.files[0];
-  
+
       if (this.documentFile.type !== 'application/pdf') {
-        if (this.translate.currentLang == "en"){
+        if (this.translate.currentLang == "en") {
           this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "The document must be in PDF format" }));
           this.store.dispatch(ModalActions.openAlert());
-        }else{
+        } else {
           this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "El documento debe de estar en formato PDF" }));
           this.store.dispatch(ModalActions.openAlert());
         }
@@ -163,14 +163,14 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
         this.documentName = '';
         return;
       }
-  
+
       const maxSizeInKB = 1000;
       const maxSizeInBytes = maxSizeInKB * 1024;
       if (this.documentFile.size > maxSizeInBytes) {
-        if (this.translate.currentLang == "en"){
+        if (this.translate.currentLang == "en") {
           this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "The document exceeds 1000kb" }));
           this.store.dispatch(ModalActions.openAlert());
-        }else{
+        } else {
           this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "El documento sobrepasa los 1000kb" }));
           this.store.dispatch(ModalActions.openAlert());
         }
@@ -179,9 +179,9 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
         this.documentName = '';
         return;
       }
-  
+
       this.documentName = this.documentFile.name;
-  
+
       const reader = new FileReader();
       reader.onload = () => {
         const arrayBuffer = reader.result as ArrayBuffer;
@@ -256,17 +256,22 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
 
     this.isErrorInForm = false;
     if (this.claimId) {
-      if(this.documentBytes != null){
-      const documentBase64 = this.convertUint8ArrayToBase64(this.documentBytes);
-      this.OSDEventService.createClaimantAndClaimsCustomerPerformance(this.performanceForm.value, this.claimId, this.userTypePerformance, documentBase64).subscribe(() => {
-        window.history.back();
-      });
-      }else{
-      this.OSDEventService.createClaimantAndClaimsCustomerPerformance(this.performanceForm.value, this.claimId, this.userTypePerformance, "").subscribe(() => {
-        window.history.back();
-      });
+      if (this.documentBytes != null) {
+        const documentBase64 = this.convertUint8ArrayToBase64(this.documentBytes);
+        this.OSDEventService.createClaimantAndClaimsCustomerPerformance(this.performanceForm.value, this.claimId, this.userTypePerformance, documentBase64).subscribe(() => {
+          window.history.back();
+        });
+      } else {
+        this.OSDEventService.createClaimantAndClaimsCustomerPerformance(this.performanceForm.value, this.claimId, this.userTypePerformance, "").subscribe(() => {
+          window.history.back();
+        });
       }
     }
+
+    this.store.dispatch(
+      ModalActions.addAlertMessage({ alertMessage: "Registration successful!" })
+    );
+    this.store.dispatch(ModalActions.openAlert());
   }
 
   convertUint8ArrayToBase64(uint8Array: Uint8Array): string {
@@ -312,14 +317,14 @@ export class ClaimantAndClaimsCustomerPerformanceComponent implements OnDestroy 
       this.isErrorInForm = true;
       return;
     }
-    
+
     this.isErrorInForm = false;
     if (this.performance) {
 
-      if(this.documentBytes != null){
+      if (this.documentBytes != null) {
         const documentBase64 = this.convertUint8ArrayToBase64(this.documentBytes);
         this.OSDEventService.modifyClaimantAndClaimsCustomerPerformance(this.performanceForm.value, this.performance.Id, documentBase64);
-      }else{
+      } else {
         this.OSDEventService.modifyClaimantAndClaimsCustomerPerformance(this.performanceForm.value, this.performance.Id, "");
       }
     }

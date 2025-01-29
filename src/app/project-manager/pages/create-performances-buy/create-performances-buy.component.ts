@@ -233,6 +233,10 @@ export class CreatePerformancesBuyComponent implements OnDestroy {
         this.osdEventService.performanceBuy(this.performanceForm.value, this.projectManagerSelected, "");
       }
     }
+    this.store.dispatch(
+      ModalActions.addAlertMessage({ alertMessage: "Registration successful!" })
+    );
+    this.store.dispatch(ModalActions.openAlert());
   }
 
   openModal() {

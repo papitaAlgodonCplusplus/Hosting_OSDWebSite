@@ -403,6 +403,10 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.FREE_PROFESSIONAL)
       .subscribe({
         next: (response: any) => {
+          this.store.dispatch(
+            ModalActions.addAlertMessage({ alertMessage: "Registration successful!" })
+          );
+          this.store.dispatch(ModalActions.openAlert());
           this.router.navigate(['/auth']);
         },
         error: (error: any) => {

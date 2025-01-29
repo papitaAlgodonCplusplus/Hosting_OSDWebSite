@@ -154,6 +154,10 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
     // Include both accountForm and personalForm values in the registration call
     this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.SUBSCRIBER_CUSTOMER)
       .subscribe(() => {
+        this.store.dispatch(
+          ModalActions.addAlertMessage({ alertMessage: "Registration successful!" })
+        );
+        this.store.dispatch(ModalActions.openAlert());
         this.router.navigate(['/auth']);
       });
   }

@@ -14,6 +14,7 @@ import { ValidationsService } from 'src/app/services/validations.service';
 import { UiActions } from 'src/app/store/actions';
 import { AuthSelectors } from 'src/app/store/selectors';
 import { Router } from '@angular/router';
+import { ModalActions } from 'src/app/store/actions';
 
 @Component({
   selector: 'app-register-claimant',
@@ -172,7 +173,10 @@ export class OnboardingRegisterClaimantComponent {
       setTimeout(async () => {
         await new Promise(resolve => setTimeout(resolve, 5000));
       }, 5000);
-
+      this.store.dispatch(
+        ModalActions.addAlertMessage({ alertMessage: "Registration successful!" })
+      );
+      this.store.dispatch(ModalActions.openAlert());
       this.router.navigate(['/auth']);
     }
 

@@ -238,6 +238,10 @@ export class CreatePerformancesComponent {
         this.OSDEventService.addPerformanceFreeProfessional(formData, this.projectManagerSelected, "");
       }
     }
+    this.store.dispatch(
+      ModalActions.addAlertMessage({ alertMessage: "Registration successful!" })
+    );
+    this.store.dispatch(ModalActions.openAlert());
   }
 
   modifyPerformance(): void {

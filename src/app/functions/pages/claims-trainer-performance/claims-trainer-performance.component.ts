@@ -30,11 +30,11 @@ export class ClaimsTrainerPerformanceComponent implements OnDestroy {
   isErrorInForm: boolean = false;
   reviewPerformance: any;
   modifyPerformanceTrainer: any;
-  performanceObservable$ : Observable<ClaimsTrainerPerformance> = this.store.select(PerformanceSelectors.claimsTrainerPerformance)
-  performance! : ClaimsTrainerPerformance;
-  isUnrevised! : boolean;
-  isView! : boolean;
-  isModify! : boolean;
+  performanceObservable$: Observable<ClaimsTrainerPerformance> = this.store.select(PerformanceSelectors.claimsTrainerPerformance)
+  performance!: ClaimsTrainerPerformance;
+  isUnrevised!: boolean;
+  isView!: boolean;
+  isModify!: boolean;
   documentFile: File | null = null;
   documentBytes: Uint8Array | null = null;
   documentUrl: string | null = null;
@@ -65,13 +65,13 @@ export class ClaimsTrainerPerformanceComponent implements OnDestroy {
       this.claimId = claim.Id;
     });
 
-    this.performanceObservable$.subscribe(performance =>{
+    this.performanceObservable$.subscribe(performance => {
       this.performance = performance
-      if(this.performance){
+      if (this.performance) {
         this.performanceForm = this.fillForm(performance)
-        if(this.performance.Status == "Running"){
+        if (this.performance.Status == "Running") {
           this.isUnrevised = false;
-        }else{
+        } else {
           this.isUnrevised = true;
         }
       }
@@ -82,17 +82,17 @@ export class ClaimsTrainerPerformanceComponent implements OnDestroy {
         if (Array.isArray(freeProfessionals)) {
           var freeProfessionalFind: FreeProfessional = freeProfessionals.find(fp => fp.Userid == this.AuthenticationService.userInfo?.Id)
           this.accountTypeFreeProfessional = freeProfessionalFind.FreeprofessionaltypeName;
-          if(this.accountTypeFreeProfessional == "Trainer"){
+          if (this.accountTypeFreeProfessional == "Trainer") {
             this.isView = false;
             this.isModify = false;
           }
         }
       })
 
-    if(Object.keys(this.performance).length > 0){
+    if (Object.keys(this.performance).length > 0) {
       this.isView = true;
     }
-    else{
+    else {
       this.isView = false;
     }
 
@@ -105,7 +105,7 @@ export class ClaimsTrainerPerformanceComponent implements OnDestroy {
     }, 0);
   }
 
-  private fillForm(performance : ClaimsTrainerPerformance): FormGroup {
+  private fillForm(performance: ClaimsTrainerPerformance): FormGroup {
     let originalDate = performance.Date;
     let formatedDate = this.datePipe.transform(originalDate, 'yyyy-MM-dd');
 
@@ -134,8 +134,8 @@ export class ClaimsTrainerPerformanceComponent implements OnDestroy {
       const documentBlob = new Blob([performance.JustifyingDocumentBytes], { type: 'application/pdf' });
       this.documentUrl = URL.createObjectURL(documentBlob);
       this.documentName = performance.JustifyingDocument;
-  }
-  
+    }
+
     return form;
   }
 
@@ -160,15 +160,15 @@ export class ClaimsTrainerPerformanceComponent implements OnDestroy {
 
   displayFileName(event: Event): void {
     const input = event.target as HTMLInputElement;
-  
+
     if (input?.files && input.files.length > 0) {
       this.documentFile = input.files[0];
-  
+
       if (this.documentFile.type !== 'application/pdf') {
-        if (this.translate.currentLang == "en"){
+        if (this.translate.currentLang == "en") {
           this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "The document must be in PDF format" }));
           this.store.dispatch(ModalActions.openAlert());
-        }else{
+        } else {
           this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "El documento debe de estar en formato PDF" }));
           this.store.dispatch(ModalActions.openAlert());
         }
@@ -176,14 +176,14 @@ export class ClaimsTrainerPerformanceComponent implements OnDestroy {
         this.documentName = '';
         return;
       }
-  
+
       const maxSizeInKB = 1000;
       const maxSizeInBytes = maxSizeInKB * 1024;
       if (this.documentFile.size > maxSizeInBytes) {
-        if (this.translate.currentLang == "en"){
+        if (this.translate.currentLang == "en") {
           this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "The document exceeds 1000kb" }));
           this.store.dispatch(ModalActions.openAlert());
-        }else{
+        } else {
           this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "El documento sobrepasa los 1000kb" }));
           this.store.dispatch(ModalActions.openAlert());
         }
@@ -192,9 +192,9 @@ export class ClaimsTrainerPerformanceComponent implements OnDestroy {
         this.documentName = '';
         return;
       }
-  
+
       this.documentName = this.documentFile.name;
-  
+
       const reader = new FileReader();
       reader.onload = () => {
         const arrayBuffer = reader.result as ArrayBuffer;
@@ -207,7 +207,7 @@ export class ClaimsTrainerPerformanceComponent implements OnDestroy {
   verifiedFormat(data: string) {
     const formValues = this.performanceForm.value;
     let travelTime, workHours, expenses;
-  
+
     switch (data) {
       case "trainer":
         travelTime = formValues.TrainerTravelHours;
@@ -222,7 +222,7 @@ export class ClaimsTrainerPerformanceComponent implements OnDestroy {
       default:
         return;
     }
-   
+
     const isTravelTimeValid = this.validateTravelTime(travelTime);
     const isWorkHoursValid = this.validateWorkHours(workHours);
 
@@ -297,16 +297,20 @@ export class ClaimsTrainerPerformanceComponent implements OnDestroy {
       this.isErrorInForm = true;
       return;
     }
-  
+
     this.isErrorInForm = false;
     if (this.claimId) {
-      if(this.documentBytes != null){
+      if (this.documentBytes != null) {
         const documentBase64 = this.convertUint8ArrayToBase64(this.documentBytes);
         this.OSDEventService.createPerformanceClaimTrainer(this.performanceForm.value, this.claimId, documentBase64);
-      }else{
+      } else {
         this.OSDEventService.createPerformanceClaimTrainer(this.performanceForm.value, this.claimId, "");
       }
     }
+    this.store.dispatch(
+      ModalActions.addAlertMessage({ alertMessage: "Registration successful!" })
+    );
+    this.store.dispatch(ModalActions.openAlert());
   }
 
   convertUint8ArrayToBase64(uint8Array: Uint8Array): string {
@@ -319,22 +323,22 @@ export class ClaimsTrainerPerformanceComponent implements OnDestroy {
   }
 
   convertBase64ToBlob(base64: string, contentType: string = 'application/pdf'): Blob {
-    const byteCharacters = atob(base64); 
+    const byteCharacters = atob(base64);
     const byteNumbers = new Array(byteCharacters.length);
     for (let i = 0; i < byteCharacters.length; i++) {
       byteNumbers[i] = byteCharacters.charCodeAt(i);
     }
     const byteArray = new Uint8Array(byteNumbers);
-    return new Blob([byteArray], { type: contentType }); 
+    return new Blob([byteArray], { type: contentType });
   }
-  
+
   downloadPdf(base64String: string) {
-  
+
     try {
       const blob = this.convertBase64ToBlob(base64String, 'application/pdf');
 
       const url = window.URL.createObjectURL(blob);
-  
+
       const a = document.createElement('a');
       a.href = url;
       a.download = 'document.pdf';
