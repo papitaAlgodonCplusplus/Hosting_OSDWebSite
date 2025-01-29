@@ -2703,6 +2703,7 @@ const handleUserRegistration = async (event, res) => {
             ]
           );
           insertedCourseIds.add(newCourseId);
+          console.log(`✅ Inserted new course with ID: ${newCourseId}, title: ${newTitle}`);
         }
       }
 
