@@ -340,7 +340,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     });
     return personalForm;
   }
-  
+
 
   onSubmit(): void {
     const workspace = this.accountForm.value.workspace;
@@ -374,44 +374,44 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     this.store.dispatch(UiActions.toggleConfirmationButton());
     localStorage.setItem('userEmail', userEmail);
 
-    if (workspace === 'eea2312e-6a85-4ab6-85ff-0864547e3870') {
-      this.http.post(`${this.apiUrl}/check-approval`, { email: userEmail, course_id: selectedCourse })
-        .subscribe((response: any) => {
-          if (response.approved) {
-            this.osdEventService.professorRegister(this.accountForm.value, this.personalForm.value, EventConstants.FREE_PROFESSIONAL)
-              .subscribe({
-                next: (res: any) => {
-                  this.router.navigate(['/auth']);
-                },
-                error: (err: any) => {
-                  console.error("Professor registration failed:", err);
-                  this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Professor registration failed. Please try again." }));
-                  this.store.dispatch(ModalActions.openAlert());
-                }
-              });
-          } else {
-            // Show error if not approved
-            this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: 'Course not yet approved' }));
-            this.store.dispatch(ModalActions.openAlert());
-          }
-        }, (error) => {
-          console.error("Approval check failed:", error);
-          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Approval check failed. Please try again." }));
+    // if (workspace === 'eea2312e-6a85-4ab6-85ff-0864547e3870') {
+    //   // this.http.post(`${this.apiUrl}/check-approval`, { email: userEmail, course_id: selectedCourse })
+    //   //   .subscribe((response: any) => {
+    //   //     if (response.approved) {
+    //   //       this.osdEventService.professorRegister(this.accountForm.value, this.personalForm.value, EventConstants.FREE_PROFESSIONAL)
+    //   //         .subscribe({
+    //   //           next: (res: any) => {
+    //   //             this.router.navigate(['/auth']);
+    //   //           },
+    //   //           error: (err: any) => {
+    //   //             console.error("Professor registration failed:", err);
+    //   //             this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Professor registration failed. Please try again." }));
+    //   //             this.store.dispatch(ModalActions.openAlert());
+    //   //           }
+    //   //         });
+    //   //     } else {
+    //   //       // Show error if not approved
+    //   //       this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: 'Course not yet approved' }));
+    //   //       this.store.dispatch(ModalActions.openAlert());
+    //   //     }
+    //   //   }, (error) => {
+    //   //     console.error("Approval check failed:", error);
+    //   //     this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Approval check failed. Please try again." }));
+    //   //     this.store.dispatch(ModalActions.openAlert());
+    //   //   });
+    // } else {
+    this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.FREE_PROFESSIONAL)
+      .subscribe({
+        next: (response: any) => {
+          this.router.navigate(['/auth']);
+        },
+        error: (error: any) => {
+          console.error("Registration failed:", error);
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Registration failed. Please try again." }));
           this.store.dispatch(ModalActions.openAlert());
-        });
-    } else {
-      this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.FREE_PROFESSIONAL)
-        .subscribe({
-          next: (response: any) => {
-            this.router.navigate(['/auth']);
-          },
-          error: (error: any) => {
-            console.error("Registration failed:", error);
-            this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Registration failed. Please try again." }));
-            this.store.dispatch(ModalActions.openAlert());
-          }
-        });
-    }
+        }
+      });
+    // }
   }
 
   CheckIfIsTr() {
