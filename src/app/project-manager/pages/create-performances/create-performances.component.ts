@@ -125,8 +125,27 @@ export class CreatePerformancesComponent {
     this.performanceFreeProfessional$.subscribe(performance => {
       this.performanceFP = performance;
       if (Object.keys(this.performanceFP).length > 0) {
-        console.log(this.performanceFP);
+        console.log("performanceFP", this.performanceFP);
         this.performanceForm = this.fillform(this.performanceFP);
+
+        // Extract keywords from FreeProfessionalAssignedCode
+        const keywords = [
+          this.performanceFP.developer_category,
+          this.performanceFP.developer_module,
+          this.performanceFP.developer_screen_form
+        ].map(value => value.toLowerCase());
+
+        // Get matched options for each checkbox group
+        console.log("keywords", keywords);
+        const matchedCategories = this.getMatchedOptions(this.developer_categoryOptions, keywords);
+        const matchedModules = this.getMatchedOptions(this.developer_moduleOptions, keywords);
+        const matchedScreens = this.getMatchedOptions(this.developer_screen_formOptions, keywords);
+
+        // Update form controls
+        console.log("matchedCategories", matchedCategories, "matchedModules", matchedModules, "matchedScreens", matchedScreens);
+        this.updateFormArray('developer_category', matchedCategories);
+        this.updateFormArray('developer_module', matchedModules);
+        this.updateFormArray('developer_screen_form', matchedScreens);
       }
     });
 
@@ -147,6 +166,12 @@ export class CreatePerformancesComponent {
     }
   }
 
+  private updateFormArray(formArrayName: string, values: string[]): void {
+    const formArray = this.performanceForm.get(formArrayName) as FormArray;
+    formArray.clear(); // Remove existing values
+    values.forEach(value => formArray.push(this.formBuilder.control(value)));
+  }
+  
   ngOnDestroy() {
     setTimeout(() => {
       this.store.dispatch(UiActions.showAll());
@@ -174,6 +199,20 @@ export class CreatePerformancesComponent {
       developer_screen_form: this.formBuilder.array([]), // FormArray for checkboxes
       developer_activity: [''] // Dropdown remains as a FormControl
     });
+  }
+
+  private extractKeywords(code: string): string[] {
+    return code.split('/')
+      .map(part => part.trim().toLowerCase())
+      .filter(part => part.length > 0 && isNaN(+part)); // Exclude numeric parts
+  }
+
+  private getMatchedOptions(options: Array<{ key: string, value: string }>, keywords: string[]): string[] {
+    return options
+      .filter(option =>
+        keywords.some(keyword => option.value.toLowerCase().includes(keyword))
+      )
+      .map(option => option.key);
   }
 
   fillform(performance: PerformanceFreeProfessional): FormGroup {
@@ -210,7 +249,7 @@ export class CreatePerformancesComponent {
       formArray.push(this.formBuilder.control(value));
     }
   }
-  
+
   // CHANGED: onSubmit will only send the 3 developer fields if canAddDeveloperPerformance = true
   onSubmit(): void {
     if (this.performanceForm.invalid) {
