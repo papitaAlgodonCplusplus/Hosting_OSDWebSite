@@ -133,9 +133,6 @@ export class FileManagerComponent implements OnInit, OnDestroy {
       }
       if (this.user.FreeProfessionalTypeID === "eea2312e-6a85-4ab6-85ff-0864547e3870") {
         this.isSubscriber = true;
-        this.isAssignedClaim = true;
-        this.isUserProcessor = true;
-        this.isClaimant = true;
       }
       console.log(this.user.AccountType, this.user.FreeProfessionalTypeID);
       if (this.user.AccountType === "ApprovedTrainingCenter") {
