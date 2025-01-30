@@ -13,13 +13,15 @@
         <tr>
           <td class="p-2 border">Primer Apellido</td>
           <td class="p-2 border">
-            <input type="text" formControlName="firstSurname" class="w-full p-1 border rounded" placeholder="Primer Apellido" />
+            <input type="text" formControlName="firstSurname" class="w-full p-1 border rounded"
+              placeholder="Primer Apellido" />
           </td>
         </tr>
         <tr>
           <td class="p-2 border">Segundo Apellido</td>
           <td class="p-2 border">
-            <input type="text" formControlName="middleSurname" class="w-full p-1 border rounded" placeholder="Segundo Apellido" />
+            <input type="text" formControlName="middleSurname" class="w-full p-1 border rounded"
+              placeholder="Segundo Apellido" />
           </td>
         </tr>
         <tr>
@@ -31,7 +33,8 @@
         <tr>
           <td class="p-2 border">Nombre de la Compañía</td>
           <td class="p-2 border">
-            <input type="text" formControlName="companyName" class="w-full p-1 border rounded" placeholder="Nombre de la Compañía" />
+            <input type="text" formControlName="companyName" class="w-full p-1 border rounded"
+              placeholder="Nombre de la Compañía" />
           </td>
         </tr>
         <tr>
@@ -43,25 +46,29 @@
         <tr>
           <td class="p-2 border">Código Postal</td>
           <td class="p-2 border">
-            <input type="text" formControlName="zipcode" class="w-full p-1 border rounded" placeholder="Código Postal" />
+            <input type="text" formControlName="zipcode" class="w-full p-1 border rounded"
+              placeholder="Código Postal" />
           </td>
         </tr>
         <tr>
           <td class="p-2 border">Teléfono Fijo</td>
           <td class="p-2 border">
-            <input type="text" formControlName="landline" class="w-full p-1 border rounded" placeholder="Teléfono Fijo" />
+            <input type="text" formControlName="landline" class="w-full p-1 border rounded"
+              placeholder="Teléfono Fijo" />
           </td>
         </tr>
         <tr>
           <td class="p-2 border">Teléfono Móvil</td>
           <td class="p-2 border">
-            <input type="text" formControlName="mobilePhone" class="w-full p-1 border rounded" placeholder="Teléfono Móvil" />
+            <input type="text" formControlName="mobilePhone" class="w-full p-1 border rounded"
+              placeholder="Teléfono Móvil" />
           </td>
         </tr>
         <tr>
           <td class="p-2 border">Correo Electrónico</td>
           <td class="p-2 border">
-            <input type="email" formControlName="email" class="w-full p-1 border rounded" placeholder="Correo Electrónico" />
+            <input type="email" formControlName="email" class="w-full p-1 border rounded"
+              placeholder="Correo Electrónico" />
           </td>
         </tr>
         <tr>
@@ -76,4 +83,8 @@
       <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">💾 Guardar Cambios</button>
     </div>
   </form>
+
+  <button class="bottom-3 right-3 text-darkslategray bg-line p-2 rounded-xl w-20" routerLink="/home">
+    {{'regresar' | translate }}
+  </button>
 </div>

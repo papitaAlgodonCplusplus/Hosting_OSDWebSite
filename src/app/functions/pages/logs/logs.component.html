@@ -87,31 +87,37 @@
           (click)="toggleSection('userActionLogs')" class="cursor-pointer"></i>
       </h2>
       <div *ngIf="userActionLogsVisible" class="mt-4">
-        <table class="w-full border-collapse border border-gray-200">
-          <thead class="bg-gray-100">
-            <tr>
-              <th class="p-2 border">ID</th>
-              <th class="p-2 border">Action</th>
-              <th class="p-2 border">Page URL</th>
-              <th class="p-2 border">Element Clicked</th>
-              <th class="p-2 border">Additional Info</th>
-              <th class="p-2 border">Timestamp</th>
-            </tr>
-          </thead>
-          <tbody formArrayName="userLogs">
-            <tr *ngFor="let log of userLogs.controls; let i = index" [formGroupName]="i">
-              <td class="p-2 border">{{ log.value.id }}</td>
-              <td class="p-2 border">{{ log.value.action }}</td>
-              <td class="p-2 border">{{ log.value.page_url }}</td>
-              <td class="p-2 border">{{ log.value.element_clicked || 'N/A' }}</td>
-              <td class="p-2 border">
-                <pre>{{ log.value.additional_info | json }}</pre>
-              </td>
-              <td class="p-2 border">{{ log.value.timestamp }}</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="overflow-x-auto max-w-full">
+          <table class="w-full max-w-100 border-collapse border border-gray-200 table-fixed">
+            <thead class="bg-gray-100">
+              <tr>
+                <th class="p-2 border w-12">ID</th>
+                <th class="p-2 border w-24">Action</th>
+                <th class="p-2 border w-40 truncate">Page URL</th>
+                <th class="p-2 border w-40 truncate">Element Clicked</th>
+                <th class="p-2 border w-60 truncate">Additional Info</th>
+                <th class="p-2 border w-32">Timestamp</th>
+              </tr>
+            </thead>
+            <tbody formArrayName="userLogs">
+              <tr *ngFor="let log of userLogs.controls; let i = index" [formGroupName]="i">
+                <td class="p-2 border truncate">{{ log.value.id }}</td>
+                <td class="p-2 border truncate">{{ log.value.action }}</td>
+                <td class="p-2 border truncate">{{ log.value.page_url }}</td>
+                <td class="p-2 border truncate">{{ log.value.element_clicked || 'N/A' }}</td>
+                <td class="p-2 border truncate">
+                  <pre class="whitespace-pre-wrap break-words">{{ log.value.additional_info | json }}</pre>
+                </td>
+                <td class="p-2 border truncate">{{ log.value.timestamp }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </form>
+  
+  <button class="bottom-3 mt-10 right-3 text-darkslategray bg-line p-2 rounded-xl w-20" routerLink="/home">
+    {{'regresar' | translate }}
+  </button>
 </div>

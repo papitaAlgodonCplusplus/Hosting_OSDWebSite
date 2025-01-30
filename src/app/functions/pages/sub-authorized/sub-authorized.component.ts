@@ -193,11 +193,12 @@ export class SubAuthorizedComponent implements OnDestroy {
   }
 
   updateDisplayedItems(startIndex: number = 0, endIndex: number = 10) {
-    this.displayedItems = this.items.slice(startIndex, endIndex);
+    this.displayedItems = this.items.slice(startIndex, endIndex + 1);
   }
 
   // Existing "Select" user => open authorized modal
   selectUser(user: any) {
+    console.log("Clicked user", user);
     const foundUser: UserInfo = this.displayedItems.find(
       item => item.userid === user.userid
     );

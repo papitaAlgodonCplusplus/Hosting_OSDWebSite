@@ -32,6 +32,10 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
     { value: this.translate.instant('Public Entity'), key: "Public Entity" },
     { value: this.translate.instant('Private Entity'), key: "Private Entity" },
   ];
+  clientCanBeClaimed: DropDownItem[] = [
+    { value: this.translate.instant('Yes'), key: "Yes" },
+    { value: this.translate.instant('No'), key: "No" },
+  ];
   countries: DropDownItem[] = [];
   selectedCountries: string | undefined;
 
@@ -50,9 +54,6 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
   }
 
   ngOnInit(): void {
-    this.accountForm.get('clientType')?.valueChanges.subscribe(clientType => {
-      this.onClientTypeChange(clientType);
-    });
     setTimeout(() => {
       this.countryService.getCountries().subscribe((data: any[]) => {
         let countriesList;
@@ -105,9 +106,9 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
     }, 0);
   }
 
-  onClientTypeChange(clientType: string): void {
+  onClientTypeChange(clientCanBeClaimed: string): void {
     this.accountForm.patchValue({
-      clientCanBeClaimed: clientType === 'Client Subscriber' ? 'Yes' : 'No'
+      clientCanBeClaimed: clientCanBeClaimed === 'Client Subscriber' ? 'Yes' : 'No'
     });
   }
 

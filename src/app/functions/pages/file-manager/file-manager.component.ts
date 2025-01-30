@@ -27,6 +27,7 @@ export class FileManagerComponent implements OnInit, OnDestroy {
   fileManager!: FormGroup;
   closeClaimfileForm!: FormGroup;
   addUpdateForm!: FormGroup;
+  selectedOption: string = 'complaint'; // Default selection
 
   /** NEW: Form & Flag to gather a final rating before finalizing claim */
   finalizeForm!: FormGroup;
@@ -270,6 +271,10 @@ export class FileManagerComponent implements OnInit, OnDestroy {
     }
   }
 
+  onSelectionChange(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    this.selectedOption = target.value;
+  }
 
   /** ==============================
    *    Finalize Claim (Rating)

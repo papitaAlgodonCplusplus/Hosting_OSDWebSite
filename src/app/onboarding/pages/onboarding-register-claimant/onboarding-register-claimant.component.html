@@ -158,7 +158,7 @@
                     <thead>
                         <tr class="text-darkslategray">
                             <th class="px-4 py-2"></th>
-                            <th class="px-4 py-2">{{'Name' | translate}}</th>
+                            <th class="px-4 py-2">{{'Company Name' | translate}}</th>
                             <th class="px-4 py-2">{{'pais' | translate}}</th>
                         </tr>
                     </thead>
@@ -168,7 +168,7 @@
                                 (click)="selectSubscriber(subscriber.Id, subscriber.name)"> <a
                                     class="bg-line p-2 rounded-xl text-darkslategray font-medium cursor-pointer transition duration-300 ease-in-out hover:bg-darkslategray hover:text-line">Select</a>
                             </td>
-                            <td class="px-4 border-b py-2 text-center">{{ subscriber.name }}</td>
+                            <td class="px-4 border-b py-2 text-center">{{ subscriber.companyname }}</td>
                             <td class="px-4 border-b py-2 text-center">{{ subscriber.country }}</td>
                         </tr>
                     </tbody>

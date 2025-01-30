@@ -15,7 +15,6 @@ import { AuthService } from 'src/app/auth/services/auth.service';
 })
 export class HeaderComponent implements OnInit {
   imgProfile = "/./assets/img/profile.png";
-  open = false;
   isUser: boolean = false;
   userInfo!: UserInfo;
   isUserSignIn$: Observable<boolean> = this.store.select(AuthSelectors.authenticationToken);
@@ -38,12 +37,8 @@ export class HeaderComponent implements OnInit {
     }, 0);
   }
 
-  toggleDropdown() {
-    this.open = !this.open;
-  }
-
   onClick() {
-    this.router.navigateByUrl('auth/login');
+    this.router.navigateByUrl('/auth');
     this.authLogic.endSession();
     this.isUser = false
   }

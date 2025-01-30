@@ -133,7 +133,7 @@
             (click)="createNewPerformancePurchase()">
             {{'create_new_performance_purchase' | translate}}
         </button>
-        <button [routerLink]="isUser ? '/home' : '/reports'"
+        <button [routerLink]="this.user ? '/home' : '/reports'"
             class="bg-line font-medium p-2 rounded-xl flex items-center text-darkslategray">
             {{'regresar' | translate}}
         </button>

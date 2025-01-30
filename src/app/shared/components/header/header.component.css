@@ -1,0 +1,10 @@
+.border-t {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+    height: auto !important;
+  }
+
+.parent-menu:hover .border-t {
+    display: block;
+}

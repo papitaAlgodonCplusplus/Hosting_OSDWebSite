@@ -1,39 +1,12 @@
-<div
-  class="z-50 w-full fixed flex items-center px-3 py-2 text-black bg-darkslategray">
+<div class="z-50 w-full fixed flex items-center px-3 py-2 text-black bg-darkslategray">
   <div class="flex-1 flex items-center space-x-1 px-3">
     <img src="/assets/img/OSD_2.png" alt="Logo OSD" class="w-32 cursor-pointer" routerLink="/home">
   </div>
-  <div *ngIf="isUser" class="flex-1 flex items-center justify-end space-x-3 pr-3">
-    <div class="relative inline-block text-left">
-      <button type="button" 
-        class="flex-col border flex items-center border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
-        id="dropdown-menu" aria-haspopup="true" aria-expanded="true" (click)="toggleDropdown()">
-        <img [src]="imgProfile" class="w-8 h-8 rounded-full" alt="">
-      </button>
-      <div
-        class=" origin-top-right absolute right-0 mt-1 w-56 rounded-md shadow-lg text-black bg-white ring-1 ring-black ring-opacity-5"
-        [ngClass]="{'hidden': !open}">
-        <div class="border-b p-2 space-y-3">
-          <div class="flex items-center">
-            <img [src]="imgProfile" class="w-14 h-14 rounded-full pr-1" alt="">
-            <h1 class="text-sm">{{userInfo.Name}}</h1>
-          </div>
-          <button (click)="toggleDropdown()" class="border rounded-xl h-6 w-full text-sm bg-darkslategray text-line" routerLink="/home/profile">
-            {{'Ver perfil' | translate}}
-          </button>
-        </div>
-        <div (click)="toggleDropdown()">
-          <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem" routerLink="/auth/newpassword">{{'Cambiar contraseña' | translate}}</a>
-        </div>
-        <div class="border-t">
-          <a (click)="onClick()" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-            role="menuitem">Logout</a>
-        </div>
-      </div>
-    </div>
+  <div class="border-t bg-gray-600 rounded border-gray-300">
+    <a (click)="onClick()" 
+       class="block px-4 py-2 text-sm text-white hover:text-gray-300 flex items-center space-x-2"
+       role="menuitem">
+      <span>{{ 'Exit' | translate }}</span>
+    </a>
   </div>
-</div>
-
-<!-- Background overlay -->
-<div [ngClass]="{'hidden': !open}" class="w-full h-full fixed top-0 left-0 z-40 bg-transparent" (click)="toggleDropdown()">
 </div>
