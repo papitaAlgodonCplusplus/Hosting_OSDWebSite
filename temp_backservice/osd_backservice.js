@@ -681,6 +681,7 @@ const handleGetTransparencyReportsSubscriberClients = async (event, res) => {
       cf.complaint,
       cf.appeal,
       cf.solution_suggestion,
+      cf.solution_appeal,
       cf.solution,
       cf.solution_complaint,
       u.id AS user_id,
@@ -1870,7 +1871,7 @@ const handleUpdateClaim = async (event, res) => {
       'serviceprovided', 'facts', 'amountclaimed', 'documentfile1id', 'documentfile1name',
       'documentfile2id', 'documentfile2name', 'creditingdate', 'amountpaid', 'improvementsavings',
       'valuationsubscriber', 'valuationclaimant', 'valuationfreeprofessionals', 'processor_id',
-      'complaint', 'appeal', 'solution_suggestion', 'answer_to_appeal', 'solution', 'solution_complaint'
+      'complaint', 'appeal', 'solution_suggestion', 'solution_appeal', 'answer_to_appeal', 'solution', 'solution_complaint'
     ];
 
     fieldsToUpdate.forEach(field => {
@@ -2046,9 +2047,10 @@ const handleAddPerformanceUpdate = async (event, res) => {
         appeal,
         complaint,
         solution,
-        solution_complaint
+        solution_complaint,
+        solution_appeal
       ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20
       ) RETURNING *;
     `;
 
@@ -2087,7 +2089,8 @@ const handleAddPerformanceUpdate = async (event, res) => {
       performanceData.appeal || existingPerformance.appeal || '',
       performanceData.complaint || existingPerformance.complaint || '',
       performanceData.solution || existingPerformance.solution || '',
-      performanceData.solutionComplaint || existingPerformance.solutionComplaint || ''
+      performanceData.solutionComplaint || existingPerformance.solutionComplaint || '',
+      performanceData.solutionAppeal || existingPerformance.solutionAppeal || ''
     ]);
 
     console.log('✅ Performance update inserted successfully:', result.rows[0]);
@@ -2107,7 +2110,8 @@ const handleAddPerformanceUpdate = async (event, res) => {
         complaint = COALESCE($9, complaint),
         answer_to_appeal = COALESCE($10, answer_to_appeal),
         solution = COALESCE($11, solution),
-        solution_complaint = COALESCE($12, solution_complaint)
+        solution_complaint = COALESCE($12, solution_complaint),
+        solution_appeal = COALESCE($13, solution_appeal)
       WHERE id = $5
       RETURNING *;
     `;
@@ -2124,7 +2128,8 @@ const handleAddPerformanceUpdate = async (event, res) => {
       performanceData.complaint || null,
       performanceData.answer_to_appeal || null,
       performanceData.solution || null,
-      performanceData.solutionComplaint || null
+      performanceData.solutionComplaint || null,
+      performanceData.solutionAppeal || null
     ]);
 
     console.log('✅ claim_file updated successfully:', updateResult.rows[0]);

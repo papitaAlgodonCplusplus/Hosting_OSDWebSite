@@ -256,15 +256,22 @@
           </div> -->
 
 
-          <!-- Solution Field for Trainer -->
-          <div *ngIf="isTrainer" class="flex flex-col w-full">
+          <!-- Solution Field for Processor -->
+          <div *ngIf="isUserProcessor" class="flex flex-col w-full">
             <label for="solution" class="font-semibold mb-1">{{ 'solution' | translate }}</label>
             <textarea formControlName="solution" id="solution" class="border border-gray-300 rounded-md p-2"
               placeholder="{{ 'Enter your solution' | translate }}"></textarea>
           </div>
 
+          <!-- Solution Appeal Field for Trainer -->
+          <div *ngIf="isTrainer" class="flex flex-col w-full">
+            <label for="solutionAppeal" class="font-semibold mb-1">{{ 'solution_appeal' | translate }}</label>
+            <textarea formControlName="solutionAppeal" id="solutionAppeal" class="border border-gray-300 rounded-md p-2"
+              placeholder="{{ 'Enter your solution appeal' | translate }}"></textarea>
+          </div>
+
           <!-- Solution Suggestion Field for non-Trainer -->
-          <div *ngIf="!isTrainer && !isClaimant" class="flex flex-col w-full">
+          <div *ngIf="!isTrainer && !isClaimant && !isUserProcessor" class="flex flex-col w-full">
             <label for="solutionSuggestion" class="font-semibold mb-1">{{ 'solution_suggestion' | translate }}</label>
             <textarea formControlName="solutionSuggestion" id="solutionSuggestion"
               class="border border-gray-300 rounded-md p-2"
