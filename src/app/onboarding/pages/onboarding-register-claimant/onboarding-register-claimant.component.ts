@@ -152,6 +152,7 @@ export class OnboardingRegisterClaimantComponent {
       Date: [currentDate],
       claimtype: ['', [Validators.required]],
       subscriberClaimedName: ['', [Validators.required]],
+      subscriberClaimedCompanyName: [''],
       serviceProvided: ['', [Validators.required]],
       amountClaimed: ['', [Validators.required]],
       facts: ['', [Validators.required]],
