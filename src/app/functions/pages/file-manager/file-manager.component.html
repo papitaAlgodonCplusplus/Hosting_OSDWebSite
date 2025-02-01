@@ -161,13 +161,13 @@
           </div>
 
           <!-- Select Box for Complaint or Appeal -->
-          <div *ngIf="!isSubscriber && !isUserProcessor && !isTrainer" class="flex flex-col w-full mb-4">
+          <div *ngIf="isUserProcessor && !isTrainer" class="flex flex-col w-full mb-4">
             <label for="complaintAppealSelect" class="font-semibold mb-1">{{ 'Type of Update' | translate }}</label>
             <select id="complaintAppealSelect" class="border border-gray-300 rounded-md p-2"
               (change)="onSelectionChange($event)">
               <option value="complaint">{{ 'Complaint' | translate }}</option>
               <option value="appeal">{{ 'Appeal' | translate }}</option>
-              <option value="summary">{{ 'Summary / Reason' | translate }}</option>
+              <option value="summary">{{ 'Information' | translate }}</option>
             </select>
           </div>
 
