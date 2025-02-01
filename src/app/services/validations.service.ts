@@ -43,7 +43,8 @@ export class ValidationsService {
 
 
   isValidField(form: FormGroup, field: string): boolean | null {
-    return form.controls[field].errors && form.controls[field].touched;
+    const control = form.controls[field];
+    return control ? control.errors && control.touched : null;
   }
 
   confirmPasswordValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {

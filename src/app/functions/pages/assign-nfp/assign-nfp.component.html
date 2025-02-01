@@ -1,85 +1,73 @@
 <div class="flex flex-col space-y-4 h-full w-full px-5 py-3 text-darkslategray">
-    <!-- Title / Heading -->
-    <div class="w-full text-start py-3 text-xl font-medium animate__animated animate__fadeInLeft">
-      <span class="pl-5 pr-3 py-1 bg-yellow-500 rounded-r-full">
-        {{ 'assignNewFreeProfessional' | translate }}
+  <!-- Title / Heading -->
+  <div class="w-full text-start py-3 text-xl font-medium animate__animated animate__fadeInLeft">
+    <span class="pl-5 pr-3 py-1 bg-yellow-500 rounded-r-full">
+      {{ 'assignNewFreeProfessional' | translate }}
+    </span>
+  </div>
+
+  <!-- Assignment form -->
+  <form [formGroup]="assignForm" (ngSubmit)="onAssignSubmit()"
+    class="flex flex-col space-y-3 max-w-lg bg-white p-4 rounded-md shadow-sm">
+
+    <label class="font-medium" for="fpEmail">
+      {{ 'freeProfessionalEmail' | translate }}
+    </label>
+    <input id="fpEmail" formControlName="email" type="email" class="border border-gray-300 px-2 py-1 rounded-md"
+      placeholder="{{ 'enterEmail' | translate }}" />
+    <div *ngIf="assignForm.controls['email']?.errors && assignForm.controls['email']?.touched" class="text-red-500">
+      <!-- For instance, if there's a required error or invalid email error -->
+      <span *ngIf="assignForm.controls['email'].hasError('required')">
+        {{ 'emailIsRequired' | translate }}
+      </span>
+      <span *ngIf="assignForm.controls['email'].hasError('email')">
+        {{ 'emailFormatError' | translate }}
       </span>
     </div>
-  
-    <!-- Assignment form -->
-    <form [formGroup]="assignForm" (ngSubmit)="onAssignSubmit()"
-          class="flex flex-col space-y-3 max-w-lg bg-white p-4 rounded-md shadow-sm">
-      
-      <label class="font-medium" for="fpEmail">
-        {{ 'freeProfessionalEmail' | translate }}
-      </label>
-      <input
-        id="fpEmail"
-        formControlName="email"
-        type="email"
-        class="border border-gray-300 px-2 py-1 rounded-md"
-        placeholder="{{ 'enterEmail' | translate }}"
-      />
-      <div *ngIf="assignForm.controls['email'].errors && assignForm.controls['email'].touched" class="text-red-500">
-        <!-- For instance, if there's a required error or invalid email error -->
-        <span *ngIf="assignForm.controls['email'].hasError('required')">
-          {{ 'emailIsRequired' | translate }}
-        </span>
-        <span *ngIf="assignForm.controls['email'].hasError('email')">
-          {{ 'emailFormatError' | translate }}
-        </span>
-      </div>
-  
-      <button
-        type="submit"
-        class="bg-darkslategray text-line px-3 py-1 rounded-md self-start"
-        [disabled]="assignForm.invalid || loading"
-      >
-        {{ 'assignNewFreeProfessional' | translate }}
-      </button>
-  
-      <!-- Show error or loader -->
-      <div class="text-red-500" *ngIf="errorMessage">{{ errorMessage }}</div>
-      <div *ngIf="loading">
-        <i class="fa-solid fa-spinner animate-spin"></i>
-      </div>
-    </form>
-  
-    <!-- Table of free professionals -->
-    <div class="flex flex-col bg-white rounded-md shadow-sm p-3 w-full">
-      <div class="overflow-x-auto">
-        <table class="table-auto w-full">
-          <thead>
-            <tr class="text-darkslategray">
-              <th class="px-4 py-2">{{ 'Name' | translate }}</th>
-              <th class="px-4 py-2">{{ 'FreeProfessionalType' | translate }}</th>
-              <th class="px-4 py-2">{{ 'ServiceRates' | translate }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let fp of pagedFreeProfessionals" class="text-center">
-              <td class="border-y px-4 py-2">{{ fp.username }}</td>
-              <td class="border-y px-4 py-2">{{ fp.typename }}</td>
-              <td class="border-y px-4 py-2">{{ fp.servicerates }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <!-- Paginator -->
-      <mat-paginator
-        [length]="totalLength"
-        [pageSize]="pageSize"
-        [pageSizeOptions]="[5, 10, 15]"
-        (page)="onPageChange($event)">
-      </mat-paginator>
+
+    <button type="submit" class="bg-darkslategray text-line px-3 py-1 rounded-md self-start"
+      [disabled]="assignForm.invalid || loading">
+      {{ 'assignNewFreeProfessional' | translate }}
+    </button>
+
+    <!-- Show error or loader -->
+    <div class="text-red-500" *ngIf="errorMessage">{{ errorMessage }}</div>
+    <div *ngIf="loading">
+      <i class="fa-solid fa-spinner animate-spin"></i>
     </div>
-  
-    <!-- Back or other navigation -->
-    <div class="flex justify-end items-center space-x-3 mt-4">
-      <button class="px-3 py-1 bg-line text-darkslategray rounded-md" routerLink="/home">
-        {{ 'goBack' | translate }}
-      </button>
+  </form>
+
+  <!-- Table of free professionals -->
+  <div class="flex flex-col bg-white rounded-md shadow-sm p-3 w-full">
+    <div class="overflow-x-auto">
+      <table class="table-auto w-full">
+        <thead>
+          <tr class="text-darkslategray">
+            <th class="px-4 py-2">{{ 'Name' | translate }}</th>
+            <th class="px-4 py-2">{{ 'FreeProfessionalType' | translate }}</th>
+            <th class="px-4 py-2">{{ 'ServiceRates' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let fp of pagedFreeProfessionals" class="text-center">
+            <td class="border-y px-4 py-2">{{ fp.username }}</td>
+            <td class="border-y px-4 py-2">{{ fp.typename }}</td>
+            <td class="border-y px-4 py-2">{{ fp.servicerates }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-  
+    <!-- Paginator -->
+    <mat-paginator [length]="totalLength" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 15]"
+      (page)="onPageChange($event)">
+    </mat-paginator>
   </div>
-  
+
+  <!-- Back or other navigation -->
+  <div class="flex justify-end items-center space-x-3 mt-4">
+    <button class="px-3 py-1 bg-line text-darkslategray rounded-md" routerLink="/home">
+      {{ 'goBack' | translate }}
+    </button>
+  </div>
+
+</div>
