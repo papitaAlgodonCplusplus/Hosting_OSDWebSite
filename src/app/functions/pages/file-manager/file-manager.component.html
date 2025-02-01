@@ -337,6 +337,7 @@
               <th class="w-[1rem] py-2">{{ 'Complaint' | translate }}</th>
               <th class="w-[1rem] py-2">{{ 'Solution Suggestion' | translate }}</th>
               <th class="w-[1rem] py-2">{{ 'Solution Complaint' | translate }}</th>
+              <th class="w-[1rem] py-2">{{ 'Solution Appeal' | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -424,6 +425,17 @@
                   {{ performance.solution_complaint }}
                 </span>
               </td>
+
+              <!-- Solution Appeal column -->
+              <td class="w-[1rem] p-3">
+                <button *ngIf="performance.solution_appeal && performance.solution_appeal.length > 20" type="button"
+                  class="text-blue-600 underline"
+                  (click)="openTextModal(performance.solution_appeal, 'Solution Appeal')">
+                  View
+                </button>
+                <span *ngIf="!performance.solution_appeal || performance.solution_appeal.length <= 20">
+                  {{ performance.solution_appeal }}
+                </span>
             </tr>
           </tbody>
         </table>
