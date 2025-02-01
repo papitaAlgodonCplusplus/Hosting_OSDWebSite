@@ -10,6 +10,7 @@ import { StudentRecordComponent } from './pages/students-management/student-reco
 import { UserProfileEditComponent } from './pages/edit-my-info/edit-my-info.component';
 import { AccountingComponent } from './pages/accounting/accounting.component';
 import { FileManagerComponent } from './pages/file-manager/file-manager.component';
+import { EditClaimFileComponent } from './pages/edit-claim-file/edit-claim-file.component';
 import { RestoreHistoryComponent } from './pages/restore-history/restore-history.component';
 import { AssignClientToTrainerComponent } from './pages/assign-client-to-trainer/assign-client-to-trainer.component';
 import { AccountingServicesComponent } from './pages/accounting-services/accounting-services.component';
@@ -87,6 +88,10 @@ const routes: Routes = [
   {
     path: 'logs',
     component: LogsComponent
+  },
+  {
+    path: 'edit-claim-file',
+    component: EditClaimFileComponent
   }
 ];
 

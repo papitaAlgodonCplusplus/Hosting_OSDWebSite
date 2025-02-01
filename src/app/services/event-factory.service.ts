@@ -633,6 +633,20 @@ export class EventFactoryService {
     return event;
   }
 
+  public CreateUpdateClaimEvent(updatedClaim: Form): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.UPDATE_CLAIM;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    event.setBodyProperty(EventConstants.CLAIM_FORM, updatedClaim);
+    return event;
+  }
+
   public CreateLoginErrorNotificationEvent(webBaseEvent: WebBaseEvent, message: string): NotificationEvent {
     let event: NotificationEvent;
 

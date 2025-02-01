@@ -163,6 +163,10 @@ app.post('/api/events/processOSDEvent', async (req, res) => {
         await handleCloseClaimFile(event, res);
         break;
 
+      case 'UpdateClaim':
+        await handleUpdateClaim(event, res);
+        break;
+
       case 'GetPerformancesProjectManagerById':
         await handleGetPerformancesProjectManagerById(event, res);
         break;
@@ -652,7 +656,6 @@ const handleGetTransparencyReportsIncomeExpenses = async (event, res) => {
 
 const handleGetTransparencyReportsSubscriberClients = async (event, res) => {
   try {
-
     const claimsQuery = `
       SELECT 
       cf.id, 
@@ -678,6 +681,8 @@ const handleGetTransparencyReportsSubscriberClients = async (event, res) => {
       cf.complaint,
       cf.appeal,
       cf.solution_suggestion,
+      cf.solution,
+      cf.solution_complaint,
       u.id AS user_id,
       u.code AS user_code,
       u.accounttype AS user_accounttype,
@@ -863,7 +868,7 @@ const handleGetClaims = async (event, res) => {
     let queryParams = [];
 
     console.log('freeProfessionalTypeId:', freeProfessionalTypeId, 'userId:', userId);
-    if (freeProfessionalTypeId === 'eea2312e-6a85-4ab6-85ff-0864547e3870' || userId === 'e77b5172-f726-4c1d-9f9e-d2dbd77e03c9') {
+    if (userId === 'e77b5172-f726-4c1d-9f9e-d2dbd77e03c9') {
       claimsQuery = `
         SELECT cf.*, u.accounttype, u.identity, u.name, u.firstsurname, u.middlesurname, u.city, 
                u.companyname, u.address, u.zipcode, u.country, u.landline, u.mobilephone, u.email, 
@@ -872,6 +877,20 @@ const handleGetClaims = async (event, res) => {
         LEFT JOIN osduser u ON cf.subscriberclaimedid = u.id
         LEFT JOIN subscribercustomer sc ON cf.subscriberclaimedid = sc.id
       `;
+
+    } else if (freeProfessionalTypeId === 'eea2312e-6a85-4ab6-85ff-0864547e3870') {
+      claimsQuery = `SELECT cf.*, 
+       u.accounttype, u.identity, u.name, u.firstsurname, u.middlesurname, u.city, 
+       u.companyname, u.address, u.zipcode, u.country, u.landline, u.mobilephone, 
+       u.email, u.password, u.web, u.isauthorized, u.isadmin,
+       trainer_user.name AS trainer_name  -- Fetch trainer's name instead of ID
+      FROM claim_file cf
+      LEFT JOIN osduser u ON cf.subscriberclaimedid = u.id
+      LEFT JOIN subscribercustomer sc ON cf.subscriberclaimedid = sc.id
+      LEFT JOIN freeprofessional trainer_fp ON u.assignedtrainer = trainer_fp.id  -- Link assigned trainer (from osduser.assignedtrainer)
+      LEFT JOIN osduser trainer_user ON trainer_fp.userid = trainer_user.id  -- Get trainer’s user details
+      WHERE trainer_user.id = $1;`;
+      queryParams = [userId];
     } else {
       claimsQuery = `
         SELECT cf.*, u.accounttype, u.identity, u.name, u.firstsurname, u.middlesurname, u.city, 
@@ -1585,23 +1604,40 @@ const handleChangingOsdUserAutorizationStatus = async (event, res) => {
 
 const handleAssignTrainerToSubscriber = async (event, res) => {
   try {
-    const assignTrainerToSubscriberEvent = event.Body;
-    const subscribercustomerfreeprofessionaltrainer = {
-      Id: uuidv4(),
-      Subscribercustomerid: assignTrainerToSubscriberEvent.SubscriberId,
-      Freeprofessionalid: assignTrainerToSubscriberEvent.FreeProfessionalId
-    };
+    console.log('📥 Received event:', event);
 
-    const insertQuery = `
-      INSERT INTO subscribercustomerfreeprofessionaltrainer (id, subscribercustomerid, freeprofessionalid)
-      VALUES ($1, $2, $3)
+    const assignTrainerToSubscriberEvent = event.Body;
+    const { SubscriberId, FreeProfessionalId } = assignTrainerToSubscriberEvent;
+
+    console.log('🔍 Extracted details:', assignTrainerToSubscriberEvent);
+
+    // Ensure the subscriber exists and get the user ID
+    const subscriberResult = await pool.query(`
+      SELECT userid 
+      FROM subscribercustomer 
+      WHERE id = $1
+    `, [SubscriberId]);
+
+    if (subscriberResult.rows.length === 0) {
+      console.warn('⚠️ Subscriber not found:', SubscriberId);
+      return res.status(404).json(createWebBaseEvent({
+        ASSIGN_TRAINER_TO_SUBSCRIBER_SUCCESS: false,
+        ASSIGN_TRAINER_TO_SUBSCRIBER_MESSAGE: 'Subscriber not found.'
+      }, event.SessionKey, event.SecurityToken, 'AssignTrainerToSubscriber'));
+    }
+
+    const userId = subscriberResult.rows[0].userid;
+    console.log('✅ Subscriber found, user ID:', userId);
+
+    // Update osduser.assignedtrainer to assign the trainer
+    const updateQuery = `
+      UPDATE osduser
+      SET assignedtrainer = $1
+      WHERE id = $2
     `;
 
-    await pool.query(insertQuery, [
-      subscribercustomerfreeprofessionaltrainer.Id,
-      subscribercustomerfreeprofessionaltrainer.Subscribercustomerid,
-      subscribercustomerfreeprofessionaltrainer.Freeprofessionalid
-    ]);
+    await pool.query(updateQuery, [FreeProfessionalId, userId]);
+    console.log('✅ Trainer assigned successfully:', FreeProfessionalId);
 
     res.status(200).json(createWebBaseEvent({
       ASSIGN_TRAINER_TO_SUBSCRIBER_SUCCESS: true,
@@ -1671,12 +1707,16 @@ const handleGetProfessionalFreeTrainers = async (event, res) => {
 const handleGetUnassignedSubscribers = async (event, res) => {
   try {
     const subscriberUnassignedListDTO = [];
-    const subscriberIdsWithFreeProfessionals = await pool.query(`
-      SELECT subscribercustomerid
-      FROM subscribercustomerfreeprofessionaltrainer
+
+    // Get IDs of subscribers whose associated user has an assigned trainer
+    const subscriberIdsWithTrainers = await pool.query(`
+      SELECT sc.id
+      FROM subscribercustomer sc
+      JOIN osduser u ON sc.userid = u.id
+      WHERE u.assignedtrainer IS NOT NULL
     `);
 
-    const subscriberIds = subscriberIdsWithFreeProfessionals.rows.map(row => row.subscribercustomerid);
+    const subscriberIds = subscriberIdsWithTrainers.rows.map(row => row.id);
 
     let subscribersList;
     if (subscriberIds.length > 0) {
@@ -1808,6 +1848,75 @@ const handleGetPerformancesProjectManagerById = async (event, res) => {
   }
 };
 
+const handleUpdateClaim = async (event, res) => {
+  try {
+    console.log('📥 Received event:', event);
+
+    const claimForm = event.Body?.ClaimForm;
+
+    if (!claimForm || !claimForm.id) {
+      console.warn('⚠️ ClaimForm and Claim ID are required.');
+      return res.status(400).json(createWebBaseEvent({
+        UPDATE_CLAIM_SUCCESS: false,
+        UPDATE_CLAIM_MESSAGE: 'ClaimForm and Claim ID are required.',
+      }, event.SessionKey, event.SecurityToken, 'UpdateClaim'));
+    }
+    const updateFields = [];
+    const updateValues = [];
+    let index = 1;
+
+    const fieldsToUpdate = [
+      'code', 'datecreated', 'status', 'subscriberclaimedid', 'claimantid', 'claimtype',
+      'serviceprovided', 'facts', 'amountclaimed', 'documentfile1id', 'documentfile1name',
+      'documentfile2id', 'documentfile2name', 'creditingdate', 'amountpaid', 'improvementsavings',
+      'valuationsubscriber', 'valuationclaimant', 'valuationfreeprofessionals', 'processor_id',
+      'complaint', 'appeal', 'solution_suggestion', 'answer_to_appeal', 'solution', 'solution_complaint'
+    ];
+
+    fieldsToUpdate.forEach(field => {
+      if (claimForm[field] !== undefined) {
+        updateFields.push(`${field} = $${index}`);
+        updateValues.push(claimForm[field]);
+        index++;
+      }
+    });
+
+    if (updateFields.length === 0) {
+      console.warn('⚠️ No fields to update.');
+      return res.status(400).json(createWebBaseEvent({
+        UPDATE_CLAIM_SUCCESS: false,
+        UPDATE_CLAIM_MESSAGE: 'No fields to update.',
+      }, event.SessionKey, event.SecurityToken, 'UpdateClaim'));
+    }
+
+    updateValues.push(claimForm.id);
+
+    const updateQuery = `
+      UPDATE claim_file
+      SET ${updateFields.join(', ')}
+      WHERE id = $${index}
+      RETURNING *;
+    `;
+
+    console.log('📝 Executing update query:', updateQuery);
+    const updateResult = await pool.query(updateQuery, updateValues);
+
+    console.log('✅ Claim updated successfully:', updateResult.rows[0]);
+    return res.status(200).json(createWebBaseEvent({
+      UPDATE_CLAIM_SUCCESS: true,
+      claim: updateResult.rows[0]
+    }, event.SessionKey, event.SecurityToken, 'UpdateClaim'));
+
+  } catch (error) {
+    console.error('❌ Error updating claim:', error);
+
+    return res.status(500).json(createWebBaseEvent({
+      UPDATE_CLAIM_SUCCESS: false,
+      UPDATE_CLAIM_MESSAGE: 'Server error updating claim.',
+    }, event.SessionKey, event.SecurityToken, 'UpdateClaim'));
+  }
+};
+
 const handleCloseClaimFile = async (event, res) => {
   try {
     const claimId = event.Body?.ClaimId;
@@ -1885,66 +1994,80 @@ const handleCloseClaimFile = async (event, res) => {
 
 const handleAddPerformanceUpdate = async (event, res) => {
   try {
+    console.log('🟢 Received event:', event);
+
     const performanceData = event.Body.Payload;
     if (!performanceData || !performanceData.ClaimId) {
+      console.log('⚠️ Missing Claim ID');
       return res.status(400).json(createWebBaseEvent({
         ADD_PERFORMANCE_UPDATE_SUCCESS: false,
         ADD_PERFORMANCE_UPDATE_MESSAGE: 'Claim ID is required.',
       }, event.SessionKey, event.SecurityToken, 'AddPerformanceUpdate'));
     }
 
-    console.log('performanceData:', performanceData);
+    console.log('📨 Performance data received:', performanceData);
 
-    if (performanceData.askForMoreInfo & performanceData.askForMoreInfo === true) {
+    if (performanceData.askForMoreInfo && performanceData.askForMoreInfo === true) {
+      console.log('🔄 Updating claim_file due to missing information request...');
+
       const updateClaimFileQuery = `
         UPDATE claim_file
-        SET status = 'Falta Información', facts = $2
+        SET status = 'Falta Información'
         WHERE id = $1
         RETURNING *;
       `;
 
-      const updateResult = await pool.query(updateClaimFileQuery, [performanceData.ClaimId, performanceData.Summary]);
+      const updateResult = await pool.query(updateClaimFileQuery, [performanceData.ClaimId]);
 
-      return res.status(200).json(createWebBaseEvent({
-        ADD_PERFORMANCE_UPDATE_SUCCESS: true,
-        ADD_PERFORMANCE_UPDATE_MESSAGE: 'Performance update added successfully',
-        updatedClaimFile: updateResult.rows[0]
-      }, event.SessionKey, event.SecurityToken, 'AddPerformanceUpdate'));
+      console.log('✅ Claim file updated successfully:', updateResult.rows[0]);
     }
+
     // Generate a unique code for the performance update
     const performanceCode = `PERF-${Math.random().toString(16).slice(2, 10)}`;
+    console.log('🔢 Generated performance code:', performanceCode);
 
     const insertPerformanceQuery = `
       INSERT INTO performance_claim_control (
-      id,
-      code,
-      claimid,
-      status,
-      dateperformance,
-      justifyingdocument,
-      justifyingdocumentbytes,
-      summary,
-      type,
-      typeperformance,
-      usertypeperformance,
-      filetype
+        id,
+        code,
+        claimid,
+        status,
+        dateperformance,
+        justifyingdocument,
+        justifyingdocumentbytes,
+        summary,
+        type,
+        typeperformance,
+        usertypeperformance,
+        filetype,
+        documentfile1id,
+        answer_to_appeal,
+        solution_suggestion,
+        appeal,
+        complaint,
+        solution,
+        solution_complaint
       ) VALUES (
-      $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19
       ) RETURNING *;
     `;
 
     let documentBase64 = null;
     if (performanceData.Document) {
       documentBase64 = Buffer.from(performanceData.Document).toString('base64');
+      console.log('📄 Document converted to Base64');
     }
 
     // Fetch existing performance data from the database
+    console.log('🔍 Fetching existing performance data...');
     const existingPerformanceQuery = `
       SELECT * FROM performance_claim_control WHERE claimid = $1 ORDER BY dateperformance DESC LIMIT 1
     `;
     const existingPerformanceResult = await pool.query(existingPerformanceQuery, [performanceData.ClaimId]);
     const existingPerformance = existingPerformanceResult.rows[0] || {};
+    console.log('📌 Existing performance data:', existingPerformance);
 
+    console.log('📝 Inserting new performance update...');
     const result = await pool.query(insertPerformanceQuery, [
       uuidv4(),
       performanceCode,
@@ -1957,22 +2080,34 @@ const handleAddPerformanceUpdate = async (event, res) => {
       performanceData.type || existingPerformance.type || 8,
       performanceData.typePerformance || existingPerformance.typeperformance || 'Complaint',
       performanceData.userTypePerformance || existingPerformance.usertypeperformance || 'CLAIMANT',
-      performanceData.FileType || existingPerformance.filetype || 'txt'
+      performanceData.FileType || existingPerformance.filetype || 'txt',
+      performanceData.Document || existingPerformance.documentfile1id || '',
+      performanceData.answer_to_appeal || existingPerformance.answer_to_appeal || '',
+      performanceData.solutionSuggestion || existingPerformance.solutionSuggestion || '',
+      performanceData.appeal || existingPerformance.appeal || '',
+      performanceData.complaint || existingPerformance.complaint || '',
+      performanceData.solution || existingPerformance.solution || '',
+      performanceData.solutionComplaint || existingPerformance.solutionComplaint || ''
     ]);
 
+    console.log('✅ Performance update inserted successfully:', result.rows[0]);
+
     // Update claim_file with new fields
+    console.log('🔄 Updating claim_file with new performance details...');
     const updateClaimFileQuery = `
       UPDATE claim_file
       SET 
-      status = COALESCE($1, status),
-      creditingdate = COALESCE($2, creditingdate),
-      amountpaid = COALESCE($3, amountpaid),
-      improvementsavings = COALESCE($4, improvementsavings),
-      facts = COALESCE($6, facts),
-      solution_suggestion = COALESCE($7, solution_suggestion),
-      appeal = COALESCE($8, appeal),
-      complaint = COALESCE($9, complaint),
-      answer_to_appeal = COALESCE($10, answer_to_appeal)
+        status = COALESCE($1, status),
+        creditingdate = COALESCE($2, creditingdate),
+        amountpaid = COALESCE($3, amountpaid),
+        improvementsavings = COALESCE($4, improvementsavings),
+        facts = COALESCE($6, facts),
+        solution_suggestion = COALESCE($7, solution_suggestion),
+        appeal = COALESCE($8, appeal),
+        complaint = COALESCE($9, complaint),
+        answer_to_appeal = COALESCE($10, answer_to_appeal),
+        solution = COALESCE($11, solution),
+        solution_complaint = COALESCE($12, solution_complaint)
       WHERE id = $5
       RETURNING *;
     `;
@@ -1987,9 +2122,12 @@ const handleAddPerformanceUpdate = async (event, res) => {
       performanceData.solutionSuggestion || null,
       performanceData.appeal || null,
       performanceData.complaint || null,
-      performanceData.answer_to_appeal || null
+      performanceData.answer_to_appeal || null,
+      performanceData.solution || null,
+      performanceData.solutionComplaint || null
     ]);
 
+    console.log('✅ claim_file updated successfully:', updateResult.rows[0]);
 
     return res.status(200).json(createWebBaseEvent({
       ADD_PERFORMANCE_UPDATE_SUCCESS: true,
@@ -3554,88 +3692,87 @@ const handleGetStudentsByCourse = async (event, res) => {
 const handleGetSubscribers = async (event, res) => {
   try {
     const result = await pool.query(`
-      SELECT
-      fp.id,
-      fp.userid,
-      fp.freeprofessionaltypeid,
-      fpt.acronym AS "FreeprofessionaltypeAcronym",
-      fp.identificationfileid,
-      fp.identificationfilename,
-      fp.curriculumvitaefileid,
-      fp.curriculumvitaefilename,
-      fp.civilliabilityinsurancefileid,
-      fp.civilliabilityinsurancefilename,
-      fp.servicerates,
-      fp.paytpv,
-      u.country,
-      u.name,
-      u.email,
-      u.identity,
-      u.isauthorized,
-      u.code,
-      u.firstsurname,
-      u.middlesurname,
-      u.city,
-      u.companyname,
-      u.address,
-      u.zipcode,
-      u.landline,
-      u.mobilephone,
-      u.web,
-      u.refeer,
-      u.can_be_claimed,
-      sc.clienttype,
-      sc.id AS scid,
-      sc.userid AS scuserid,
-      (
-      SELECT ou.name
-      FROM subscribercustomerfreeprofessionaltrainer scfpt
-      LEFT JOIN freeprofessional fpt ON scfpt.freeprofessionalid = fpt.id
-      LEFT JOIN osduser ou ON fpt.userid = ou.id
-      WHERE scfpt.subscribercustomerid = sc.id OR scfpt.freeprofessionalid = fp.id
-      LIMIT 1
-      ) AS trainerAssigned
-      FROM freeprofessional fp
-      LEFT JOIN freeprofessionaltype fpt ON fp.freeprofessionaltypeid = fpt.id
-      LEFT JOIN osduser u ON fp.userid = u.id
-      LEFT JOIN subscribercustomer sc ON u.id = sc.userid
-      UNION
-      SELECT
-      NULL AS id,
-      u.id AS userid,
-      NULL AS freeprofessionaltypeid,
-      NULL AS "FreeprofessionaltypeAcronym",
-      NULL AS identificationfileid,
-      NULL AS identificationfilename,
-      NULL AS curriculumvitaefileid,
-      NULL AS curriculumvitaefilename,
-      NULL AS civilliabilityinsurancefileid,
-      NULL AS civilliabilityinsurancefilename,
-      NULL AS servicerates,
-      NULL AS paytpv,
-      u.country,
-      u.name,
-      u.email,
-      u.identity,
-      u.isauthorized,
-      u.code,
-      u.firstsurname,
-      u.middlesurname,
-      u.city,
-      u.companyname,
-      u.address,
-      u.zipcode,
-      u.landline,
-      u.mobilephone,
-      u.web,
-      u.refeer,
-      u.can_be_claimed,
-      NULL AS clienttype,
-      NULL AS scid,
-      NULL AS scuserid,
-      NULL AS trainerAssigned
-      FROM osduser u
-      WHERE u.accounttype = '063e12fa-33db-47f3-ac96-a5bdb08ede61' OR u.accounttype =  '8e539a42-4108-4be6-8f77-2d16671d1069' OR u.accounttype = '7b04ef6e-b6b6-4b4c-98e5-3008512f610e'
+     SELECT
+    fp.id,
+    fp.userid,
+    fp.freeprofessionaltypeid,
+    fpt.acronym AS "FreeprofessionaltypeAcronym",
+    fp.identificationfileid,
+    fp.identificationfilename,
+    fp.curriculumvitaefileid,
+    fp.curriculumvitaefilename,
+    fp.civilliabilityinsurancefileid,
+    fp.civilliabilityinsurancefilename,
+    fp.servicerates,
+    fp.paytpv,
+    u.country,
+    u.name,
+    u.email,
+    u.identity,
+    u.isauthorized,
+    u.code,
+    u.firstsurname,
+    u.middlesurname,
+    u.city,
+    u.companyname,
+    u.address,
+    u.zipcode,
+    u.landline,
+    u.mobilephone,
+    u.web,
+    u.refeer,
+    u.can_be_claimed,
+    sc.clienttype,
+    sc.id AS scid,
+    sc.userid AS scuserid,
+    trainer_user.name AS trainerassigned  -- Fetch trainer's name instead of ID
+FROM freeprofessional fp
+LEFT JOIN freeprofessionaltype fpt ON fp.freeprofessionaltypeid = fpt.id
+LEFT JOIN osduser u ON fp.userid = u.id
+LEFT JOIN subscribercustomer sc ON u.id = sc.userid
+LEFT JOIN freeprofessional trainer_fp ON u.assignedtrainer = trainer_fp.id  -- Join freeprofessional first
+LEFT JOIN osduser trainer_user ON trainer_fp.userid = trainer_user.id  -- Get trainer's user details
+UNION
+SELECT
+    NULL AS id,
+    u.id AS userid,
+    NULL AS freeprofessionaltypeid,
+    NULL AS "FreeprofessionaltypeAcronym",
+    NULL AS identificationfileid,
+    NULL AS identificationfilename,
+    NULL AS curriculumvitaefileid,
+    NULL AS curriculumvitaefilename,
+    NULL AS civilliabilityinsurancefileid,
+    NULL AS civilliabilityinsurancefilename,
+    NULL AS servicerates,
+    NULL AS paytpv,
+    u.country,
+    u.name,
+    u.email,
+    u.identity,
+    u.isauthorized,
+    u.code,
+    u.firstsurname,
+    u.middlesurname,
+    u.city,
+    u.companyname,
+    u.address,
+    u.zipcode,
+    u.landline,
+    u.mobilephone,
+    u.web,
+    u.refeer,
+    u.can_be_claimed,
+    NULL AS clienttype,
+    NULL AS scid,
+    NULL AS scuserid,
+    trainer_user.name AS trainerassigned  -- Fetch trainer name in UNION as well
+FROM osduser u
+LEFT JOIN freeprofessional trainer_fp ON u.assignedtrainer = trainer_fp.id
+LEFT JOIN osduser trainer_user ON trainer_fp.userid = trainer_user.id
+WHERE u.accounttype IN ('063e12fa-33db-47f3-ac96-a5bdb08ede61', 
+                        '8e539a42-4108-4be6-8f77-2d16671d1069', 
+                        '7b04ef6e-b6b6-4b4c-98e5-3008512f610e');
     `);
 
     res.status(200).json(createWebBaseEvent({

@@ -13,6 +13,7 @@ import { MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginato
 import { CustomPaginator } from '../services/custom-paginator.service';
 import { ClaimsFileComponent } from './pages/claims-file/claims-file.component';
 import { FileManagerComponent } from './pages/file-manager/file-manager.component';
+import { EditClaimFileComponent } from './pages/edit-claim-file/edit-claim-file.component';
 import { RestoreHistoryComponent } from './pages/restore-history/restore-history.component';
 import { AuthorizedModalComponent } from './components/authorized-modal/authorized-modal.component';
 import { AssignClientToTrainerComponent } from './pages/assign-client-to-trainer/assign-client-to-trainer.component';
@@ -35,6 +36,7 @@ import { FpManagementComponent } from './pages/fp-management/fp-management.compo
     SubAuthorizedComponent,
     ClaimsFileComponent,
     FileManagerComponent,
+    EditClaimFileComponent,
     RestoreHistoryComponent,
     AuthorizedModalComponent,
     AssignClientToTrainerComponent,

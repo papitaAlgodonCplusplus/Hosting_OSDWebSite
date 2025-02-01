@@ -36,8 +36,8 @@
       <!-- Solution Field -->
       <div class="col-span-1 lg:col-span-2 w-full border border-gray-300 rounded-md p-2">
         <label class="block mb-1 font-medium">{{ 'Solution' | translate }}</label>
-        <textarea formControlName="solutionSuggestion" class="w-full bg-white-lightbone" [readonly]="true"
-          [placeholder]="this.claim?.solution_suggestion || 'No solution provided yet'"></textarea>
+        <textarea formControlName="solution" class="w-full bg-white-lightbone" [readonly]="true"
+          [placeholder]="this.claim?.solution || 'No solution provided yet'"></textarea>
       </div>
 
       <div class="flex flex-col items-center space-y-1 mt-10">
@@ -45,7 +45,6 @@
         <label for="downloadButton" class="text-sm text-gray-700 font-medium">
           {{ 'Justification/Proof File of the Claim' | translate }}
         </label>
-
         <!-- Modified Button -->
         <button id="downloadButton" type="button" class="cursor-pointer px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg shadow-md 
           hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 
@@ -174,19 +173,17 @@
 
           <!-- Document Fields in a Grid -->
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
-            <!-- Document Field -->
-            <div *ngIf="!isSubscriber && !isUserProcessor && !isTrainer" class="flex flex-col w-full">
-              <label for="performanceDocument1" class="font-semibold mb-1">Document</label>
-              <input formControlName="document1" id="performanceDocument1" class="border border-gray-300 rounded-md p-2"
-                type="file" (change)="onFileUpload($event)" />
-            </div>
+            <shared-uploadfile *ngIf="!isSubscriber && !isUserProcessor && !isTrainer" [isModified]="false"
+              [uploadFile]="uploadFile" [fileId]="''" [fileName]="''" formControlName="document"
+              id="performanceDocument1" [formGroup]="addUpdateForm" label="documento1" fieldName="document"
+              (fileUploaded)="handleFileUploaded($event)">
+            </shared-uploadfile>
 
-            <!-- Document Field -->
-            <div *ngIf="!isSubscriber && !isUserProcessor && !isTrainer" class="flex flex-col w-full">
-              <label for="performanceDocument1" class="font-semibold mb-1">Document 2 (Optional)</label>
-              <input formControlName="document1" id="performanceDocument1" class="border border-gray-300 rounded-md p-2"
-                type="file" (change)="onFileUpload($event)" />
-            </div>
+            <shared-uploadfile *ngIf="!isSubscriber && !isUserProcessor && !isTrainer" [isModified]="false"
+              [uploadFile]="uploadFile" [fileId]="''" [fileName]="''" formControlName="document"
+              id="performanceDocument1" [formGroup]="addUpdateForm" label="documento2" fieldName="document"
+              (fileUploaded)="handleFileUploaded($event)">
+            </shared-uploadfile>
           </div>
 
           <!-- Appeal Document Download Field -->
@@ -258,44 +255,30 @@
               type="date" />
           </div> -->
 
-          <!-- Facts Update Field (conditionally displayed) -->
-          <div *ngIf="this.claim?.status === 'Falta Información' && !isUserProcessor" class="flex flex-col w-full">
-            <label for="factsUpdate" class="font-semibold mb-1">{{ 'Facts Update' | translate }}</label>
-            <textarea formControlName="factsUpdate" id="factsUpdate" class="border border-gray-300 rounded-md p-2"
-              [placeholder]="'Provide updated facts' | translate"></textarea>
+
+          <!-- Solution Field for Trainer -->
+          <div *ngIf="isTrainer" class="flex flex-col w-full">
+            <label for="solution" class="font-semibold mb-1">{{ 'solution' | translate }}</label>
+            <textarea formControlName="solution" id="solution" class="border border-gray-300 rounded-md p-2"
+              placeholder="{{ 'Enter your solution' | translate }}"></textarea>
           </div>
 
-          <!-- Solution Suggestion Field (conditionally displayed) -->
-          <div *ngIf="isSubscriber" class="flex flex-col w-full">
-            <label for="solutionSuggestion" class="font-semibold mb-1">
-              <span *ngIf="isTrainer">{{ 'solution' | translate }}</span>
-              <span *ngIf="!isTrainer">{{ 'solution_suggestion ' | translate }}</span>
-            </label>
+          <!-- Solution Suggestion Field for non-Trainer -->
+          <div *ngIf="!isTrainer" class="flex flex-col w-full">
+            <label for="solutionSuggestion" class="font-semibold mb-1">{{ 'solution_suggestion' | translate }}</label>
             <textarea formControlName="solutionSuggestion" id="solutionSuggestion"
               class="border border-gray-300 rounded-md p-2"
-              [placeholder]="isTrainer ? ('Enter your solution' | translate) : ('Enter your solution suggestion' | translate)"></textarea>
+              placeholder="{{ 'Enter your solution suggestion' | translate }}"></textarea>
           </div>
 
           <!-- Solution Complaint Field (conditionally displayed) -->
-          <div *ngIf="isUserProcessor || isTrainer" class="flex flex-col w-full">
-            <label for="solutionSuggestion" class="font-semibold mb-1">
-              <span *ngIf="isTrainer">{{ 'solution' | translate }}</span>
-              <span *ngIf="!isTrainer">{{ 'Solution Complaint ' | translate }}</span>
-            </label>
-            <textarea formControlName="solutionSuggestion" id="solutionSuggestion"
-              class="border border-gray-300 rounded-md p-2"
-              [placeholder]="('Enter your solution' | translate)"></textarea>
-          </div>
-
-          <!-- Solution Claim Field (conditionally displayed) -->
           <div *ngIf="isUserProcessor" class="flex flex-col w-full">
-            <label for="solutionSuggestion" class="font-semibold mb-1">
-              <span *ngIf="isTrainer">{{ 'solution' | translate }}</span>
-              <span *ngIf="!isTrainer">{{ 'Solution Claim ' | translate }}</span>
+            <label for="solutionComplaint" class="font-semibold mb-1">
+              <span>{{ 'Solution Complaint ' | translate }}</span>
             </label>
-            <textarea formControlName="solutionSuggestion" id="solutionSuggestion"
+            <textarea formControlName="solutionComplaint" id="solutionComplaint"
               class="border border-gray-300 rounded-md p-2"
-              [placeholder]="('Enter your solution' | translate)"></textarea>
+              [placeholder]="('Enter your complaint solution' | translate)"></textarea>
           </div>
 
           <!-- Complaint Field (conditionally displayed) -->
@@ -329,27 +312,111 @@
   </div>
 
   <!-- Performance Modal -->
-  <div *ngIf="showModalPerformances" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
+  <div *ngIf="showModalPerformances" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto w-90">
     <div class="bg-opacity-75 bg-black absolute inset-0"></div>
-    <div class="relative z-50 bg-white shadow-md rounded-xl p-3 w-11/12 lg:w-3/4">
+    <div class="relative z-50 bg-white shadow-md rounded-xl p-3 w-90">
       <div class="p-3 flex flex-col items-center space-y-3">
-        <table class="table-auto w-full">
+        <table class="table-fixed w-full">
           <thead>
             <tr class="text-darkslategray border-b">
-              <th class="py-2">{{ 'Code' | translate }}</th>
-              <th class="py-2">{{ 'Date' | translate }}</th>
-              <th class="py-2">{{ 'Type' | translate }}</th>
-              <th class="py-2">{{ 'status' | translate }}</th>
-              <th class="py-2">{{ 'Information' | translate }}</th>
+              <th class="w-[1rem] py-2">{{ 'Code' | translate }}</th>
+              <th class="w-[1rem] py-2">{{ 'Date' | translate }}</th>
+              <th class="w-[1rem] py-2">{{ 'Type' | translate }}</th>
+              <th class="w-[1rem] py-2">{{ 'Status' | translate }}</th>
+              <th class="w-[1rem] py-2">{{ 'Information' | translate }}</th>
+              <th class="w-[1rem] py-2">{{ 'Document' | translate }}</th>
+              <th class="w-[1rem] py-2">{{ 'Appeal' | translate }}</th>
+              <th class="w-[1rem] py-2">{{ 'Answer Appeal' | translate }}</th>
+              <th class="w-[1rem] py-2">{{ 'Complaint' | translate }}</th>
+              <th class="w-[1rem] py-2">{{ 'Solution Suggestion' | translate }}</th>
+              <th class="w-[1rem] py-2">{{ 'Solution Complaint' | translate }}</th>
             </tr>
           </thead>
           <tbody>
             <tr class="border-t text-center" *ngFor="let performance of displayedItems; let i = index">
-              <td class="p-3">{{ performance.code }}</td>
-              <td class="p-3">{{ performance.dateperformance | date:'dd-MM-yyyy' }}</td>
-              <td class="p-3">{{ claim?.claimtype }}</td>
-              <td class="p-3">{{ performance.status | translate }}</td>
-              <td class="p-3">{{ performance.summary | translate }}</td>
+              <td class="w-[1rem] p-3">{{ performance.code }}</td>
+              <td class="w-[1rem] p-3">{{ performance.dateperformance | date:'dd-MM-yyyy' }}</td>
+              <td class="w-[1rem] p-3">{{ claim?.claimtype }}</td>
+              <td class="w-[1rem] p-3">{{ performance.status | translate }}</td>
+
+              <!-- Information column -->
+              <td class="w-[1rem] p-3">
+                <button *ngIf="performance.summary && performance.summary.length > 20" type="button"
+                  class="text-blue-600 underline" (click)="openTextModal(performance.summary, 'Information')">
+                  View
+                </button>
+                <span *ngIf="!performance.summary || performance.summary.length <= 20">
+                  {{ performance.summary | translate }}
+                </span>
+              </td>
+
+              <!-- Document column -->
+              <td class="w-[1rem] p-3">
+                <button *ngIf="performance.justifyingdocument" id="downloadButton" type="button" class="mt-2 cursor-pointer px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg shadow-md 
+                hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 
+                transition ease-in-out duration-150" (click)="downloadSelectedFile(performance.justifyingdocument)">
+                  {{ 'Download' | translate }}
+                </button>
+                <span *ngIf="!performance.justifyingdocument">{{ 'No Document' | translate }}</span>
+              </td>
+
+              <!-- Appeal column -->
+              <td class="w-[1rem] p-3">
+                <button *ngIf="performance.appeal && performance.appeal.length > 20" type="button"
+                  class="text-blue-600 underline" (click)="openTextModal(performance.appeal, 'Appeal')">
+                  View
+                </button>
+                <span *ngIf="!performance.appeal || performance.appeal.length <= 20">
+                  {{ performance.appeal }}
+                </span>
+              </td>
+
+              <!-- Answer to Appeal column -->
+              <td class="w-[1rem] p-3">
+                <button *ngIf="performance.answer_to_appeal && performance.answer_to_appeal.length > 20" type="button"
+                  class="text-blue-600 underline"
+                  (click)="openTextModal(performance.answer_to_appeal, 'Answer to Appeal')">
+                  View
+                </button>
+                <span *ngIf="!performance.answer_to_appeal || performance.answer_to_appeal.length <= 20">
+                  {{ performance.answer_to_appeal }}
+                </span>
+              </td>
+
+              <!-- Complaint column -->
+              <td class="w-[1rem] p-3">
+                <button *ngIf="performance.complaint && performance.complaint.length > 20" type="button"
+                  class="text-blue-600 underline" (click)="openTextModal(performance.complaint, 'Complaint')">
+                  View
+                </button>
+                <span *ngIf="!performance.complaint || performance.complaint.length <= 20">
+                  {{ performance.complaint }}
+                </span>
+              </td>
+
+              <!-- Solution Suggestion column -->
+              <td class="w-[1rem] p-3">
+                <button *ngIf="performance.solution_suggestion && performance.solution_suggestion.length > 20"
+                  type="button" class="text-blue-600 underline"
+                  (click)="openTextModal(performance.solution_suggestion, 'Solution Suggestion')">
+                  View
+                </button>
+                <span *ngIf="!performance.solution_suggestion || performance.solution_suggestion.length <= 20">
+                  {{ performance.solution_suggestion }}
+                </span>
+              </td>
+
+              <!-- Solution Complaint column -->
+              <td class="w-[1rem] p-3">
+                <button *ngIf="performance.solution_complaint && performance.solution_complaint.length > 20"
+                  type="button" class="text-blue-600 underline"
+                  (click)="openTextModal(performance.solution_complaint, 'Solution Complaint')">
+                  View
+                </button>
+                <span *ngIf="!performance.solution_complaint || performance.solution_complaint.length <= 20">
+                  {{ performance.solution_complaint }}
+                </span>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -364,6 +431,22 @@
           <button (click)="closePerformanceModal()"
             class="p-2 rounded-xl bg-line text-darkslategray font-medium animate__animated animate__fadeInDown">
             {{ 'regresar' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Text Modal (placed as a sibling, not nested) -->
+  <div *ngIf="showTextModal" class="fixed inset-0 z-[80] flex items-center justify-center overflow-y-auto w-90">
+    <div class="bg-opacity-75 bg-black absolute inset-0" (click)="closeTextModal()"></div>
+    <div class="relative z-[80] bg-white shadow-md rounded-xl p-3 w-90">
+      <div class="p-3">
+        <h2 class="text-lg font-bold mb-3">{{ modalTitle }}</h2>
+        <p class="whitespace-pre-wrap">{{ modalContent }}</p>
+        <div class="flex justify-end w-full mt-3">
+          <button (click)="closeTextModal()" class="p-2 rounded-xl bg-line text-darkslategray font-medium">
+            {{ 'Close' | translate }}
           </button>
         </div>
       </div>

@@ -1,0 +1,131 @@
+<div class="flex flex-col justify-center items-center w-full h-full p-6 space-y-8 bg-gray-50 rounded-lg shadow-md">
+    <!-- Page Title or Heading -->
+    <h2 class="text-2xl font-semibold text-darkslategray tracking-wide">
+        {{ 'Edit Claim' | translate }}
+    </h2>
+
+    <!-- Only render the form if editClaimForm is defined -->
+    <form *ngIf="editClaimForm" [formGroup]="editClaimForm" autocomplete="off" class="w-full max-w-4xl space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Facts / Description -->
+            <div class="flex flex-col space-y-1 md:col-span-2">
+                <label for="facts" class="text-gray-700 font-medium">
+                    {{ 'facts' | translate }}
+                </label>
+                <textarea id="facts" formControlName="facts"
+                    class="text-lg p-2 rounded border border-gray-300 bg-white-lightbone h-32"></textarea>
+            </div>
+
+            <!-- Status -->
+            <div class="flex flex-col space-y-1">
+                <label for="status" class="text-gray-700 font-medium">
+                    {{ 'status' | translate }}
+                </label>
+                <select id="status" formControlName="status"
+                    class="text-lg p-2 rounded border border-gray-300 bg-white-lightbone">
+                    <option value="" disabled>Select Status</option>
+                    <option value="Running">Running</option>
+                    <option value="Closed">Closed</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Falta Información">Falta Información</option>
+                </select>
+            </div>
+
+            <!-- Date Created -->
+            <div class="flex flex-col space-y-1">
+                <label for="datecreated" class="text-gray-700 font-medium">
+                    {{ 'Date' | translate }}
+                </label>
+                <input id="datecreated" formControlName="datecreated" type="date"
+                    class="text-lg p-2 rounded border border-gray-300 bg-white-lightbone" />
+            </div>
+
+            <div class="flex flex-col space-y-1 w-full">
+                <label for="subscriberClaimedName" class="text-gray-700 font-medium">
+                    {{ 'SubscriberCustomer' | translate }}
+                </label>
+                <div class="relative w-full">
+                    <!-- Notice the pr-10, which gives us space for the icon -->
+                    <input id="subscriberClaimedName" formControlName="subscriberClaimedName" type="text"
+                        class="w-full text-lg p-2 pr-10 rounded border border-gray-300 bg-white-lightbone cursor-pointer"
+                        placeholder="{{ 'Select a client...' | translate }}" (focus)="showModal()" readonly />
+                    <!-- Absolutely position the icon so it stays inside the input container -->
+                    <i
+                        class="fa-solid fa-caret-down absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                </div>
+            </div>
+
+            <!-- Service Provided -->
+            <div class="flex flex-col space-y-1">
+                <label for="serviceprovided" class="text-gray-700 font-medium">
+                    {{ 'servicio_prestado' | translate }}
+                </label>
+                <input id="serviceprovided" formControlName="serviceprovided" type="text"
+                    class="text-lg p-2 rounded border border-gray-300 bg-white-lightbone" />
+            </div>
+
+            <!-- Amount Claimed -->
+            <div class="flex flex-col space-y-1">
+                <label for="amountclaimed" class="text-gray-700 font-medium">
+                    {{ 'cuantia_reclamada' | translate }}
+                </label>
+                <input id="amountclaimed" formControlName="amountclaimed" type="number"
+                    class="text-lg p-2 rounded border border-gray-300 bg-white-lightbone" />
+            </div>
+        </div>
+    </form>
+
+    <!-- Buttons container -->
+    <div class="flex justify-end w-full max-w-4xl space-x-4">
+        <button routerLink="/functions/claims-file"
+            class="px-4 py-2 rounded bg-gray-300 text-darkslategray font-medium hover:bg-gray-400 transition">
+            {{ 'Return' | translate }}
+        </button>
+        <button class="px-4 py-2 rounded bg-blue-500 text-white font-medium hover:bg-blue-600 transition"
+            (click)="onSubmit()">
+            {{ 'OK' | translate }}
+        </button>
+    </div>
+</div>
+
+<!-- Modal for picking a subscriber -->
+<div *ngIf="openModal" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-3">
+    <div class="bg-opacity-75 bg-black absolute inset-0"></div>
+    <div class="relative z-50 bg-white rounded-xl shadow-md space-y-3">
+        <i (click)="closeModal()" class="fa-solid fa-xmark text-lg text-end w-full px-3 cursor-pointer absolute"></i>
+        <div class="p-4">
+            <table class="table-auto w-full">
+                <thead>
+                    <tr class="text-darkslategray">
+                        <th class="px-4 py-2"></th>
+                        <th class="px-4 py-2">{{ 'Company Name' | translate }}</th>
+                        <th class="px-4 py-2">{{ 'pais' | translate }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let subscriber of filteredSubscribers">
+                        <td class="px-4 border-b py-2 text-center">
+                            <a class="bg-line p-2 rounded-xl text-darkslategray font-medium cursor-pointer transition duration-300 ease-in-out hover:bg-darkslategray hover:text-line"
+                                (click)="selectSubscriber(subscriber.Id, subscriber.companyname)">
+                                {{ 'Select' | translate }}
+                            </a>
+                        </td>
+                        <td class="px-4 border-b py-2 text-center">{{ subscriber.companyname }}</td>
+                        <td class="px-4 border-b py-2 text-center">{{ subscriber.country }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Filters for searching by country or company name -->
+            <div class="flex flex-col space-y-3 p-3">
+                <input type="text" placeholder="{{ 'FilterbyCountry' | translate }}" [(ngModel)]="filterCountry"
+                    class="placeholder:text-darkgray text-black block border p-2" (input)="applyFilters()" />
+                <input type="text" placeholder="{{ 'FilterbyCompanyName' | translate }}" [(ngModel)]="filterCompanyName"
+                    class="placeholder:text-darkgray text-black block border p-2" (input)="applyFilters()" />
+            </div>
+
+            <mat-paginator [length]="filteredSubscribers.length" [pageSize]="5"
+                (page)="onPageChange($event)"></mat-paginator>
+        </div>
+    </div>
+</div>

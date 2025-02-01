@@ -15,6 +15,7 @@
                         <th class="py-2 px-4 font-normal">{{'facts' | translate}}</th>
                         <th class="py-2 px-4 font-normal">{{'status' | translate}}</th>
                         <th class="py-2 px-4 font-normal">{{'Date' | translate}}</th>
+                        <th class="py-2 px-4 font-normal">{{'Edit' | translate}}</th>
                     </tr>
                 </thead>
                 <ng-container *ngIf="claims">
@@ -22,17 +23,29 @@
                         <tr *ngFor="let claim of displayedItems; let i = index" class="my-5">
                             <td class="p-2 border-y text-center">
                                 <span (click)="selectClaim(claim)" routerLink="/functions/file-manager"
-                                    class="font-medium text-darkslategray px-4 py-2 text-lg cursor-pointer"><i class="fa-solid fa-eye"></i></span>
+                                    class="font-medium text-darkslategray px-4 py-2 text-lg cursor-pointer">
+                                    <i class="fa-solid fa-eye"></i>
+                                </span>
                             </td>
                             <td class="p-2 border-y text-center">{{claim.code}}</td>
                             <td class="p-2 border-y text-center">{{claim.name}}</td>
                             <td class="p-2 border-y text-center">{{claim.facts | truncate:100}}</td>
-                            <td class="p-2 border-y text-center"> <i class="fa-solid fa-circle pr-3"
-                                    [ngClass]="{'text-red-500' : claim.status == 'Unassigned',
-                                                'text-yellow-500' : claim.status == 'Running',
-                                                'text-green-500' : claim.status == 'Completed',
-                                                'text-blue-500' : claim.status == 'Falta Información'}"></i>{{ claim.status | translate }}</td>
+                            <td class="p-2 border-y text-center">
+                                <i class="fa-solid fa-circle pr-3" [ngClass]="{
+                                        'text-red-500' : claim.status == 'Unassigned',
+                                        'text-yellow-500' : claim.status == 'Running',
+                                        'text-green-500' : claim.status == 'Completed',
+                                        'text-blue-500' : claim.status == 'Falta Información'
+                                    }">
+                                </i>{{ claim.status | translate }}
+                            </td>
                             <td class="p-2 border-y text-center">{{ claim.datecreated | date:'medium' }}</td>
+                            <td class="p-2 border-y text-center">
+                                <span (click)="selectClaim(claim)" routerLink="/functions/edit-claim-file"
+                                    class="font-medium text-darkslategray px-4 py-2 text-lg cursor-pointer">
+                                    <i class="fa-solid fa-pencil"></i>
+                                </span>
+                            </td>
                         </tr>
                     </tbody>
                 </ng-container>
@@ -40,7 +53,7 @@
         </div>
         <mat-paginator [length]="claims.length" [pageSize]="5" (page)="onPageChange($event)"></mat-paginator>
         <button class="absolute bottom-3 right-3 text-darkslategray bg-line p-2 rounded-xl " routerLink="/home">
-        {{'regresar' | translate }}
+            {{'regresar' | translate }}
         </button>
     </div>
 </div>

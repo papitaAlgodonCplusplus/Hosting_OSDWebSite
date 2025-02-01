@@ -28,6 +28,7 @@ export class FileManagerComponent implements OnInit, OnDestroy {
   closeClaimfileForm!: FormGroup;
   addUpdateForm!: FormGroup;
   selectedOption: string = 'complaint'; // Default selection
+  uploadFile: boolean = true;
 
   /** NEW: Form & Flag to gather a final rating before finalizing claim */
   finalizeForm!: FormGroup;
@@ -49,6 +50,9 @@ export class FileManagerComponent implements OnInit, OnDestroy {
   showEvalDialog: boolean = false;
   allPerformances!: any[];
   isTerminatedPerformance: boolean = false;
+  public showTextModal: boolean = false;
+  public modalContent: string = '';
+  public modalTitle: string = '';
 
   user!: UserInfo;
 
@@ -79,9 +83,11 @@ export class FileManagerComponent implements OnInit, OnDestroy {
       askForMoreInfo: [false],
       factsUpdate: [''],
       solutionSuggestion: [''],
+      solutionComplaint: [''],
       appeal: [''],
       complaint: [''],
-      answer_to_appeal: ['']
+      answer_to_appeal: [''],
+      solution: ['']
     });
 
     // NEW: Finalize Form for user rating 0-5
@@ -90,20 +96,8 @@ export class FileManagerComponent implements OnInit, OnDestroy {
     });
   }
 
-  onFileUpload(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      const file = input.files[0];
-      const reader = new FileReader();
-      reader.onload = () => {
-        const base64String = reader.result as string;
-        this.addUpdateForm.patchValue({ document: "SomeDoc" });
-      };
-      reader.onerror = (error) => {
-        console.error("Error reading file: ", error);
-      };
-      reader.readAsDataURL(file);
-    }
+  handleFileUploaded(event: { typeFile: string, fileId: string }): void {
+    this.addUpdateForm.patchValue({ document: event.fileId });
   }
 
   ngOnInit() {
@@ -165,9 +159,27 @@ export class FileManagerComponent implements OnInit, OnDestroy {
     }, 0);
   }
 
-  downloadSelectedFile(nothing: any) {
+  // Opens the modal with the passed content and title.
+  openTextModal(content: string, title: string): void {
+    this.modalContent = content;
+    this.modalTitle = title;
+    this.showTextModal = true;
+  }
+
+  // Closes the text modal.
+  closeTextModal(): void {
+    this.showTextModal = false;
+  }
+  
+  downloadSelectedFile(optionalDocument: any) {
     let fileId: string;
-    fileId = this.claim.documentfile1id;
+
+    console.log("Optional Document", optionalDocument);
+    if (optionalDocument !== '') {
+      fileId = optionalDocument;
+    } else {
+      fileId = this.claim.documentfile1id;
+    }
 
     if (!fileId) {
       return;
@@ -233,7 +245,7 @@ export class FileManagerComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const { status, document, summary, improvementSavings, amountPaid, creditingDate } = this.addUpdateForm.value;
+    const { status, document, summary, improvementSavings, amountPaid, creditingDate, solution } = this.addUpdateForm.value;
 
     try {
       // Extract filetype from the document field
@@ -254,6 +266,8 @@ export class FileManagerComponent implements OnInit, OnDestroy {
         complaint: formData.complaint || null,
         solutionSuggestion: formData.solutionSuggestion || null,
         answer_to_appeal: formData.answer_to_appeal || null,
+        solution: solution || null,
+        solutionComplaint: formData.solutionComplaint || null,
       };
 
       if (this.addUpdateForm.value.askForMoreInfo) {
@@ -322,6 +336,8 @@ export class FileManagerComponent implements OnInit, OnDestroy {
       appeal: [claim?.appeal || ''],
       solution_suggestion: [claim?.solution_suggestion || ''],
       answer_to_appeal: [claim?.answer_to_appeal || ''],
+      solution: [claim?.solution || ''],
+      solution_complaint: [claim?.solution_complaint || ''],
     });
     return formGroup;
   }
@@ -360,6 +376,7 @@ export class FileManagerComponent implements OnInit, OnDestroy {
           map(performanceClaim => performanceClaim.map(item => ({ ...item, typePerformance: 'ClaimantCustomer' })))
         )
       ]).subscribe(([claimantAndCustomer]) => {
+        console.log("Claimant and Customer", claimantAndCustomer);
         this.allPerformances = [...claimantAndCustomer];
         this.updateDisplayedItems(0, 5);
       });

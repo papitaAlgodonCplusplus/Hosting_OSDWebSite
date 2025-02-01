@@ -1,0 +1,15 @@
+.show {
+    display: block;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.hide {
+    display: none;
+}
+
+.button {
+    all: unset;
+    /* Reset any inherited styles */
+    cursor: pointer;
+}

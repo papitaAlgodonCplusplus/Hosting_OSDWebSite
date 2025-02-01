@@ -117,7 +117,8 @@
             <div *ngIf="!(isValidToken$ | async)" class="p-3 flex flex-col justify-start">
                 <div class="flex flex-row space-x-3">
                     <input type="checkbox" id="acceptConditions" formControlName="acceptConditions">
-                    <label for="acceptConditions"> {{'aceptar_condiciones'| translate}}</label>
+                    <a class="text-blue-500 underline ml-2" target="_blank" [href]="'documentUrl2' | translate"
+                        for="acceptConditions"> {{'aceptar_condiciones' | translate}}</a>
                 </div>
 
                 <div *ngIf="!personalForm.value.acceptConditions" class="block text-red-700">
@@ -126,13 +127,11 @@
             </div>
         </form>
 
-
-
     </div>
     <div class="flex flex-row justify-end w-full space-x-2 p-3 font-medium mt-10">
-        <button *ngIf="!(isValidToken$ | async) else isValidToken" routerLink="/onboarding/onboarding-register"
-            class="p-2 bg-line rounded-xl text-darkslategray">
-            {{'cancelar' | translate}}
+        <button [routerLink]="this.user ? '/home' : '/onboarding/selector-registry-claimant'"
+            class="bg-line font-medium p-2 rounded-xl flex items-center text-darkslategray">
+            {{'regresar' | translate}}
         </button>
 
         <shared-confirmation-button (click)="onSubmit()" [ButtonName]="'confirm'"></shared-confirmation-button>
@@ -165,7 +164,7 @@
                     <tbody>
                         <tr *ngFor="let subscriber of filteredSubscribers">
                             <td class="px-4 border-b py-2 text-center"
-                                (click)="selectSubscriber(subscriber.Id, subscriber.name)"> <a
+                                (click)="selectSubscriber(subscriber.Id, subscriber.companyname)"> <a
                                     class="bg-line p-2 rounded-xl text-darkslategray font-medium cursor-pointer transition duration-300 ease-in-out hover:bg-darkslategray hover:text-line">Select</a>
                             </td>
                             <td class="px-4 border-b py-2 text-center">{{ subscriber.companyname }}</td>

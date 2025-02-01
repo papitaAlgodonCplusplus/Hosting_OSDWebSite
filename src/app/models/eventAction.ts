@@ -27,6 +27,7 @@ export class EventAction {
   public static DELETE_STUDENT_RECORD: string = "DeleteStudentRecord";
   public static MODIFIED_CLAIMANT_AND_CLAIMS_CUSTOMER_PERFORMANCE: string = "ModifiedClaimantAndClaimsCustomerPerformance";
   public static UPDATE_USER_PROFILE: string = "UpdateUserProfile";
+  public static UPDATE_CLAIM: string = "UpdateClaim";
   
   public static CREATE_CLAIM_PROCESSOR_PERFORMANCE: string = "CreateClaimProcessorPerformance";
   public static MODIFIED_CLAIM_PROCESSOR_PERFORMANCE: string = "ModifiedClaimProcessorPerformance";

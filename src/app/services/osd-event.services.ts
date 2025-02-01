@@ -278,6 +278,23 @@ export class OSDService {
     return this.restApiService.SendOSDEvent(registerUserEvent);
   }
 
+  public updateClaim(updatedClaim: any): Observable<any> {
+    const updateClaimEvent: WebBaseEvent = this.eventFactoryService.CreateUpdateClaimEvent(updatedClaim);
+    return new Observable((observer) => {
+      this.restApiService.SendOSDEvent(updateClaimEvent).subscribe({
+        next: (response) => {
+          var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+          this.HandleUpdateClaimResponse(osdEvent);
+          observer.next(response);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
+
   public addClaim(claimForm: Form): Observable<any> {
     const addClaimEvent: WebBaseEvent = this.eventFactoryService.CreateAddClaimEvent(claimForm);
     return new Observable((observer) => {
@@ -1314,6 +1331,26 @@ export class OSDService {
           message = "La actuación se modificó correctamente."
           this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
           this.securityDataService.emitUserAuthenticationSuccess("/functions/file-manager");
+        }
+      }
+      this.store.dispatch(ModalActions.openAlert())
+    } catch {
+
+    }
+  }
+
+  public HandleUpdateClaimResponse(webBaseEvent: WebBaseEvent) {
+    let message: string;
+
+    try {
+      message = webBaseEvent.getBodyProperty(EventConstants.ACTION_OSD_RESULT_MESSAGE);
+
+      if (this.translate.currentLang == "en") {
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
+      } else {
+        if (message == "The claim was updated correctly") {
+          message = "El reclamo se actualizó correctamente"
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
         }
       }
       this.store.dispatch(ModalActions.openAlert())

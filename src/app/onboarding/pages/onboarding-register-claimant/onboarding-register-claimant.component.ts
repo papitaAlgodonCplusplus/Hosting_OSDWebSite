@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
@@ -223,10 +223,14 @@ export class OnboardingRegisterClaimantComponent {
     );
   }
 
-  selectSubscriber(id: string, name: string) {
-    this.accountForm.patchValue({
-      subscriberClaimedName: name
-    });
+  selectSubscriber(id: string, companyName: string) {
+    const selectedSubscriber = this.subscribers.find(subscriber => subscriber.companyname === companyName);
+    console.log("Selected subscriber", selectedSubscriber);
+    if (selectedSubscriber) {
+      this.accountForm.patchValue({
+        subscriberClaimedName: selectedSubscriber.name,
+      });
+    }
     this.openModal = false;
   }
 
