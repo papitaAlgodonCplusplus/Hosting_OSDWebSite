@@ -135,20 +135,24 @@ export class CreatePerformancesComponent {
           this.performanceFP.developer_screen_form
         ]
           .filter(value => value) // Remove null/undefined values
-          .map(value => {
+          .flatMap(value => {
             try {
-              // Attempt to parse JSON-like string into an array
+              // Case 1: JSON-like string (e.g., "{...}")
               if (typeof value === 'string' && value.startsWith("{") && value.endsWith("}")) {
                 const parsed = JSON.parse(value.replace(/{/g, '[').replace(/}/g, ']')); // Convert `{}` to `[]`
                 return Array.isArray(parsed) ? parsed.map(v => v.toLowerCase().trim()) : [parsed.toLowerCase().trim()];
               }
+              // Case 2: Hyphen-separated string (e.g., "option1 - option2 - option3")
+              if (typeof value === 'string' && value.includes(' - ')) {
+                return value.split(' - ').map(v => v.toLowerCase().trim());
+              }
+              // Case 3: Already an array or simple string
               return Array.isArray(value) ? value.map(v => v.toLowerCase().trim()) : [value.toLowerCase().trim()];
             } catch (error) {
-              console.warn("⚠️ Error parsing keyword JSON:", value, error);
+              console.warn("⚠️ Error parsing keyword:", value, error);
               return [];
             }
           });
-
 
         // Get matched options for each checkbox group
         console.log("keywords", keywords);
@@ -222,25 +226,22 @@ export class CreatePerformancesComponent {
       .filter(part => part.length > 0 && isNaN(+part)); // Exclude numeric parts
   }
 
-  private getMatchedOptions(options: Array<{ key: string, value: string }>, keywords: string[][]): string[] {
+  private getMatchedOptions(options: Array<{ key: string, value: string }>, keywords: string[]): string[] {
     return options
       .filter(option => {
         // Normalize value by converting to lowercase and trimming spaces
         const normalizedValue = option.value.toLowerCase().trim();
-
-        // Flatten `keywords` to ensure we're checking individual strings
-        const flatKeywords = keywords.flat().map(k => k.toLowerCase().trim());
-
+  
         // Match any keyword
-        const match = flatKeywords.some(keyword => normalizedValue.includes(keyword));
-
+        const match = keywords.some(keyword => normalizedValue.includes(keyword));
+  
         // Debugging log
-        console.log(`Option: "${option.value}", Keywords: ${JSON.stringify(flatKeywords)}, Match: ${match}`);
-
+        console.log(`Option: "${option.value}", Keywords: ${JSON.stringify(keywords)}, Match: ${match}`);
+  
         return match;
       })
       .map(option => option.key);
-  }
+  }  
 
 
   fillform(performance: PerformanceFreeProfessional): FormGroup {
