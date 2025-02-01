@@ -229,6 +229,7 @@ export class OnboardingRegisterClaimantComponent {
     if (selectedSubscriber) {
       this.accountForm.patchValue({
         subscriberClaimedName: selectedSubscriber.name,
+        subscriberClaimedCompanyName: selectedSubscriber.companyname,
       });
     }
     this.openModal = false;
