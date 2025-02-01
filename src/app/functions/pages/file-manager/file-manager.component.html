@@ -264,7 +264,7 @@
           </div>
 
           <!-- Solution Suggestion Field for non-Trainer -->
-          <div *ngIf="!isTrainer" class="flex flex-col w-full">
+          <div *ngIf="!isTrainer && !isClaimant" class="flex flex-col w-full">
             <label for="solutionSuggestion" class="font-semibold mb-1">{{ 'solution_suggestion' | translate }}</label>
             <textarea formControlName="solutionSuggestion" id="solutionSuggestion"
               class="border border-gray-300 rounded-md p-2"
