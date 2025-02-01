@@ -3278,11 +3278,11 @@ const handleAddSummaryType = async (event, res) => {
 
 const handleAddPerformanceFreeProfessional = async (event, res) => {
   try {
-
+    console.log('📥 Received event:', event);
 
     const addPerformancFPEvent = event.Body;
 
-    // 1) Prepare the data, set optional fields to null if not provided
+    // 1) Prepare the data, converting arrays to hyphen-separated strings
     const performanceFreeprofessional = {
       Id: uuidv4(),
       Projectmanagerid: addPerformancFPEvent.ProjectManagerId,
@@ -3300,14 +3300,23 @@ const handleAddPerformanceFreeProfessional = async (event, res) => {
       EstimatedWorkHours: addPerformancFPEvent.ForecastWorkHours,
       TotalForecastData: parseFloat(addPerformancFPEvent.TotalForecastData),
 
-      // 2) NEW FIELDS: fallback to null if not provided
-      developer_category: addPerformancFPEvent.developer_category || null,
-      developer_module: addPerformancFPEvent.developer_module || null,
-      developer_screen_form: addPerformancFPEvent.developer_screen_form || null,
+      // 2) Convert array fields to hyphen-separated strings if they exist
+      developer_category: Array.isArray(addPerformancFPEvent.developer_category)
+        ? addPerformancFPEvent.developer_category.join(' - ')
+        : addPerformancFPEvent.developer_category || null,
+        
+      developer_module: Array.isArray(addPerformancFPEvent.developer_module)
+        ? addPerformancFPEvent.developer_module.join(' - ')
+        : addPerformancFPEvent.developer_module || null,
+
+      developer_screen_form: Array.isArray(addPerformancFPEvent.developer_screen_form)
+        ? addPerformancFPEvent.developer_screen_form.join(' - ')
+        : addPerformancFPEvent.developer_screen_form || null,
+
       developer_activity: addPerformancFPEvent.developer_activity || null
     };
 
-
+    console.log('📝 Prepared performance data:', performanceFreeprofessional);
 
     // 3) Ensure freeprofessional row actually exists
     const freeProfessionalQuery = await pool.query(
@@ -3329,8 +3338,7 @@ const handleAddPerformanceFreeProfessional = async (event, res) => {
     }
 
     performanceFreeprofessional.Freeprofessionalcreatedperformanceid = freeProfessionalQuery.rows[0].id;
-
-
+    console.log('✅ Free professional exists:', performanceFreeprofessional.Freeprofessionalcreatedperformanceid);
 
     // 4) Generate unique code
     const performanceFreeProfessionalCountQuery = await pool.query(
@@ -3345,8 +3353,7 @@ const handleAddPerformanceFreeProfessional = async (event, res) => {
     const performanceFreeProfessionalCount = parseInt(performanceFreeProfessionalCountQuery.rows[0].count, 10);
     const performanceBuyCount = parseInt(performanceBuyCountQuery.rows[0].count, 10);
     performanceFreeprofessional.Code = `GETP/${performanceBuyCount + performanceFreeProfessionalCount + 1}/${new Date().getFullYear()}`;
-
-
+    console.log('🔢 Generated unique code:', performanceFreeprofessional.Code);
 
     // 5) Insert into DB, adding the new columns at the end
     const insertQuery = `
@@ -3397,7 +3404,7 @@ const handleAddPerformanceFreeProfessional = async (event, res) => {
       performanceFreeprofessional.developer_activity
     ]);
 
-
+    console.log('✅ Inserted performance free professional into DB');
 
     // 6) Return success
     return res.status(200).json(

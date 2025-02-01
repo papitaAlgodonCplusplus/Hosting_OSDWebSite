@@ -133,7 +133,22 @@ export class CreatePerformancesComponent {
           this.performanceFP.developer_category,
           this.performanceFP.developer_module,
           this.performanceFP.developer_screen_form
-        ].map(value => value.toLowerCase());
+        ]
+          .filter(value => value) // Remove null/undefined values
+          .map(value => {
+            try {
+              // Attempt to parse JSON-like string into an array
+              if (typeof value === 'string' && value.startsWith("{") && value.endsWith("}")) {
+                const parsed = JSON.parse(value.replace(/{/g, '[').replace(/}/g, ']')); // Convert `{}` to `[]`
+                return Array.isArray(parsed) ? parsed.map(v => v.toLowerCase().trim()) : [parsed.toLowerCase().trim()];
+              }
+              return Array.isArray(value) ? value.map(v => v.toLowerCase().trim()) : [value.toLowerCase().trim()];
+            } catch (error) {
+              console.warn("⚠️ Error parsing keyword JSON:", value, error);
+              return [];
+            }
+          });
+
 
         // Get matched options for each checkbox group
         console.log("keywords", keywords);
@@ -171,7 +186,7 @@ export class CreatePerformancesComponent {
     formArray.clear(); // Remove existing values
     values.forEach(value => formArray.push(this.formBuilder.control(value)));
   }
-  
+
   ngOnDestroy() {
     setTimeout(() => {
       this.store.dispatch(UiActions.showAll());
@@ -207,13 +222,26 @@ export class CreatePerformancesComponent {
       .filter(part => part.length > 0 && isNaN(+part)); // Exclude numeric parts
   }
 
-  private getMatchedOptions(options: Array<{ key: string, value: string }>, keywords: string[]): string[] {
+  private getMatchedOptions(options: Array<{ key: string, value: string }>, keywords: string[][]): string[] {
     return options
-      .filter(option =>
-        keywords.some(keyword => option.value.toLowerCase().includes(keyword))
-      )
+      .filter(option => {
+        // Normalize value by converting to lowercase and trimming spaces
+        const normalizedValue = option.value.toLowerCase().trim();
+
+        // Flatten `keywords` to ensure we're checking individual strings
+        const flatKeywords = keywords.flat().map(k => k.toLowerCase().trim());
+
+        // Match any keyword
+        const match = flatKeywords.some(keyword => normalizedValue.includes(keyword));
+
+        // Debugging log
+        console.log(`Option: "${option.value}", Keywords: ${JSON.stringify(flatKeywords)}, Match: ${match}`);
+
+        return match;
+      })
       .map(option => option.key);
   }
+
 
   fillform(performance: PerformanceFreeProfessional): FormGroup {
     this.isCreatePerformance = false;
@@ -256,6 +284,7 @@ export class CreatePerformancesComponent {
       this.performanceForm.markAllAsTouched();
       return;
     }
+    console.log("performanceForm", this.performanceForm.value);
     this.store.dispatch(UiActions.toggleConfirmationButton());
 
     if (this.projectManagerSelected) {
@@ -270,6 +299,7 @@ export class CreatePerformancesComponent {
         delete formData.developer_activity;
       }
 
+      console.log("formData", formData, "projectManagerSelected", this.projectManagerSelected);
       if (this.documentBytes != null) {
         const documentBase64 = this.convertUint8ArrayToBase64(this.documentBytes);
         this.OSDEventService.addPerformanceFreeProfessional(formData, this.projectManagerSelected, documentBase64);
