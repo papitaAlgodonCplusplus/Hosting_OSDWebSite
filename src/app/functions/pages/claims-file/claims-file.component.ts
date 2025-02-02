@@ -42,6 +42,7 @@ export class ClaimsFileComponent {
     }
 
     this.osdDataService.ClaimsList$.subscribe(claims => {
+      console.log(claims)
       this.claims = claims;
       this.updateDisplayedItems();
     },)

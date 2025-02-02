@@ -91,7 +91,7 @@ export class EditClaimFileComponent implements OnInit {
             status: [claim.status || ''],
             datecreated: [formattedDate],
             subscriberclaimedid: [claim.subscriberclaimedid || ''],
-            subscriberClaimedName: [claim.name || ''],
+            subscriberClaimedName: [claim.companyname || ''],
             serviceprovided: [claim.serviceprovided || ''],
             amountclaimed: [claim.amountclaimed || 0],
         });

@@ -34,6 +34,7 @@ export interface Claim {
     datecreated: string;
     subscriberclaimedid: string;
     namecompanysubscriberclaimed: string;
+    companyname: string;
     //claimant: string;
     claimtype: string;
     status: string;

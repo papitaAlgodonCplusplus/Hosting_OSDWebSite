@@ -80,7 +80,7 @@ export class OSDRevenueExpenditureEconomicResultReportComponent {
     this.osdDataService.getSubscribersSuccess$.subscribe(items => {
       this.allSubscribers = items;
       items.forEach(subscriber => {
-        var itemDropdown: DropDownItem = { value: subscriber.name, key: subscriber.scid };
+        var itemDropdown: DropDownItem = { value: subscriber.companyname, key: subscriber.scid };
         this.subscribers.push(itemDropdown)
       })
     })
@@ -132,7 +132,7 @@ export class OSDRevenueExpenditureEconomicResultReportComponent {
       this.allSubscribers.forEach(subscriber => {
         if (subscriber.country == country) {
           foundClients++;
-          var itemDropdown: DropDownItem = { value: subscriber.name, key: subscriber.id };
+          var itemDropdown: DropDownItem = { value: subscriber.companyname, key: subscriber.id };
           this.subscribers.push(itemDropdown)
         }
       })

@@ -46,7 +46,7 @@ export class ClaimantClaimedOsdReportComponent implements OnInit, OnDestroy {
   }
 
   getReportUserNames(): DropDownItem[] {
-    return this.reports.map(report => ({ value: report.user_name, key: report.user_name }));
+    return this.reports.map(report => ({ value: report.user_companyname, key: report.user_companyname }));
   }
 
   private initializeData(): void {

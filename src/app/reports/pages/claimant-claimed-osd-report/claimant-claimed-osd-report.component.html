@@ -47,7 +47,7 @@
             </thead>
             <tbody class="text-center" *ngIf="reports">
                 <tr *ngFor="let items of reports">
-                    <td class="py-2 px-4 border-y">{{ items.user_name }}</td>
+                    <td class="py-2 px-4 border-y">{{ items.user_companyname }}</td>
                     <td class="py-2 px-4 border-y">€{{ items.amountclaimed != null ? items.amountclaimed : 0 }}</td>
                     <td class="py-2 px-4 border-y">€{{ items.amountclaimed != null ?
                         items.amountclaimed : 0 }}</td>

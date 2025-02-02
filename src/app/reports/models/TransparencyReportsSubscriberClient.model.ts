@@ -12,6 +12,7 @@ export class TransparencyReportsSubscriberClientList {
     claimantid: any = null;
     claimtype: string = "";
     code: string = "";
+    user_companyname: string = "";
     creditingdate: any = null;
     datecreated: string = "";
     documentfile1id: string = "";

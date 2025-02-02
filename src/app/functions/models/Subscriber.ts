@@ -8,6 +8,7 @@ export class Subscriber {
     companyName: string = "";
     trainerAssigned: string = "";
     email: string = "";
+    companyname: string = "";
     country: string = "";
     FreeprofessionaltypeAcronym: string = "";
     civilliabilityinsurancefileid: string = "";
