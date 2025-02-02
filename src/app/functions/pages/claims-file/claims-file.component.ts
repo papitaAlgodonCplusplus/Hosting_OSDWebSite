@@ -18,6 +18,8 @@ export class ClaimsFileComponent {
   claims: any[] = [];
   displayedItems: any[] = [];
   user!: UserInfo;
+  isClaimant: boolean = false;
+  isAdmin: boolean = false;
   constructor(
     private osdEventService: OSDService,
     private store: Store,
@@ -32,6 +34,14 @@ export class ClaimsFileComponent {
       this.store.dispatch(UiActions.hideFooter());
     }, 0);
 
+    const userInfo = this.authenticationService.userInfo;
+    console.log(userInfo)
+    if (userInfo?.AccountType === "Claimant") {
+      this.isClaimant = true;
+    }
+    if (userInfo?.Id === "e77b5172-f726-4c1d-9f9e-d2dbd77e03c9") {
+      this.isAdmin = true;
+    }
     if (this.authenticationService.userInfo) {
       this.user = this.authenticationService.userInfo
       if (this.user.Isadmin) {

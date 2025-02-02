@@ -12,4 +12,5 @@ export class Project {
     supplierexpensespurchases: string = "€ 0";
     economic_budget: string = "";
     expected_hours: string = "";
+    enddate: string = "";
 }

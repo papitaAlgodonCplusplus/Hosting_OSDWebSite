@@ -6,7 +6,6 @@
 
     <div class="fixed top-[3.7rem] left-0 h-full bg-white border-r-2 p-3 animate__animated animate__fadeInRight z-50"
         [ngClass]="{'w-6': openSideBar, 'w-72': !openSideBar}">
-
         <div *ngIf="openSideBar" (click)="toggleSideBar()"
             class="text-darkslategray absolute left-[2rem] top-[5rem] text-xl">
             <i class="fa-solid fa-chevron-right cursor-pointer"></i>
@@ -17,24 +16,31 @@
                 <i (click)="toggleSideBar()" class="cursor-pointer animate-pulse fa-solid fa-xmark"></i>
             </div>
 
-            <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="economicBudget"
+            <!-- Editable fields (set readOnly to false) -->
+            <shared-input-field [readOnly]="false" class="w-full md:w-1/3" fieldName="economicBudget"
                 label="{{ 'economicBudget' | translate }}:" inputType="text" [formGroup]="formProjectManager">
             </shared-input-field>
 
-            <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="expectedTimes"
+            <shared-input-field [readOnly]="false" class="w-full md:w-1/3" fieldName="expectedTimes"
                 label="{{ 'expectedTimes' | translate }}:" inputType="text" [formGroup]="formProjectManager">
             </shared-input-field>
 
-            <shared-input-field [readOnly]="readOnly" class="w-full lg:w-full" fieldName="startDate"
+            <shared-input-field [readOnly]="false" class="w-full lg:w-full" fieldName="startDate"
                 label="{{ 'start_date' | translate }}:" inputType="text" [formGroup]="formProjectManager">
             </shared-input-field>
 
-            <shared-input-field [readOnly]="readOnly" class="w-full md:w-1/3" fieldName="endDate"
+            <shared-input-field [readOnly]="false" class="w-full md:w-1/3" fieldName="endDate"
                 label="{{ 'end_date' | translate }}:" inputType="text" [formGroup]="formProjectManager">
             </shared-input-field>
+
+            <!-- Save Button -->
+            <div class="mt-4 text-center">
+                <button (click)="updateProjectDetails()" class="bg-green-500 text-white font-medium p-2 rounded-xl w-1/3">
+                    {{ 'confirm' | translate }}
+                </button>
+            </div>
         </div>
     </div>
-
 
     <div class="w-full flex-1 space-y-3 flex justify-center flex-col">
 

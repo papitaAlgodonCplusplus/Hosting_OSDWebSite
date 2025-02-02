@@ -255,6 +255,10 @@ app.post('/api/events/processOSDEvent', async (req, res) => {
         await handleCreatePerformanceBuy(event, res);
         break;
 
+      case 'UpdateProjectDetails':
+        await handleUpdateProjectDetails(event, res);
+        break;
+
       default:
         res.status(400).json(createWebBaseEvent({
           SUCCESS: false,
@@ -2024,7 +2028,19 @@ const handleAddPerformanceUpdate = async (event, res) => {
     }
 
     // Generate a unique code for the performance update
-    const performanceCode = `PERF-${Math.random().toString(16).slice(2, 10)}`;
+    const claimPerformanceCountQuery = await pool.query(
+      'SELECT COUNT(*) FROM performance_claim_control WHERE claimid = $1',
+      [performanceData.ClaimId]
+    );
+    const claimPerformanceCount = parseInt(claimPerformanceCountQuery.rows[0].count, 10) + 1;
+    const claimCodeQuery = await pool.query(
+      'SELECT code FROM claim_file WHERE id = $1',
+      [performanceData.ClaimId]
+    );
+    const claimCode = claimCodeQuery.rows[0].code;
+    const numOfClaim = claimCode.split('/')[1];
+
+    const performanceCode = `R/${numOfClaim}/A/${claimPerformanceCount}/2025`;
     console.log('🔢 Generated performance code:', performanceCode);
 
     const insertPerformanceQuery = `
@@ -2509,8 +2525,13 @@ const handleCreateClaim = async (event, res) => {
       documentfile2id, documentfile2name;
     `;
 
+    const claimCountQuery = await pool.query(
+      'SELECT COUNT(*) FROM claim_file WHERE claimantid = $1',
+      [claimantId]
+    );
+    const claimCount = parseInt(claimCountQuery.rows[0].count, 10) + 1;
     const claimId = uuidv4();
-    const claimCode = `CLM-${claimId}`;
+    const claimCode = `RE/${claimCount}/2025`;
 
     const insertClaimResult = await pool.query(insertClaimQuery, [
       claimId,
@@ -3138,6 +3159,60 @@ const handleGetUsers = async (event, res) => {
       GET_USERS_SUCCESS: false,
       GET_USERS_MESSAGE: 'Server error fetching users.',
     }, event.SessionKey, event.SecurityToken, 'GetUsers'));
+  }
+};
+
+const handleUpdateProjectDetails = async (event, res) => {
+  try {
+    const projectDetails = event.Body;
+    console.log('📝 Project Details:', projectDetails);
+
+    const { ProjectData } = projectDetails;
+    const { projectID, startDate, endDate, economicBudget, expectedTimes } = ProjectData;
+
+    if (!projectID) {
+      return res.status(400).json(createWebBaseEvent({
+        UPDATE_PROJECT_DETAILS_SUCCESS: false,
+        UPDATE_PROJECT_DETAILS_MESSAGE: 'Project ID is required.',
+      }, event.SessionKey, event.SecurityToken, 'UpdateProjectDetails'));
+    }
+
+    const updateQuery = `
+      UPDATE projectmanager
+      SET startdate = $1,
+          enddate = $2,
+          economic_budget = $3,
+          expected_hours = $4
+      WHERE id = $5
+      RETURNING *;
+    `;
+
+    const updateResult = await pool.query(updateQuery, [
+      startDate || null,
+      endDate || null,
+      parseFloat(economicBudget.replace('€', '').replace(',', '')) || 0,
+      parseFloat(expectedTimes.replace(' Hours', '')) || 0,
+      projectID
+    ]);
+
+    if (updateResult.rows.length === 0) {
+      return res.status(404).json(createWebBaseEvent({
+        UPDATE_PROJECT_DETAILS_SUCCESS: false,
+        UPDATE_PROJECT_DETAILS_MESSAGE: 'Project not found.',
+      }, event.SessionKey, event.SecurityToken, 'UpdateProjectDetails'));
+    }
+
+    return res.status(200).json(createWebBaseEvent({
+      UPDATE_PROJECT_DETAILS_SUCCESS: true,
+      project: updateResult.rows[0]
+    }, event.SessionKey, event.SecurityToken, 'UpdateProjectDetails'));
+
+  } catch (error) {
+    console.error('❌ Error updating project details:', error);
+    res.status(500).json(createWebBaseEvent({
+      UPDATE_PROJECT_DETAILS_SUCCESS: false,
+      UPDATE_PROJECT_DETAILS_MESSAGE: 'Server error updating project details.',
+    }, event.SessionKey, event.SecurityToken, 'UpdateProjectDetails'));
   }
 };
 

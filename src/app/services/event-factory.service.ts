@@ -330,7 +330,22 @@ export class EventFactoryService {
 
     return event;
   }
-  public CreateGetTransparencyReportsIncomeExpenses(subscriberId: string, country: string): WebBaseEvent {
+
+  public CreateUpdateProjectDetailsEvent(updatedProjectData: any): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.UPDATE_PROJECT_DETAILS;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    event.setBodyProperty(EventConstants.PROJECT_DATA, updatedProjectData);
+    return event;
+  }
+
+  CreateGetTransparencyReportsIncomeExpenses(subscriberId: string, country: string): WebBaseEvent {
     let event: WebBaseEvent;
     event = new WebBaseEvent();
     event.SessionKey = this.authenticationService.sessionKey;

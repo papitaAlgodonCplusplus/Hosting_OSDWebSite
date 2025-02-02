@@ -21,20 +21,19 @@ import { PerformanceFreeProfessional } from '../../Models/performanceFreeProfess
   templateUrl: './project-management-dossier.component.html',
   styleUrls: ['./project-management-dossier.component.css']
 })
-
 export class ProjectManagementDossierComponent implements OnDestroy {
   isModalOpen = false;
-  readOnly: boolean = true;
+  readOnly: boolean = true;  // This property is no longer used for the sidebar fields.
   user: any;
-  formProjectManager: FormGroup
+  formProjectManager: FormGroup;
   showOptions: boolean = false;
   performancesFreeProfessional: PerformanceFreeProfessional[] = [];
   performancesBuy: PerformanceBuy[] = [];
   performances: showPerformance[] = [];
-  isAuthenticated$: Observable<boolean> = this.store.select(AuthSelectors.authenticationToken)
+  isAuthenticated$: Observable<boolean> = this.store.select(AuthSelectors.authenticationToken);
   isUser: boolean = false;
   isAdmin: boolean = false;
-  emptyPerformance!: PerformanceBuy
+  emptyPerformance!: PerformanceBuy;
   allPerformances: any[] = [];
   displayedItems: any[] = [];
   amountProject: number = 0;
@@ -42,59 +41,63 @@ export class ProjectManagementDossierComponent implements OnDestroy {
   Projects$: Observable<Project[]> = this.osdDataService.ProjectsList$;
   selectedProject!: Project | undefined;
   allProjects!: Project[];
-  loadProjectManager: boolean = true
+  loadProjectManager: boolean = true;
   showModalSubPerformance: boolean = false;
   subPerformance!: ResponseToPerformanceFreeProfessional[];
-  validatseCreatePerformance: boolean = false
-  projectSelected: string = ""
+  validatseCreatePerformance: boolean = false;
+  projectSelected: string = "";
 
-  constructor(private router: Router, private store: Store, private formBuilder: FormBuilder,
-    private osdDataService: OSDDataService, private osdEventService: OSDService,
-    private translate: TranslateService, private authService: AuthenticationService) {
+  constructor(
+    private router: Router,
+    private store: Store,
+    private formBuilder: FormBuilder,
+    private osdDataService: OSDDataService,
+    private osdEventService: OSDService,
+    private translate: TranslateService,
+    private authService: AuthenticationService
+  ) {
     this.formProjectManager = this.createForm({} as Project);
   }
 
   async ngOnInit() {
     setTimeout(() => {
-      this.store.dispatch(UiActions.hideLeftSidebar())
-      this.store.dispatch(UiActions.hideFooter())
+      this.store.dispatch(UiActions.hideLeftSidebar());
+      this.store.dispatch(UiActions.hideFooter());
 
       this.osdEventService.GetProjects();
       this.user = this.authService.userInfo;
       if (this.user) {
         if (this.user.isadmin) {
           this.isAdmin = true;
-          this.showOptionsPerformance()
-        }
-        else {
-          this.isUser = true
+          this.showOptionsPerformance();
+        } else {
+          this.isUser = true;
         }
       }
     }, 0);
 
     this.Projects$.subscribe(projects => {
       this.allProjects = projects;
-      this.loadProjectManager = false
-    })
+      this.loadProjectManager = false;
+    });
   }
 
   viewPerformance(performance: any) {
-    this.store.dispatch(PerformanceActions.setPerformanceFreeProfessional({ performanceFreeProfessional: performance }))
+    this.store.dispatch(PerformanceActions.setPerformanceFreeProfessional({ performanceFreeProfessional: performance }));
     this.router.navigate(['/project-manager/create-performances']);
   }
 
   viewPerformanceBuy(performance: any) {
-    this.store.dispatch(PerformanceActions.setPerformanceBuy({ performanceBuy: performance }))
+    this.store.dispatch(PerformanceActions.setPerformanceBuy({ performanceBuy: performance }));
     this.router.navigate(['/project-manager/create-performances-buy']);
   }
 
-
   viewSubPerformance(subPerformance: any) {
-    var performance: PerformanceFreeProfessional | undefined = this.performancesFreeProfessional.find(performance => performance.Id == subPerformance.PerformanceId)
+    const performance: PerformanceFreeProfessional | undefined = this.performancesFreeProfessional.find(performance => performance.Id == subPerformance.PerformanceId);
     if (performance) {
-      this.store.dispatch(PerformanceActions.setPerformanceFreeProfessional({ performanceFreeProfessional: performance }))
-      this.store.dispatch(PerformanceActions.setSubPerformance({ subPerformance: subPerformance }))
-      this.router.navigate(['/project-manager/response-to-performance'])
+      this.store.dispatch(PerformanceActions.setPerformanceFreeProfessional({ performanceFreeProfessional: performance }));
+      this.store.dispatch(PerformanceActions.setSubPerformance({ subPerformance: subPerformance }));
+      this.router.navigate(['/project-manager/response-to-performance']);
     }
   }
 
@@ -119,19 +122,17 @@ export class ProjectManagementDossierComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     setTimeout(() => {
-      this.store.dispatch(UiActions.showAll())
+      this.store.dispatch(UiActions.showAll());
     }, 0);
   }
 
   private createForm(project: Project): FormGroup {
     const form = this.formBuilder.group({
       startDate: project.startdate ? new Date(project.startdate).toISOString().split('T')[0] : '',
-      endDate: '',
-      projectAmount: '€ ' + this.amountProject,
-      expensesEmployeesVolunteers: '€ 0',
-      supplierExpensesPurchases: '€ 0',
+      endDate: project.enddate ? new Date(project.enddate).toISOString().split('T')[0] : '',
       economicBudget: '€' + (project.economic_budget ?? 0),
-      expectedTimes: (project.expected_hours ?? 0) + ' ' + this.translate.instant('Hours')
+      expectedTimes: (project.expected_hours ?? 0) + ' ' + this.translate.instant('Hours'),
+      projectID: project.id,
     });
     return form;
   }
@@ -140,14 +141,11 @@ export class ProjectManagementDossierComponent implements OnDestroy {
     let totalHours = 0;
     for (const prop in hoursObject) {
       if (hoursObject.hasOwnProperty(prop)) {
-
         const [hoursStr, minutesStr] = hoursObject[prop].split(':');
         const hours = parseInt(hoursStr, 10);
-
         totalHours += hours;
       }
     }
-
     return `${totalHours} ${this.translate.instant('Hours')}`;
   }
 
@@ -211,8 +209,8 @@ export class ProjectManagementDossierComponent implements OnDestroy {
 
   viewSubPerformances(performanceId: string) {
     setTimeout(() => {
-      this.showModalSubPerformance = true
-      this.osdEventService.GetSubPerformanceById(performanceId)
+      this.showModalSubPerformance = true;
+      this.osdEventService.GetSubPerformanceById(performanceId);
     }, 0);
 
     this.osdDataService.SubPerformanceByIdList$.subscribe(subPerformances => {
@@ -221,21 +219,33 @@ export class ProjectManagementDossierComponent implements OnDestroy {
   }
 
   closeModal() {
-    this.showModalSubPerformance = false
+    this.showModalSubPerformance = false;
   }
 
   filterPerformance(type: string) {
     if (type === 'buy') {
       this.performances = this.performancesBuy;
       this.performances.forEach(pf => {
-        pf.Type = "Performance Buy"
-      })
+        pf.Type = "Performance Buy";
+      });
     } else {
       this.performances = this.performancesFreeProfessional;
       this.performances.forEach(pf => {
-        pf.Type = "Performance Free Professional"
-      })
+        pf.Type = "Performance Free Professional";
+      });
     }
   }
 
+  // New updateProjectDetails function
+  updateProjectDetails() {
+    const updatedProjectData = this.formProjectManager.value;
+    // Call the osdEventService to update the project details.
+    this.osdEventService.updateProjectDetails(updatedProjectData)
+      .subscribe(response => {
+        console.log('Project details updated successfully', response);
+        // Optionally, you could display a success message or refresh your project data here.
+      }, error => {
+        console.error('Error updating project details', error);
+      });
+  }
 }

@@ -15,7 +15,7 @@
                         <th class="py-2 px-4 font-normal">{{'facts' | translate}}</th>
                         <th class="py-2 px-4 font-normal">{{'status' | translate}}</th>
                         <th class="py-2 px-4 font-normal">{{'Date' | translate}}</th>
-                        <th class="py-2 px-4 font-normal">{{'Edit' | translate}}</th>
+                        <th class="py-2 px-4 font-normal" *ngIf="isClaimant || isAdmin">{{'Edit' | translate}}</th>
                     </tr>
                 </thead>
                 <ng-container *ngIf="claims">
@@ -40,7 +40,7 @@
                                 </i>{{ claim.status | translate }}
                             </td>
                             <td class="p-2 border-y text-center">{{ claim.datecreated | date:'medium' }}</td>
-                            <td class="p-2 border-y text-center">
+                            <td class="p-2 border-y text-center" *ngIf="isClaimant || isAdmin">
                                 <span (click)="selectClaim(claim)" routerLink="/functions/edit-claim-file"
                                     class="font-medium text-darkslategray px-4 py-2 text-lg cursor-pointer">
                                     <i class="fa-solid fa-pencil"></i>

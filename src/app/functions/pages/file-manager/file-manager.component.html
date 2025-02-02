@@ -11,7 +11,7 @@
   </div>
 
   <!-- Performance Buttons -->
-  <div class="flex justify-center py-3">
+  <div class="flex justify-center py-1">
     <div class="flex flex-col items-center space-y-3 p-3">
       <!-- View Performance Button -->
       <span class="rounded-xl p-2 bg-darkslategray text-line font-bold cursor-pointer"
@@ -21,31 +21,34 @@
     </div>
   </div>
 
-  <!-- Main Form Section -->
-  <div class="bg-white-lightbone shadow-md rounded-xl p-5">
+  <!-- Main Form Section (height reduced to roughly half of its previous size) -->
+  <div class="bg-white-lightbone shadow-md rounded-xl p-5 h-1/2 overflow-y-auto">
     <form [formGroup]="fileManager" (ngSubmit)="onSubmit()" autocomplete="off"
-      class="grid grid-cols-1 lg:grid-cols-1 gap-4">
+      class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-      <!-- Code Field -->
-      <!-- <div class="w-full border border-gray-300 rounded-md p-2">
+      <!-- Code Field (readOnly; single column) -->
+      <div class="col-span-1 border border-gray-300 rounded-md p-2">
         <label class="block mb-1 font-medium">{{ 'Code' | translate }}</label>
         <input formControlName="code" type="text" class="w-full bg-white-lightbone" [readonly]="true"
           [placeholder]="this.claim?.code" />
-      </div> -->
+      </div>
 
-      <!-- Solution Field -->
-      <div class="col-span-1 lg:col-span-2 w-full border border-gray-300 rounded-md p-2">
+      <!-- Solution Field (readOnly; spans both columns) -->
+      <div class="col-span-2 border border-gray-300 rounded-md p-2">
         <label class="block mb-1 font-medium">{{ 'Solution' | translate }}</label>
         <textarea formControlName="solution" class="w-full bg-white-lightbone" [readonly]="true"
           [placeholder]="this.claim?.solution || 'No solution provided yet'"></textarea>
       </div>
 
-      <div class="flex flex-col items-center space-y-1 mt-10">
-        <!-- Label for the button -->
+      <!-- Justification/Proof File Label (non readOnly; single column) -->
+      <div class="col-span-1 border border-gray-300 rounded-md p-2">
         <label for="downloadButton" class="text-sm text-gray-700 font-medium">
           {{ 'Justification/Proof File of the Claim' | translate }}
         </label>
-        <!-- Modified Button -->
+      </div>
+
+      <!-- Download Button (non readOnly; single column) -->
+      <div class="col-span-1 flex items-center">
         <button id="downloadButton" type="button" class="cursor-pointer px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg shadow-md 
           hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 
           transition ease-in-out duration-150" (click)="downloadSelectedFile('')">
@@ -53,80 +56,35 @@
         </button>
       </div>
 
-      <!-- Complaint Field -->
-      <!-- <div class="col-span-1 lg:col-span-2 w-full border border-gray-300 rounded-md p-2">
-        <label class="block mb-1 font-medium">{{ 'Complaint' | translate }}</label>
-        <textarea formControlName="complaint" class="w-full bg-white-lightbone" [readonly]="true"
-          [placeholder]="this.claim?.complaint || 'No complaint provided'"></textarea>
-      </div> -->
-
-      <!-- Appeal Field -->
-      <!-- <div class="col-span-1 lg:col-span-2 w-full border border-gray-300 rounded-md p-2">
-        <label class="block mb-1 font-medium">{{ 'Appeal' | translate }}</label>
-        <textarea formControlName="appeal" class="w-full bg-white-lightbone" [readonly]="true"
-          [placeholder]="this.claim?.appeal || 'No appeal provided'"></textarea>
-      </div> -->
-
-      <!-- Facts Field -->
-      <!-- <div class="col-span-1 lg:col-span-2 w-full border border-gray-300 rounded-md p-2">
+      <!-- Facts Field (readOnly; spans both columns) -->
+      <div class="col-span-2 border border-gray-300 rounded-md p-2">
         <label class="block mb-1 font-medium">{{ 'Facts' | translate }}</label>
         <textarea formControlName="facts" class="w-full bg-white-lightbone" [readonly]="true"
           [placeholder]="this.claim?.facts"></textarea>
-      </div> -->
+      </div>
 
-      <!-- Claimant Field -->
-      <!-- <div class="w-full border border-gray-300 rounded-md p-2">
+      <!-- Claimant Field (readOnly; single column) -->
+      <div class="col-span-1 border border-gray-300 rounded-md p-2">
         <label class="block mb-1 font-medium">{{ 'Reclamación' | translate }}</label>
         <input formControlName="claimant" type="text" class="w-full bg-white-lightbone" [readonly]="true"
           [placeholder]="this.claim?.namecompanysubscriberclaimed" />
-      </div> -->
+      </div>
 
-      <!-- Status Field -->
-      <!-- <div class="w-full border border-gray-300 rounded-md p-2">
+      <!-- Status Field (readOnly; single column) -->
+      <div class="col-span-1 border border-gray-300 rounded-md p-2">
         <label class="block mb-1 font-medium">{{ 'Status' | translate }}</label>
         <input formControlName="state" type="text" class="w-full bg-white-lightbone" [readonly]="true"
           [placeholder]="this.claim?.status" />
-      </div> -->
+      </div>
 
-      <!-- Subscriber Field -->
-      <!-- <div class="w-full border border-gray-300 rounded-md p-2">
-        <label class="block mb-1 font-medium">{{ 'Subscriber' | translate }}</label>
-        <input formControlName="subscriber" type="text" class="w-full bg-white-lightbone" [readonly]="true"
-          [placeholder]="this.claim?.subscriberclaimedid" />
-      </div> -->
-
-      <!-- Amount Claimed Field -->
-      <!-- <div class="w-full border border-gray-300 rounded-md p-2">
+      <!-- Amount Claimed Field (readOnly; single column) -->
+      <div class="col-span-1 border border-gray-300 rounded-md p-2">
         <label class="block mb-1 font-medium">{{ 'Amount Claimed' | translate }}</label>
         <input formControlName="amountClaimed" type="text" class="w-full bg-white-lightbone" [readonly]="true"
           [placeholder]="this.claim?.amountclaimed" />
-      </div> -->
+      </div>
     </form>
   </div>
-
-  <!-- Processor Form Section -->
-  <!-- <div class="bg-white-lightbone shadow-md rounded-xl p-5 mt-6">
-    <form [formGroup]="closeClaimfileForm" (ngSubmit)="closeClaimFileDirect()" autocomplete="off"
-      class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      <div class="col-span-1 lg:col-span-2 border-b pb-3">
-        <h1 class="font-bold">{{ 'Processor' | translate }}</h1>
-      </div>
-
-      <div class="w-full border border-gray-300 rounded-md p-2">
-        <label class="block mb-1 font-medium">{{ 'amountPaidByOtherParty' | translate }}</label>
-        <input formControlName="AmountPaid" type="text" class="w-full bg-white-lightbone"
-          [readonly]="user.AccountType != 'FreeProfessional' || !isTerminatedPerformance"
-          [placeholder]="this.claim?.amountpaid" />
-      </div>
-
-      <div class="w-full border border-gray-300 rounded-md p-2">
-        <label class="block mb-1 font-medium">{{ 'institutionalImprovementSavings' | translate }}</label>
-        <input formControlName="AAsavingsPP" type="text" class="w-full bg-white-lightbone"
-          [readonly]="user.AccountType != 'FreeProfessional' || !isTerminatedPerformance"
-          [placeholder]="this.claim?.improvementsavings" />
-      </div>
-    </form>
-  </div> -->
 
   <!-- Button Section -->
   <div class="flex w-full justify-end p-2 space-x-3">
@@ -153,22 +111,26 @@
 
         <!-- Modal Form -->
         <form [formGroup]="addUpdateForm" class="w-full flex flex-col space-y-3" (ngSubmit)="submitAddUpdate()">
-
-          <!-- Ask for More Info Checkbox -->
-          <div class="flex items-center w-full" *ngIf="isUserProcessor">
-            <input formControlName="askForMoreInfo" id="askForMoreInfo" type="checkbox" class="mr-2" />
-            <label for="askForMoreInfo" class="font-semibold">Ask for more info</label>
-          </div>
-
           <!-- Select Box for Complaint or Appeal -->
-          <div *ngIf="!isUserProcessor && !isTrainer" class="flex flex-col w-full mb-4">
+          <div *ngIf="!isTrainer" class="flex flex-col w-full mb-4">
             <label for="complaintAppealSelect" class="font-semibold mb-1">{{ 'Type of Update' | translate }}</label>
             <select id="complaintAppealSelect" class="border border-gray-300 rounded-md p-2"
               (change)="onSelectionChange($event)">
-              <option value="complaint">{{ 'Complaint' | translate }}</option>
-              <option value="appeal">{{ 'Appeal' | translate }}</option>
-              <option value="summary">{{ 'Information' | translate }}</option>
+              <option *ngIf="!isUserProcessor" value="complaint">{{ 'Complaint' | translate }}</option>
+              <option *ngIf="!isUserProcessor" value="appeal">{{ 'Appeal' | translate }}</option>
+              <option *ngIf="!isUserProcessor" value="summary">{{ 'Information' | translate }}</option>
+              <option *ngIf="isSubscriber" value="answer_to_appeal">{{ 'Answer_To_Allegation' | translate }}</option>
+              <option *ngIf="isSubscriber" value="solution_suggestion">{{ 'solution_suggestion' | translate }}</option>
+              <option *ngIf="isUserProcessor" value="solution_complaint">{{ 'solution_complaint' | translate }}</option>
+              <option *ngIf="isUserProcessor" value="solution">{{ 'solution' | translate }}</option>
+              <option *ngIf="isUserProcessor" value="ask_for_more_info">{{ 'ask_for_more_info' | translate }}</option>
             </select>
+          </div>
+
+          <!-- Ask for More Info Checkbox -->
+          <div class="flex items-center w-full" *ngIf="isUserProcessor && selectedOption === 'ask_for_more_info'">
+            <input formControlName="askForMoreInfo" id="askForMoreInfo" type="checkbox" class="mr-2" />
+            <label for="askForMoreInfo" class="font-semibold">Ask for more info</label>
           </div>
 
           <!-- Document Fields in a Grid -->
@@ -211,53 +173,19 @@
             </textarea>
           </div>
 
-          <!-- Status Field -->
-          <!-- <div *ngIf="isUserProcessor" class="flex flex-col w-full">
-            <label for="performanceStatus" class="font-semibold mb-1">Status</label>
-            <select formControlName="status" id="performanceStatus"
-              class="border border-gray-300 rounded-md p-2 bg-white">
-              <option value="" disabled>Select Status</option>
-              <option value="Running">Running</option>
-              <option value="Closed">Closed</option>
-              <option value="Completed">Completed</option>
-              <option value="Falta Información">Falta Información</option>
-            </select>
-          </div> -->
-
           <!-- Answer to Appeal Field -->
-          <div *ngIf="!isUserProcessor && !isTrainer && !isClaimant" class="flex flex-col w-full">
+          <div *ngIf="!isUserProcessor && !isTrainer && !isClaimant && selectedOption === 'answer_to_appeal' "
+            class="flex flex-col w-full">
             <label for="performanceAnswerToAppeal" class="font-semibold mb-1">
-              {{ 'Answer_To_Appeal' | translate }}
+              {{ 'Answer_To_Allegation' | translate }}
             </label>
             <textarea formControlName="answer_to_appeal" id="performanceAnswerToAppeal"
-              class="border border-gray-300 rounded-md p-2"></textarea>
+              class="border border-gray-300 rounded-md p-2"
+              [placeholder]="'Enter your answer to the allegation' | translate"></textarea>
           </div>
 
-          <!-- Improvement/Savings Field -->
-          <!-- <div *ngIf="isTrainer" class="flex flex-col w-full">
-            <label for="improvementSavings" class="font-semibold mb-1">Improvement/Savings Inst/Entity</label>
-            <input formControlName="improvementSavings" id="improvementSavings"
-              class="border border-gray-300 rounded-md p-2" type="number"
-              placeholder="Enter improvement/savings amount" />
-          </div> -->
-
-          <!-- Amount Paid Field -->
-          <!-- <div *ngIf="isTrainer" class="flex flex-col w-full">
-            <label for="amountPaid" class="font-semibold mb-1">Amount paid by other party</label>
-            <input formControlName="amountPaid" id="amountPaid" class="border border-gray-300 rounded-md p-2"
-              type="number" placeholder="Enter amount paid" />
-          </div> -->
-
-          <!-- Crediting Date Field -->
-          <!-- <div *ngIf="isTrainer" class="flex flex-col w-full">
-            <label for="creditingDate" class="font-semibold mb-1">Crediting Date</label>
-            <input formControlName="creditingDate" id="creditingDate" class="border border-gray-300 rounded-md p-2"
-              type="date" />
-          </div> -->
-
-
           <!-- Solution Field for Processor -->
-          <div *ngIf="isUserProcessor" class="flex flex-col w-full">
+          <div *ngIf="isUserProcessor && selectedOption === 'solution'" class="flex flex-col w-full">
             <label for="solution" class="font-semibold mb-1">{{ 'solution' | translate }}</label>
             <textarea formControlName="solution" id="solution" class="border border-gray-300 rounded-md p-2"
               placeholder="{{ 'Enter your solution' | translate }}"></textarea>
@@ -271,7 +199,8 @@
           </div>
 
           <!-- Solution Suggestion Field for non-Trainer -->
-          <div *ngIf="!isTrainer && !isClaimant && !isUserProcessor" class="flex flex-col w-full">
+          <div *ngIf="!isTrainer && !isClaimant && !isUserProcessor && selectedOption === 'solution_suggestion'"
+            class="flex flex-col w-full">
             <label for="solutionSuggestion" class="font-semibold mb-1">{{ 'solution_suggestion' | translate }}</label>
             <textarea formControlName="solutionSuggestion" id="solutionSuggestion"
               class="border border-gray-300 rounded-md p-2"
@@ -279,7 +208,7 @@
           </div>
 
           <!-- Solution Complaint Field (conditionally displayed) -->
-          <div *ngIf="isUserProcessor" class="flex flex-col w-full">
+          <div *ngIf="isUserProcessor && selectedOption === 'solution_complaint'" class="flex flex-col w-full">
             <label for="solutionComplaint" class="font-semibold mb-1">
               <span>{{ 'Solution Complaint ' | translate }}</span>
             </label>
@@ -333,7 +262,7 @@
               <th class="w-[1rem] py-2">{{ 'Document' | translate }}</th>
               <th class="w-[1rem] py-2">{{ 'Document 2' | translate }}</th>
               <th class="w-[1rem] py-2">{{ 'Appeal' | translate }}</th>
-              <th class="w-[1rem] py-2">{{ 'Answer Appeal' | translate }}</th>
+              <th class="w-[1rem] py-2">{{ 'Answer Allegation' | translate }}</th>
               <th class="w-[1rem] py-2">{{ 'Complaint' | translate }}</th>
               <th class="w-[1rem] py-2">{{ 'Solution Suggestion' | translate }}</th>
               <th class="w-[1rem] py-2">{{ 'Solution Complaint' | translate }}</th>
@@ -367,7 +296,7 @@
                 <span *ngIf="!performance.justifyingdocument">{{ 'No Document' | translate }}</span>
               </td>
 
-              <!-- Document column -->
+              <!-- Document 2 column -->
               <td class="w-[1rem] p-3">
                 <button *ngIf="performance.justifyingdocument" id="downloadButton" type="button" class="mt-2 cursor-pointer px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg shadow-md 
                 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 

@@ -178,7 +178,8 @@ export class EventConstants {
   public static TRANSPARENCY_INCOME_EXPENSES: string = "TransparencyIncomeExpenses";
   public static COMPENSATION_OF_CLAIMANT: string = "CompensationOfClaimant";
   public static TOTAL_OSD_INCOMES: string = "TotalOsdIncomes";
-
+  public static PROJECT_DATA: string = "ProjectData";
+  
   public static TECHNICAL_DIRECTOR_EXPENSES: string = "TD_Expenses";
   public static ACCOUNTING_TECHNITIAN_EXPENSES: string = "TC_Expenses";
   public static MARKETING_TECHNITIAN_EXPENSES: string = "TM_Expenses";

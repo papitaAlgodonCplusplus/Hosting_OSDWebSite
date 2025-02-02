@@ -787,6 +787,17 @@ export class OSDService {
     });
   }
 
+  public updateProjectDetails(updatedProjectData: any): Observable<any> {
+    const updateProjectDetailsEvent: WebBaseEvent = this.eventFactoryService.CreateUpdateProjectDetailsEvent(updatedProjectData);
+    return this.restApiService.SendOSDEvent(updateProjectDetailsEvent).pipe(
+      map((response) => {
+        const osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleUpdateProjectDetailsResponse(osdEvent);
+        return response;
+      })
+    );
+  }
+
   public getCourseByUserId(Id: string): Observable<any> {
     const getCourseByUserIdEvent: WebBaseEvent = this.eventFactoryService.CreateGetCourseByUserIdEvent(Id);
     return this.restApiService.SendOSDEvent(getCourseByUserIdEvent).pipe(
@@ -1350,6 +1361,26 @@ export class OSDService {
       } else {
         if (message == "The claim was updated correctly") {
           message = "El reclamo se actualizó correctamente"
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
+        }
+      }
+      this.store.dispatch(ModalActions.openAlert())
+    } catch {
+
+    }
+  }
+
+  public HandleUpdateProjectDetailsResponse(webBaseEvent: WebBaseEvent) {
+    let message: string;
+
+    try {
+      message = webBaseEvent.getBodyProperty(EventConstants.ACTION_OSD_RESULT_MESSAGE);
+
+      if (this.translate.currentLang == "en") {
+        this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
+      } else {
+        if (message == "The project was updated correctly") {
+          message = "El proyecto se actualizó correctamente"
           this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
         }
       }

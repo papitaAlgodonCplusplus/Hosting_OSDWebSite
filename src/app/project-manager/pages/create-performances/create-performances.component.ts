@@ -293,12 +293,12 @@ export class CreatePerformancesComponent {
       const formData = { ...this.performanceForm.value };
 
       // If canAddDeveloperPerformance == false, remove developer fields before sending
-      if (!this.canAddDeveloperPerformance) {
-        delete formData.developer_category;
-        delete formData.developer_module;
-        delete formData.developer_screen_form;
-        delete formData.developer_activity;
-      }
+      // if (!this.canAddDeveloperPerformance) {
+      //   delete formData.developer_category;
+      //   delete formData.developer_module;
+      //   delete formData.developer_screen_form;
+      //   delete formData.developer_activity;
+      // }
 
       console.log("formData", formData, "projectManagerSelected", this.projectManagerSelected);
       if (this.documentBytes != null) {
@@ -322,12 +322,12 @@ export class CreatePerformancesComponent {
     // For modifying, do something similar if you want to exclude developer fields
     // when canAddDeveloperPerformance == false:
     const formData = { ...this.performanceForm.value };
-    if (!this.canAddDeveloperPerformance) {
-      delete formData.developer_category;
-      delete formData.developer_module;
-      delete formData.developer_screen_form;
-      delete formData.developer_activity;
-    }
+    // if (!this.canAddDeveloperPerformance) {
+    //   delete formData.developer_category;
+    //   delete formData.developer_module;
+    //   delete formData.developer_screen_form;
+    //   delete formData.developer_activity;
+    // }
 
     this.OSDEventService.modifyPerformanceFreeProfessional(
       formData,

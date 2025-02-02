@@ -50,6 +50,7 @@ export class EventAction {
   public static MODIFY_PERFORMANCE_FREE_PROFESSIONAL_RESPONSE: string = "ModifyPerformanceFreeProfessionalResponse";
   public static CREATE_PERFORMANCE_BUY: string = "CreatePerformanceBuy";
   public static MODIFY_PERFORMANCE_BUY: string = "ModifyPerformanceBuy";
+  public static UPDATE_PROJECT_DETAILS: string = "UpdateProjectDetails";
   public static MODIFY_PERFORMANCE_BUY_RESPONSE: string = "ModifyPerformanceBuyResponse";
   public static GET_PERFORMANCES_PROJECT_MANAGER_BY_ID: string = "GetPerformancesProjectManagerById";
   public static CREATE_CLAIM: string = "CreateClaim";
