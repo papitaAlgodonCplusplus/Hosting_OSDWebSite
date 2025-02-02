@@ -239,7 +239,7 @@
             </button>
             <button type="submit"
               class="p-2 rounded-xl bg-darkslategray text-line font-medium animate__animated animate__fadeInDown">
-              Submit
+              {{ editingPerformance ? ('Update' | translate) : ('Submit' | translate) }}
             </button>
           </div>
         </form>
@@ -257,7 +257,6 @@
             <tr class="text-darkslategray border-b">
               <th class="w-[1rem] py-2">{{ 'Code' | translate }}</th>
               <th class="w-[1rem] py-2">{{ 'Date' | translate }}</th>
-              <th class="w-[1rem] py-2">{{ 'Status' | translate }}</th>
               <th class="w-[1rem] py-2">{{ 'Information' | translate }}</th>
               <th class="w-[1rem] py-2">{{ 'Document' | translate }}</th>
               <th class="w-[1rem] py-2">{{ 'Document 2' | translate }}</th>
@@ -267,21 +266,21 @@
               <th class="w-[1rem] py-2">{{ 'Solution Suggestion' | translate }}</th>
               <th class="w-[1rem] py-2">{{ 'Solution Complaint' | translate }}</th>
               <th class="w-[1rem] py-2">{{ 'Solution Appeal' | translate }}</th>
+              <th class="w-[1rem] py-2">{{ 'Edit' | translate }}</th>
             </tr>
           </thead>
           <tbody>
             <tr class="border-t text-center" *ngFor="let performance of displayedItems; let i = index">
               <td class="w-[1rem] p-3">{{ performance.code }}</td>
               <td class="w-[1rem] p-3">{{ performance.dateperformance | date:'dd-MM-yyyy' }}</td>
-              <td class="w-[1rem] p-3">{{ performance.status | translate }}</td>
 
               <!-- Information column -->
               <td class="w-[1rem] p-3">
-                <button *ngIf="performance.summary && performance.summary.length > 20" type="button"
+                <button *ngIf="performance.summary && performance.summary.length > 10" type="button"
                   class="text-blue-600 underline" (click)="openTextModal(performance.summary, 'Information')">
                   View
                 </button>
-                <span *ngIf="!performance.summary || performance.summary.length <= 20">
+                <span *ngIf="!performance.summary || performance.summary.length <= 10">
                   {{ performance.summary | translate }}
                 </span>
               </td>
@@ -298,7 +297,7 @@
 
               <!-- Document 2 column -->
               <td class="w-[1rem] p-3">
-                <button *ngIf="performance.justifyingdocument" id="downloadButton" type="button" class="mt-2 cursor-pointer px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg shadow-md 
+                <button *ngIf="performance.justifyingdocument2" id="downloadButton" type="button" class="mt-2 cursor-pointer px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg shadow-md 
                 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 
                 transition ease-in-out duration-150" (click)="downloadSelectedFile(performance.justifyingdocument2)">
                   {{ 'Download' | translate }}
@@ -308,72 +307,79 @@
 
               <!-- Appeal column -->
               <td class="w-[1rem] p-3">
-                <button *ngIf="performance.appeal && performance.appeal.length > 20" type="button"
+                <button *ngIf="performance.appeal && performance.appeal.length > 10" type="button"
                   class="text-blue-600 underline" (click)="openTextModal(performance.appeal, 'Appeal')">
                   View
                 </button>
-                <span *ngIf="!performance.appeal || performance.appeal.length <= 20">
+                <span *ngIf="!performance.appeal || performance.appeal.length <= 10">
                   {{ performance.appeal }}
                 </span>
               </td>
 
-              <!-- Answer to Appeal column -->
+              <!-- Answer Allegation column -->
               <td class="w-[1rem] p-3">
-                <button *ngIf="performance.answer_to_appeal && performance.answer_to_appeal.length > 20" type="button"
+                <button *ngIf="performance.answer_to_appeal && performance.answer_to_appeal.length > 10" type="button"
                   class="text-blue-600 underline"
                   (click)="openTextModal(performance.answer_to_appeal, 'Answer to Appeal')">
                   View
                 </button>
-                <span *ngIf="!performance.answer_to_appeal || performance.answer_to_appeal.length <= 20">
+                <span *ngIf="!performance.answer_to_appeal || performance.answer_to_appeal.length <= 10">
                   {{ performance.answer_to_appeal }}
                 </span>
               </td>
 
               <!-- Complaint column -->
               <td class="w-[1rem] p-3">
-                <button *ngIf="performance.complaint && performance.complaint.length > 20" type="button"
+                <button *ngIf="performance.complaint && performance.complaint.length > 10" type="button"
                   class="text-blue-600 underline" (click)="openTextModal(performance.complaint, 'Complaint')">
                   View
                 </button>
-                <span *ngIf="!performance.complaint || performance.complaint.length <= 20">
+                <span *ngIf="!performance.complaint || performance.complaint.length <= 10">
                   {{ performance.complaint }}
                 </span>
               </td>
 
               <!-- Solution Suggestion column -->
               <td class="w-[1rem] p-3">
-                <button *ngIf="performance.solution_suggestion && performance.solution_suggestion.length > 20"
+                <button *ngIf="performance.solution_suggestion && performance.solution_suggestion.length > 10"
                   type="button" class="text-blue-600 underline"
                   (click)="openTextModal(performance.solution_suggestion, 'Solution Suggestion')">
                   View
                 </button>
-                <span *ngIf="!performance.solution_suggestion || performance.solution_suggestion.length <= 20">
+                <span *ngIf="!performance.solution_suggestion || performance.solution_suggestion.length <= 10">
                   {{ performance.solution_suggestion }}
                 </span>
               </td>
 
               <!-- Solution Complaint column -->
               <td class="w-[1rem] p-3">
-                <button *ngIf="performance.solution_complaint && performance.solution_complaint.length > 20"
+                <button *ngIf="performance.solution_complaint && performance.solution_complaint.length > 10"
                   type="button" class="text-blue-600 underline"
                   (click)="openTextModal(performance.solution_complaint, 'Solution Complaint')">
                   View
                 </button>
-                <span *ngIf="!performance.solution_complaint || performance.solution_complaint.length <= 20">
+                <span *ngIf="!performance.solution_complaint || performance.solution_complaint.length <= 10">
                   {{ performance.solution_complaint }}
                 </span>
               </td>
 
               <!-- Solution Appeal column -->
               <td class="w-[1rem] p-3">
-                <button *ngIf="performance.solution_appeal && performance.solution_appeal.length > 20" type="button"
+                <button *ngIf="performance.solution_appeal && performance.solution_appeal.length > 10" type="button"
                   class="text-blue-600 underline"
                   (click)="openTextModal(performance.solution_appeal, 'Solution Appeal')">
                   View
                 </button>
-                <span *ngIf="!performance.solution_appeal || performance.solution_appeal.length <= 20">
+                <span *ngIf="!performance.solution_appeal || performance.solution_appeal.length <= 10">
                   {{ performance.solution_appeal }}
                 </span>
+              </td>
+
+              <!-- Edit column: only show if performance.userid equals current user's Id -->
+              <td class="w-[1rem] p-3" *ngIf="performance.userid === user.Id">
+                <i class="fa-solid fa-pencil cursor-pointer text-blue-600"
+                  (click)="openEditPerformance(performance)"></i>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -437,7 +443,7 @@
             </button>
             <button type="submit"
               class="p-2 rounded-xl bg-darkslategray text-line font-medium animate__animated animate__fadeInDown">
-              {{ 'Submit' | translate }}
+              {{ editingPerformance ? ('Update' | translate) : ('Submit' | translate) }}
             </button>
           </div>
         </form>

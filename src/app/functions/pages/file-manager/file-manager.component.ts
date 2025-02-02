@@ -6,7 +6,7 @@ import { combineLatest, map, Observable } from 'rxjs';
 import { Claim } from 'src/app/models/claim';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { OSDService } from 'src/app/services/osd-event.services';
-import { PerformanceActions, UiActions } from 'src/app/store/actions';
+import { PerformanceActions, UiActions, ModalActions } from 'src/app/store/actions';
 import { ClaimSelectors } from 'src/app/store/selectors';
 import { OSDDataService } from 'src/app/services/osd-data.service';
 import { CreateClaimValuationEvent } from '../../Interface/ClaimValuation.interface';
@@ -29,6 +29,7 @@ export class FileManagerComponent implements OnInit, OnDestroy {
   addUpdateForm!: FormGroup;
   selectedOption: string = 'complaint'; // Default selection
   uploadFile: boolean = true;
+  editingPerformance: any = null;
 
   /** NEW: Form & Flag to gather a final rating before finalizing claim */
   finalizeForm!: FormGroup;
@@ -89,7 +90,8 @@ export class FileManagerComponent implements OnInit, OnDestroy {
       appeal: [''],
       complaint: [''],
       answer_to_appeal: [''],
-      solution: ['']
+      solution: [''],
+      userid: ['']
     });
 
     // NEW: Finalize Form for user rating 0-5
@@ -179,7 +181,7 @@ export class FileManagerComponent implements OnInit, OnDestroy {
   closeTextModal(): void {
     this.showTextModal = false;
   }
-  
+
   downloadSelectedFile(optionalDocument: any) {
     let fileId: string;
 
@@ -257,7 +259,7 @@ export class FileManagerComponent implements OnInit, OnDestroy {
     const { status, document, document2, summary, improvementSavings, amountPaid, creditingDate, solution } = this.addUpdateForm.value;
 
     try {
-      // Extract filetype from the document field
+      // Extract filetype from the document fields
       const filetype = document ? document.split('.').pop() : null;
       const document2Type = document2 ? document2.split('.').pop() : null;
 
@@ -265,14 +267,14 @@ export class FileManagerComponent implements OnInit, OnDestroy {
         ClaimId: this.claim.id,
         NewStatus: status,
         Document: document,
-        FileType: filetype, // Add filetype to the payload
+        FileType: filetype,
         Document2: document2,
         Document2Type: document2Type,
         Summary: summary,
         ImprovementSavings: improvementSavings,
         AmountPaid: amountPaid,
         CreditingDate: creditingDate,
-        askForMoreInfo: false,
+        askForMoreInfo: !!formData.askForMoreInfo,
         FactsUpdate: formData.factsUpdate || null,
         appeal: formData.appeal || null,
         complaint: formData.complaint || null,
@@ -281,17 +283,26 @@ export class FileManagerComponent implements OnInit, OnDestroy {
         answer_to_appeal: formData.answer_to_appeal || null,
         solution: solution || null,
         solutionComplaint: formData.solutionComplaint || null,
+        userid: this.user.Id || '0',
+        performanceId: this.editingPerformance?.id || null
       };
 
-      if (this.addUpdateForm.value.askForMoreInfo) {
-        payload.askForMoreInfo = true;
+      console.log("Add/Update payload", payload, "Is editing?", this.editingPerformance);
+
+      if (this.editingPerformance) {
+        // Call your update service method
+        await this.osdEventService.updatePerformanceUpdate(payload);
+        // Clear the edit mode flag
+        this.editingPerformance = null;
       } else {
-        payload.askForMoreInfo = false;
+        // Call your add service method
+        await this.osdEventService.addPerformanceUpdate(payload);
       }
 
-      console.log("Add Update payload", payload);
-      await this.osdEventService.addPerformanceUpdate(payload);
-
+      this.store.dispatch(
+        ModalActions.addAlertMessage({ alertMessage: "Success!" })
+      );
+      this.store.dispatch(ModalActions.openAlert());
       this.closeAddUpdateModal();
     } catch (error) {
       console.error("Error submitting update:", error);
@@ -301,6 +312,36 @@ export class FileManagerComponent implements OnInit, OnDestroy {
   onSelectionChange(event: Event): void {
     const target = event.target as HTMLSelectElement;
     this.selectedOption = target.value;
+  }
+
+  openEditPerformance(performance: any): void {
+    // Save the performance to indicate we are in edit mode.
+    this.editingPerformance = performance;
+
+    // Patch the Add Update form with the performance's current values.
+    this.addUpdateForm.patchValue({
+      status: performance.status || '',
+      document: performance.document || '',
+      document2: performance.document2 || '',
+      summary: performance.summary || '',
+      improvementSavings: performance.improvementSavings || '',
+      amountPaid: performance.amountPaid || '',
+      creditingDate: performance.creditingDate || '',
+      askForMoreInfo: false,
+      factsUpdate: performance.factsUpdate || performance.facts || '',
+      appeal: performance.appeal || '',
+      complaint: performance.complaint || '',
+      solutionSuggestion: performance.solution_suggestion || '',
+      solutionAppeal: performance.solution_appeal || '',
+      answer_to_appeal: performance.answer_to_appeal || '',
+      solution: performance.solution || '',
+      solutionComplaint: performance.solution_complaint || '',
+      userid: performance.userid || ''
+    });
+
+    // Open the Add Update modal.
+    this.showAddUpdateModal = true;
+    this.showModalPerformances = false;
   }
 
   /** ==============================
@@ -352,6 +393,7 @@ export class FileManagerComponent implements OnInit, OnDestroy {
       answer_to_appeal: [claim?.answer_to_appeal || ''],
       solution: [claim?.solution || ''],
       solution_complaint: [claim?.solution_complaint || ''],
+      userid: [this.authenticationService.userInfo?.Id || ''],
     });
     return formGroup;
   }

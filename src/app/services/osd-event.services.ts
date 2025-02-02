@@ -391,7 +391,7 @@ export class OSDService {
     const event: WebBaseEvent = this.eventFactoryService.CreateGetUserActionLogsEvent();
     return this.restApiService.SendOSDEvent(event);
   }
-  
+
   public getDatabaseChangeLogs(): Observable<any> {
     const event: WebBaseEvent = this.eventFactoryService.CreateGetDatabaseChangeLogsEvent();
     return this.restApiService.SendOSDEvent(event);
@@ -772,6 +772,17 @@ export class OSDService {
     catch (err) {
       this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Error inesperado' }));
     }
+  }
+
+  public updatePerformanceUpdate(payload: any) {
+    const updatePerformanceUpdateEvent: WebBaseEvent = this.eventFactoryService.CreateUpdatePerformanceUpdateEvent(payload);
+    this.restApiService.SendOSDEvent(updatePerformanceUpdateEvent).subscribe(
+      map((response) => {
+        const osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+        this.HandleUpdatePerformanceUpdateResponse(osdEvent);
+        return response;
+      })
+    );
   }
 
   public addPerformanceUpdate(payload: any): void {
@@ -1743,6 +1754,25 @@ export class OSDService {
       }
     }
     catch {
+    }
+  }
+
+  public HandleUpdatePerformanceUpdateResponse(webBaseEvent: WebBaseEvent) {
+    let message: string;
+    try {
+      message = webBaseEvent.getBodyProperty(EventConstants.ACTION_OSD_RESULT_MESSAGE);
+      if (message) {
+        if (this.translate.currentLang == "en") {
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: message }));
+        } else {
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Actualización de rendimiento actualizada correctamente" }));
+        }
+        this.store.dispatch(ModalActions.openAlert());
+        this.securityDataService.emitUserAuthenticationSuccess("/project-manager");
+      }
+      this.store.dispatch(UiActions.toggleConfirmationButton());
+    } catch (err) {
+      this.store.dispatch(ModalActions.addErrorMessage({ errorMessage: 'Error inesperado' }));
     }
   }
 

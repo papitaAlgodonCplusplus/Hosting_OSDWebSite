@@ -423,6 +423,20 @@ export class EventFactoryService {
     return event;
   }
 
+  public CreateUpdatePerformanceUpdateEvent(payload: PayloadForm): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.UPDATE_PERFORMANCE_UPDATE;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    event.setBodyProperty(EventConstants.PAYLOAD, payload);
+    return event;
+  }
+
   public createClaimsProcessorPerformance(performance: ClaimsProcessorPerformance, claimId: string, documentBytes: string): WebBaseEvent {
     let event: WebBaseEvent;
     event = new WebBaseEvent();

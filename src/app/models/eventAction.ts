@@ -73,6 +73,7 @@ export class EventAction {
   public static GET_STUDENTS_BY_COURSE : string = "GetStudentsByCourse";
   
   public static ADD_RESPONSE_TO_PERFORMANCE_ASSIGNED : string = "AddResponseToPerformanceAssigned";
+  public static UPDATE_PERFORMANCE_UPDATE : string = "UpdatePerformanceUpdate";
 
   public static MODIFY_RESPONSE_TO_PERFORMANCE_ASSIGNED : string = "ModifyResponseToPerformanceAssigned";
   public static MODIFY_RESPONSE_TO_PERFORMANCE_ASSIGNED_RESPONSE : string = "ModifyResponseToPerformanceAssignedResponse";

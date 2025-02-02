@@ -159,6 +159,10 @@ app.post('/api/events/processOSDEvent', async (req, res) => {
         await handleAddPerformanceUpdate(event, res);
         break;
 
+      case 'UpdatePerformanceUpdate':
+        await handleUpdatePerformanceUpdate(event, res);
+        break;
+
       case 'CloseClaimFile':
         await handleCloseClaimFile(event, res);
         break;
@@ -1997,6 +2001,85 @@ const handleCloseClaimFile = async (event, res) => {
   }
 };
 
+const handleUpdatePerformanceUpdate = async (event, res) => {
+  try {
+    console.log('🧡 Received event:', event);
+
+    const performanceData = event.Body.Payload;
+    const performanceId = performanceData.performanceId;
+
+    if (!performanceId) {
+      return res.status(400).json(createWebBaseEvent({
+        UPDATE_PERFORMANCE_UPDATE_SUCCESS: false,
+        UPDATE_PERFORMANCE_UPDATE_MESSAGE: 'Performance ID is required.',
+      }, event.SessionKey, event.SecurityToken, 'UpdatePerformanceUpdate'));
+    }
+
+    // Define a mapping from payload keys to DB column names.
+    const fieldMapping = {
+      NewStatus: 'status',
+      Document: 'justifyingdocument',
+      FileType: 'filetype',
+      Document2: 'justifyingdocument2',
+      Document2Type: 'filetype2',
+      Summary: 'summary',
+      solutionSuggestion: 'solution_suggestion',
+      appeal: 'appeal',
+      complaint: 'complaint',
+      solutionAppeal: 'solution_appeal',
+      answer_to_appeal: 'answer_to_appeal',
+      solution: 'solution',
+      solutionComplaint: 'solution_complaint'
+    };
+
+    const updateFields = [];
+    const updateValues = [];
+    let index = 1;
+
+    // Iterate over the mapping so that keys from the payload are correctly translated.
+    for (const [payloadKey, dbField] of Object.entries(fieldMapping)) {
+      if (performanceData[payloadKey] !== undefined) {
+        updateFields.push(`${dbField} = $${index}`);
+        updateValues.push(performanceData[payloadKey]);
+        index++;
+      }
+    }
+
+    if (updateFields.length === 0) {
+      return res.status(400).json(createWebBaseEvent({
+        UPDATE_PERFORMANCE_UPDATE_SUCCESS: false,
+        UPDATE_PERFORMANCE_UPDATE_MESSAGE: 'No fields to update.',
+      }, event.SessionKey, event.SecurityToken, 'UpdatePerformanceUpdate'));
+    }
+
+    // Append the performanceId for the WHERE clause.
+    updateValues.push(performanceId);
+
+    const updateQuery = `
+      UPDATE performance_claim_control
+      SET ${updateFields.join(', ')}
+      WHERE id = $${index}
+      RETURNING *;
+    `;
+
+    console.log('📝 Executing update query:', updateQuery, " with ", updateValues);
+    const updateResult = await pool.query(updateQuery, updateValues);
+
+    console.log('✅ Performance update successfully:', updateResult.rows[0]);
+    return res.status(200).json(createWebBaseEvent({
+      UPDATE_PERFORMANCE_UPDATE_SUCCESS: true,
+      performanceUpdate: updateResult.rows[0]
+    }, event.SessionKey, event.SecurityToken, 'UpdatePerformanceUpdate'));
+
+  } catch (error) {
+    console.error('❌ Error updating performance update:', error);
+    return res.status(500).json(createWebBaseEvent({
+      UPDATE_PERFORMANCE_UPDATE_SUCCESS: false,
+      UPDATE_PERFORMANCE_UPDATE_MESSAGE: 'Server error updating performance update.',
+    }, event.SessionKey, event.SecurityToken, 'UpdatePerformanceUpdate'));
+  }
+};
+
 const handleAddPerformanceUpdate = async (event, res) => {
   try {
     console.log('🟢 Received event:', event);
@@ -2067,9 +2150,10 @@ const handleAddPerformanceUpdate = async (event, res) => {
     complaint,
     solution,
     solution_complaint,
-    solution_appeal
+    solution_appeal,
+    userid
   ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24
   ) RETURNING *;
 `;
 
@@ -2118,7 +2202,8 @@ const handleAddPerformanceUpdate = async (event, res) => {
       performanceData.complaint || existingPerformance.complaint || '',
       performanceData.solution || existingPerformance.solution || '',
       performanceData.solutionComplaint || existingPerformance.solutionComplaint || '',
-      performanceData.solutionAppeal || existingPerformance.solutionAppeal || ''
+      performanceData.solutionAppeal || existingPerformance.solutionAppeal || '',
+      performanceData.userid || existingPerformance.userid || ''
     ]);
 
     console.log('✅ Performance update inserted successfully:', result.rows[0]);
