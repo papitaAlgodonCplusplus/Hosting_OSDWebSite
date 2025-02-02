@@ -180,9 +180,9 @@
             </shared-uploadfile>
 
             <shared-uploadfile *ngIf="!isSubscriber && !isUserProcessor && !isTrainer" [isModified]="false"
-              [uploadFile]="uploadFile" [fileId]="''" [fileName]="''" formControlName="document"
-              id="performanceDocument1" [formGroup]="addUpdateForm" label="documento2" fieldName="document"
-              (fileUploaded)="handleFileUploaded($event)">
+              [uploadFile]="uploadFile" [fileId]="''" [fileName]="''" formControlName="document2"
+              id="performanceDocument2" [formGroup]="addUpdateForm" label="documento2" fieldName="document2"
+              (fileUploaded)="handleFileUploaded2($event)">
             </shared-uploadfile>
           </div>
 
@@ -328,10 +328,10 @@
             <tr class="text-darkslategray border-b">
               <th class="w-[1rem] py-2">{{ 'Code' | translate }}</th>
               <th class="w-[1rem] py-2">{{ 'Date' | translate }}</th>
-              <th class="w-[1rem] py-2">{{ 'Type' | translate }}</th>
               <th class="w-[1rem] py-2">{{ 'Status' | translate }}</th>
               <th class="w-[1rem] py-2">{{ 'Information' | translate }}</th>
               <th class="w-[1rem] py-2">{{ 'Document' | translate }}</th>
+              <th class="w-[1rem] py-2">{{ 'Document 2' | translate }}</th>
               <th class="w-[1rem] py-2">{{ 'Appeal' | translate }}</th>
               <th class="w-[1rem] py-2">{{ 'Answer Appeal' | translate }}</th>
               <th class="w-[1rem] py-2">{{ 'Complaint' | translate }}</th>
@@ -344,7 +344,6 @@
             <tr class="border-t text-center" *ngFor="let performance of displayedItems; let i = index">
               <td class="w-[1rem] p-3">{{ performance.code }}</td>
               <td class="w-[1rem] p-3">{{ performance.dateperformance | date:'dd-MM-yyyy' }}</td>
-              <td class="w-[1rem] p-3">{{ claim?.claimtype }}</td>
               <td class="w-[1rem] p-3">{{ performance.status | translate }}</td>
 
               <!-- Information column -->
@@ -366,6 +365,16 @@
                   {{ 'Download' | translate }}
                 </button>
                 <span *ngIf="!performance.justifyingdocument">{{ 'No Document' | translate }}</span>
+              </td>
+
+              <!-- Document column -->
+              <td class="w-[1rem] p-3">
+                <button *ngIf="performance.justifyingdocument" id="downloadButton" type="button" class="mt-2 cursor-pointer px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg shadow-md 
+                hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 
+                transition ease-in-out duration-150" (click)="downloadSelectedFile(performance.justifyingdocument2)">
+                  {{ 'Download' | translate }}
+                </button>
+                <span *ngIf="!performance.justifyingdocument2">{{ 'No Document' | translate }}</span>
               </td>
 
               <!-- Appeal column -->

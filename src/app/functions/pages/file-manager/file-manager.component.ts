@@ -76,6 +76,7 @@ export class FileManagerComponent implements OnInit, OnDestroy {
     this.addUpdateForm = this.formBuilder.group({
       status: [''],
       document: [''],
+      document2: [''],
       summary: [''],
       improvementSavings: [''],
       amountPaid: [''],
@@ -99,6 +100,11 @@ export class FileManagerComponent implements OnInit, OnDestroy {
 
   handleFileUploaded(event: { typeFile: string, fileId: string }): void {
     this.addUpdateForm.patchValue({ document: event.fileId });
+  }
+
+  handleFileUploaded2(event: { typeFile: string, fileId: string }): void {
+    console.log("Event", event);
+    this.addUpdateForm.patchValue({ document2: event.fileId });
   }
 
   ngOnInit() {
@@ -143,6 +149,7 @@ export class FileManagerComponent implements OnInit, OnDestroy {
           // Disable fields you want blocked
           this.addUpdateForm.get('status')?.disable();
           this.addUpdateForm.get('document')?.disable();
+          this.addUpdateForm.get('document2')?.disable();
           this.addUpdateForm.get('improvementSavings')?.disable();
           this.addUpdateForm.get('amountPaid')?.disable();
           this.addUpdateForm.get('creditingDate')?.disable();
@@ -151,6 +158,7 @@ export class FileManagerComponent implements OnInit, OnDestroy {
           // Re-enable them if unchecked
           this.addUpdateForm.get('status')?.enable();
           this.addUpdateForm.get('document')?.enable();
+          this.addUpdateForm.get('document2')?.enable();
           this.addUpdateForm.get('improvementSavings')?.enable();
           this.addUpdateForm.get('amountPaid')?.enable();
           this.addUpdateForm.get('creditingDate')?.enable();
@@ -246,17 +254,20 @@ export class FileManagerComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const { status, document, summary, improvementSavings, amountPaid, creditingDate, solution } = this.addUpdateForm.value;
+    const { status, document, document2, summary, improvementSavings, amountPaid, creditingDate, solution } = this.addUpdateForm.value;
 
     try {
       // Extract filetype from the document field
       const filetype = document ? document.split('.').pop() : null;
+      const document2Type = document2 ? document2.split('.').pop() : null;
 
       const payload = {
         ClaimId: this.claim.id,
         NewStatus: status,
         Document: document,
         FileType: filetype, // Add filetype to the payload
+        Document2: document2,
+        Document2Type: document2Type,
         Summary: summary,
         ImprovementSavings: improvementSavings,
         AmountPaid: amountPaid,

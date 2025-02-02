@@ -2028,31 +2028,34 @@ const handleAddPerformanceUpdate = async (event, res) => {
     console.log('🔢 Generated performance code:', performanceCode);
 
     const insertPerformanceQuery = `
-      INSERT INTO performance_claim_control (
-        id,
-        code,
-        claimid,
-        status,
-        dateperformance,
-        justifyingdocument,
-        justifyingdocumentbytes,
-        summary,
-        type,
-        typeperformance,
-        usertypeperformance,
-        filetype,
-        documentfile1id,
-        answer_to_appeal,
-        solution_suggestion,
-        appeal,
-        complaint,
-        solution,
-        solution_complaint,
-        solution_appeal
-      ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20
-      ) RETURNING *;
-    `;
+  INSERT INTO performance_claim_control (
+    id,
+    code,
+    claimid,
+    status,
+    dateperformance,
+    justifyingdocument,
+    justifyingdocumentbytes,
+    summary,
+    type,
+    typeperformance,
+    usertypeperformance,
+    filetype,
+    documentfile1id,
+    justifyingdocument2,
+    filetype2,
+    documentfile2id,
+    answer_to_appeal,
+    solution_suggestion,
+    appeal,
+    complaint,
+    solution,
+    solution_complaint,
+    solution_appeal
+  ) VALUES (
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23
+  ) RETURNING *;
+`;
 
     let documentBase64 = null;
     if (performanceData.Document) {
@@ -2060,11 +2063,17 @@ const handleAddPerformanceUpdate = async (event, res) => {
       console.log('📄 Document converted to Base64');
     }
 
+    let documentBase64_2 = null;
+    if (performanceData.Document2) {
+      documentBase64_2 = Buffer.from(performanceData.Document2).toString('base64');
+      console.log('📄 Document 2 converted to Base64');
+    }
+
     // Fetch existing performance data from the database
     console.log('🔍 Fetching existing performance data...');
     const existingPerformanceQuery = `
-      SELECT * FROM performance_claim_control WHERE claimid = $1 ORDER BY dateperformance DESC LIMIT 1
-    `;
+  SELECT * FROM performance_claim_control WHERE claimid = $1 ORDER BY dateperformance DESC LIMIT 1
+`;
     const existingPerformanceResult = await pool.query(existingPerformanceQuery, [performanceData.ClaimId]);
     const existingPerformance = existingPerformanceResult.rows[0] || {};
     console.log('📌 Existing performance data:', existingPerformance);
@@ -2084,6 +2093,9 @@ const handleAddPerformanceUpdate = async (event, res) => {
       performanceData.userTypePerformance || existingPerformance.usertypeperformance || 'CLAIMANT',
       performanceData.FileType || existingPerformance.filetype || 'txt',
       performanceData.Document || existingPerformance.documentfile1id || '',
+      performanceData.Document2 || existingPerformance.justifyingdocument2 || '',
+      performanceData.FileType2 || existingPerformance.filetype2 || 'txt',
+      performanceData.Document2 || existingPerformance.documentfile2id || '',
       performanceData.answer_to_appeal || existingPerformance.answer_to_appeal || '',
       performanceData.solutionSuggestion || existingPerformance.solutionSuggestion || '',
       performanceData.appeal || existingPerformance.appeal || '',
@@ -3309,7 +3321,7 @@ const handleAddPerformanceFreeProfessional = async (event, res) => {
       developer_category: Array.isArray(addPerformancFPEvent.developer_category)
         ? addPerformancFPEvent.developer_category.join(' - ')
         : addPerformancFPEvent.developer_category || null,
-        
+
       developer_module: Array.isArray(addPerformancFPEvent.developer_module)
         ? addPerformancFPEvent.developer_module.join(' - ')
         : addPerformancFPEvent.developer_module || null,
