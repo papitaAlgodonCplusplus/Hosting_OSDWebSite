@@ -1220,11 +1220,13 @@ export class EventFactoryService {
     event.Date = (new Date()).toUTCString();
     event.ApplicationIdentifier = "WebClient";
     event.setBodyProperty(EventConstants.CLAIM_ID, ClaimId);
+    event.setBodyProperty(EventConstants.USER_ID, userId);
     event.setBodyProperty(EventConstants.AMOUNT_PAID, closeClaimfileForm.AmountPaid);
     event.setBodyProperty(EventConstants.PAYMENT_DATE, closeClaimfileForm.creditingDate);
     event.setBodyProperty(EventConstants.SAVINGS_INSTITUTION, closeClaimfileForm.AAsavingsPP);
     event.setBodyProperty(EventConstants.FINAL_RATING, closeClaimfileForm.finalRating);
-    event.setBodyProperty(EventConstants.USER_ID, userId);
+    event.setBodyProperty(EventConstants.SAVINGS_IMPROVEMENT, closeClaimfileForm.savingsImprovement);
+    event.setBodyProperty(EventConstants.CLAIMANT_PAYMENT, closeClaimfileForm.claimantPayment);
     return event;
   }
 

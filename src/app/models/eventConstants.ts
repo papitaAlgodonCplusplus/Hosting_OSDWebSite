@@ -80,6 +80,8 @@ export class EventConstants {
   public static SUCCESS: string = "Success";
   public static ERROR: string = "Error";
   public static INFORMATION: string = "Information";
+  public static SAVINGS_IMPROVEMENT: string = "SavingsImprovement";
+  public static CLAIMANT_PAYMENT: string = "ClaimantPayment";
 
   public static SESSION_EXPIRED: string = "SessionExpired";
 

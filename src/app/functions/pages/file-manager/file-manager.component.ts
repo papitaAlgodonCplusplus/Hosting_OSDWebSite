@@ -96,7 +96,9 @@ export class FileManagerComponent implements OnInit, OnDestroy {
 
     // NEW: Finalize Form for user rating 0-5
     this.finalizeForm = this.formBuilder.group({
-      finalRating: [0, [Validators.required, Validators.min(0), Validators.max(5)]]
+      finalRating: [0, [Validators.required, Validators.min(0), Validators.max(5)]],
+      savingsImprovement: [''],
+      claimantPayment: [''],
     });
   }
 
@@ -524,15 +526,23 @@ export class FileManagerComponent implements OnInit, OnDestroy {
     }
 
     const rating = this.finalizeForm.value.finalRating;
+    const savingsImprovement = this.finalizeForm.value.savingsImprovement;
+    const claimantPayment = this.finalizeForm.value.claimantPayment;
     // Merge rating into your final payload
     const payload = {
       ...this.closeClaimfileForm.value,
-      finalRating: rating
+      finalRating: rating,
+      savingsImprovement: savingsImprovement,
+      claimantPayment: claimantPayment
     };
 
     // Now call your service method
     this.osdEventService.CloseClaimFile(payload, this.claim?.id, this.user.Id);
 
+    this.store.dispatch(
+      ModalActions.addAlertMessage({ alertMessage: "Success!" })
+    );
+    this.store.dispatch(ModalActions.openAlert());
     // Hide modal afterwards
     this.closeFinalizeModal();
   }

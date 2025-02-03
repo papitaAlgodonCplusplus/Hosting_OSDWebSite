@@ -1932,17 +1932,23 @@ const handleUpdateClaim = async (event, res) => {
 
 const handleCloseClaimFile = async (event, res) => {
   try {
+    console.log('📥 Received event:', event);
+
     const claimId = event.Body?.ClaimId;
     const rating = event.Body?.FinalRating;
+    const savingsImprovement = event.Body?.SavingsImprovement;
+    const claimantPayment = event.Body?.ClaimantPayment;
     const userId = event.Body?.UserId;
 
     if (!claimId || !userId) {
+      console.warn('⚠️ Claim ID and user ID are required.');
       return res.status(400).json(createWebBaseEvent({
         CLOSE_CLAIM_FILE_SUCCESS: false,
         CLOSE_CLAIM_FILE_MESSAGE: 'Claim ID and user ID are required.',
       }, event.SessionKey, event.SecurityToken, 'CloseClaimFile'));
     }
 
+    console.log('🔍 Fetching claim details for claim ID:', claimId);
 
     // Retrieve claimantid and subscriberclaimedid from claim_file
     const claimQuery = `
@@ -1954,6 +1960,7 @@ const handleCloseClaimFile = async (event, res) => {
     const claimResult = await pool.query(claimQuery, [claimId]);
 
     if (claimResult.rows.length === 0) {
+      console.warn('⚠️ Claim not found for ID:', claimId);
       return res.status(404).json(createWebBaseEvent({
         CLOSE_CLAIM_FILE_SUCCESS: false,
         CLOSE_CLAIM_FILE_MESSAGE: 'Claim not found.',
@@ -1961,9 +1968,11 @@ const handleCloseClaimFile = async (event, res) => {
     }
 
     const { claimantid, subscriberclaimedid } = claimResult.rows[0];
+    console.log('✅ Claim details retrieved:', claimResult.rows[0]);
 
     let updateQuery;
     if (userId === claimantid) {
+      console.log('🔄 User is claimant, updating valuationclaimant.');
       // Update valuationclaimant if userId matches claimantid
       updateQuery = `
         UPDATE claim_file
@@ -1972,24 +1981,29 @@ const handleCloseClaimFile = async (event, res) => {
         RETURNING id, status, valuationclaimant;
       `;
     } else if (userId === subscriberclaimedid) {
+      console.log('🔄 User is subscriber, updating valuationsubscriber.');
       // Update valuationsubscriber if userId matches subscriberclaimedid
       updateQuery = `
-          UPDATE claim_file
-          SET status = 'Closed', valuationsubscriber = $2
-          WHERE id = $1
-          RETURNING id, status, valuationsubscriber;
-        `;
+        UPDATE claim_file
+        SET status = 'Closed', valuationsubscriber = $2
+        WHERE id = $1
+        RETURNING id, status, valuationsubscriber;
+      `;
     } else {
+      console.log('🔄 User is free professional, updating valuationfreeprofessionals.');
       // Update valuationfreeprofessionals if userId does not match claimantid or subscriberclaimedid
       updateQuery = `
-          UPDATE claim_file
-          SET status = 'Closed', valuationfreeprofessionals = $2
-          WHERE id = $1
-          RETURNING id, status, valuationfreeprofessionals;
-        `;
+        UPDATE claim_file
+        SET status = 'Closed', valuationfreeprofessionals = $2, improvementsavings = $3, amountpaid = $4
+        WHERE id = $1
+        RETURNING id, status, valuationfreeprofessionals;
+      `;
     }
 
-    const updateResult = await pool.query(updateQuery, [claimId, rating]);
+    console.log('📝 Executing update query:', updateQuery);
+    const updateResult = await pool.query(updateQuery, [claimId, rating, savingsImprovement, claimantPayment]);
+    console.log('✅ Claim file updated successfully:', updateResult.rows[0]);
+
     return res.status(200).json(createWebBaseEvent({
       CLOSE_CLAIM_FILE_SUCCESS: true,
       claim: updateResult.rows[0]

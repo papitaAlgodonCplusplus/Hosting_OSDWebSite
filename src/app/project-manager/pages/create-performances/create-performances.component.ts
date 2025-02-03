@@ -89,6 +89,9 @@ export class CreatePerformancesComponent {
     { key: 'Centro de Formación Homologado', value: 'Centro de Formación Homologado' },
     { key: 'RE Expediente', value: 'RE Expediente' },
     { key: 'RE Actuación', value: 'RE Actuación' },
+    { key: 'Formularios del GETP', value: 'Formularios del GETP' },
+    { key: 'Informes de Transparencia', value: 'Informes de Transparencia' }
+
   ];
 
   constructor(
