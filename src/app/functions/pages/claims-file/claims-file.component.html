@@ -35,12 +35,13 @@
                                         'text-red-500' : claim.status == 'Unassigned',
                                         'text-yellow-500' : claim.status == 'Running',
                                         'text-green-500' : claim.status == 'Completed',
-                                        'text-blue-500' : claim.status == 'Falta Información'
+                                        'text-blue-500' : claim.status == 'Falta Información',
+                                        'text-orange-500' : claim.status == 'Waiting FC Approval'
                                     }">
                                 </i>{{ claim.status | translate }}
                             </td>
                             <td class="p-2 border-y text-center">{{ claim.datecreated | date:'medium' }}</td>
-                            <td class="p-2 border-y text-center" *ngIf="isClaimant || isAdmin">
+                            <td class="p-2 border-y text-center" *ngIf="claim.status !== 'Closed' && (isClaimant || isAdmin)">
                                 <span (click)="selectClaim(claim)" routerLink="/functions/edit-claim-file"
                                     class="font-medium text-darkslategray px-4 py-2 text-lg cursor-pointer">
                                     <i class="fa-solid fa-pencil"></i>

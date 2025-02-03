@@ -168,7 +168,7 @@ export class OnboardingRegisterClaimantComponent {
     this.showPersonalInfo = !this.showPersonalInfo;
   }
 
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
     if (this.selectorRegistry === true) {
       this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, "Claimant").subscribe(() => {
         setTimeout(() => {
@@ -182,7 +182,24 @@ export class OnboardingRegisterClaimantComponent {
         ModalActions.addAlertMessage({ alertMessage: "Registration successful!" })
       );
       this.store.dispatch(ModalActions.openAlert());
-      this.router.navigate(['/auth']);
+
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      const loginForm = this.formBuilder.group({
+        email: this.personalForm.value.email,
+        password: this.personalForm.value.password
+      });
+      this.osdEventService.userLogin(loginForm.getRawValue() as { email: string, password: string }).subscribe({
+        next: (response: any) => {
+          const userInfo = response?.Body?.USER_INFO;
+          this.authenticationService.userInfo = userInfo;
+    
+          this.router.navigate(['/home']);
+        },
+        error: (error: any) => {
+          console.error('Login error:', error);
+        },
+      });
     }
 
     if (this.accountForm.invalid && this.selectorRegistry === false) {

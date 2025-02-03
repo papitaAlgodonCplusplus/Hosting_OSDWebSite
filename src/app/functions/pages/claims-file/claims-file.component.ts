@@ -19,6 +19,7 @@ export class ClaimsFileComponent {
   displayedItems: any[] = [];
   user!: UserInfo;
   isClaimant: boolean = false;
+  canCloseClaim: boolean[] = [];
   isAdmin: boolean = false;
   constructor(
     private osdEventService: OSDService,
@@ -76,6 +77,7 @@ export class ClaimsFileComponent {
 
   updateDisplayedItems(startIndex: number = 0, endIndex: number = 5) {
     this.displayedItems = this.claims.slice(startIndex, endIndex);
+    this.canCloseClaim = this.displayedItems.map(claim => claim.valuationfc !== '-1');
   }
 
 }

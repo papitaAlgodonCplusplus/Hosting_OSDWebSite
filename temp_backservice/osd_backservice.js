@@ -690,6 +690,7 @@ const handleGetTransparencyReportsSubscriberClients = async (event, res) => {
       cf.valuationsubscriber, 
       cf.valuationclaimant, 
       cf.valuationfreeprofessionals,
+      cf.valuationfc,
       cf.complaint,
       cf.appeal,
       cf.solution_suggestion,
@@ -1882,7 +1883,7 @@ const handleUpdateClaim = async (event, res) => {
       'code', 'datecreated', 'status', 'subscriberclaimedid', 'claimantid', 'claimtype',
       'serviceprovided', 'facts', 'amountclaimed', 'documentfile1id', 'documentfile1name',
       'documentfile2id', 'documentfile2name', 'creditingdate', 'amountpaid', 'improvementsavings',
-      'valuationsubscriber', 'valuationclaimant', 'valuationfreeprofessionals', 'processor_id',
+      'valuationsubscriber', 'valuationclaimant', 'valuationfreeprofessionals', 'valuationfc', 'processor_id',
       'complaint', 'appeal', 'solution_suggestion', 'solution_appeal', 'answer_to_appeal', 'solution', 'solution_complaint'
     ];
 
@@ -1971,12 +1972,24 @@ const handleCloseClaimFile = async (event, res) => {
     console.log('✅ Claim details retrieved:', claimResult.rows[0]);
 
     let updateQuery;
+    const assignedFCidQuery = await pool.query(
+      'SELECT assignedtrainer FROM osduser WHERE id = $1',
+      [subscriberclaimedid]
+    );
+    console.log('🔍 Assigned F/C ID query result:', assignedFCidQuery.rows);
+    const assignedFCid = assignedFCidQuery.rows[0]?.assignedtrainer;
+    const freeProfessionalQuery = await pool.query(
+      'SELECT id FROM freeprofessional WHERE userid = $1',
+      [userId]
+    );
+    const freeProfessionalId = freeProfessionalQuery.rows.length > 0 ? freeProfessionalQuery.rows[0].id : null;
+
     if (userId === claimantid) {
       console.log('🔄 User is claimant, updating valuationclaimant.');
       // Update valuationclaimant if userId matches claimantid
       updateQuery = `
         UPDATE claim_file
-        SET status = 'Closed', valuationclaimant = $2
+        SET status = 'Waiting FC Approval', valuationclaimant = $2
         WHERE id = $1
         RETURNING id, status, valuationclaimant;
       `;
@@ -1985,16 +1998,24 @@ const handleCloseClaimFile = async (event, res) => {
       // Update valuationsubscriber if userId matches subscriberclaimedid
       updateQuery = `
         UPDATE claim_file
-        SET status = 'Closed', valuationsubscriber = $2
+        SET status = 'Waiting FC Approval', valuationsubscriber = $2
         WHERE id = $1
         RETURNING id, status, valuationsubscriber;
       `;
-    } else {
-      console.log('🔄 User is free professional, updating valuationfreeprofessionals.');
-      // Update valuationfreeprofessionals if userId does not match claimantid or subscriberclaimedid
+    } else if (freeProfessionalId === assignedFCid) {
+      console.log('🔄 User is F/C, updating valuationfc.');
       updateQuery = `
         UPDATE claim_file
-        SET status = 'Closed', valuationfreeprofessionals = $2, improvementsavings = $3, amountpaid = $4
+        SET status = 'Closed', valuationfc = $2, improvementsavings = $3, amountpaid = $4
+        WHERE id = $1
+        RETURNING id, status, valuationfc;
+      `;
+
+    } else {
+      console.log('🔄 User is free professional, updating valuationfreeprofessionals.');
+      updateQuery = `
+        UPDATE claim_file
+        SET status = 'Waiting FC Approval', valuationfreeprofessionals = $2, improvementsavings = $3, amountpaid = $4
         WHERE id = $1
         RETURNING id, status, valuationfreeprofessionals;
       `;

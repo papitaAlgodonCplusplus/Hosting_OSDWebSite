@@ -94,7 +94,7 @@
     </button>
 
     <!-- Instead of directly calling closeClaimFile(), open a "Finalize" modal to gather the rating -->
-    <button (click)="openFinalizeModal()"
+    <button *ngIf="canCloseClaim" (click)="openFinalizeModal()"
       class="p-2 rounded-xl bg-darkslategray text-line font-medium animate__animated animate__fadeInDown">
       {{ 'Finalizar expediente de reclamacion' | translate }}
     </button>
@@ -111,7 +111,26 @@
 
         <!-- Modal Form -->
         <form [formGroup]="addUpdateForm" class="w-full flex flex-col space-y-3" (ngSubmit)="submitAddUpdate()">
-          <div class="mt-10 grid grid-cols-2 gap-4">
+
+          <!-- Select Box for Complaint or Appeal -->
+          <div *ngIf="!isTrainer" class="flex flex-col w-full mb-4">
+            <label for="complaintAppealSelect" class="font-semibold mb-1">{{ 'Type of Update' | translate }}</label>
+            <select id="complaintAppealSelect" class="border border-gray-300 rounded-md p-2"
+              (change)="onSelectionChange($event)">
+              <option value="default" disabled selected>{{ 'Select type of Update' | translate }}</option>
+              <option *ngIf="!isUserProcessor" value="complaint">{{ 'Complaint' | translate }}</option>
+              <option *ngIf="!isUserProcessor" value="appeal">{{ 'Appeal' | translate }}</option>
+              <option *ngIf="isSubscriber" value="answer_to_appeal">{{ 'Answer_To_Allegation' | translate }}</option>
+              <option *ngIf="isSubscriber" value="solution_suggestion">{{ 'solution_suggestion' | translate }}</option>
+              <option *ngIf="isUserProcessor" value="verification">{{ 'verification' | translate }}</option>
+              <option *ngIf="isUserProcessor" value="ask_for_more_info">{{ 'ask_for_more_info' | translate }}</option>
+              <option *ngIf="isUserProcessor" value="solution_complaint">{{ 'solution_complaint' | translate }}</option>
+              <option *ngIf="isUserProcessor" value="solution">{{ 'solution' | translate }}</option>
+              <option *ngIf="!isUserProcessor" value="summary">{{ 'Information' | translate }}</option>
+            </select>
+          </div>
+
+          <div class="mt-10 grid grid-cols-2 gap-4" *ngIf="selectedOption === 'verification'">
             <!-- Left Column: Download Button -->
             <div class="flex flex-col items-center space-y-1">
               <label for="downloadButton" class="text-medium text-gray-700 mb-3 font-medium">
@@ -132,21 +151,6 @@
             </div>
           </div>
 
-          <!-- Select Box for Complaint or Appeal -->
-          <div *ngIf="!isTrainer" class="flex flex-col w-full mb-4">
-            <label for="complaintAppealSelect" class="font-semibold mb-1">{{ 'Type of Update' | translate }}</label>
-            <select id="complaintAppealSelect" class="border border-gray-300 rounded-md p-2"
-              (change)="onSelectionChange($event)">
-              <option *ngIf="!isUserProcessor" value="complaint">{{ 'Complaint' | translate }}</option>
-              <option *ngIf="!isUserProcessor" value="appeal">{{ 'Appeal' | translate }}</option>
-              <option *ngIf="!isUserProcessor" value="summary">{{ 'Information' | translate }}</option>
-              <option *ngIf="isSubscriber" value="answer_to_appeal">{{ 'Answer_To_Allegation' | translate }}</option>
-              <option *ngIf="isSubscriber" value="solution_suggestion">{{ 'solution_suggestion' | translate }}</option>
-              <option *ngIf="isUserProcessor" value="solution_complaint">{{ 'solution_complaint' | translate }}</option>
-              <option *ngIf="isUserProcessor" value="solution">{{ 'solution' | translate }}</option>
-              <option *ngIf="isUserProcessor" value="ask_for_more_info">{{ 'ask_for_more_info' | translate }}</option>
-            </select>
-          </div>
 
           <!-- Ask for More Info Checkbox -->
           <div class="flex items-center w-full" *ngIf="isUserProcessor && selectedOption === 'ask_for_more_info'">
@@ -169,8 +173,24 @@
             </shared-uploadfile>
           </div>
 
+          <!-- Document Fields in a Grid (for isUserProcessor) -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full"
+            *ngIf="isUserProcessor && (selectedOption === 'verification' || selectedOption === 'ask_for_more_info' || selectedOption === 'solution_complaint' || selectedOption === 'solution')">
+            <shared-uploadfile [isModified]="false" [uploadFile]="uploadFile" [fileId]="''" [fileName]="''"
+              formControlName="document" id="performanceDocument1" [formGroup]="addUpdateForm" label="documento1"
+              fieldName="document" (fileUploaded)="handleFileUploaded($event)">
+            </shared-uploadfile>
+
+            <shared-uploadfile [isModified]="false" [uploadFile]="uploadFile" [fileId]="''" [fileName]="''"
+              formControlName="document2" id="performanceDocument2" [formGroup]="addUpdateForm" label="documento2"
+              fieldName="document2" (fileUploaded)="handleFileUploaded2($event)">
+            </shared-uploadfile>
+          </div>
+
           <!-- Summary / Reason Field -->
-          <div *ngIf="selectedOption === 'summary' && (!isUserProcessor && !isTrainer) || selectedOption === 'ask_for_more_info'" class="flex flex-col w-full">
+          <div
+            *ngIf="selectedOption === 'summary' && (!isUserProcessor && !isTrainer) || selectedOption === 'ask_for_more_info'"
+            class="flex flex-col w-full">
             <label for="performanceSummary" class="font-semibold mb-1">
               {{ (selectedOption === 'ask_for_more_info' ? 'Explication' : 'Information') | translate }}
             </label>
@@ -382,7 +402,7 @@
               </td>
 
               <!-- Edit column: only show if performance.userid equals current user's Id -->
-              <td class="w-[1rem] p-3" *ngIf="performance.userid === user.Id">
+              <td class="w-[1rem] p-3" *ngIf="performance.userid === user.Id && canCloseClaim">
                 <i class="fa-solid fa-pencil cursor-pointer text-blue-600"
                   (click)="openEditPerformance(performance)"></i>
               </td>
@@ -393,7 +413,7 @@
         <mat-paginator [length]="allPerformances.length" [pageSize]="5" (page)="onPageChange($event)"></mat-paginator>
 
         <div class="flex justify-end w-full space-x-3">
-          <button (click)="openAddUpdateModal()"
+          <button (click)="openAddUpdateModal()" *ngIf="canCloseClaim"
             class="p-2 rounded-xl bg-indigo-500 text-white font-medium animate__animated animate__fadeInDown">
             Add Update
           </button>

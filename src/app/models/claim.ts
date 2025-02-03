@@ -13,6 +13,9 @@ export interface Claim {
     Date: string;
     Valuationclaimant: string;
     Valuationfreeprofessionals: string;
+    valuationfc: string;
+    Valuationfc: string;
+    ValuationFC: string;
     Valuationsubscriber: string;
     DocumentFile1Id: string;
     DocumentFile1Name: string;

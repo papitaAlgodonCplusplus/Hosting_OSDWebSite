@@ -54,6 +54,7 @@ export class FileManagerComponent implements OnInit, OnDestroy {
   public showTextModal: boolean = false;
   public modalContent: string = '';
   public modalTitle: string = '';
+  canCloseClaim: boolean = true;
 
   user!: UserInfo;
 
@@ -122,6 +123,9 @@ export class FileManagerComponent implements OnInit, OnDestroy {
         this.claim = claim;
         this.changeDetectorRef.detectChanges();
 
+        if (claim.valuationfc !== '-1') {
+          this.canCloseClaim = false;
+        }
         if (claim.Status === "Running") {
           this.isAssignedClaim = true;
           this.isTerminatedPerformance = true;
