@@ -89,7 +89,7 @@ export class CreatePerformancesComponent {
     { key: 'Centro de Formacion Homologado', value: 'Centro de Formacion Homologado' },
     { key: 'RE Expediente', value: 'RE Expediente' },
     { key: 'RE Actuación', value: 'RE Actuación' },
-    { key: 'GETP Expediente', value: '*GETP Expediente' },
+    { key: 'GETP Expediente', value: 'GETP Expediente' },
     { key: 'GETP Actuación', value: 'GETP Actuación' },
     { key: 'Informe Transparencia CL', value: 'Informe Transparencia CL' },
     { key: 'Informe Transparencia PL', value: 'Informe Transparencia PL' },
