@@ -86,12 +86,15 @@ export class CreatePerformancesComponent {
     { key: 'Cliente', value: 'Cliente' },
     { key: 'Profesional Libre', value: 'Profesional Libre' },
     { key: 'Reclamante', value: 'Reclamante' },
-    { key: 'Centro de Formación Homologado', value: 'Centro de Formación Homologado' },
+    { key: 'Centro de Formacion Homologado', value: 'Centro de Formacion Homologado' },
     { key: 'RE Expediente', value: 'RE Expediente' },
     { key: 'RE Actuación', value: 'RE Actuación' },
-    { key: 'Formularios del GETP', value: 'Formularios del GETP' },
-    { key: 'Informes de Transparencia', value: 'Informes de Transparencia' }
-
+    { key: 'GETP Expediente', value: '*GETP Expediente' },
+    { key: 'GETP Actuación', value: 'GETP Actuación' },
+    { key: 'Informe Transparencia CL', value: 'Informe Transparencia CL' },
+    { key: 'Informe Transparencia PL', value: 'Informe Transparencia PL' },
+    { key: 'Informe Transparencia CFH', value: 'Informe Transparencia CFH' },
+    { key: 'Informe Transparencia GETP', value: 'Informe Transparencia GETP' }
   ];
 
   constructor(
