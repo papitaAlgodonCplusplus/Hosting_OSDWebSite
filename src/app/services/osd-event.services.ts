@@ -131,6 +131,11 @@ export class OSDService {
     });
   }
 
+  public restoreDatabaseLog(log: any) {
+    const restoreDatabaseLogEvent: WebBaseEvent = this.eventFactoryService.CreateRestoreDatabaseLogEvent(log);
+    return this.restApiService.SendOSDEvent(restoreDatabaseLogEvent);
+  }
+
   getClaimList(): Promise<any[]> {
     return new Promise((resolve, reject) => {
       const checkResponse = () => {

@@ -263,6 +263,10 @@ app.post('/api/events/processOSDEvent', async (req, res) => {
         await handleUpdateProjectDetails(event, res);
         break;
 
+      case 'RestoreDatabaseLogs':
+        await handleRestoreDatabaseLogs(event, res);
+        break;
+
       default:
         res.status(400).json(createWebBaseEvent({
           SUCCESS: false,
@@ -3247,6 +3251,100 @@ const handleGetUsers = async (event, res) => {
   }
 };
 
+const handleRestoreDatabaseLogs = async (event, res) => {
+  try {
+    console.log('⚖️ Event Body:', event.Body);
+
+    // Extract the log details from the event
+    const log = event.Body.Log;
+    if (!log) {
+      console.log('❌ No log provided in the request.');
+      return res.status(400).json({
+        success: false,
+        message: 'No log provided in the request.',
+      });
+    }
+
+    const table = log.table_name;
+    const opType = log.operation_type;
+    let result;
+
+    console.log(`🔍 Processing log for table: ${table}, operation: ${opType}`);
+
+    // IMPORTANT: If table names come from external input, consider whitelisting allowed table names!
+    if (opType === 'INSERT') {
+      // To undo an INSERT, we delete the inserted row.
+      // We assume that the inserted row data (in log.row_data) contains a primary key named "id".
+      const insertedRow = log.row_data;
+      if (!insertedRow || !insertedRow.id) {
+        console.log('❌ Inserted row data is missing or does not contain a primary key.');
+        return res.status(400).json({
+          success: false,
+          message: 'Inserted row data is missing or does not contain a primary key.',
+        });
+      }
+      const deleteQuery = `DELETE FROM ${table} WHERE id = $1 RETURNING *;`;
+      console.log(`🗑️ Executing delete query: ${deleteQuery}`);
+      result = await pool.query(deleteQuery, [insertedRow.id]);
+
+    } else if (opType === 'DELETE') {
+      // To undo a DELETE, we reinsert the row using the stored old data.
+      const oldData = log.row_data.old;
+      if (!oldData) {
+        console.log('❌ Old row data is missing for delete operation.');
+        return res.status(400).json({
+          success: false,
+          message: 'Old row data is missing for delete operation.',
+        });
+      }
+      const columns = Object.keys(oldData);
+      const values = Object.values(oldData);
+      const placeholders = columns.map((_, i) => `$${i + 1}`).join(', ');
+      const insertQuery = `INSERT INTO ${table} (${columns.join(', ')}) VALUES (${placeholders}) RETURNING *;`;
+      console.log(`📝 Executing insert query: ${insertQuery}`);
+      result = await pool.query(insertQuery, values);
+
+    } else if (opType === 'UPDATE') {
+      // To undo an UPDATE, update the row back to its old values.
+      const oldData = log.row_data.old;
+      if (!oldData || !oldData.id) {
+        console.log('❌ Old row data is missing or primary key is not provided for update operation.');
+        return res.status(400).json({
+          success: false,
+          message: 'Old row data is missing or primary key is not provided for update operation.',
+        });
+      }
+      // Exclude the primary key from the fields to update.
+      const columns = Object.keys(oldData).filter(key => key !== 'id');
+      const values = columns.map(key => oldData[key]);
+      const setClause = columns.map((col, i) => `${col} = $${i + 1}`).join(', ');
+      const updateQuery = `UPDATE ${table} SET ${setClause} WHERE id = $${columns.length + 1} RETURNING *;`;
+      console.log(`🔄 Executing update query: ${updateQuery}`);
+      result = await pool.query(updateQuery, [...values, oldData.id]);
+
+    } else {
+      console.log('❌ Unknown operation type.');
+      return res.status(400).json({
+        success: false,
+        message: 'Unknown operation type.',
+      });
+    }
+
+    console.log('✅ Restore successful:', result.rows[0]);
+    return res.status(200).json({
+      success: true,
+      restored: result.rows[0],
+    });
+
+  } catch (error) {
+    console.error('❌ Error in RestoreDatabaseLogs:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Server error restoring log.',
+    });
+  }
+};
+
 const handleUpdateProjectDetails = async (event, res) => {
   try {
     const projectDetails = event.Body;
@@ -3722,7 +3820,7 @@ const handleGetDatabaseChangeLogs = async (event, res) => {
 
     // Build the base query
     let changeLogsQuery = `
-      SELECT id, table_name, operation_type, row_data, change_time
+      SELECT user_id, id, table_name, operation_type, row_data, change_time
       FROM database_change_logs
     `;
 

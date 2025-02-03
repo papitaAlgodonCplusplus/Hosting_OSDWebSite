@@ -46,7 +46,17 @@ export class ClaimantClaimedOsdReportComponent implements OnInit, OnDestroy {
   }
 
   getReportUserNames(): DropDownItem[] {
-    return this.reports.map(report => ({ value: report.user_companyname, key: report.user_companyname }));
+    const uniqueClients = new Set<string>();
+    return this.reports
+      .filter(report => {
+        if (uniqueClients.has(report.user_companyname)) {
+          return false;
+        } else {
+          uniqueClients.add(report.user_companyname);
+          return true;
+        }
+      })
+      .map(report => ({ value: report.user_companyname, key: report.user_companyname }));
   }
 
   private initializeData(): void {
@@ -114,7 +124,7 @@ export class ClaimantClaimedOsdReportComponent implements OnInit, OnDestroy {
       this.reports = this.allReports.filter(report => report.Country === country);
       this.subscribers = this.allSubscribers
         .filter(subscriber => subscriber.country === country)
-        .map(subscriber => ({ value: subscriber.name, key: subscriber.name }));
+        .map(subscriber => ({ value: subscriber.companyname, key: subscriber.companyname }));
 
       if (this.subscribers.length === 0) {
         this.subscribers = [];
@@ -123,7 +133,7 @@ export class ClaimantClaimedOsdReportComponent implements OnInit, OnDestroy {
       this.reports = this.allReports;
       this.subscribers = [];
       this.subscribers = this.allSubscribers
-        .map(subscriber => ({ value: subscriber.name, key: subscriber.name }));
+        .map(subscriber => ({ value: subscriber.companyname, key: subscriber.companyname }));
     }
   }
 
@@ -138,7 +148,7 @@ export class ClaimantClaimedOsdReportComponent implements OnInit, OnDestroy {
     }
 
     if (client) {
-      filteredReports = filteredReports.filter(report => report.user_name === client);
+      filteredReports = filteredReports.filter(report => report.user_companyname === client);
     }
 
     this.reports = filteredReports;

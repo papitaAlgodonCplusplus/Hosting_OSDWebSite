@@ -131,11 +131,11 @@
     </div>
 
     <div class="flex flex-row space-x-3 justify-end py-3 px-3">
-        <button *ngIf="projectSelected" class="bg-blue-500 font-medium p-2 rounded-xl flex items-center text-white"
+        <button *ngIf="projectSelected && isAdmin" class="bg-blue-500 font-medium p-2 rounded-xl flex items-center text-white"
             (click)="createNewPerformanceFP()">
             {{'create_new_performance_fp' | translate}}
         </button>
-        <button *ngIf="projectSelected" class="bg-blue-500 font-medium p-2 rounded-xl flex items-center text-white"
+        <button *ngIf="projectSelected && isAdmin" class="bg-blue-500 font-medium p-2 rounded-xl flex items-center text-white"
             (click)="createNewPerformancePurchase()">
             {{'create_new_performance_purchase' | translate}}
         </button>

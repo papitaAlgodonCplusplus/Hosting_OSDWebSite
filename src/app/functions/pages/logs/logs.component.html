@@ -27,20 +27,21 @@
         <table class="w-full border-collapse border border-gray-200">
           <thead class="bg-gray-100">
             <tr>
-              <th class="p-2 border">ID</th>
+              <th class="p-2 border">User ID</th>
               <th class="p-2 border">Table Name</th>
               <th class="p-2 border">Operation Type</th>
               <th class="p-2 border">Change Time</th>
               <th class="p-2 border">Row Data</th>
+              <th class="p-2 border">Restore</th> <!-- New column header -->
             </tr>
           </thead>
           <tbody formArrayName="databaseLogs">
             <tr *ngFor="let log of databaseLogs.controls; let i = index" [formGroupName]="i">
-              <td class="p-2 border">{{ log.value.id }}</td>
+              <td class="p-2 border">{{ log.value.user_id | slice:0:6 }}</td>
               <td class="p-2 border">{{ log.value.table_name }}</td>
               <td class="p-2 border">{{ log.value.operation_type }}</td>
               <td class="p-2 border">{{ log.value.change_time }}</td>
-              <td class="p-2 border">
+              <td class="p-2 border text-center">
                 <button type="button" class="text-blue-500 underline" (click)="toggleRowData(i)">
                   View Details
                 </button>
@@ -73,6 +74,13 @@
                   </table>
                 </div>
               </td>
+              <!-- Restore button cell -->
+              <td class="p-2 border text-center">
+                <button type="button" class="bg-green-500 text-white px-2 py-1 rounded-md"
+                  (click)="restoreLog(log.value)">
+                  Restore
+                </button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -91,17 +99,17 @@
           <table class="w-full max-w-100 border-collapse border border-gray-200 table-fixed">
             <thead class="bg-gray-100">
               <tr>
-                <th class="p-2 border w-12">ID</th>
+                <th class="p-2 border w-16">User ID</th>
                 <th class="p-2 border w-24">Action</th>
-                <th class="p-2 border w-40 truncate">Page URL</th>
-                <th class="p-2 border w-40 truncate">Element Clicked</th>
-                <th class="p-2 border w-60 truncate">Additional Info</th>
+                <th class="p-2 border w-32 truncate">Page URL</th>
+                <th class="p-2 border w-48 truncate">Element Clicked</th>
+                <th class="p-2 border w-64 truncate">Additional Info</th>
                 <th class="p-2 border w-32">Timestamp</th>
               </tr>
             </thead>
             <tbody formArrayName="userLogs">
               <tr *ngFor="let log of userLogs.controls; let i = index" [formGroupName]="i">
-                <td class="p-2 border truncate">{{ log.value.id }}</td>
+                <td class="p-2 border truncate">{{ log.value.user_id | slice:0:6 }}</td>
                 <td class="p-2 border truncate">{{ log.value.action }}</td>
                 <td class="p-2 border truncate">{{ log.value.page_url }}</td>
                 <td class="p-2 border truncate">{{ log.value.element_clicked || 'N/A' }}</td>
@@ -116,7 +124,7 @@
       </div>
     </div>
   </form>
-  
+
   <button class="bottom-3 mt-10 right-3 text-darkslategray bg-line p-2 rounded-xl w-20" routerLink="/home">
     {{'regresar' | translate }}
   </button>

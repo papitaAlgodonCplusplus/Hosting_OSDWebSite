@@ -10,6 +10,7 @@ export class EventAction {
   public static GET_DATABASE_CHANGE_LOGS: string = "GetDatabaseChangeLogs";
   public static GET_USERS: string = "GetUsers";
   public static GET_USER_ACTION_LOGS: string = "GetUserActionLogs";
+  public static RESTORE_DATABASE_LOG: string = "RestoreDatabaseLogs";
 
   //#region OSD
   public static LOG_EVENT: string = "LogEvent";

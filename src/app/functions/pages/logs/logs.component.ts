@@ -90,6 +90,7 @@ export class LogsComponent implements OnInit {
     this.databaseLogs.clear();
     logs.forEach((log) => {
       const logGroup = this.fb.group({
+        user_id: [log.user_id],
         id: [log.id],
         table_name: [log.table_name],
         operation_type: [log.operation_type],
@@ -147,13 +148,10 @@ export class LogsComponent implements OnInit {
   getRowDataKeys(rowData: any, operationType: string): string[] {
     if (rowData && typeof rowData === 'object') {
       if (operationType === 'INSERT') {
-        // Return the keys directly if it's an INSERT operation
         return Object.keys(rowData || {});
       } else if (operationType === 'DELETE') {
-        // Return keys from the old object
         return Object.keys(rowData.old || {});
       } else if (operationType === 'UPDATE') {
-        // Combine keys from both old and new objects
         const oldKeys = Object.keys(rowData.old || {});
         const newKeys = Object.keys(rowData.new || {});
         return Array.from(new Set([...oldKeys, ...newKeys]));
@@ -162,6 +160,21 @@ export class LogsComponent implements OnInit {
     return [];
   }
 
-  onUserChange(): void {
+  // New method to restore a change
+  restoreLog(log: any): void {
+    if (!confirm('Are you sure you want to restore (undo) this change?')) {
+      return;
+    }
+    this.osdService.restoreDatabaseLog(log).subscribe({
+      next: (response: any) => {
+        alert('Restore successful.');
+        // Optionally refresh the logs.
+        this.fetchDatabaseLogs();
+      },
+      error: (error: any) => {
+        alert('Error restoring the log.');
+        console.error('❌ Error restoring log:', error);
+      }
+    });
   }
 }

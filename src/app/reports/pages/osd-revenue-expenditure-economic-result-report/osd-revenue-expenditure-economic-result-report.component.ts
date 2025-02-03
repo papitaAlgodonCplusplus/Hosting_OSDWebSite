@@ -86,6 +86,7 @@ export class OSDRevenueExpenditureEconomicResultReportComponent {
     })
 
     this.osdDataService.TotalOsdIncomeExpenses$.subscribe(item => {
+      console.log("TotalOsdIncomeExpenses$ ", item)
       this.transparencyIncomeExpenses = item
       this.calculateExpenses();
     })
