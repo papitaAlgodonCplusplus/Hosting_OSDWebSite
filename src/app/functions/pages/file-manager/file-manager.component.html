@@ -158,21 +158,6 @@
             <label for="askForMoreInfo" class="font-semibold">Ask for more info</label>
           </div>
 
-          <!-- Document Fields in a Grid -->
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
-            <shared-uploadfile *ngIf="!isSubscriber && !isUserProcessor && !isTrainer" [isModified]="false"
-              [uploadFile]="uploadFile" [fileId]="''" [fileName]="''" formControlName="document"
-              id="performanceDocument1" [formGroup]="addUpdateForm" label="documento1" fieldName="document"
-              (fileUploaded)="handleFileUploaded($event)">
-            </shared-uploadfile>
-
-            <shared-uploadfile *ngIf="!isSubscriber && !isUserProcessor && !isTrainer" [isModified]="false"
-              [uploadFile]="uploadFile" [fileId]="''" [fileName]="''" formControlName="document2"
-              id="performanceDocument2" [formGroup]="addUpdateForm" label="documento2" fieldName="document2"
-              (fileUploaded)="handleFileUploaded2($event)">
-            </shared-uploadfile>
-          </div>
-
           <!-- Document Fields in a Grid (for isUserProcessor) -->
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full"
             *ngIf="(selectedOption === 'verification' || selectedOption === 'ask_for_more_info' || selectedOption === 'solution_complaint' || selectedOption === 'solution' || selectedOption === 'solution_suggestion' || selectedOption === 'complaint' || selectedOption === 'appeal' || selectedOption === 'summary' || selectedOption === 'answer_to_appeal' || selectedOption === 'solution_appeal')">
