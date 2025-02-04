@@ -192,7 +192,7 @@ export class FileManagerComponent implements OnInit, OnDestroy {
     let fileId: string;
 
     console.log("Optional Document", optionalDocument);
-    if (optionalDocument !== '') {
+    if (optionalDocument && optionalDocument !== '') {
       fileId = optionalDocument;
     } else {
       fileId = this.claim.documentfile1id;
