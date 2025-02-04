@@ -355,10 +355,12 @@ export class FileManagerComponent implements OnInit, OnDestroy {
    *  ============================== */
   openFinalizeModal(): void {
     this.showFinalizeModal = true;
+    this.changeDetectorRef.detectChanges();
   }
 
   closeFinalizeModal(): void {
     this.showFinalizeModal = false;
+    this.changeDetectorRef.detectChanges();
   }
 
   submitFinalize(): void {
