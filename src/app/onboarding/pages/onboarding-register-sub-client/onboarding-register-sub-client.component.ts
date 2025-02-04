@@ -213,7 +213,7 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
   }
 
   openVideoSolutionsOsd() {
-    window.open('https://www.youtube.com/watch?v=2HTLx9uvvqw', '_blank');
+    window.open('https://youtu.be/pBWiJQA_66E?si=eBQGYz_AS5xFGq2h', '_blank');
   }
 
   makeAPurchaseSolutionsOsd() {

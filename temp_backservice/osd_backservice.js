@@ -3087,7 +3087,7 @@ const handleUserRegistration = async (event, res) => {
 
 
     // Insert into student_records if courseCheckbox is checked
-    if (accountForm.courseCheckbox === true && accountForm.course) {
+    if (accountForm.course) {
       const insertStudentRecordQuery = `
           INSERT INTO student_records (
             id, name, email, phone, address, city, state, zip, country, status,

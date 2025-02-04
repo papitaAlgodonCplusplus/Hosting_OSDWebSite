@@ -34,10 +34,8 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   subscribersObservable$: Observable<Subscriber[]> = this.osdDataService.getSubscribersSuccess$
   subscribers: Subscriber[] = [];
   workspace: DropDownItem[] = [
-    { value: this.translate.instant('DT'), key: '87db7d48-ee2a-4494-8627-9cb9e377de21' },
     { value: this.translate.instant('FC'), key: 'eea2312e-6a85-4ab6-85ff-0864547e3870' },
     { value: this.translate.instant('TR'), key: '2fc2a66a-69ca-4832-a90e-1ff590b80d24' },
-    { value: this.translate.instant('TK'), key: 'f7a8c9d3-6e2b-4a5f-9bcd-2e4d9f3a7b21' },
     { value: this.translate.instant('TC'), key: '1bfc42c6-0d32-4270-99ed-99567bc7a562' },
     { value: this.translate.instant('TM'), key: '4fbeb4e3-a284-44ef-ac65-a70a0620b1c9' },
     { value: this.translate.instant('TS'), key: 'afdc95b1-271e-4788-a00a-d40081d7314f' },
@@ -166,6 +164,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   }
 
   ngOnInit(): void {
+    this.fetchCourses();
     this.accountForm.get('workspace')?.valueChanges.subscribe((value) => {
       this.selectedWorkspace = value;
     });
@@ -174,10 +173,8 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
         'DT', 'FC', 'TR', 'TK', 'TC', 'TM', 'TS', 'OSDSystemsEngineer'
       ]).subscribe(translations => {
         this.workspace = [
-          { value: translations['DT'], key: '87db7d48-ee2a-4494-8627-9cb9e377de21' },
           { value: translations['FC'], key: 'eea2312e-6a85-4ab6-85ff-0864547e3870' },
           { value: translations['TR'], key: '2fc2a66a-69ca-4832-a90e-1ff590b80d24' },
-          { value: translations['TK'], key: 'f7a8c9d3-6e2b-4a5f-9bcd-2e4d9f3a7b21' },
           { value: translations['TC'], key: '1bfc42c6-0d32-4270-99ed-99567bc7a562' },
           { value: translations['TM'], key: '4fbeb4e3-a284-44ef-ac65-a70a0620b1c9' },
           { value: translations['TS'], key: 'afdc95b1-271e-4788-a00a-d40081d7314f' },
@@ -247,7 +244,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   }
 
   openVideoTrainerConsultant() {
-    window.open('https://youtu.be/fZ0duSXXrs8', '_blank');
+    window.open('https://youtu.be/JTqHMsFusv8?si=JEyPKmTDTiKzrKBV', '_blank');
   }
 
   makeAPurchaseTrainerConsultant() {
@@ -255,7 +252,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   }
 
   openVideoTecnicOSD() {
-    window.open('https://youtu.be/M_WhgGimbL8', '_blank');
+    window.open('https://youtu.be/sfIX79kiiKI?si=nclkKlqyPRHrOH9b', '_blank');
   }
 
   makeAPurchaseTecnicOSDLink() {
@@ -314,6 +311,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     for (let course of this.courses) {
       if (course.value === combined_string && course.mode === courseMode) {
         console.log('Found course:', course);
+        this.accountForm.patchValue({ course: course.key });
         break;
       }
     }

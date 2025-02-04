@@ -1,42 +1,4 @@
 <div class="flex flex-col justify-center items-center md:px-10 lg:px-10 py-6 space-y-6 bg-gray-50 rounded-lg shadow-md">
-    <div class="flex flex-row w-full space-x-6 justify-center">
-        <div class="flex flex-col items-center font-semibold px-3 text-center">
-            <h2 class="text-xl text-darkslategray">
-                {{'Trainer_&_Consultant_250€'| translate }}
-            </h2>
-            <div class="flex flex-row pt-4 space-x-3">
-                <button
-                    class="font-medium rounded-lg px-5 py-3 bg-darkslategray text-white hover:bg-gray-800 transition"
-                    (click)="openVideoTrainerConsultant()">
-                    {{'Video_Trainer_Consultant'| translate }}
-                </button>
-                <button
-                    class="font-medium rounded-lg px-5 py-3 bg-darkslategray text-white hover:bg-gray-800 transition"
-                    (click)="makeAPurchaseTrainerConsultant()">
-                    {{'Payment_TPV'| translate }}
-                </button>
-            </div>
-        </div>
-
-        <div class="flex flex-col items-center font-semibold px-3 text-center">
-            <h2 class="text-xl text-darkslategray">
-                {{'Tecnic_OSD_(Mk Co,SAC)_100€' | translate}}
-            </h2>
-            <div class="flex flex-row pt-4 space-x-3">
-                <button
-                    class="font-medium rounded-lg px-5 py-3 bg-darkslategray text-white hover:bg-gray-800 transition"
-                    (click)="openVideoTecnicOSD()">
-                    {{'Video_Tecnic_OSD' | translate}}
-                </button>
-                <button
-                    class="font-medium rounded-lg px-5 py-3 bg-darkslategray text-white hover:bg-gray-800 transition"
-                    (click)="makeAPurchaseTecnicOSDLink()">
-                    {{'Payment_TPV' | translate}}
-                </button>
-            </div>
-        </div>
-    </div>
-
     <div class="flex flex-wrap space-y-6 p-4 w-full">
         <form [formGroup]="accountForm" autocomplete="off" class="flex flex-col items-center w-full space-y-4">
             <div class="flex flex-wrap w-full gap-4 justify-center">
@@ -46,25 +8,83 @@
                 </shared-simple-dropdown>
             </div>
 
-            <div class="w-full flex flex-wrap justify-center gap-4">
-                <!-- Identification -->
-                <shared-uploadfile [isMandatory]="true" typeFile="Identification" [formGroup]="accountForm"
-                    label="Identification" fieldName="IdentificationFileName" [uploadFile]="uploadFile" [fileId]="''"
-                    [fileName]="''" [isModified]="false" (fileUploaded)="handleFileUploaded($event)">
-                </shared-uploadfile>
+            <div class="flex flex-col w-full gap-4 items-center">
+                <!-- 3) Course Key (CFH) -->
+                <div class="w-full md:w-1/2">
+                    <label for="courseCFH" class="text-darkgray">{{ 'Select_CFH' | translate}}</label>
+                    <select id="courseCFH" class="w-full p-2 border border-gray-300 rounded-lg"
+                        formControlName="courseCFH" (change)="updateCourseString()">
+                        <option [value]="''" disabled selected>
+                            {{ 'Select_CFH' | translate }}
+                        </option>
+                        <option *ngFor="let opt of cfhOptions" [value]="opt.display">
+                            {{ opt.display }}
+                        </option>
+                    </select>
+                </div>
 
-                <!-- Curriculum Vitae -->
-                <shared-uploadfile [isMandatory]="true" typeFile="CurriculumVitae" [formGroup]="accountForm"
-                    label="CurriculumVitae" fieldName="CurriculumVitaeFileName" [uploadFile]="uploadFile" [fileId]="''"
-                    [fileName]="''" [isModified]="false" (fileUploaded)="handleFileUploaded($event)">
-                </shared-uploadfile>
+                <!-- Course Title Select -->
+                <div class="w-full md:w-1/2">
+                    <label for="courseTitle" class="text-darkgray">{{ 'Select_Course_Title' | translate }}</label>
+                    <select id="courseTitle" class="w-full p-2 border border-gray-300 rounded-lg"
+                        formControlName="courseTitle" (change)="updateCourseString()">
+                        <option [value]="''" disabled selected>{{ 'Select_Course_Title' | translate }}</option>
+                        <option *ngFor="let t of distinctTitles" [value]="t">
+                            {{ t }}
+                        </option>
+                    </select>
+                </div>
 
-                <!-- Civil Liability Insurance -->
-                <shared-uploadfile [isMandatory]="false" typeFile="CivilLiabilityInsurance" [formGroup]="accountForm"
-                    label="{{ 'seguro_responsabilidad_civil' | translate }}" fieldName="CivilLiabilityInsuranceFileName"
-                    [uploadFile]="uploadFile" [fileId]="''" [fileName]="''" [isModified]="false"
-                    (fileUploaded)="handleFileUploaded($event)">
-                </shared-uploadfile>
+                <!-- 2) Course Mode -->
+                <div class="w-full md:w-1/2">
+                    <label for="courseMode" class="text-darkgray">{{ 'Select_Mode' | translate }}</label>
+                    <select id="courseMode" class="w-full p-2 border border-gray-300 rounded-lg"
+                        formControlName="courseMode" (change)="updateCourseString()">
+                        <option [value]="''" disabled selected>{{ 'Select_Mode' | translate }}</option>
+
+                        <!-- Now we loop over distinctModes instead of the full courses array -->
+                        <option *ngFor="let mode of distinctModes" [value]="mode">
+                            {{ mode }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex flex-row w-full space-x-6 justify-center">
+                <div class="flex flex-col items-center font-semibold px-3 text-center">
+                    <h2 class="text-xl text-darkslategray">
+                        {{'Trainer_&_Consultant_250€'| translate }}
+                    </h2>
+                    <div class="flex flex-row pt-4 space-x-3">
+                        <button
+                            class="font-medium rounded-lg px-5 py-3 bg-darkslategray text-white hover:bg-gray-800 transition"
+                            (click)="openVideoTrainerConsultant()">
+                            {{'Video_Trainer_Consultant'| translate }}
+                        </button>
+                        <button
+                            class="font-medium rounded-lg px-5 py-3 bg-darkslategray text-white hover:bg-gray-800 transition"
+                            (click)="makeAPurchaseTrainerConsultant()">
+                            {{'Payment_TPV'| translate }}
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex flex-col items-center font-semibold px-3 text-center">
+                    <h2 class="text-xl text-darkslategray">
+                        {{'Tecnic_OSD_(Mk Co,SAC)_100€' | translate}}
+                    </h2>
+                    <div class="flex flex-row pt-4 space-x-3">
+                        <button
+                            class="font-medium rounded-lg px-5 py-3 bg-darkslategray text-white hover:bg-gray-800 transition"
+                            (click)="openVideoTecnicOSD()">
+                            {{'Video_Tecnic_OSD' | translate}}
+                        </button>
+                        <button
+                            class="font-medium rounded-lg px-5 py-3 bg-darkslategray text-white hover:bg-gray-800 transition"
+                            (click)="makeAPurchaseTecnicOSDLink()">
+                            {{'Payment_TPV' | translate}}
+                        </button>
+                    </div>
+                </div>
             </div>
         </form>
 
@@ -97,6 +117,29 @@
             </shared-simple-dropdown>
             <shared-text-area class="w-full" fieldName="address" label="{{'direccion' | translate}}" inputType="text"
                 [formGroup]="personalForm"></shared-text-area>
+
+
+            <div class="w-full flex flex-wrap justify-center gap-4">
+                <!-- Identification -->
+                <shared-uploadfile [isMandatory]="true" typeFile="Identification" [formGroup]="accountForm"
+                    label="Identification" fieldName="IdentificationFileName" [uploadFile]="uploadFile" [fileId]="''"
+                    [fileName]="''" [isModified]="false" (fileUploaded)="handleFileUploaded($event)">
+                </shared-uploadfile>
+
+                <!-- Curriculum Vitae -->
+                <shared-uploadfile [isMandatory]="true" typeFile="CurriculumVitae" [formGroup]="accountForm"
+                    label="CurriculumVitae" fieldName="CurriculumVitaeFileName" [uploadFile]="uploadFile" [fileId]="''"
+                    [fileName]="''" [isModified]="false" (fileUploaded)="handleFileUploaded($event)">
+                </shared-uploadfile>
+
+                <!-- Civil Liability Insurance -->
+                <shared-uploadfile [isMandatory]="false" typeFile="CivilLiabilityInsurance" [formGroup]="accountForm"
+                    label="{{ 'seguro_responsabilidad_civil' | translate }}" fieldName="CivilLiabilityInsuranceFileName"
+                    [uploadFile]="uploadFile" [fileId]="''" [fileName]="''" [isModified]="false"
+                    (fileUploaded)="handleFileUploaded($event)">
+                </shared-uploadfile>
+            </div>
+
             <shared-input-field class="w-full md:w-1/2" fieldName="email" label="{{'email' | translate}}"
                 inputType="email" [formGroup]="personalForm"></shared-input-field>
             <auth-input-password class="w-full md:w-1/2" [formGroup]="personalForm" fieldName="password"
@@ -104,7 +147,8 @@
             <div class="flex items-center">
                 <input type="checkbox" id="acceptConditions" formControlName="acceptConditions">
                 <label for="acceptConditions" class="ml-2">{{'aceptar_condiciones' | translate}}</label>
-                <a [href]="'documentUrl' | translate" target="_blank" class="text-blue-500 underline ml-2">{{'Convenio de Adhesión Profesional Libre' | translate}}</a>
+                <a [href]="'documentUrl' | translate" target="_blank" class="text-blue-500 underline ml-2">{{'Convenio
+                    de Adhesión Profesional Libre' | translate}}</a>
             </div>
         </form>
     </div>

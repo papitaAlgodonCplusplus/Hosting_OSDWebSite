@@ -42,7 +42,6 @@ export class OnboardingRegisterCfhComponent {
 
   cfhOfferOptions: DropDownItem[] = [
     { value: 'Formador/Consultor', key: 'F/C' },
-    { value: 'Kuarc Technicians', key: 'Kuarc Technicians' }
   ];
 
   constructor(
@@ -64,7 +63,6 @@ export class OnboardingRegisterCfhComponent {
         'publicEntity',
         'privateEntity',
         'trainerConsultant',
-        'kuarcTechnicians'
       ]).subscribe((translations) => {
         this.entity = [
           { value: translations['publicEntity'], key: 'publicEntity' },
@@ -73,7 +71,6 @@ export class OnboardingRegisterCfhComponent {
 
         this.cfhOfferOptions = [
           { value: translations['trainerConsultant'], key: 'F/C' },
-          { value: translations['kuarcTechnicians'], key: 'Kuarc Technicians' }
         ];
       });
       // Load countries
@@ -160,7 +157,7 @@ export class OnboardingRegisterCfhComponent {
   }
 
   openVideoCFH() {
-    window.open('https://youtu.be/YdyriLrWjpc', '_blank');
+    window.open('https://youtu.be/1KFENOHC8T0?si=4isNbW0IEOsRvqIM', '_blank');
   }
 
   displayFileContract(event: any): void {

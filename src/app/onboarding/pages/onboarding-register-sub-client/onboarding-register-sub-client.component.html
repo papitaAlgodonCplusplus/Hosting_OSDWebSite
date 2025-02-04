@@ -1,178 +1,224 @@
 <div class="flex px-10 py-2 flex-col-reverse items-start w-full">
     <div class="flex flex-col py-3 bg-white text-black w-full lg:w-full">
-        <form [formGroup]="accountForm" (ngSubmit)="onSubmit()" autocomplete="off" class="flex flex-wrap items-center">
-            <div class="w-full flex items-center space-x-2 p-3 bg-gray-100 border border-gray-300 rounded-md mb-4">
-                <label>{{ 'Client Type' | translate }}:</label>
 
-                <label>
-                    <input type="radio" formControlName="clientCanBeClaimed" [value]="'Client Subscriber'">
-                    {{ 'Client Subscriber' | translate }}
-                </label>
+        <!-- Start of the Account Form -->
+        <form [formGroup]="accountForm" (ngSubmit)="onSubmit()" autocomplete="off" class="flex flex-col w-full">
 
-                <label>
-                    <input type="radio" formControlName="clientCanBeClaimed" [value]="'Solutions Only Customer'">
-                    {{ 'Solutions Only Customer' | translate }}
-                </label>
+            <!-- 2x2 Grid at the Start -->
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <!-- Top-left cell: Certificate OSD info -->
+                <div class="flex flex-col space-y-2 p-3 bg-white border border-gray-300 rounded-md">
+                    <h2 class="text-darkslategray font-bold text-center text-xl md:text-2xl">
+                        {{ 'Management_of_complaints_and_suggestions_for_improvement' | translate }}
+                    </h2>   
+                    <p class="text-darkslategray text-center font-bold">1500€</p>
+                    <div class="p-2 bg-white flex flex-col items-center">
+                        <button
+                            class="p-2 rounded-xl bg-darkslategray text-white font-medium animate__animated animate__fadeInDown w-10/12"
+                            (click)="openVideo()">
+                            <i class="fa-solid fa-camera"></i>
+                            {{ 'Watch_Video' | translate }}
+                        </button>
+                    </div>
+                    <div class="p-2 bg-white flex flex-col items-center">
+                        <p class="text-darkslategray mb-2 font-bold">{{ 'Payment_TPV' | translate }}</p>
+                        <button
+                            class="p-2 bg-darkslategray rounded-xl text-white font-medium animate__animated animate__fadeInDown w-10/12"
+                            (click)="makeAPurchase()">
+                            <i class="fa-solid fa-money-bill"></i>
+                            {{ 'Paid_link' | translate }}
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Top-right cell: Radio button for Client Subscriber -->
+                <div class="flex items-center justify-center">
+                    <div class="flex flex-col p-3 bg-gray-100 border border-gray-300 rounded-md space-y-2">
+                        <label class="flex items-center space-x-2">
+                            <input type="radio" formControlName="clientCanBeClaimed" [value]="'Client Subscriber'">
+                            <span>{{ 'Client Subscriber' | translate }}</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Bottom-left cell: Solutions OSD info -->
+                <div class="flex flex-col space-y-2 p-3 bg-white border border-gray-300 rounded-md">
+                    <h2 class="text-darkslategray font-bold text-center text-xl md:text-2xl">
+                        {{ 'Solutions_OSD' | translate }}
+                    </h2>
+                    <div class="p-2 bg-white flex flex-col items-center">
+                        <div class="flex flex-col">
+                            <p class="text-darkslategray mb-2">- {{ 'Query_Simple_95€' | translate }}</p>
+                            <p class="text-darkslategray mb-2">- {{ 'Sustainability_report_450€' | translate }}</p>
+                            <p class="text-darkslategray mb-2">- {{ 'Mediation_Arbitration_750€' | translate }}</p>
+                        </div>
+                        <button
+                            class="p-2 rounded-xl bg-darkslategray text-white font-medium animate__animated animate__fadeInDown w-10/12"
+                            (click)="openVideoSolutionsOsd()">
+                            <i class="fa-solid fa-camera"></i>
+                            {{ 'Watch_Video' | translate }}
+                        </button>
+                    </div>
+                    <div class="p-2 bg-white flex flex-col items-center">
+                        <p class="text-darkslategray mb-2 font-bold">{{ 'Payment_TPV' | translate }}</p>
+                        <button
+                            class="p-2 rounded-xl bg-darkslategray text-white font-medium animate__animated animate__fadeInDown w-10/12"
+                            (click)="makeAPurchaseSolutionsOsd()">
+                            <i class="fa-solid fa-money-bill"></i>
+                            {{ 'Paid_link' | translate }}
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Bottom-right cell: Radio button for Solutions Only Customer -->
+                <div class="flex items-center justify-center">
+                    <div class="flex flex-col p-3 bg-gray-100 border border-gray-300 rounded-md space-y-2">
+                        <label class="flex items-center space-x-2">
+                            <input type="radio" formControlName="clientCanBeClaimed"
+                                [value]="'Solutions Only Customer'">
+                            <span>{{ 'Solutions Only Customer' | translate }}</span>
+                        </label>
+                    </div>
+                </div>
             </div>
 
-            <shared-simple-dropdown class="w-full md:w-1/2" fieldName="clientType" label="{{'type_client' | translate}}"
-                [formGroup]="accountForm" [dropdownItems]="clientType" [selectedItem]="selectedClientType">
-            </shared-simple-dropdown>
+            <!-- The rest of the accountForm items -->
+            <div class="flex flex-wrap items-center">
+                <shared-simple-dropdown class="w-full md:w-1/2" fieldName="clientType"
+                    label="{{ 'type_client' | translate }}" [formGroup]="accountForm" [dropdownItems]="clientType"
+                    [selectedItem]="selectedClientType">
+                </shared-simple-dropdown>
 
-            <shared-input-field class="w-full md:w-1/2" fieldName="emailOfRefer"
-                label="{{'Email_of_Refer' | translate}}" inputType="text" [formGroup]="accountForm">
-            </shared-input-field>
+                <shared-input-field class="w-full md:w-1/2" fieldName="emailOfRefer"
+                    label="{{ 'Email_of_Refer' | translate }}" inputType="text" [formGroup]="accountForm">
+                </shared-input-field>
 
-            <shared-input-field *ngIf="false" (click)="openModal()" [readOnly]="true" class="w-full md:w-1/2"
-                fieldName="plCode" [formGroup]="accountForm">
-            </shared-input-field>
+                <shared-input-field *ngIf="false" (click)="openModal()" [readOnly]="true" class="w-full md:w-1/2"
+                    fieldName="plCode" [formGroup]="accountForm">
+                </shared-input-field>
+            </div>
         </form>
+        <!-- End of the Account Form -->
 
+        <!-- Personal Form (unchanged) -->
         <form [formGroup]="personalForm" (ngSubmit)="onSubmit()" autocomplete="off" class="flex flex-col space-y-3 p-2">
             <div class="flex flex-wrap items-center">
-
-                <shared-input-field class="w-full md:w-1/2" fieldName="identity" label="{{'DNI' | translate}}"
-                    inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                <shared-input-field class="w-full md:w-1/2" fieldName="identity" label="{{ 'DNI' | translate }}"
+                    inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'">
+                </shared-input-field>
 
                 <shared-input-field class="w-full md:w-1/2" fieldName="companyName"
-                    label="{{'RazonSocial' | translate}}" inputType="text" [formGroup]="personalForm"
-                    [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                    label="{{ 'RazonSocial' | translate }}" inputType="text" [formGroup]="personalForm"
+                    [bgColor]="'bg-white-lightbone'">
+                </shared-input-field>
 
-                <shared-input-field class="w-full md:w-1/2" fieldName="name" label="{{'Name' | translate}}"
-                    inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                <shared-input-field class="w-full md:w-1/2" fieldName="name" label="{{ 'Name' | translate }}"
+                    inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'">
+                </shared-input-field>
 
                 <shared-input-field class="w-full md:w-1/2" fieldName="firstSurname"
-                    label="{{'primer_apellido' | translate}}" inputType="text" [formGroup]="personalForm"
-                    [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                    label="{{ 'primer_apellido' | translate }}" inputType="text" [formGroup]="personalForm"
+                    [bgColor]="'bg-white-lightbone'">
+                </shared-input-field>
 
                 <shared-input-field class="w-full md:w-1/2" fieldName="middleSurname"
-                    label="{{'segundo_apellido' | translate}}" inputType="text" [formGroup]="personalForm"
-                    [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                    label="{{ 'segundo_apellido' | translate }}" inputType="text" [formGroup]="personalForm"
+                    [bgColor]="'bg-white-lightbone'">
+                </shared-input-field>
 
-                <shared-input-field class="w-full md:w-1/2" fieldName="zipCode" label="{{'cod_postal' | translate}}"
-                    inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                <shared-input-field class="w-full md:w-1/2" fieldName="zipCode" label="{{ 'cod_postal' | translate }}"
+                    inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'">
+                </shared-input-field>
 
-                <shared-input-field class="w-full md:w-1/2" fieldName="landline" label="{{'tel_fijo' | translate}}"
-                    inputType="tel" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                <shared-input-field class="w-full md:w-1/2" fieldName="landline" label="{{ 'tel_fijo' | translate }}"
+                    inputType="tel" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'">
+                </shared-input-field>
 
-                <shared-input-field class="w-full md:w-1/2" fieldName="mobilePhone" label="{{'tel_movil' | translate}}"
-                    inputType="tel" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                <shared-input-field class="w-full md:w-1/2" fieldName="mobilePhone"
+                    label="{{ 'tel_movil' | translate }}" inputType="tel" [formGroup]="personalForm"
+                    [bgColor]="'bg-white-lightbone'">
+                </shared-input-field>
 
-                <shared-input-field class="w-full md:w-1/2" fieldName="web" label="{{'pagina_web' | translate}}"
-                    inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                <shared-input-field class="w-full md:w-1/2" fieldName="web" label="{{ 'pagina_web' | translate }}"
+                    inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'">
+                </shared-input-field>
 
-                <shared-input-field class="w-full md:w-1/2" fieldName="city" label="{{'Ciudad' | translate}}"
-                    inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                <shared-input-field class="w-full md:w-1/2" fieldName="city" label="{{ 'Ciudad' | translate }}"
+                    inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'">
+                </shared-input-field>
 
-                <shared-simple-dropdown class="w-full md:w-1/2" fieldName="country" label="{{'pais' | translate}}"
+                <shared-simple-dropdown class="w-full md:w-1/2" fieldName="country" label="{{ 'pais' | translate }}"
                     [formGroup]="personalForm" [dropdownItems]="countries" [selectedItem]="selectedCountries">
                 </shared-simple-dropdown>
 
-                <shared-text-area class="w-full" fieldName="address" label="{{'direccion' | translate}}"
-                    inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'"></shared-text-area>
+                <shared-text-area class="w-full" fieldName="address" label="{{ 'direccion' | translate }}"
+                    inputType="text" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'">
+                </shared-text-area>
 
-                <div class="flex flex-col lg:flex-row md:flex-row text-black w-full my-2 py-3 ">
+                <div class="flex flex-col lg:flex-row md:flex-row text-black w-full my-2 py-3">
                     <div class="flex-1 flex flex-col p-2 text-black space-y-4">
-                        <h1 class="text-lg font-bold text-darkslategray">{{'iniciar_sesion' | translate}}:</h1>
-                        <span class="">{{'loginInRegister' | translate}}</span>
+                        <h1 class="text-lg font-bold text-darkslategray">
+                            {{ 'iniciar_sesion' | translate }}:
+                        </h1>
+                        <span>{{ 'loginInRegister' | translate }}</span>
                     </div>
-                    <div class="flex-1 flex flex-col ">
-                        <shared-input-field class="w-full" fieldName="email" label="{{'email' | translate}}"
-                            inputType="email" [formGroup]="personalForm"
-                            [bgColor]="'bg-white-lightbone'"></shared-input-field>
+                    <div class="flex-1 flex flex-col">
+                        <shared-input-field class="w-full" fieldName="email" label="{{ 'email' | translate }}"
+                            inputType="email" [formGroup]="personalForm" [bgColor]="'bg-white-lightbone'">
+                        </shared-input-field>
 
                         <auth-input-password class="w-full" [formGroup]="personalForm" fieldName="password"
-                            label="{{'contraseña' | translate}}"></auth-input-password>
+                            label="{{ 'contraseña' | translate }}">
+                        </auth-input-password>
                     </div>
                 </div>
 
                 <div class="bg-white flex flex-col items-start space-y-3">
                     <div class="display-flex m-2">
                         <a *ngIf="!showDocument"
-                            class="font-medium  rounded-xl p-2 bg-darkslategray text-white animate__animated animate__fadeInDown w-50 m-2"
+                            class="font-medium rounded-xl p-2 bg-darkslategray text-white animate__animated animate__fadeInDown w-50 m-2"
                             href="assets/contracts/20-6-24-Contrato-Suscriptor-Cliente.pdf" download>
-                            {{'Contract' | translate }}
+                            {{ 'Contract' | translate }}
                         </a>
                         <a *ngIf="showDocument"
                             class="font-medium rounded-xl p-2 bg-darkslategray text-white animate__animated animate__fadeInDown w-50"
                             href="assets/contracts/20-6-24-DSO-Subscriber-Agreement.pdf" download>
-                            {{'Contract' | translate }}
+                            {{ 'Contract' | translate }}
                         </a>
                     </div>
                     <div>
                         <input type="checkbox" id="acceptConditions" formControlName="acceptConditions">
-                        <a class="text-blue-500 underline ml-2" target="_blank" [href]="'documentUrl2' | translate" for="acceptConditions"> {{'aceptar_condiciones' | translate}}</a>
+                        <a class="text-blue-500 underline ml-2" target="_blank" [href]="'documentUrl2' | translate"
+                            for="acceptConditions">
+                            {{ 'aceptar_condiciones' | translate }}
+                        </a>
                         <div *ngIf="!personalForm.value.acceptConditions" class="text-red-700 pl-1">
-                            {{'error_condiciones' | translate}}
+                            {{ 'error_condiciones' | translate }}
                         </div>
                     </div>
                 </div>
             </div>
         </form>
+        <!-- End of Personal Form -->
     </div>
 
     <div class="flex flex-col items-center justify-center w-full">
-        <div class="grid p-3">
-            <h2 class="text-darkslategray font-bold justify-center text-center text-xl md:text-2xl">
-                {{'Certificate_OSD_1500€'| translate }}</h2>
-
-            <p class="text-darkslategray mb-2 justify-center text-center font-bold">
-                {{'Management_of_complaints_and_suggestions_for_improvement'| translate }}</p>
-            <p class="text-darkslategray mb-2 justify-center text-center font-bold">1500€</p>
-            <div class="p-2 bg-white flex flex-col items-center">
-                <p class="text-darkslategray mb-2 font-bold">{{'Video_Certificate_OSD'| translate }}</p>
-                <button
-                    class="p-2 rounded-xl bg-darkslategray text-white font-medium animate__animated animate__fadeInDown w-10/12"
-                    (click)="openVideo()"><i class="fa-solid fa-camera"></i>
-                    {{'Watch_Video'| translate }}
-                </button>
-            </div>
-            <div class="p-2 bg-white flex flex-col items-center">
-                <p class="text-darkslategray mb-2 font-bold">{{'Payment_TPV'| translate }}</p>
-                <button
-                    class="p-2 bg-darkslategray rounded-xl text-white font-medium animate__animated animate__fadeInDown w-10/12"
-                    (click)="makeAPurchase()"><i class="fa-solid fa-money-bill"></i>
-                    {{'Paid_link'| translate }}
-                </button>
-            </div>
-
-            <h2 class="text-darkslategray font-bold justify-center text-center text-xl md:text-2xl">
-                {{'Solutions_OSD'| translate }}</h2>
-            <div class="p-2 bg-white flex flex-col items-center">
-                <div class="flex flex-col">
-                    <p class="text-darkslategray mb-2">- {{'Query_Simple_95€'| translate }}</p>
-                    <p class="text-darkslategray mb-2">- {{'Sustainability_report_450€'| translate }}</p>
-                    <p class="text-darkslategray mb-2">- {{'Mediation_Arbitration_750€'| translate }}</p>
-                </div>
-                <button
-                    class="p-2 rounded-xl bg-darkslategray text-white font-medium animate__animated animate__fadeInDown w-10/12"
-                    (click)="openVideoSolutionsOsd()"><i class="fa-solid fa-camera"></i>
-                    {{'Watch_Video'| translate }}
-                </button>
-            </div>
-            <div class="p-2 bg-white flex flex-col items-center">
-                <p class="text-darkslategray mb-2 font-bold">{{'Payment_TPV'| translate }}</p>
-                <button
-                    class="p-2 rounded-xl bg-darkslategray text-white font-medium animate__animated animate__fadeInDown w-10/12"
-                    (click)="makeAPurchaseSolutionsOsd()"><i class="fa-solid fa-money-bill"></i>
-                    {{'Paid_link'| translate }}
-                </button>
-            </div>
-        </div>
+        <!-- (Empty or additional content if needed) -->
     </div>
 </div>
+
+<!-- Footer Buttons -->
 <div class="flex flex-wrap justify-end items-center space-x-3 p-2 w-full">
     <button routerLink="/onboarding/onboarding-register"
         class="p-2 bg-line text-darkslategray font-medium animate__animated animate__fadeInDown rounded-xl">
-        {{'cancelar' | translate}}
+        {{ 'cancelar' | translate }}
     </button>
-
     <shared-confirmation-button (click)="onSubmit()" [ButtonName]="'confirm'"></shared-confirmation-button>
-
 </div>
 
+<!-- Modal -->
 <div *ngIf="showModal" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
-    <div class="bg-opacity-75 bg-black absolute inset-0 "></div>
+    <div class="bg-opacity-75 bg-black absolute inset-0"></div>
     <div class="relative z-50 bg-white shadow-md space-y-1 rounded-xl p-3">
         <div class="justify-center">
             <div class="p-3 flex flex-col items-center">
@@ -185,7 +231,7 @@
                         <span>El professional Libre si existe</span>
                     </div>
                 </div>
-                <div class=" font-medium p-3 rounded-xl cursor-pointer space-x-3">
+                <div class="font-medium p-3 rounded-xl cursor-pointer space-x-3">
                     <a (click)="eliminatedProfessionalFree()"
                         class="items-center text-darkslategray bg-line rounded-xl p-2">
                         {{ 'cancelar' | translate }}
