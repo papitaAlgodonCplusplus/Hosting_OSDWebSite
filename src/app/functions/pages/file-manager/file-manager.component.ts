@@ -27,7 +27,7 @@ export class FileManagerComponent implements OnInit, OnDestroy {
   fileManager!: FormGroup;
   closeClaimfileForm!: FormGroup;
   addUpdateForm!: FormGroup;
-  selectedOption: string = 'complaint'; // Default selection
+  selectedOption: string = ''; // Default selection
   uploadFile: boolean = true;
   editingPerformance: any = null;
 
