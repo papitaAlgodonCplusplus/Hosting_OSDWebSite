@@ -53,13 +53,14 @@ export class OSDRevenueExpenditureEconomicResultReportComponent implements OnIni
 
       // 1) Load Countries
       this.loadCountries();
-      this.osdService.GetTransparencyReportsIncomeExpenses("", "");
+      this.osdService.GetTransparencyReportsIncomeExpenses("", "")
 
       // 2) Fetch the full list of subscribers once
       this.osdService.GetSubscribers();
       const uniqueReports = new Set();
       this.osdDataService.getSubscribersSuccess$.subscribe(items => {
         const uniqueSubscribers = new Set();
+        console.log("Subscribers:", items);
         items.forEach(subscriber => {
           if (!uniqueSubscribers.has(subscriber.companyname) && subscriber.scid) {
             this.osdService.GetTransparencyReportsIncomeExpenses(subscriber.scid, "").subscribe(report => {
