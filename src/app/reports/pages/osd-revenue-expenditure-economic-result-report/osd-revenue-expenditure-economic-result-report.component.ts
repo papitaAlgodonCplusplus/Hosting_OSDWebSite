@@ -62,8 +62,8 @@ export class OSDRevenueExpenditureEconomicResultReportComponent implements OnIni
         const uniqueSubscribers = new Set();
         console.log("Subscribers:", items);
         items.forEach(subscriber => {
-          if (!uniqueSubscribers.has(subscriber.companyname) && subscriber.scid) {
-            this.osdService.GetTransparencyReportsIncomeExpenses(subscriber.scid, "").subscribe(report => {
+          if (!uniqueSubscribers.has(subscriber.companyname) && subscriber.userid) {
+            this.osdService.GetTransparencyReportsIncomeExpenses(subscriber.userid, "").subscribe(report => {
               const dto: TransparencyIncomeExpenses = report?.Body?.economicResultReportDTO || {
                 Income: 0,
                 ImprovementSavings: 0,
