@@ -48,53 +48,53 @@ export class OSDRevenueExpenditureEconomicResultReportComponent implements OnIni
   ngOnInit(): void {
     setTimeout(() => {
       this.store.dispatch(UiActions.hideAll());
-    }, 0);
 
-    // 1) Load Countries
-    this.loadCountries();
-    this.osdService.GetTransparencyReportsIncomeExpenses("", "");
+      // 1) Load Countries
+      this.loadCountries();
+      this.osdService.GetTransparencyReportsIncomeExpenses("", "");
 
-    // 2) Fetch the full list of subscribers once
-    this.osdService.GetSubscribers();
-    const uniqueReports = new Set();
-    this.osdDataService.getSubscribersSuccess$.subscribe(items => {
-      const uniqueSubscribers = new Set();
-      items.forEach(subscriber => {
-        if (!uniqueSubscribers.has(subscriber.companyname) && subscriber.scid) {
-          this.osdService.GetTransparencyReportsIncomeExpenses(subscriber.scid, "").subscribe(report => {
-            const dto: TransparencyIncomeExpenses = report?.Body?.economicResultReportDTO || {
-              Income: 0,
-              ImprovementSavings: 0,
-              ClaimsAmount: 0,
-              CompensationClaimant: 0,
-              Numberfiles: 0
-            };
+      // 2) Fetch the full list of subscribers once
+      this.osdService.GetSubscribers();
+      const uniqueReports = new Set();
+      this.osdDataService.getSubscribersSuccess$.subscribe(items => {
+        const uniqueSubscribers = new Set();
+        items.forEach(subscriber => {
+          if (!uniqueSubscribers.has(subscriber.companyname) && subscriber.scid) {
+            this.osdService.GetTransparencyReportsIncomeExpenses(subscriber.scid, "").subscribe(report => {
+              const dto: TransparencyIncomeExpenses = report?.Body?.economicResultReportDTO || {
+                Income: 0,
+                ImprovementSavings: 0,
+                ClaimsAmount: 0,
+                CompensationClaimant: 0,
+                Numberfiles: 0
+              };
 
-            if (dto.ImprovementSavings === 0 && dto.Income === 0) {
-              return;
-            }
+              if (dto.ImprovementSavings === 0 && dto.Income === 0) {
+                return;
+              }
 
-            var itemDropdown: DropDownItem = { value: subscriber.companyname, key: subscriber.companyname };
-            this.subscribers.push(itemDropdown);
-            this.allSubscribers.push(subscriber);
-            uniqueSubscribers.add(subscriber.companyname);
-            this.allIncomeExpensesData.push({
-              subscriber,
-              report: dto
+              var itemDropdown: DropDownItem = { value: subscriber.companyname, key: subscriber.companyname };
+              this.subscribers.push(itemDropdown);
+              this.allSubscribers.push(subscriber);
+              uniqueSubscribers.add(subscriber.companyname);
+              this.allIncomeExpensesData.push({
+                subscriber,
+                report: dto
+              });
+              this.transparencyIncomeExpenses = {
+                Income: this.allIncomeExpensesData.reduce((sum, item) => sum + item.report.Income, 0),
+                ImprovementSavings: this.allIncomeExpensesData.reduce((sum, item) => sum + item.report.ImprovementSavings, 0),
+                ClaimsAmount: this.allIncomeExpensesData.reduce((sum, item) => sum + item.report.ClaimsAmount, 0),
+                CompensationClaimant: this.allIncomeExpensesData.reduce((sum, item) => sum + item.report.CompensationClaimant, 0),
+                Numberfiles: this.allIncomeExpensesData.reduce((sum, item) => sum + item.report.Numberfiles, 0),
+                Expenses: this.allIncomeExpensesData.reduce((sum, item) => sum + (item.report.Expenses || 0), 0),
+                Amountpaid: this.allIncomeExpensesData.reduce((sum, item) => sum + (item.report.Amountpaid || 0), 0),
+              };
             });
-            this.transparencyIncomeExpenses = {
-              Income: this.allIncomeExpensesData.reduce((sum, item) => sum + item.report.Income, 0),
-              ImprovementSavings: this.allIncomeExpensesData.reduce((sum, item) => sum + item.report.ImprovementSavings, 0),
-              ClaimsAmount: this.allIncomeExpensesData.reduce((sum, item) => sum + item.report.ClaimsAmount, 0),
-              CompensationClaimant: this.allIncomeExpensesData.reduce((sum, item) => sum + item.report.CompensationClaimant, 0),
-              Numberfiles: this.allIncomeExpensesData.reduce((sum, item) => sum + item.report.Numberfiles, 0),
-              Expenses: this.allIncomeExpensesData.reduce((sum, item) => sum + (item.report.Expenses || 0), 0),
-              Amountpaid: this.allIncomeExpensesData.reduce((sum, item) => sum + (item.report.Amountpaid || 0), 0),
-            };
-          });
-        }
+          }
+        });
       });
-    });
+    }, 10000);
   }
 
   ngOnDestroy(): void {
