@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
 
-import { UiActions } from 'src/app/store/actions';
+import { ModalActions, UiActions } from 'src/app/store/actions';
 import { OSDDataService } from 'src/app/services/osd-data.service';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { CountryService } from 'src/app/services/country.service';
@@ -46,6 +46,8 @@ export class OSDRevenueExpenditureEconomicResultReportComponent implements OnIni
   }
 
   ngOnInit(): void {
+    this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: 'Loading data... (Takes about 5 seconds)'}));
+    this.store.dispatch(UiActions.showAll());
     setTimeout(() => {
       this.store.dispatch(UiActions.hideAll());
 
