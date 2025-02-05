@@ -1,136 +1,48 @@
-<div class="container flex flex-col space-y-8 py-5">
-  <!-- Students Administration Section -->
-  <section class="border p-4 rounded">
-    <h2 class="text-center text-xl text-darkslategray mb-4">Students Administration</h2>
-    <form [formGroup]="studentForm" (ngSubmit)="onSubmitStudents()">
-      <table class="w-full border">
-        <thead>
-          <tr class="bg-gray-200 text-darkslategray">
-            <th class="py-2 px-4">Nombre</th>
-            <th class="py-2 px-4">Asistencia (%)</th>
-            <th class="py-2 px-4">Calificación</th>
-            <th class="py-2 px-4">Estado</th>
-            <th class="py-2 px-4">Acciones</th>
-          </tr>
-        </thead>
-        <tbody formArrayName="students">
-          <tr *ngFor="let student of students.controls; let i = index" [formGroupName]="i">
-            <td class="p-2 border">
-              <input type="text" formControlName="name" placeholder="Nombre del Alumno"
-                     class="w-full p-1 border rounded bg-gray-200 cursor-not-allowed" readonly />
-            </td>
-            <td class="p-2 border">
-              <input type="number" formControlName="attendance" placeholder="%" min="0" max="100"
-                     class="w-full p-1 border rounded" />
-            </td>
-            <td class="p-2 border">
-              <input type="text" formControlName="grade" placeholder="Nota Final"
-                     class="w-full p-1 border rounded" />
-            </td>
-            <td class="p-2 border">
-              <select formControlName="status" class="w-full p-1 border rounded">
-                <option value="Pending">Pendiente</option>
-                <option value="Progress">En Progreso</option>
-                <option value="Approved">Finalizado</option>
-              </select>
-            </td>
-            <td class="p-2 border text-center">
-              <button type="button" (click)="removeStudent(i)" class="text-red-500">Delete</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="flex justify-end py-3">
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Save Students</button>
-      </div>
-    </form>
-  </section>
+<div class="flex flex-col py-3 space-y-3">
+  <h1 class="text-center text-darkslategray text-xl">Registro de Alumnos</h1>
 
-  <!-- All Users Administration Section -->
-  <section class="border p-4 rounded">
-    <h2 class="text-center text-xl text-darkslategray mb-4">All Users Administration</h2>
-    <form [formGroup]="usersForm" (ngSubmit)="onSubmitUser()">
-      <table class="w-full border">
-        <thead>
-          <tr class="bg-gray-200 text-darkslategray">
-            <th class="py-2 px-4">Username</th>
-            <th class="py-2 px-4">Email</th>
-            <th class="py-2 px-4">Role</th>
-            <th class="py-2 px-4">Acciones</th>
-          </tr>
-        </thead>
-        <tbody formArrayName="users">
-          <tr *ngFor="let user of users.controls; let i = index" [formGroupName]="i">
-            <td class="p-2 border">
-              <input type="text" formControlName="username" placeholder="Username"
-                     class="w-full p-1 border rounded" />
-            </td>
-            <td class="p-2 border">
-              <input type="email" formControlName="email" placeholder="Email"
-                     class="w-full p-1 border rounded" />
-            </td>
-            <td class="p-2 border">
-              <select formControlName="role" class="w-full p-1 border rounded">
-                <option value="User">User</option>
-                <option value="Admin">Admin</option>
-              </select>
-            </td>
-            <td class="p-2 border text-center">
-              <button type="button" (click)="removeUser(i)" class="text-red-500">Delete</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="flex justify-end py-3">
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Save Users</button>
-      </div>
-    </form>
-  </section>
+  <form [formGroup]="studentForm" (ngSubmit)="onSubmit()">
+    <table class="w-full border">
+      <thead>
+        <tr class="bg-gray-200 text-darkslategray">
+          <th class="py-2 px-4">Nombre</th>
+          <th class="py-2 px-4">Asistencia (%)</th>
+          <th class="py-2 px-4">Calificación</th>
+          <th class="py-2 px-4">Estado</th>
+          <th class="py-2 px-4">Acciones</th>
+        </tr>
+      </thead>
+      <tbody formArrayName="students">
+        <tr *ngFor="let student of students.controls; let i = index" [formGroupName]="i">
+          <td class="p-2 border">
+            <input type="text" formControlName="name" placeholder="Nombre del Alumno"
+              class="w-full p-1 border rounded bg-gray-200 cursor-not-allowed"
+              readonly />
+          </td>
+          <td class="p-2 border">
+            <input type="number" formControlName="attendance" placeholder="%" min="0" max="100"
+              class="w-full p-1 border rounded" />
+          </td>
+          <td class="p-2 border">
+            <input type="text" formControlName="grade" placeholder="Nota Final"
+              class="w-full p-1 border rounded" />
+          </td>
+          <td class="p-2 border">
+            <select formControlName="status" class="w-full p-1 border rounded">
+              <option value="Pending">Pendiente</option>
+              <option value="Progress">En Progreso</option>
+              <option value="Approved">Finalizado</option>
+            </select>
+          </td>
+          <td class="p-2 border text-center">
+            <button type="button" (click)="removeStudent(i)" class="text-red-500">🗑️</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
-  <!-- Claims Administration Section -->
-  <section class="border p-4 rounded">
-    <h2 class="text-center text-xl text-darkslategray mb-4">Claims Administration</h2>
-    <form [formGroup]="claimsForm" (ngSubmit)="onSubmitClaims()">
-      <table class="w-full border">
-        <thead>
-          <tr class="bg-gray-200 text-darkslategray">
-            <th class="py-2 px-4">Claim ID</th>
-            <th class="py-2 px-4">Description</th>
-            <th class="py-2 px-4">Status</th>
-            <th class="py-2 px-4">Valuation FC</th>
-            <th class="py-2 px-4">Acciones</th>
-          </tr>
-        </thead>
-        <tbody formArrayName="claims">
-          <tr *ngFor="let claim of claims.controls; let i = index" [formGroupName]="i">
-            <td class="p-2 border">
-              <input type="text" formControlName="claimId" placeholder="Claim ID"
-                     class="w-full p-1 border rounded bg-gray-200 cursor-not-allowed" readonly />
-            </td>
-            <td class="p-2 border">
-              <input type="text" formControlName="description" placeholder="Description"
-                     class="w-full p-1 border rounded" />
-            </td>
-            <td class="p-2 border">
-              <select formControlName="status" class="w-full p-1 border rounded">
-                <option value="Pending">Pendiente</option>
-                <option value="InReview">En Revisión</option>
-                <option value="Approved">Aprobado</option>
-              </select>
-            </td>
-            <td class="p-2 border">
-              <input type="number" formControlName="valuationfc" placeholder="Valuation FC"
-                     class="w-full p-1 border rounded" />
-            </td>
-            <td class="p-2 border text-center">
-              <button type="button" (click)="removeClaim(i)" class="text-red-500">Delete</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="flex justify-end py-3">
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Save Claims</button>
-      </div>
-    </form>
-  </section>
+    <div class="flex justify-between py-3">
+      <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">💾 Guardar</button>
+    </div>
+  </form>
 </div>
