@@ -137,9 +137,9 @@
             </div>
 
             <!-- Right Column: Facts Field -->
-            <div class="border border-gray-300 rounded-md p-2 h-32">
+            <div class="border border-gray-300 rounded-md p-2 h-full">
               <label class="block mb-1 font-medium">{{ 'Facts' | translate }}</label>
-              <textarea formControlName="facts" class="w-full bg-white-lightbone" [readonly]="true"
+              <textarea formControlName="facts" class="w-full h-full bg-white-lightbone" [readonly]="true"
                 [placeholder]="this.claim?.facts"></textarea>
             </div>
           </div>
