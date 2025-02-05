@@ -374,16 +374,20 @@ export class OSDService {
     return this.restApiService.SendOSDEvent(event);
   }
 
-  public GetTransparencyReportsIncomeExpenses(subscriberId: string, country: string) {
+  public GetTransparencyReportsIncomeExpenses(subscriberId: string, country: string): Observable<any> {
     const performanceBuyEvent: WebBaseEvent = this.eventFactoryService.CreateGetTransparencyReportsIncomeExpenses(subscriberId, country);
-    this.restApiService.SendOSDEvent(performanceBuyEvent).subscribe({
-      next: (response) => {
-        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
-        this.GetTransparencyReportsIncomeExpensesResponse(osdEvent);
-      },
-      error: (error) => {
-        //TODO: Pending implementation
-      }
+    return new Observable((observer) => {
+      this.restApiService.SendOSDEvent(performanceBuyEvent).subscribe({
+        next: (response) => {
+          var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+          this.GetTransparencyReportsIncomeExpensesResponse(osdEvent);
+          observer.next(response);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
     });
   }
 

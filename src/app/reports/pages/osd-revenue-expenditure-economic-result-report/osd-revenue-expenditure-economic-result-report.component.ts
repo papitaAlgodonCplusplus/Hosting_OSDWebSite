@@ -1,14 +1,15 @@
-import { Component } from '@angular/core';
-import { OSDRevenueExpenditureEconomicResultReportItems } from '../../interface/OSDRevenueExpenditureEconomicResultReportItems.interface';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { ModalActions, UiActions } from 'src/app/store/actions';
+
+import { UiActions } from 'src/app/store/actions';
 import { OSDDataService } from 'src/app/services/osd-data.service';
 import { OSDService } from 'src/app/services/osd-event.services';
-import { TransparencyIncomeExpenses } from '../../models/TransparencyIncomeExpenses.interface';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
 import { CountryService } from 'src/app/services/country.service';
 import { TranslateService } from '@ngx-translate/core';
+
+import { TransparencyIncomeExpenses } from '../../models/TransparencyIncomeExpenses.interface';
+import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
 import { Subscriber } from 'src/app/functions/models/Subscriber';
 
 @Component({
@@ -16,15 +17,22 @@ import { Subscriber } from 'src/app/functions/models/Subscriber';
   templateUrl: './osd-revenue-expenditure-economic-result-report.component.html',
   styleUrls: ['./osd-revenue-expenditure-economic-result-report.component.css']
 })
-export class OSDRevenueExpenditureEconomicResultReportComponent {
+export class OSDRevenueExpenditureEconomicResultReportComponent implements OnInit, OnDestroy {
   filterForm: FormGroup;
-  transparencyIncomeExpenses!: TransparencyIncomeExpenses
+
+  // This is the aggregator we display in the table
+  transparencyIncomeExpenses!: TransparencyIncomeExpenses;
+
   expenses: number = 0.00;
+
+  // For dropdowns
   countries: DropDownItem[] = [];
-  selectedCountries: string | undefined;
   subscribers: DropDownItem[] = [];
-  selectedSubscribers: string | undefined;
   allSubscribers: Subscriber[] = [];
+  allIncomeExpensesData: Array<{
+    subscriber: Subscriber;
+    report: TransparencyIncomeExpenses;
+  }> = [];
 
   constructor(
     private store: Store,
@@ -33,63 +41,60 @@ export class OSDRevenueExpenditureEconomicResultReportComponent {
     private formBuilder: FormBuilder,
     private countryService: CountryService,
     private translate: TranslateService
-  ) { this.filterForm = this.createForm() }
+  ) {
+    this.filterForm = this.createForm();
+  }
 
   ngOnInit(): void {
     setTimeout(() => {
       this.store.dispatch(UiActions.hideAll());
-      this.osdService.GetTransparencyReportsIncomeExpenses("", "");
-      this.osdService.GetSubscribers();
-
-      this.countryService.getCountries().subscribe((data: any[]) => {
-        let countriesList;
-        if (this.translate.currentLang === "en") {
-          countriesList = data
-            .map(country => {
-              if (country.name?.common && country.cca2) {
-                return {
-                  value: country.name.common,
-                  key: country.name.common
-                } as DropDownItem;
-              }
-              return undefined;
-            })
-            .filter(country => country !== undefined)
-            .sort((a, b) => (a && b) ? a.value.localeCompare(b.value) : 0);
-        }
-        else if (this.translate.currentLang === "es") {
-          countriesList = data
-            .filter(country => country.translations?.spa)
-            .map(country => {
-              if (country.translations?.spa?.common && country.cca2) {
-                return {
-                  value: country.translations.spa.common,
-                  key: country.name.common
-                } as DropDownItem;
-              }
-              return undefined;
-            })
-            .filter(country => country !== undefined)
-            .sort((a, b) => (a && b) ? a.value.localeCompare(b.value) : 0);
-        }
-        this.countries = countriesList as DropDownItem[];
-        this.countries.sort((a, b) => a.value.localeCompare(b.value));
-      });
     }, 0);
 
-    this.osdDataService.getSubscribersSuccess$.subscribe(items => {
-      this.allSubscribers = items;
-      items.forEach(subscriber => {
-        var itemDropdown: DropDownItem = { value: subscriber.companyname, key: subscriber.scid };
-        this.subscribers.push(itemDropdown)
-      })
-    })
+    // 1) Load Countries
+    this.loadCountries();
+    this.osdService.GetTransparencyReportsIncomeExpenses("", "");
 
-    this.osdDataService.TotalOsdIncomeExpenses$.subscribe(item => {
-      console.log("TotalOsdIncomeExpenses$ ", item)
-      this.transparencyIncomeExpenses = item
-      this.calculateExpenses();
-    })
+    // 2) Fetch the full list of subscribers once
+    this.osdService.GetSubscribers();
+    const uniqueReports = new Set();
+    this.osdDataService.getSubscribersSuccess$.subscribe(items => {
+      const uniqueSubscribers = new Set();
+      items.forEach(subscriber => {
+        if (!uniqueSubscribers.has(subscriber.companyname) && subscriber.scid) {
+          this.osdService.GetTransparencyReportsIncomeExpenses(subscriber.scid, "").subscribe(report => {
+            const dto: TransparencyIncomeExpenses = report?.Body?.economicResultReportDTO || {
+              Income: 0,
+              ImprovementSavings: 0,
+              ClaimsAmount: 0,
+              CompensationClaimant: 0,
+              Numberfiles: 0
+            };
+
+            if (dto.ImprovementSavings === 0 && dto.Income === 0) {
+              return;
+            }
+
+            var itemDropdown: DropDownItem = { value: subscriber.companyname, key: subscriber.companyname };
+            this.subscribers.push(itemDropdown);
+            this.allSubscribers.push(subscriber);
+            uniqueSubscribers.add(subscriber.companyname);
+            this.allIncomeExpensesData.push({
+              subscriber,
+              report: dto
+            });
+            this.transparencyIncomeExpenses = {
+              Income: this.allIncomeExpensesData.reduce((sum, item) => sum + item.report.Income, 0),
+              ImprovementSavings: this.allIncomeExpensesData.reduce((sum, item) => sum + item.report.ImprovementSavings, 0),
+              ClaimsAmount: this.allIncomeExpensesData.reduce((sum, item) => sum + item.report.ClaimsAmount, 0),
+              CompensationClaimant: this.allIncomeExpensesData.reduce((sum, item) => sum + item.report.CompensationClaimant, 0),
+              Numberfiles: this.allIncomeExpensesData.reduce((sum, item) => sum + item.report.Numberfiles, 0),
+              Expenses: this.allIncomeExpensesData.reduce((sum, item) => sum + (item.report.Expenses || 0), 0),
+              Amountpaid: this.allIncomeExpensesData.reduce((sum, item) => sum + (item.report.Amountpaid || 0), 0),
+            };
+          });
+        }
+      });
+    });
   }
 
   ngOnDestroy(): void {
@@ -98,54 +103,136 @@ export class OSDRevenueExpenditureEconomicResultReportComponent {
     }, 0);
   }
 
-  calculateExpenses() {
-    this.expenses = this.transparencyIncomeExpenses.Income * 0.4 + this.transparencyIncomeExpenses.Income * 0.1 + this.transparencyIncomeExpenses.Income * 0.1;
-  }
+  // ========== FORM & DROPDOWN ==========
 
   createForm(): FormGroup {
-    const form = this.formBuilder.group({
+    return this.formBuilder.group({
       country: [''],
       client: ['']
     });
-    return form;
   }
 
-  filterReport() {
-    var country = this.filterForm.value.country
-    var client = this.filterForm.value.client
+  loadCountries(): void {
+    this.countryService.getCountries().subscribe((data: any[]) => {
+      let countriesList: DropDownItem[];
 
-    if (country != undefined && client == undefined) {
-      this.osdService.GetTransparencyReportsIncomeExpenses("", country);
-    } else if (country != undefined && client != undefined) {
-      this.osdService.GetTransparencyReportsIncomeExpenses(client, country);
-    } else if (country == undefined && client != undefined) {
-      this.osdService.GetTransparencyReportsIncomeExpenses(client, "");
-    } else {
-      this.osdService.GetTransparencyReportsIncomeExpenses("", "");
+      if (this.translate.currentLang === 'en') {
+        countriesList = data
+          .map(country => {
+            if (country.name?.common && country.cca2) {
+              return { value: country.name.common, key: country.name.common } as DropDownItem;
+            }
+            return undefined;
+          })
+          .filter(item => item !== undefined) as DropDownItem[];
+      } else {
+        // Spanish or fallback
+        countriesList = data
+          .filter(country => country.translations?.spa)
+          .map(country => {
+            if (country.translations?.spa?.common && country.cca2) {
+              return {
+                value: country.translations.spa.common,
+                key: country.name.common
+              } as DropDownItem;
+            }
+            return undefined;
+          })
+          .filter(item => item !== undefined) as DropDownItem[];
+      }
+
+      // Sort
+      countriesList.sort((a, b) => a.value.localeCompare(b.value));
+      this.countries = countriesList;
+    });
+  }
+
+  // ========== FILTERING LOCALLY ==========
+
+  filterReport(): void {
+    const country = this.filterForm.value.country;
+    const client = this.filterForm.value.client;
+    console.log("Filter values:", { country, client });
+    console.log("All Income Expenses Data:", this.allIncomeExpensesData);
+    console.log("🎯 Local Filter: ", this.filterForm.value);
+
+    console.log("🎯 Local Filter => Country:", country, " Client:", client);
+
+    // 1) Start with the entire set
+    let subset: Array<{ subscriber: Subscriber; report: TransparencyIncomeExpenses }> = [];
+
+    // 2) If a country is selected, filter by that
+    if (country) {
+      subset = this.allIncomeExpensesData.filter(item => item.subscriber.country.trim().toLowerCase() === country.trim().toLowerCase());
+      console.log("🎯 Local Filter => Country:", country, " Subset:", subset);
+    } else if (client) {
+      subset = this.allIncomeExpensesData.filter(item => item.subscriber.companyname.trim().toLowerCase() === client.trim().toLowerCase());
+      console.log("🎯 Local Filter => Client:", client, " Subset:", subset);
     }
+
+    this.transparencyIncomeExpenses = subset.length > 0 ? {
+      Income: subset.reduce((sum, item) => sum + item.report.Income, 0),
+      ImprovementSavings: subset.reduce((sum, item) => sum + item.report.ImprovementSavings, 0),
+      ClaimsAmount: subset.reduce((sum, item) => sum + item.report.ClaimsAmount, 0),
+      CompensationClaimant: subset.reduce((sum, item) => sum + item.report.CompensationClaimant, 0),
+      Numberfiles: subset.reduce((sum, item) => sum + item.report.Numberfiles, 0),
+      Expenses: subset.reduce((sum, item) => sum + (item.report.Expenses || 0), 0),
+      Amountpaid: subset.reduce((sum, item) => sum + (item.report.Amountpaid || 0), 0),
+    } : {
+      Income: 0,
+      ImprovementSavings: 0,
+      ClaimsAmount: 0,
+      CompensationClaimant: 0,
+      Numberfiles: 0,
+      Expenses: 0,
+      Amountpaid: 0,
+    };
   }
 
-  filterClients() {
-    var country = this.filterForm.value.country
-    var foundClients = 0;
+  handleChange(event: any): void {
+  }
 
-    if (country != undefined) {
-      this.allSubscribers.forEach(subscriber => {
-        if (subscriber.country == country) {
-          foundClients++;
-          var itemDropdown: DropDownItem = { value: subscriber.companyname, key: subscriber.id };
-          this.subscribers.push(itemDropdown)
-        }
-      })
+  filterClients(): void {
+    // If you want your "Clients" dropdown to reduce based on selected country:
+    const country = this.filterForm.value.country;
+    if (!country) {
+      return;
     }
-
-    if (foundClients <= 0) {
-      this.subscribers = [];
-    }
+    // Only show subscribers from that country
+    const filteredSubs = this.allSubscribers.filter(s => s.country === country);
+    this.subscribers = filteredSubs.map(s => ({
+      value: s.companyname,
+      key: s.companyname
+    }));
   }
 
-  deleteFilter() {
-    this.osdService.GetTransparencyReportsIncomeExpenses("", "");
-    this.filterForm = this.createForm()
+  deleteFilter(): void {
+    // Clear the form
+    this.filterForm.reset({
+      country: [''],
+      client: ['']
+    });
+    this.transparencyIncomeExpenses = {
+      Income: this.allIncomeExpensesData.reduce((sum, item) => sum + item.report.Income, 0),
+      ImprovementSavings: this.allIncomeExpensesData.reduce((sum, item) => sum + item.report.ImprovementSavings, 0),
+      ClaimsAmount: this.allIncomeExpensesData.reduce((sum, item) => sum + item.report.ClaimsAmount, 0),
+      CompensationClaimant: this.allIncomeExpensesData.reduce((sum, item) => sum + item.report.CompensationClaimant, 0),
+      Numberfiles: this.allIncomeExpensesData.reduce((sum, item) => sum + item.report.Numberfiles, 0),
+      Expenses: this.allIncomeExpensesData.reduce((sum, item) => sum + (item.report.Expenses || 0), 0),
+      Amountpaid: this.allIncomeExpensesData.reduce((sum, item) => sum + (item.report.Amountpaid || 0), 0),
+    };
   }
+
+
+  // ========== OTHER ==========
+
+  calculateExpenses(): void {
+    const inc = this.transparencyIncomeExpenses?.Income || 0;
+    this.expenses = inc * 0.4 + inc * 0.1 + inc * 0.1;
+  }
+
+  compareFn(c1: DropDownItem, c2: DropDownItem): boolean {
+    return c1 && c2 ? c1.key === c2.key : c1 === c2;
+  }
+
 }

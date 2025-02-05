@@ -310,6 +310,7 @@ export class FileManagerComponent implements OnInit, OnDestroy {
       );
       this.store.dispatch(ModalActions.openAlert());
       this.closeAddUpdateModal();
+      this.osdEventService.gettingClaimsData(this.user.Id, "")
     } catch (error) {
       console.error("Error submitting update:", error);
     }
@@ -354,9 +355,13 @@ export class FileManagerComponent implements OnInit, OnDestroy {
    *    Finalize Claim (Rating)
    *  ============================== */
   openFinalizeModal(): void {
+    console.log('canCloseClaim =', this.canCloseClaim); // Ensure this is true
     this.showFinalizeModal = true;
-    this.changeDetectorRef.detectChanges();
+    this.showModalPerformances = false; // Make sure the other modal is closed
+    console.log('showFinalizeModal just set to', this.showFinalizeModal);
+    // ...
   }
+
 
   closeFinalizeModal(): void {
     this.showFinalizeModal = false;

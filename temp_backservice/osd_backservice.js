@@ -566,71 +566,98 @@ const handleGetTransparencyFreeProfessionals = async (event, res) => {
 
 const handleGetTransparencyReportsIncomeExpenses = async (event, res) => {
   try {
+    console.log('🚀 Starting handleGetTransparencyReportsIncomeExpenses...');
+
     let claimList = [];
     const economicResultReportDTO = {
       Income: 0,
       ImprovementSavings: 0,
       ClaimsAmount: 0,
       CompensationClaimant: 0,
-      Numberfiles: 0
+      Numberfiles: 0,
+      CompanyName: null,
+      ClientId: null
     };
 
     const { country, SubscriberId } = event.Body;
+    console.log(`📩 Received input - Country: ${country || 'N/A'}, SubscriberId: ${SubscriberId || 'N/A'}`);
 
     if (country && !SubscriberId) {
+      console.log(`🌍 Fetching users from country: ${country}...`);
       const usersResult = await pool.query(`SELECT id FROM osduser WHERE country = $1`, [country]);
 
       if (usersResult.rows.length > 0) {
+        console.log(`👥 Found ${usersResult.rows.length} users in ${country}`);
         const osdUsers = usersResult.rows;
         let subscriberCustomers = [];
 
         for (const user of osdUsers) {
+          console.log(`🔍 Searching for SubscriberCustomers linked to user ID: ${user.id}...`);
           const subResult = await pool.query(`SELECT id FROM subscribercustomer WHERE userid = $1`, [user.id]);
+
           if (subResult.rows.length > 0) {
+            console.log(`✅ Found ${subResult.rows.length} SubscriberCustomers for user ID: ${user.id}`);
             subscriberCustomers = subscriberCustomers.concat(subResult.rows);
           }
         }
 
         if (subscriberCustomers.length > 0) {
+          console.log(`📌 Fetching claims for ${subscriberCustomers.length} SubscriberCustomers...`);
           for (const sub of subscriberCustomers) {
             const claimResult = await pool.query(`
               SELECT id, amountclaimed, amountpaid, improvementsavings 
               FROM claim_file 
               WHERE status = 'Completed' AND subscriberclaimedid = $1
             `, [sub.id]);
+
             if (claimResult.rows.length > 0) {
+              console.log(`✅ Found ${claimResult.rows.length} completed claims for SubscriberCustomer ID: ${sub.id}`);
               claimList = claimList.concat(claimResult.rows);
             }
           }
         }
+      } else {
+        console.log(`⚠️ No users found in country: ${country}`);
       }
     } else if (SubscriberId) {
+      console.log(`🎯 Fetching claims for specific Subscriber ID: ${SubscriberId}...`);
+      
+      // Fetch claims for the given Subscriber ID
       const claimResult = await pool.query(`
         SELECT id, amountclaimed, amountpaid, improvementsavings 
         FROM claim_file 
         WHERE status IN ('Completed', 'Closed') AND subscriberclaimedid = $1
       `, [SubscriberId]);
       claimList = claimResult.rows;
+      console.log(`✅ Found ${claimList.length} claims for Subscriber ID: ${SubscriberId}`);
     } else {
+      console.log(`📊 Fetching ALL completed and closed claims...`);
       const claimResult = await pool.query(`
         SELECT id, amountclaimed, amountpaid, improvementsavings 
         FROM claim_file 
         WHERE status IN ('Completed', 'Closed')
       `);
+
       claimList = claimResult.rows;
+      console.log(`✅ Found ${claimList.length} completed or closed claims`);
     }
 
-
+    console.log(`🔄 Processing ${claimList.length} claims...`);
     for (const claim of claimList) {
       const improvementSavings = Number(claim.improvementsavings) || 0;
       const amountClaimed = Number(claim.amountclaimed) || 0;
       const amountPaid = Number(claim.amountpaid) || 0;
 
+      console.log(`📌 Claim ID: ${claim.id} | Claimed: €${amountClaimed} | Paid: €${amountPaid} | Savings: €${improvementSavings}`);
+
       if (improvementSavings > 100) {
         const additional = (improvementSavings - 100) * 0.10;
-        economicResultReportDTO.Income += Number((10 + additional).toFixed(2));
+        const calculatedIncome = Number((10 + additional).toFixed(2));
+        economicResultReportDTO.Income += calculatedIncome;
+        console.log(`💰 Extra Income: €${calculatedIncome} (Savings exceeded €100)`);
       } else {
         economicResultReportDTO.Income += 10;
+        console.log(`💰 Default Income Added: €10`);
       }
 
       economicResultReportDTO.ImprovementSavings += improvementSavings;
@@ -639,7 +666,9 @@ const handleGetTransparencyReportsIncomeExpenses = async (event, res) => {
     }
 
     economicResultReportDTO.Numberfiles = claimList.length;
+    console.log(`📈 Final Report:`, economicResultReportDTO);
 
+    console.log('✅ Successfully generated transparency reports! Returning response...');
 
     return res.status(200).json(
       createWebBaseEvent({
