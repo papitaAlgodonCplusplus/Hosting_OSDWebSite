@@ -314,7 +314,7 @@
             <tr class="text-darkslategray border-b">
               <th class="w-[0.5rem] py-2 text-xs">{{ 'Code' | translate }}</th>
               <th class="w-[1rem] py-2">{{ 'Date' | translate }}</th>
-              <th class="w-[0.5rem] py-2">{{ 'Verification' | translate }}</th>
+              <!-- <th class="w-[0.5rem] py-2">{{ 'Verification' | translate }}</th> -->
               <th class="w-[1rem] py-2">{{ 'Information' | translate }}</th>
               <th class="w-[1rem] py-2">{{ 'Answer Allegation' | translate }}</th>
               <th class="w-[1rem] py-2">{{ 'Solution Suggestion' | translate }}</th>
@@ -330,10 +330,10 @@
             <tr class="border-t text-center" *ngFor="let performance of displayedItems; let i = index">
               <td class="w-[0.5rem] p-3 text-xs">{{ performance.code }}</td>
               <td class="w-[1rem] p-3">{{ performance.dateperformance | date:'dd-MM-yyyy' }}</td>
-              <td class="w-[1rem] p-2">
+              <!-- <td class="w-[1rem] p-2">
                 <span *ngIf="!performance.summary" class="text-green-600">&#10003;</span>
                 <span *ngIf="performance.summary" class="text-red-600">&#10007;</span>
-              </td>
+              </td> -->
               
               <!-- Information column -->
               <td class="w-[1rem] p-3">
