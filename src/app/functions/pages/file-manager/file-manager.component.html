@@ -315,6 +315,7 @@
               <th class="w-[0.5rem] py-2 text-xs">{{ 'Code' | translate }}</th>
               <th class="w-[1rem] py-2">{{ 'Date' | translate }}</th>
               <th class="w-[0.5rem] py-2">{{ 'Verification' | translate }}</th>
+              <th class="w-[1rem] py-2">{{ 'Information' | translate }}</th>
               <th class="w-[1rem] py-2">{{ 'Answer Allegation' | translate }}</th>
               <th class="w-[1rem] py-2">{{ 'Solution Suggestion' | translate }}</th>
               <th class="w-[1rem] py-2">{{ 'Solution' | translate }}</th>
@@ -322,7 +323,6 @@
               <th class="w-[1rem] py-2">{{ 'Solution Complaint' | translate }}</th>
               <th class="w-[1rem] py-2">{{ 'Appeal' | translate }}</th>
               <th class="w-[1rem] py-2">{{ 'Solution Appeal' | translate }}</th>
-              <th class="w-[1rem] py-2">{{ 'Information' | translate }}</th>
               <th class="w-[1rem] py-2">{{ 'Edit' | translate }}</th>
             </tr>
           </thead>
@@ -333,6 +333,18 @@
               <td class="w-[1rem] p-2">
                 <span *ngIf="!performance.summary" class="text-green-600">&#10003;</span>
                 <span *ngIf="performance.summary" class="text-red-600">&#10007;</span>
+              </td>
+              
+              <!-- Information column -->
+              <td class="w-[1rem] p-3">
+                <button *ngIf="performance.summary && performance.summary.length > 10" type="button"
+                  class="text-blue-600 underline"
+                  (click)="openTextModal(performance, performance.summary, 'Information')">
+                  View
+                </button>
+                <span *ngIf="!performance.summary || performance.summary.length <= 10">
+                  {{ performance.summary | translate }}
+                </span>
               </td>
 
               <!-- Answer Allegation column -->
@@ -415,18 +427,6 @@
                 </button>
                 <span *ngIf="!performance.solution_appeal || performance.solution_appeal.length <= 10">
                   {{ performance.solution_appeal }}
-                </span>
-              </td>
-
-              <!-- Information column -->
-              <td class="w-[1rem] p-3">
-                <button *ngIf="performance.summary && performance.summary.length > 10" type="button"
-                  class="text-blue-600 underline"
-                  (click)="openTextModal(performance, performance.summary, 'Information')">
-                  View
-                </button>
-                <span *ngIf="!performance.summary || performance.summary.length <= 10">
-                  {{ performance.summary | translate }}
                 </span>
               </td>
 

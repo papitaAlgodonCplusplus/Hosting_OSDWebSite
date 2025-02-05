@@ -114,9 +114,8 @@
                 <div class="flex flex-col space-x-1 w-full">
                     <div>
                         <input type="checkbox" id="acceptConditions" formControlName="acceptConditions">
-                        <label for="acceptConditions"> {{'aceptar_condiciones' | translate}}</label>
-                        <a [href]="'documentUrl' | translate" target="_blank"
-                            class="text-blue-500 underline ml-2">LOPD</a>
+                        <a [href]="'documentUrl4' | translate" target="_blank"
+                            class="text-blue-500 underline ml-2">{{'aceptar_condiciones' | translate}}</a>
                     </div>
 
                     <div *ngIf="!personalForm.value.acceptConditions" class="text-red-700 pl-1">
