@@ -54,7 +54,9 @@ export class FileManagerComponent implements OnInit, OnDestroy {
   public showTextModal: boolean = false;
   public modalContent: string = '';
   public modalTitle: string = '';
+  public modalPerformance: any; // Holds the full 'performance' object for documents, etc.
   canCloseClaim: boolean = true;
+  canAddUpdate: boolean = true;
 
   user!: UserInfo;
 
@@ -123,13 +125,14 @@ export class FileManagerComponent implements OnInit, OnDestroy {
         this.claim = claim;
         this.changeDetectorRef.detectChanges();
 
-        if (claim.valuationfc !== '-1') {
+        if (claim.status === 'Closed') {
           this.canCloseClaim = false;
+          this.canAddUpdate = false;
         }
-        if (claim.Status === "Running") {
+        if (claim.status === "Running") {
           this.isAssignedClaim = true;
           this.isTerminatedPerformance = true;
-        } else if (claim.Status === "Completed") {
+        } else if (claim.status === "Closed") {
           this.isAssignedClaim = false;
           this.assignValuation(claim);
           this.closeClaimfileForm = this.fillFormCloseClaimFile(claim);
@@ -145,6 +148,7 @@ export class FileManagerComponent implements OnInit, OnDestroy {
         this.isUserProcessor = true;
       } else if (this.user.FreeProfessionalTypeID === "eea2312e-6a85-4ab6-85ff-0864547e3870") {
         this.isTrainer = true;
+        this.canCloseClaim = true;
       } else if (this.user.AccountType === "Claimant") {
         this.isClaimant = true;
       } else if (this.user.AccountType === "ApprovedTrainingCenter" || this.user.AccountType === "SubscriberCustomer") {
@@ -176,8 +180,9 @@ export class FileManagerComponent implements OnInit, OnDestroy {
     }, 0);
   }
 
-  // Opens the modal with the passed content and title.
-  openTextModal(content: string, title: string): void {
+  // Opens the modal with the passed performance, content, and title.
+  openTextModal(performance: any, content: string, title: string): void {
+    this.modalPerformance = performance; // store the entire row object
     this.modalContent = content;
     this.modalTitle = title;
     this.showTextModal = true;
@@ -355,13 +360,11 @@ export class FileManagerComponent implements OnInit, OnDestroy {
    *    Finalize Claim (Rating)
    *  ============================== */
   openFinalizeModal(): void {
-    console.log('canCloseClaim =', this.canCloseClaim); // Ensure this is true
     this.showFinalizeModal = true;
     this.showModalPerformances = false; // Make sure the other modal is closed
     console.log('showFinalizeModal just set to', this.showFinalizeModal);
     // ...
   }
-
 
   closeFinalizeModal(): void {
     this.showFinalizeModal = false;
@@ -389,6 +392,17 @@ export class FileManagerComponent implements OnInit, OnDestroy {
   }
 
   private fillForm(claim: Claim): FormGroup {
+    const valFree = (claim?.valuationfreeprofessionals === '-1' || claim?.valuationfreeprofessionals === '-1')
+      ? 'None'
+      : claim?.valuationfreeprofessionals;
+
+    const valClaimant = (claim?.valuationclaimant === '-1' || claim?.valuationclaimant === '-1')
+      ? 'None'
+      : claim?.valuationclaimant;
+
+    const valSubscriber = (claim?.valuationsubscriber === '-1' || claim?.valuationsubscriber === '-1')
+      ? 'None'
+      : claim?.valuationsubscriber;
     const formGroup = this.formBuilder.group({
       code: [claim?.code || ''],
       claimant: [this.translate.instant(claim?.claimtype || '')],
@@ -396,9 +410,9 @@ export class FileManagerComponent implements OnInit, OnDestroy {
       subscriber: [claim?.namecompanysubscriberclaimed || ''],
       amountClaimed: ['€ ' + (claim?.amountclaimed || 0)],
       facts: [claim?.facts || ''],
-      valuationSubscriber: [claim?.valuationsubscriber || 0],
-      valuationClaimant: [claim?.valuationclaimant || 0],
-      valuationFreeProfessionals: [claim?.valuationfreeprofessionals || 0],
+      valuationSubscriber: [valSubscriber],
+      valuationClaimant: [valClaimant],
+      valuationFreeProfessionals: [valFree],
       complaint: [claim?.complaint || ''],
       appeal: [claim?.appeal || ''],
       solution_suggestion: [claim?.solution_suggestion || ''],
@@ -406,7 +420,7 @@ export class FileManagerComponent implements OnInit, OnDestroy {
       answer_to_appeal: [claim?.answer_to_appeal || ''],
       solution: [claim?.solution || ''],
       solution_complaint: [claim?.solution_complaint || ''],
-      userid: [this.authenticationService.userInfo?.Id || ''],
+      userid: [this.authenticationService.userInfo?.Id || '']
     });
     return formGroup;
   }

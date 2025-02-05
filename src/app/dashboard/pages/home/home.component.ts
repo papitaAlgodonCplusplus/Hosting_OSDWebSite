@@ -8,6 +8,7 @@ import { MenuOptionsActions, UiActions } from 'src/app/store/actions';
 import { MenuOption } from 'src/app/models/menuOptions';
 import { EventConstants } from 'src/app/models/eventConstants';
 import { UserInfo } from 'src/app/models/userInfo';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'dashboard-home',
@@ -41,6 +42,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   showModal: boolean = false;
   message!: string;
   menuOptions: MenuOption[] = [];
+  showPendingClaimsModal = false;         // controls the new modal
+  pendingClaimsCodes: string[] = [];      // holds the codes returned
 
   // --------------------------------------------
   // 1) Define your categories in a simple array
@@ -95,11 +98,13 @@ export class HomeComponent implements OnInit, OnDestroy {
     private store: Store,
     private translate: TranslateService,
     private menuService: MenuService,
-    private osdEventService: OSDService
-  ) {}
+    private osdEventService: OSDService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.store.dispatch(UiActions.showAll());
+    this.osdEventService.updateClaimStates().subscribe();
     this.loadUserInfo().then(() => {
       this.setupMenu();
     });
@@ -114,15 +119,19 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   async setupMenu(): Promise<void> {
     if (this.user) {
+      console.log('User:', this.user);
       switch (this.user.AccountType) {
         case 'ApprovedTrainingCenter':
           this.menuOptions = this.menuService.getMenuOptionCFH();
+          this.checkPendingClaims();
           break;
         case 'Claimant':
           this.menuOptions = this.menuService.getMenuOptionClaimant();
+          this.checkPendingClaims();
           break;
         case 'SubscriberCustomer':
           this.menuOptions = this.menuService.getMenuOptionSubscriber();
+          this.checkPendingClaims();
           break;
         default:
           await this.loadFreeProfessionalMenu();
@@ -141,6 +150,35 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
+  // --------------------------------------------
+  // Call your service to see if there are claims ready
+  // --------------------------------------------
+  private checkPendingClaims(): void {
+    // Hypothetical service call
+    console.log('Checking for pending claims...');
+    this.osdEventService.getMyPendingClaims(this.user.Id).subscribe({
+      next: (response: any) => {
+        console.log('Pending claims response:', response);
+        const codes = response.Body?.claimCodes;
+        if (Array.isArray(codes) && codes.length > 0) {
+          // Store the codes and open a modal
+          this.pendingClaimsCodes = codes;
+          this.showPendingClaimsModal = true;
+        }
+      },
+      error: (err) => {
+        console.error('Error fetching pending claims:', err);
+      },
+    });
+  }
+
+  // Called when the user clicks "OK" on our new modal
+  onPendingClaimsConfirm(): void {
+    this.showPendingClaimsModal = false;
+    // redirect user to /functions/claims-file
+    this.router.navigate(['/functions/claims-file']);
+  }
+
   private async loadFreeProfessionalMenu(): Promise<void> {
     try {
       this.osdEventService.GetFreeProfessionalsDataEvent();
@@ -157,10 +195,10 @@ export class HomeComponent implements OnInit, OnDestroy {
             type === 'TR'
               ? this.menuService.getMenuOptionFreeProfessionalProcessor()
               : type === 'INFIT' || type === 'DT'
-              ? this.menuService.getMenuOptionAdmin()
-              : type === 'FC'
-              ? this.menuService.getMenuOptionFreeProfessionalTrainer()
-              : this.menuService.getMenuOptionAllFreeProfessional();
+                ? this.menuService.getMenuOptionAdmin()
+                : type === 'FC'
+                  ? this.menuService.getMenuOptionFreeProfessionalTrainer()
+                  : this.menuService.getMenuOptionAllFreeProfessional();
         }
       } else {
         console.error('freeProfessionals is not an array:', freeProfessionals);

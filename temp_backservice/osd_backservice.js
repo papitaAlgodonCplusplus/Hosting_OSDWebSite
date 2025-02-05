@@ -267,6 +267,14 @@ app.post('/api/events/processOSDEvent', async (req, res) => {
         await handleRestoreDatabaseLogs(event, res);
         break;
 
+      case 'GetMyPendingClaims':
+        await handleGetMyPendingClaims(event, res);
+        break;
+
+      case 'UpdateClaimState':
+        await handleUpdateClaimState(event, res);
+        break;
+
       default:
         res.status(400).json(createWebBaseEvent({
           SUCCESS: false,
@@ -621,7 +629,7 @@ const handleGetTransparencyReportsIncomeExpenses = async (event, res) => {
       }
     } else if (SubscriberId) {
       console.log(`🎯 Fetching claims for specific Subscriber ID: ${SubscriberId}...`);
-      
+
       // Fetch claims for the given Subscriber ID
       const claimResult = await pool.query(`
         SELECT id, amountclaimed, amountpaid, improvementsavings 
@@ -1972,100 +1980,172 @@ const handleCloseClaimFile = async (event, res) => {
 
     if (!claimId || !userId) {
       console.warn('⚠️ Claim ID and user ID are required.');
-      return res.status(400).json(createWebBaseEvent({
-        CLOSE_CLAIM_FILE_SUCCESS: false,
-        CLOSE_CLAIM_FILE_MESSAGE: 'Claim ID and user ID are required.',
-      }, event.SessionKey, event.SecurityToken, 'CloseClaimFile'));
+      return res.status(400).json(
+        createWebBaseEvent({
+          CLOSE_CLAIM_FILE_SUCCESS: false,
+          CLOSE_CLAIM_FILE_MESSAGE: 'Claim ID and user ID are required.',
+        }, event.SessionKey, event.SecurityToken, 'CloseClaimFile')
+      );
     }
 
     console.log('🔍 Fetching claim details for claim ID:', claimId);
 
-    // Retrieve claimantid and subscriberclaimedid from claim_file
+    // 1) Retrieve claimantid and subscriberclaimedid from claim_file
     const claimQuery = `
       SELECT claimantid, subscriberclaimedid
       FROM claim_file
       WHERE id = $1
     `;
-
     const claimResult = await pool.query(claimQuery, [claimId]);
 
     if (claimResult.rows.length === 0) {
       console.warn('⚠️ Claim not found for ID:', claimId);
-      return res.status(404).json(createWebBaseEvent({
-        CLOSE_CLAIM_FILE_SUCCESS: false,
-        CLOSE_CLAIM_FILE_MESSAGE: 'Claim not found.',
-      }, event.SessionKey, event.SecurityToken, 'CloseClaimFile'));
+      return res.status(404).json(
+        createWebBaseEvent({
+          CLOSE_CLAIM_FILE_SUCCESS: false,
+          CLOSE_CLAIM_FILE_MESSAGE: 'Claim not found.',
+        }, event.SessionKey, event.SecurityToken, 'CloseClaimFile')
+      );
     }
 
     const { claimantid, subscriberclaimedid } = claimResult.rows[0];
     console.log('✅ Claim details retrieved:', claimResult.rows[0]);
 
-    let updateQuery;
+    // 2) Identify if user is "assigned F/C"
     const assignedFCidQuery = await pool.query(
       'SELECT assignedtrainer FROM osduser WHERE id = $1',
       [subscriberclaimedid]
     );
-    console.log('🔍 Assigned F/C ID query result:', assignedFCidQuery.rows);
     const assignedFCid = assignedFCidQuery.rows[0]?.assignedtrainer;
+
+    // 3) If user is free professional, check if they are the "assigned F/C"
     const freeProfessionalQuery = await pool.query(
       'SELECT id FROM freeprofessional WHERE userid = $1',
       [userId]
     );
-    const freeProfessionalId = freeProfessionalQuery.rows.length > 0 ? freeProfessionalQuery.rows[0].id : null;
+    const freeProfessionalId = freeProfessionalQuery.rows.length > 0
+      ? freeProfessionalQuery.rows[0].id
+      : null;
+
+    // ------------------------------------------------------------------
+    // Build the query dynamically:
+    // - We ALWAYS set status='Running'
+    // - Depending on who the user is, we set different columns:
+    //   claimant => valuationclaimant
+    //   subscriber => valuationsubscriber
+    //   assigned F/C => valuationfc, improvementsavings, amountpaid
+    //   other free professional => valuationfreeprofessionals, improvementsavings, amountpaid
+    // ------------------------------------------------------------------
+    let baseQuery = `UPDATE claim_file SET status = 'Running'`;
+    const updateParams = [];
+    
+    // The first placeholder, $1, will be claimId for WHERE id = $1
+    // We'll add that at the end. For now, we track dynamic columns with paramIndex.
+    let paramIndex = 1;
+
+    // We'll gather the columns to return in an array so we can ensure the final
+    // RETURNING clause includes them only once.
+    const returningColumns = ['id', 'status'];
+
+    console.log('🔎 Checking user role for dynamic columns...');
 
     if (userId === claimantid) {
       console.log('🔄 User is claimant, updating valuationclaimant.');
-      // Update valuationclaimant if userId matches claimantid
-      updateQuery = `
-        UPDATE claim_file
-        SET status = 'Waiting FC Approval', valuationclaimant = $2
-        WHERE id = $1
-        RETURNING id, status, valuationclaimant;
-      `;
+      paramIndex++; // move to $2
+      baseQuery += `, valuationclaimant = $${paramIndex}`;
+      updateParams.push(rating);
+      returningColumns.push('valuationclaimant');
     } else if (userId === subscriberclaimedid) {
       console.log('🔄 User is subscriber, updating valuationsubscriber.');
-      // Update valuationsubscriber if userId matches subscriberclaimedid
-      updateQuery = `
-        UPDATE claim_file
-        SET status = 'Waiting FC Approval', valuationsubscriber = $2
-        WHERE id = $1
-        RETURNING id, status, valuationsubscriber;
-      `;
+      paramIndex++;
+      baseQuery += `, valuationsubscriber = $${paramIndex}`;
+      updateParams.push(rating);
+      returningColumns.push('valuationsubscriber');
     } else if (freeProfessionalId === assignedFCid) {
-      console.log('🔄 User is F/C, updating valuationfc.');
-      updateQuery = `
-        UPDATE claim_file
-        SET status = 'Closed', valuationfc = $2, improvementsavings = $3, amountpaid = $4
-        WHERE id = $1
-        RETURNING id, status, valuationfc;
-      `;
+      console.log('🔄 User is F/C, updating valuationfc, improvementsavings, amountpaid.');
 
+      // valuationfc
+      paramIndex++;
+      baseQuery += `, valuationfc = $${paramIndex}`;
+      updateParams.push(rating);
+      returningColumns.push('valuationfc');
+
+      // improvementsavings
+      paramIndex++;
+      baseQuery += `, improvementsavings = $${paramIndex}`;
+      updateParams.push(savingsImprovement);
+
+      // amountpaid
+      paramIndex++;
+      baseQuery += `, amountpaid = $${paramIndex}`;
+      updateParams.push(claimantPayment);
     } else {
-      console.log('🔄 User is free professional, updating valuationfreeprofessionals.');
-      updateQuery = `
-        UPDATE claim_file
-        SET status = 'Waiting FC Approval', valuationfreeprofessionals = $2, improvementsavings = $3, amountpaid = $4
-        WHERE id = $1
-        RETURNING id, status, valuationfreeprofessionals;
-      `;
+      console.log('🔄 User is free professional, updating valuationfreeprofessionals, improvementsavings, amountpaid.');
+
+      // valuationfreeprofessionals
+      paramIndex++;
+      baseQuery += `, valuationfreeprofessionals = $${paramIndex}`;
+      updateParams.push(rating);
+      returningColumns.push('valuationfreeprofessionals');
+
+      // improvementsavings
+      paramIndex++;
+      baseQuery += `, improvementsavings = $${paramIndex}`;
+      updateParams.push(savingsImprovement);
+
+      // amountpaid
+      paramIndex++;
+      baseQuery += `, amountpaid = $${paramIndex}`;
+      updateParams.push(claimantPayment);
     }
 
-    console.log('📝 Executing update query:', updateQuery);
-    const updateResult = await pool.query(updateQuery, [claimId, rating, savingsImprovement, claimantPayment]);
+    // Now add the WHERE clause, referencing $1 as claimId
+    // We'll push claimId as the LAST param so we can keep paramIndex logic consistent above
+    paramIndex++;
+    baseQuery += ` WHERE id = $1`; // note the placeholder is $1
+    // But we've used $2, $3, etc. for the updates. Let's reorder properly:
+    // Instead of dealing with reindexing, let's do a small trick:
+    // We'll push claimId to the FRONT of updateParams, so it becomes param #1,
+    // and shift the other parameters by 1.
+    updateParams.unshift(claimId);
+
+    // Build our RETURNING clause from the returningColumns array
+    // e.g. RETURNING id, status, valuationclaimant, ...
+    baseQuery += ` RETURNING ${returningColumns.join(', ')};`;
+
+    console.log('📝 Final query:', baseQuery);
+    console.log('📝 Params:', updateParams);
+
+    // 4) Execute the dynamic query
+    const updateResult = await pool.query(baseQuery, updateParams);
+
+    if (updateResult.rows.length === 0) {
+      console.warn('⚠️ No rows updated. Possibly invalid claim ID:', claimId);
+      return res.status(404).json(
+        createWebBaseEvent({
+          CLOSE_CLAIM_FILE_SUCCESS: false,
+          CLOSE_CLAIM_FILE_MESSAGE: 'Claim file not found or not updated.',
+        }, event.SessionKey, event.SecurityToken, 'CloseClaimFile')
+      );
+    }
+
     console.log('✅ Claim file updated successfully:', updateResult.rows[0]);
 
-    return res.status(200).json(createWebBaseEvent({
-      CLOSE_CLAIM_FILE_SUCCESS: true,
-      claim: updateResult.rows[0]
-    }, event.SessionKey, event.SecurityToken, 'CloseClaimFile'));
+    return res.status(200).json(
+      createWebBaseEvent({
+        CLOSE_CLAIM_FILE_SUCCESS: true,
+        claim: updateResult.rows[0]
+      }, event.SessionKey, event.SecurityToken, 'CloseClaimFile')
+    );
 
   } catch (error) {
     console.error('❌ Error closing claim file:', error);
-
-    return res.status(500).json(createWebBaseEvent({
-      CLOSE_CLAIM_FILE_SUCCESS: false,
-      CLOSE_CLAIM_FILE_MESSAGE: 'Server error closing claim file.',
-    }, event.SessionKey, event.SecurityToken, 'CloseClaimFile'));
+    return res.status(500).json(
+      createWebBaseEvent({
+        CLOSE_CLAIM_FILE_SUCCESS: false,
+        CLOSE_CLAIM_FILE_MESSAGE: 'Server error closing claim file.',
+      }, event.SessionKey, event.SecurityToken, 'CloseClaimFile')
+    );
   }
 };
 
@@ -3312,6 +3392,94 @@ const handleGetUsers = async (event, res) => {
       GET_USERS_SUCCESS: false,
       GET_USERS_MESSAGE: 'Server error fetching users.',
     }, event.SessionKey, event.SecurityToken, 'GetUsers'));
+  }
+};
+
+const handleUpdateClaimState = async (event, res) => {
+  try {
+    const updateQuery = `
+      UPDATE claim_file
+      SET status = 'Closed'
+      WHERE valuationsubscriber <> -1
+        AND valuationclaimant <> -1
+        AND valuationfreeprofessionals <> -1
+        AND status <> 'Closed'
+      RETURNING *;
+    `;
+
+    const updateResult = await pool.query(updateQuery);
+
+    if (updateResult.rows.length === 0) {
+      return res.status(404).json(createWebBaseEvent({
+        UPDATE_CLAIM_STATE_SUCCESS: false,
+        UPDATE_CLAIM_STATE_MESSAGE: 'No claims found to update.',
+      }, event.SessionKey, event.SecurityToken, 'UPDATE_CLAIM_STATE'));
+    }
+
+    return res.status(200).json(createWebBaseEvent({
+      UPDATE_CLAIM_STATE_SUCCESS: true,
+      updatedClaims: updateResult.rows
+    }, event.SessionKey, event.SecurityToken, 'UPDATE_CLAIM_STATE'));
+
+  } catch (error) {
+    console.error('❌ Error updating claim state:', error);
+    return res.status(500).json(createWebBaseEvent({
+      UPDATE_CLAIM_STATE_SUCCESS: false,
+      UPDATE_CLAIM_STATE_MESSAGE: 'Server error updating claim state.',
+    }, event.SessionKey, event.SecurityToken, 'UPDATE_CLAIM_STATE'));
+  }
+};
+
+const handleGetMyPendingClaims = async (event, res) => {
+  try {
+    console.log('📥 Received event:', event);
+
+    const userId = event.Body?.UserId;
+
+    if (!userId) {
+      console.warn('⚠️ User ID is required.');
+      return res.status(400).json(createWebBaseEvent({
+        GET_MY_PENDING_CLAIMS_SUCCESS: false,
+        GET_MY_PENDING_CLAIMS_MESSAGE: 'User ID is required.',
+      }, event.SessionKey, event.SecurityToken, 'GetMyPendingClaims'));
+    }
+
+    const query = `
+      SELECT code
+      FROM claim_file
+      WHERE amountpaid <> 0
+        AND (
+          (subscriberclaimedid = $1 AND valuationsubscriber = -1)
+          OR (claimantid = $1 AND valuationclaimant = -1)
+        )
+    `;
+
+    console.log('🔍 Executing query:', query);
+    const result = await pool.query(query, [userId]);
+
+    if (result.rows.length === 0) {
+      console.warn('⚠️ No pending claims found for this user.');
+      return res.status(404).json(createWebBaseEvent({
+        GET_MY_PENDING_CLAIMS_SUCCESS: false,
+        GET_MY_PENDING_CLAIMS_MESSAGE: 'No pending claims found for this user.',
+      }, event.SessionKey, event.SecurityToken, 'GetMyPendingClaims'));
+    }
+
+    const claimCodes = result.rows.map(row => row.code);
+    console.log('✅ Pending claims found:', claimCodes);
+
+    return res.status(200).json(createWebBaseEvent({
+      GET_MY_PENDING_CLAIMS_SUCCESS: true,
+      claimCodes: claimCodes
+    }, event.SessionKey, event.SecurityToken, 'GetMyPendingClaims'));
+
+  } catch (error) {
+    console.error('❌ Error fetching pending claims:', error);
+
+    return res.status(500).json(createWebBaseEvent({
+      GET_MY_PENDING_CLAIMS_SUCCESS: false,
+      GET_MY_PENDING_CLAIMS_MESSAGE: 'Server error fetching pending claims.',
+    }, event.SessionKey, event.SecurityToken, 'GetMyPendingClaims'));
   }
 };
 

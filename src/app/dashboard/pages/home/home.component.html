@@ -1,10 +1,42 @@
 <!-- SHOW MODAL IF USER NOT AUTHORIZED -->
-<shared-confirmation-modal
-  *ngIf="!user.Isauthorized"
-  [showModal]="true"
-  [message]="message"
-  [messageType]="'success'"
-></shared-confirmation-modal>
+<shared-confirmation-modal *ngIf="!user.Isauthorized" [showModal]="true" [message]="message"
+  [messageType]="'success'"></shared-confirmation-modal>
+
+<!-- NEW MODAL for "Claim Solution Completed" -->
+<div *ngIf="showPendingClaimsModal" class="fixed inset-0 z-[9999] flex items-center justify-center">
+  <!-- Dark semi-transparent overlay -->
+  <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+
+  <!-- Modal container -->
+  <div class="relative z-50 bg-white shadow-md rounded-xl p-6 w-11/12 max-w-xl mx-auto flex flex-col space-y-4">
+    <!-- Title -->
+    <h2 class="text-2xl font-bold text-darkslategray">
+      {{ 'CLAIM_SOLUTION_COMPLETED' | translate }}
+    </h2>
+
+    <!-- Subtitle / Codes -->
+    <!-- Suppose 'pendingClaimsCodes' is an array of strings, e.g. ['C-1234','C-5678'] -->
+    <h3 class="text-lg font-semibold text-yellow-700">
+      Claim Codes: {{ pendingClaimsCodes.join(', ') }}
+    </h3>
+
+    <!-- Body -->
+    <p class="text-sm text-gray-700">
+      {{ 'CLAIM_SOLUTION_MESSAGE' | translate }}<br />
+      <br />
+      {{ 'CLAIM_SOLUTION_THANK_YOU' | translate }}
+    </p>
+
+    <!-- Button: calls onPendingClaimsConfirm() to close/redirect -->
+    <div class="flex justify-end">
+      <button (click)="onPendingClaimsConfirm()"
+        class="px-4 py-2 bg-indigo-600 text-white rounded-md shadow-sm hover:bg-indigo-700 transition duration-300">
+        OK
+      </button>
+    </div>
+  </div>
+</div>
+
 
 <!-- UNAUTHORIZED SECTION -->
 <div *ngIf="!user.Isauthorized" class="h-full bg-gradient-to-b from-gray-100 to-gray-300">
@@ -18,10 +50,8 @@
     <div>
       <span class="text-darkslategray text-base">{{ 'HOME.RETURN_LOGIN' | translate }}</span>
     </div>
-    <div
-      routerLink="/auth"
-      class="bg-yellow-500 hover:bg-yellow-600 text-darkslategray p-3 rounded-xl cursor-pointer animate-bounce shadow-lg transition duration-300"
-    >
+    <div routerLink="/auth"
+      class="bg-yellow-500 hover:bg-yellow-600 text-darkslategray p-3 rounded-xl cursor-pointer animate-bounce shadow-lg transition duration-300">
       <i class="text-3xl fa-solid fa-lock"></i>
       <span class="ml-2 font-semibold">{{ 'HOME.LOGIN_BUTTON' | translate }}</span>
     </div>
@@ -42,12 +72,9 @@
     <ng-container *ngIf="user.Id !== 'e77b5172-f726-4c1d-9f9e-d2dbd77e03c9'; else groupedLayout">
       <div class="grid grid-cols-2 gap-6 justify-center items-center">
         <!-- Loop for all items in menuOptions -->
-        <div
-          *ngFor="let option of menuOptions"
-          [routerLink]="option.path"
+        <div *ngFor="let option of menuOptions" [routerLink]="option.path"
           class="flex items-center justify-center p-5 text-white rounded-lg shadow-md cursor-pointer transition duration-300"
-          [ngClass]="option.color"
-        >
+          [ngClass]="option.color">
           <i [class]="'fa-solid ' + option.icon + ' text-2xl'"></i>
           <span class="ml-3">{{ option.name | translate }}</span>
         </div>
@@ -62,9 +89,7 @@
       -->
       <ng-container *ngFor="let cat of categories">
         <!-- Filter out the actual items for the current category -->
-        <ng-container
-          *ngIf="getOptionsForCategory(cat.optionNames).length > 0"
-        >
+        <ng-container *ngIf="getOptionsForCategory(cat.optionNames).length > 0">
           <!-- Category Title -->
           <h2 class="text-lg font-bold text-yellow-600 mb-2">
             {{ cat.title }}
@@ -75,20 +100,15 @@
             this category. If there's more than one item, use 2 columns.
             If there's only one, use single-option styling.
           -->
-          <div
-            [ngClass]="
+          <div [ngClass]="
               getOptionsForCategory(cat.optionNames).length > 1
                 ? 'category-container mb-6'
                 : 'single-option mb-6'
-            "
-          >
+            ">
             <!-- Loop each option in this category -->
-            <div
-              *ngFor="let option of getOptionsForCategory(cat.optionNames)"
-              [routerLink]="option.path"
+            <div *ngFor="let option of getOptionsForCategory(cat.optionNames)" [routerLink]="option.path"
               class="flex items-center justify-center p-5 text-white rounded-lg shadow-md cursor-pointer transition duration-300"
-              [ngClass]="option.color"
-            >
+              [ngClass]="option.color">
               <i [class]="'fa-solid ' + option.icon + ' text-2xl'"></i>
               <span class="ml-3">{{ option.name | translate }}</span>
             </div>

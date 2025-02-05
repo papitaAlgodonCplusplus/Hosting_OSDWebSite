@@ -13,6 +13,8 @@ export class EventAction {
   public static RESTORE_DATABASE_LOG: string = "RestoreDatabaseLogs";
 
   //#region OSD
+  public static UPDATE_CLAIM_STATE: string = "UpdateClaimState";
+  public static GET_MY_PENDING_CLAIMS: string = "GetMyPendingClaims";
   public static LOG_EVENT: string = "LogEvent";
   public static GET_CFH_REPORTS: string = "GetCFHReports";
   public static ADD_FREE_PROFESSIONAL_TO_CFH: string = "AddFreeProfessionalToCFH";

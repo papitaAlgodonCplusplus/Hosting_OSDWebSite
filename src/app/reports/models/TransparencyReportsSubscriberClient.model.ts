@@ -9,6 +9,8 @@ export class TransparencyReportsSubscriberClientList {
     OsdRating: number = 0;  
     amountclaimed: string = "";
     amountpaid: any = null;
+    country: string = "";
+    user_country: string = "";
     claimantid: any = null;
     claimtype: string = "";
     code: string = "";
@@ -28,5 +30,6 @@ export class TransparencyReportsSubscriberClientList {
     valuationclaimant: any = null;
     valuationfreeprofessionals: any = null;
     valuationsubscriber: any = null;
+    valuationfc: any = null;
     user_name: any = null;
 }

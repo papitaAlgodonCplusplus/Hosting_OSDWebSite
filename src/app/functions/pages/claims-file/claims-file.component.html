@@ -35,8 +35,7 @@
                                         'text-red-500' : claim.status == 'Unassigned',
                                         'text-yellow-500' : claim.status == 'Running',
                                         'text-green-500' : claim.status == 'Completed',
-                                        'text-blue-500' : claim.status == 'Falta Información',
-                                        'text-orange-500' : claim.status == 'Waiting FC Approval'
+                                        'text-blue-500' : claim.status == 'Falta Información'
                                     }">
                                 </i>{{ claim.status | translate }}
                             </td>

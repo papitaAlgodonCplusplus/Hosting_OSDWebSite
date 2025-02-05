@@ -16,6 +16,7 @@ export interface Claim {
     valuationfc: string;
     Valuationfc: string;
     ValuationFC: string;
+    factsverified: string;
     Valuationsubscriber: string;
     DocumentFile1Id: string;
     DocumentFile1Name: string;

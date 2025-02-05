@@ -119,41 +119,14 @@ export class ClaimantClaimedOsdReportComponent implements OnInit, OnDestroy {
 
   filterClients(): void {
     const country = this.filterForm.value.country;
-
-    if (country) {
-      this.reports = this.allReports.filter(report => report.Country === country);
-      this.subscribers = this.allSubscribers
-        .filter(subscriber => subscriber.country === country)
-        .map(subscriber => ({ value: subscriber.companyname, key: subscriber.companyname }));
-
-      if (this.subscribers.length === 0) {
-        this.subscribers = [];
-      }
-    } else {
-      this.reports = this.allReports;
-      this.subscribers = [];
-      this.subscribers = this.allSubscribers
-        .map(subscriber => ({ value: subscriber.companyname, key: subscriber.companyname }));
-    }
-  }
-
-  selectClientReports(): void {
     const client = this.filterForm.value.client;
-    const country = this.filterForm.value.country;
 
-    let filteredReports = this.allReports;
-
-    if (country) {
-      filteredReports = filteredReports.filter(report => report.Country === country);
-    }
-
-    if (client) {
-      filteredReports = filteredReports.filter(report => report.user_companyname === client);
-    }
-
-    this.reports = filteredReports;
+    this.reports = this.allReports.filter(report => {
+      const matchesCountry = country ? report.user_country === country : true;
+      const matchesClient = client ? report.user_companyname === client : true;
+      return matchesCountry && matchesClient;
+    });
   }
-
 
   generateStarRating(rating: number): string {
     const fullStar = '<i class="fa-solid fa-star text-darkslategray"></i>';

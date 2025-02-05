@@ -245,6 +245,21 @@ export class OSDService {
     });
   }
 
+  public updateClaimStates(): Observable<any> {
+    const updateClaimStatesEvent: WebBaseEvent = this.eventFactoryService.CreateUpdateClaimStatesEvent();
+    return new Observable((observer) => {
+      this.restApiService.SendOSDEvent(updateClaimStatesEvent).subscribe({
+        next: (response) => {
+          observer.next(response);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
+
   public getIncomes(): Observable<any> {
     return new Observable((observer) => {
     })
@@ -327,6 +342,24 @@ export class OSDService {
       error: (error) => {
         //TODO: Pending implementation
       }
+    });
+  }
+
+
+  public getMyPendingClaims(userId: string): Observable<any> {
+    const getMyPendingClaimsEvent: WebBaseEvent = this.eventFactoryService.CreateGetMyPendingClaimsEvent(userId);
+    return new Observable((observer) => {
+      console.log('Checking for pending claims...', getMyPendingClaimsEvent);
+      this.restApiService.SendOSDEvent(getMyPendingClaimsEvent).subscribe({
+        next: (response) => {
+          console.log('Pending claims response:', response);
+          observer.next(response);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
     });
   }
 

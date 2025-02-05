@@ -10,7 +10,7 @@
                     fieldName="country" label="{{'pais' | translate}}" [formGroup]="filterForm"
                     [dropdownItems]="countries" [selectedItem]="selectedCountries">
                 </shared-simple-dropdown>
-                <shared-simple-dropdown (change)="selectClientReports()" (click)="selectClientReports()"
+                <shared-simple-dropdown (change)="filterClients()" (click)="filterClients()"
                     class="w-full md:w-1/2" fieldName="client" label="{{'SubscriberCustomer' | translate}}"
                     [formGroup]="filterForm" [dropdownItems]="getReportUserNames()"
                     [selectedItem]="selectedSubscribers">
@@ -41,7 +41,7 @@
                         {{'defendantRating' | translate}}
                     </th>
                     <th class="py-2 px-4 text-center font-normal text-darkslategray w-auto">
-                        {{'OSDRating' | translate}}
+                        {{'Processor Rating' | translate}}
                     </th>
                 </tr>
             </thead>
@@ -54,13 +54,13 @@
                     <td class="py-2 px-4 border-y">€{{ items.improvementsavings != null ? items.improvementsavings : 0
                         }}</td>
                     <td class="py-2 px-4 border-y whitespace-nowrap"
-                        [innerHTML]="items.valuationclaimant != null ? generateStarRating(items.valuationclaimant) : generateStarRating(0)">
+                        [innerHTML]="items.valuationclaimant != null && items.valuationclaimant != -1 ? generateStarRating(items.valuationclaimant) : generateStarRating(0)">
                     </td>
                     <td class="py-2 px-4 border-y whitespace-nowrap"
-                        [innerHTML]="items.valuationsubscriber != null ? generateStarRating(items.valuationsubscriber) : generateStarRating(0)">
+                        [innerHTML]="items.valuationsubscriber != null && items.valuationsubscriber != -1 ? generateStarRating(items.valuationsubscriber) : generateStarRating(0)">
                     </td>
                     <td class="py-2 px-4 border-y whitespace-nowrap"
-                        [innerHTML]="items.valuationfreeprofessionals != null ? generateStarRating(items.valuationfreeprofessionals) : generateStarRating(0)">
+                        [innerHTML]="items.valuationfreeprofessionals != null && items.valuationfreeprofessionals != -1 ? generateStarRating(items.valuationfreeprofessionals) : generateStarRating(0)">
                     </td>
                 </tr>
             </tbody>
