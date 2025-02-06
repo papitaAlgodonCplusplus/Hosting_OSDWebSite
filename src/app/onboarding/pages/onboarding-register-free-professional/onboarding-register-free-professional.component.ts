@@ -338,7 +338,32 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     });
     return personalForm;
   }
+  
+  sendRegistrationEmail(to_email: string, userCode?: string) {
+    const payload = {
+      to_email: to_email,
+      UserCode: userCode || '',
+      template_id: "d-6c67275abe9a49b39c70726c4cbffd97",
+      from: {
+        email: "info@digitalsolutionoffice.com",
+        name: "Digital Solution Office"
+      },
+      personalizations: [
+        {
+          to: [
+            { email: to_email }
+          ],
+          dynamic_template_data: {
+            subject: "Registro de CFH",
+          }
+        }
+      ]
+    };
 
+    const url = 'https://api.sendgrid.com/v3/mail/send';
+    // Return the observable so the caller can subscribe.
+    return this.osdEventService.userRegisterEmail(payload, url);
+  }
 
   onSubmit(): void {
     const workspace = this.accountForm.value.workspace;
@@ -371,41 +396,25 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     this.uploadFile = true;
     this.store.dispatch(UiActions.toggleConfirmationButton());
     localStorage.setItem('userEmail', userEmail);
-
-    // if (workspace === 'eea2312e-6a85-4ab6-85ff-0864547e3870') {
-    //   // this.http.post(`${this.apiUrl}/check-approval`, { email: userEmail, course_id: selectedCourse })
-    //   //   .subscribe((response: any) => {
-    //   //     if (response.approved) {
-    //   //       this.osdEventService.professorRegister(this.accountForm.value, this.personalForm.value, EventConstants.FREE_PROFESSIONAL)
-    //   //         .subscribe({
-    //   //           next: (res: any) => {
-    //   //             this.router.navigate(['/auth']);
-    //   //           },
-    //   //           error: (err: any) => {
-    //   //             console.error("Professor registration failed:", err);
-    //   //             this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Professor registration failed. Please try again." }));
-    //   //             this.store.dispatch(ModalActions.openAlert());
-    //   //           }
-    //   //         });
-    //   //     } else {
-    //   //       // Show error if not approved
-    //   //       this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: 'Course not yet approved' }));
-    //   //       this.store.dispatch(ModalActions.openAlert());
-    //   //     }
-    //   //   }, (error) => {
-    //   //     console.error("Approval check failed:", error);
-    //   //     this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Approval check failed. Please try again." }));
-    //   //     this.store.dispatch(ModalActions.openAlert());
-    //   //   });
-    // } else {
     this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.FREE_PROFESSIONAL)
       .subscribe({
         next: (response: any) => {
-          this.store.dispatch(
-            ModalActions.addAlertMessage({ alertMessage: "Registration successful!" })
-          );
-          this.store.dispatch(ModalActions.openAlert());
-          this.router.navigate(['/auth']);
+          // After successful registration, send the registration email.
+          console.log("Registration successful:", response, userEmail);
+          const userCode = response.UserCode;
+          this.sendRegistrationEmail(userEmail, userCode).subscribe({
+            next: () => {
+              this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Registration successful!" }));
+              this.store.dispatch(ModalActions.openAlert());
+              this.router.navigate(['/auth']);
+            },
+            error: (error: any) => {
+              console.error("Error sending registration email:", error);
+              this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Registration successful, but email sending failed." }));
+              this.store.dispatch(ModalActions.openAlert());
+              this.router.navigate(['/auth']);
+            }
+          });
         },
         error: (error: any) => {
           console.error("Registration failed:", error);

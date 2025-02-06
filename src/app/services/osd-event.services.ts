@@ -118,16 +118,20 @@ export class OSDService {
     });
   }
 
-  public changingUsdUserAutorizationStatusEvent(selectedUserId: any) {
+  public changingUsdUserAutorizationStatusEvent(selectedUserId: any): Observable<any> {
     const autorizationOsdUser: WebBaseEvent = this.eventFactoryService.CreateChangingUsdUserAutorizationStatusEvent(selectedUserId);
-    this.restApiService.SendOSDEvent(autorizationOsdUser).subscribe({
-      next: (response) => {
-        var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
-        this.HandleChangingOsdUserAutorizationResponse(osdEvent);
-      },
-      error: (error) => {
-        //TODO: Pending implementation
-      }
+    return new Observable((observer) => {
+      this.restApiService.SendOSDEvent(autorizationOsdUser).subscribe({
+        next: (response) => {
+          var osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+          this.HandleChangingOsdUserAutorizationResponse(osdEvent);
+          observer.next(response);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
     });
   }
 
@@ -216,6 +220,31 @@ export class OSDService {
       error: (error) => {
         //TODO: Pending implementation
       }
+    });
+  }
+
+  public userRegisterEmail(payload: any, url: string): Observable<any> {
+    console.log('userRegisterEmail', payload);
+    return new Observable((observer) => {
+      const jsonEvent = {
+        url,
+        email: payload.to_email,
+        Body: {
+          Action: 'RegisterUserEmail',
+          email: payload.to_email,
+          template_id: payload.template_id,
+          UserCode: payload.UserCode,
+        }
+      };
+      this.restApiService.SendOSDEvent(jsonEvent).subscribe({
+        next: (response) => {
+          observer.next(response);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
     });
   }
 

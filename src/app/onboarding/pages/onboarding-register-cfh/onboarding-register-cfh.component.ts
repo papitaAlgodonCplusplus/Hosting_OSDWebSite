@@ -182,6 +182,32 @@ export class OnboardingRegisterCfhComponent {
     }
   }
 
+  sendRegistrationEmail(to_email: string, userCode?: string) {
+    const payload = {
+      to_email: to_email,
+      UserCode: userCode || '',
+      template_id: "d-6c67275abe9a49b39c70726c4cbffd97",
+      from: {
+        email: "info@digitalsolutionoffice.com",
+        name: "Digital Solution Office"
+      },
+      personalizations: [
+        {
+          to: [
+            { email: to_email }
+          ],
+          dynamic_template_data: {
+            subject: "Registro de CFH",
+          }
+        }
+      ]
+    };
+
+    const url = 'https://api.sendgrid.com/v3/mail/send';
+    // Return the observable so the caller can subscribe.
+    return this.OSDEventService.userRegisterEmail(payload, url);
+  }
+
   // -------------------- SUBMIT --------------------
 
   onSubmit(): void {
@@ -230,18 +256,24 @@ export class OnboardingRegisterCfhComponent {
       EventConstants.APPROVED_TRAINING_CENTER
     ).subscribe({
       next: (response: any) => {
-        this.store.dispatch(
-          ModalActions.addAlertMessage({ alertMessage: "Registration successful!" })
-        );
-        this.store.dispatch(ModalActions.openAlert());
-        this.router.navigate(['/auth']);
-      },
-      error: (error: any) => {
-        console.error("Registration failed:", error);
-        this.store.dispatch(
-          ModalActions.addAlertMessage({ alertMessage: "Registration failed. Please try again." })
-        );
-        this.store.dispatch(ModalActions.openAlert());
+        const userCode = response.UserCode;
+        console.log("Registration successful:", response, userCode);
+        this.sendRegistrationEmail(userEmail, userCode).subscribe({
+          next: () => {
+            this.store.dispatch(
+              ModalActions.addAlertMessage({ alertMessage: "Registration successful!" })
+            );
+            this.store.dispatch(ModalActions.openAlert());
+            this.router.navigate(['/auth']);
+          },
+          error: (error: any) => {
+            console.error("Registration failed:", error);
+            this.store.dispatch(
+              ModalActions.addAlertMessage({ alertMessage: "Registration failed. Please try again." })
+            );
+            this.store.dispatch(ModalActions.openAlert());
+          }
+        });
       }
     });
   }

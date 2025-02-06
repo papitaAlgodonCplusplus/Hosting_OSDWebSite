@@ -213,6 +213,7 @@ export class SubAuthorizedComponent implements OnDestroy {
     userDTO.Identity = foundUser.identity;
     userDTO.Name = foundUser.name.trim();
     userDTO.Email = foundUser.email;
+    userDTO.Code = foundUser.code;
     this.user = userDTO;
 
     // Assign subscriber, though your existing code sets it but doesn't do much with it yet
@@ -233,21 +234,66 @@ export class SubAuthorizedComponent implements OnDestroy {
     this.showAuthorizatedModal = true;
   }
 
+  sendAuthorizationEmail(to_email: string, userCode?: string) {
+    const payload = {
+      to_email: to_email,
+      UserCode: userCode || '',
+      template_id: "d-d639040e9f4c443dadf211bafca3d8ba",
+      from: {
+        email: "info@digitalsolutionoffice.com",
+        name: "Digital Solution Office"
+      },
+      personalizations: [
+        {
+          to: [
+            { email: to_email }
+          ],
+          dynamic_template_data: {
+            subject: "Registro de CFH",
+          }
+        }
+      ]
+    };
+
+    const url = 'https://api.sendgrid.com/v3/mail/send';
+    // Return the observable so the caller can subscribe.
+    return this.osdEventService.userRegisterEmail(payload, url);
+  }
+
   onConfirmHandler() {
-    // Example: call the service to authorize the user
-    this.osdEventService.changingUsdUserAutorizationStatusEvent(this.userId);
+    // Call the service to authorize the user and subscribe to the response
+    this.osdEventService.changingUsdUserAutorizationStatusEvent(this.userId).subscribe({
+      next: () => {
+        // Update items array locally for the new Isauthorized state
+        const newItems = this.items.map(item => {
+          if (item.Id === this.userId) {
+            return { ...item, Isauthorized: true };
+          }
+          return item;
+        });
+        this.items = newItems;
+        this.updateDisplayedItems();
 
-    // Update items array locally for the new Isauthorized state
-    const newItems = this.items.map(item => {
-      if (item.Id === this.userId) {
-        return { ...item, Isauthorized: true };
+        // Send an authorization email using the new template
+        if (this.user && this.user.Email) {
+          const userCode = this.user.Code;
+          this.sendAuthorizationEmail(this.user.Email, userCode).subscribe({
+            next: () => {
+              console.log("Authorization email sent successfully.");
+            },
+            error: (err) => {
+              console.error("Error sending authorization email:", err);
+            }
+          });
+        } else {
+          console.error("User email not available for sending authorization email.");
+        }
+        this.showAuthorizatedModal = false;
+      },
+      error: (err) => {
+        console.error("Error changing user authorization status:", err);
       }
-      return item;
     });
-    this.items = newItems;
-
-    this.updateDisplayedItems();
-    this.showAuthorizatedModal = false;
   }
 
   onCancelHandler() {

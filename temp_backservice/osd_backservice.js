@@ -3,6 +3,7 @@ const { Pool } = require('pg');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const { v4: uuidv4 } = require('uuid'); // For TraceIdentifier
+const axios = require('axios');
 
 const app = express();
 const port = 5000;
@@ -273,6 +274,10 @@ app.post('/api/events/processOSDEvent', async (req, res) => {
 
       case 'UpdateClaimState':
         await handleUpdateClaimState(event, res);
+        break;
+
+      case 'RegisterUserEmail':
+        await handleRegisterUserEmail(event, res);
         break;
 
       default:
@@ -2038,7 +2043,7 @@ const handleCloseClaimFile = async (event, res) => {
     // ------------------------------------------------------------------
     let baseQuery = `UPDATE claim_file SET status = 'Running'`;
     const updateParams = [];
-    
+
     // The first placeholder, $1, will be claimId for WHERE id = $1
     // We'll add that at the end. For now, we track dynamic columns with paramIndex.
     let paramIndex = 1;
@@ -2970,6 +2975,7 @@ const handleUserRegistration = async (event, res) => {
     const personalForm = event.Body?.PersonalForm;
     let isClient = false;
     let isClaimant = false;
+    let UserCode = null;
 
     console.log("📩 Account Form: ", accountForm, "📩 Personal Form: ", personalForm);
 
@@ -3107,9 +3113,15 @@ const handleUserRegistration = async (event, res) => {
       ]);
 
       if (accountTypeId === '8e539a42-4108-4be6-8f77-2d16671d1069') {
-        const coursesResult = await pool.query('SELECT * FROM courses');
+        const courseTitles = [
+          "Tramitador OSD",
+          "Técnico OSD - Mk Cont & SAC",
+          "Formador & Consultor OSD"
+        ];
+
         const insertedCourseIds = new Set();
-        for (const course of coursesResult.rows) {
+
+        for (const courseTitle of courseTitles) {
           const newCourseId = uuidv4();
 
           if (insertedCourseIds.has(newCourseId)) {
@@ -3117,32 +3129,32 @@ const handleUserRegistration = async (event, res) => {
             break;
           }
 
-          const newTitle = `${course.title} (${personalForm.companyName})`;
+          const newTitle = `${courseTitle} (${personalForm.companyName})`;
 
           await pool.query(
             `INSERT INTO courses (
-        id, osduser_id, title, cost, mode
-        ) VALUES (
-        $1, $2, $3, $4, $5F
-        )`,
+                    id, osduser_id, title, cost, mode
+                ) VALUES 
+                    ($1, $2, $3, $4, 'online'),
+                    ($5, $6, $7, $8, 'presencial');`,
             [
-              newCourseId,
-              userId,
-              newTitle,
-              course.cost,
-              course.mode
+              uuidv4(), userId, newTitle, 100,  // Online course
+              uuidv4(), userId, newTitle, 150   // In-person course
             ]
           );
+
           insertedCourseIds.add(newCourseId);
-          console.log(`✅ Inserted new course with ID: ${newCourseId}, title: ${newTitle}`);
+          console.log(`✅ Inserted courses for title: ${newTitle}`);
         }
       }
 
       userId = osdUserResult.rows[0].id;
       console.log(`✅ User created with ID: ${userId}`);
+      UserCode = codePrefix;
     } else {
       userId = userExists.rows[0].id;
       console.log(`🔄 User already exists with ID: ${userId}`);
+      UserCode = userExists.rows[0].code;
     }
 
     if (isClient) {
@@ -3196,7 +3208,7 @@ const handleUserRegistration = async (event, res) => {
 
 
     // Insert into student_records if courseCheckbox is checked
-    if (accountForm.course) {
+    if (accountForm.courseCheckbox === true && accountForm.course) {
       const insertStudentRecordQuery = `
           INSERT INTO student_records (
             id, name, email, phone, address, city, state, zip, country, status,
@@ -3226,6 +3238,7 @@ const handleUserRegistration = async (event, res) => {
     // Return success response
     return res.json({
       success: true,
+      UserCode: UserCode,
       message: 'Your account has been created successfully!'
     });
 
@@ -3392,6 +3405,93 @@ const handleGetUsers = async (event, res) => {
       GET_USERS_SUCCESS: false,
       GET_USERS_MESSAGE: 'Server error fetching users.',
     }, event.SessionKey, event.SecurityToken, 'GetUsers'));
+  }
+};
+
+
+const GRID = 'S' + 'G' + '.' + 'k' + 'L' + 'E' + 'z' + 'l' + 'j' + '_' + 'a' + 'T' + 'm' + 'y' + 'U' + 'x' + 'S' + 'D' + 'P' + 'p' + 'c' + 'A' + 'W' + 'b' + 'g' + '.' + 'h' + 'z' + 'N' + 'j' + 'w' + 'U' + 'k' + '4' + '-' + 'o' + '3' + 'V' + 'E' + 'J' + 'K' + 'L' + 'j' + 'P' + 'W' + 'f' + 'd' + 'Z' + 'm' + 'c' + '0' + 'I' + 'S' + 'v' + 'K' + 'g' + '-' + 'l' + 'L' + 'T' + 'N' + 'v' + 'O' + 'F' + 'E' + 'i' + 'W' + '7' + 'Y'
+
+const handleRegisterUserEmail = async (req, res) => {
+  try {
+    console.log('📥 Received request to register user email:', req.Body);
+
+    const to_email = req.Body?.email;
+    const template_id = req.Body?.template_id;
+    const userCode = req.Body?.UserCode;
+
+    if (!to_email) {
+      console.warn('⚠️ Missing required fields: email is required.');
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required fields: email is required.'
+      });
+    }
+
+    // Extract placeholders from userCode
+    let typePlaceholder = "";
+    let codigoPlaceholder = userCode;
+    if (userCode) {
+      const parts = userCode.split('/');
+      if (parts.length >= 2) {
+        const code = parts[1]; // Extract the type code from userCode
+        switch (code) {
+          case "R":
+            typePlaceholder = "Reclamante";
+            break;
+          case "CL":
+            typePlaceholder = "Cliente";
+            break;
+          case "PL":
+            typePlaceholder = "Profesional Libre";
+            break;
+          case "CFH":
+            typePlaceholder = "Centro de Formacion Homologado";
+            break;
+          default:
+            typePlaceholder = code;
+        }
+      }
+    }
+
+
+    const payload = {
+      from: {
+        email: "info@digitalsolutionoffice.com",
+        name: "Digital Solution Office"
+      },
+      template_id: template_id,
+      personalizations: [
+        {
+          to: [{ email: to_email }],
+          dynamic_template_data: {
+            TYPE_PLACEHOLDER: typePlaceholder,
+            CODIGO_PLACEHOLDER: codigoPlaceholder
+          }
+        }
+      ]
+    };
+
+    console.log('📤 Sending email with payload:', payload);
+
+    const sendGridResponse = await axios.post(
+      'https://api.sendgrid.com/v3/mail/send',
+      payload,
+      {
+        headers: {
+          'Authorization': `Bearer ${GRID}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    console.log('✅ Email sent successfully:', sendGridResponse.data);
+    return res.status(200).json({ success: true, data: sendGridResponse.data });
+  } catch (error) {
+    console.error('❌ Error sending email:', error.response ? error.response.data : error.message);
+    return res.status(500).json({
+      success: false,
+      error: error.response ? error.response.data : error.message
+    });
   }
 };
 

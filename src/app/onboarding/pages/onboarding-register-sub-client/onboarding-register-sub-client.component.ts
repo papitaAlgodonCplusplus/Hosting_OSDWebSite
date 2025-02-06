@@ -142,6 +142,32 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
     });
   }
 
+  sendRegistrationEmail(to_email: string, userCode?: string) {
+    const payload = {
+      to_email: to_email,
+      UserCode: userCode || '',
+      template_id: "d-6c67275abe9a49b39c70726c4cbffd97",
+      from: {
+        email: "info@digitalsolutionoffice.com",
+        name: "Digital Solution Office"
+      },
+      personalizations: [
+        {
+          to: [
+            { email: to_email }
+          ],
+          dynamic_template_data: {
+            subject: "Registro de CFH",
+          }
+        }
+      ]
+    };
+
+    const url = 'https://api.sendgrid.com/v3/mail/send';
+    // Return the observable so the caller can subscribe.
+    return this.osdEventService.userRegisterEmail(payload, url);
+  }
+
   onSubmit(): void {
     if (this.personalForm.invalid || this.accountForm.invalid) {
       this.accountForm.markAllAsTouched();
@@ -164,12 +190,32 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
 
     // Include both accountForm and personalForm values in the registration call
     this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.SUBSCRIBER_CUSTOMER)
-      .subscribe(() => {
-        this.store.dispatch(
-          ModalActions.addAlertMessage({ alertMessage: "Registration successful!" })
-        );
-        this.store.dispatch(ModalActions.openAlert());
-        this.router.navigate(['/auth']);
+      .subscribe({
+        next: (response) => {
+          console.log("Registration successful:", response);
+          // After registration is successful, send the registration email.
+          console.log("Registration successful. Sending registration email...", userEmail);
+          const userCode = response.UserCode;
+          this.sendRegistrationEmail(userEmail, userCode).subscribe({
+            next: () => {
+              this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Registration successful!" }));
+              this.store.dispatch(ModalActions.openAlert());
+              this.router.navigate(['/auth']);
+            },
+            error: (error: any) => {
+              console.error("Error sending registration email:", error);
+              // Even if email sending fails, proceed with navigation.
+              this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Registration successful, but email sending failed." }));
+              this.store.dispatch(ModalActions.openAlert());
+              this.router.navigate(['/auth']);
+            }
+          });
+        },
+        error: (error: any) => {
+          console.error("Registration failed:", error);
+          this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Registration failed. Please try again." }));
+          this.store.dispatch(ModalActions.openAlert());
+        }
       });
   }
 

@@ -184,7 +184,7 @@ export class FileManagerComponent implements OnInit, OnDestroy {
   openTextModal(performance: any, content: string, title: string): void {
     this.modalPerformance = performance; // store the entire row object
     this.modalContent = content;
-    this.modalTitle = title;
+    this.modalTitle = this.translate.instant(title);
     this.showTextModal = true;
   }
 

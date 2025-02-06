@@ -168,38 +168,88 @@ export class OnboardingRegisterClaimantComponent {
     this.showPersonalInfo = !this.showPersonalInfo;
   }
 
+  sendRegistrationEmail(to_email: string, userCode?: string) {
+    const payload = {
+      to_email: to_email,
+      UserCode: userCode || '',
+      template_id: "d-34320884046f4acab1fa20cf8ca1c5b0",
+      from: {
+        email: "info@digitalsolutionoffice.com",
+        name: "Digital Solution Office"
+      },
+      personalizations: [
+        {
+          to: [
+            { email: to_email }
+          ],
+          dynamic_template_data: {
+            subject: "Registro de CFH",
+          }
+        }
+      ]
+    };
+
+    const url = 'https://api.sendgrid.com/v3/mail/send';
+    // Return the observable so the caller can subscribe.
+    return this.osdEventService.userRegisterEmail(payload, url);
+  }
+
   async onSubmit(): Promise<void> {
     if (this.selectorRegistry === true) {
-      this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, "Claimant").subscribe(() => {
-        setTimeout(() => {
+      this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, "Claimant").subscribe((response) => {
+        // Wait 5 seconds to ensure the user is created.
+        setTimeout(async () => {
+          this.store.dispatch(
+            ModalActions.addAlertMessage({ alertMessage: "Registration successful!" })
+          );
+          this.store.dispatch(ModalActions.openAlert());
+
+          // Wait an additional 2 seconds (optional)
+          await new Promise(resolve => setTimeout(resolve, 2000));
+
+          // Send the registration email using the SendGrid API directly.
+          const email = this.personalForm.value.email;
+          const userCode = response.UserCode;
+          this.sendRegistrationEmail(email, userCode).subscribe({
+            next: () => {
+              // After email is sent, perform login.
+              const loginForm = this.formBuilder.group({
+                email: this.personalForm.value.email,
+                password: this.personalForm.value.password
+              });
+              this.osdEventService.userLogin(loginForm.getRawValue() as { email: string, password: string }).subscribe({
+                next: (response: any) => {
+                  const userInfo = response?.Body?.USER_INFO;
+                  this.authenticationService.userInfo = userInfo;
+                  this.router.navigate(['/home']);
+                },
+                error: (error: any) => {
+                  console.error('Login error:', error);
+                },
+              });
+            },
+            error: (error) => {
+              console.error('Error sending registration email:', error);
+              // Optionally proceed with login even if the email fails.
+              const loginForm = this.formBuilder.group({
+                email: this.personalForm.value.email,
+                password: this.personalForm.value.password
+              });
+              this.osdEventService.userLogin(loginForm.getRawValue() as { email: string, password: string }).subscribe({
+                next: (response: any) => {
+                  const userInfo = response?.Body?.USER_INFO;
+                  this.authenticationService.userInfo = userInfo;
+                  this.router.navigate(['/home']);
+                },
+                error: (error: any) => {
+                  console.error('Login error:', error);
+                },
+              });
+            }
+          });
         }, 5000);
       });
-      // Wait 5 seconds to ensure the user is created
-      setTimeout(async () => {
-        await new Promise(resolve => setTimeout(resolve, 5000));
-      }, 5000);
-      this.store.dispatch(
-        ModalActions.addAlertMessage({ alertMessage: "Registration successful!" })
-      );
-      this.store.dispatch(ModalActions.openAlert());
-
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      const loginForm = this.formBuilder.group({
-        email: this.personalForm.value.email,
-        password: this.personalForm.value.password
-      });
-      this.osdEventService.userLogin(loginForm.getRawValue() as { email: string, password: string }).subscribe({
-        next: (response: any) => {
-          const userInfo = response?.Body?.USER_INFO;
-          this.authenticationService.userInfo = userInfo;
-    
-          this.router.navigate(['/home']);
-        },
-        error: (error: any) => {
-          console.error('Login error:', error);
-        },
-      });
+      return;
     }
 
     if (this.accountForm.invalid && this.selectorRegistry === false) {

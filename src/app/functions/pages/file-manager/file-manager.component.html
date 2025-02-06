@@ -291,7 +291,7 @@
           <div class="flex justify-end space-x-3 mt-3">
             <button type="button" (click)="closeAddUpdateModal()"
               class="p-2 rounded-xl bg-line text-darkslategray font-medium animate__animated animate__fadeInDown">
-              Cancel
+              {{ 'Cancel' | translate }}
             </button>
             <button type="submit"
               class="p-2 rounded-xl bg-darkslategray text-line font-medium animate__animated animate__fadeInDown">
@@ -304,7 +304,7 @@
   </div>
 
   <!-- Performance Modal -->
-  <div *ngIf="showModalPerformances && canAddUpdate"
+  <div *ngIf="showModalPerformances"
     class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto w-90">
     <div class="bg-opacity-75 bg-black absolute inset-0"></div>
     <div class="relative z-50 bg-white shadow-md rounded-xl p-3 w-90">
@@ -340,7 +340,7 @@
                 <button *ngIf="performance.summary && performance.summary.length > 10" type="button"
                   class="text-blue-600 underline"
                   (click)="openTextModal(performance, performance.summary, 'Information')">
-                  View
+                  {{ 'View' | translate }}
                 </button>
                 <span *ngIf="!performance.summary || performance.summary.length <= 10">
                   {{ performance.summary | translate }}
@@ -352,7 +352,7 @@
                 <button *ngIf="performance.answer_to_appeal && performance.answer_to_appeal.length > 10" type="button"
                   class="text-blue-600 underline"
                   (click)="openTextModal(performance, performance.answer_to_appeal, 'Answer to Appeal')">
-                  View
+                  {{ 'View' | translate }}
                 </button>
                 <span *ngIf="!performance.answer_to_appeal || performance.answer_to_appeal.length <= 10">
                   {{ performance.answer_to_appeal }}
@@ -363,8 +363,8 @@
               <td class="w-[1rem] p-3">
                 <button *ngIf="performance.solution_suggestion && performance.solution_suggestion.length > 10"
                   type="button" class="text-blue-600 underline"
-                  (click)="openTextModal(performance, performance.solution_suggestion, 'Solution Suggestion')">
-                  View
+                    (click)="openTextModal(performance, performance.solution_suggestion, 'Solution Suggestion')">
+                    {{ 'View' | translate }}
                 </button>
                 <span *ngIf="!performance.solution_suggestion || performance.solution_suggestion.length <= 10">
                   {{ performance.solution_suggestion }}
@@ -376,7 +376,7 @@
                 <button *ngIf="performance.solution && performance.solution.length > 10" type="button"
                   class="text-blue-600 underline"
                   (click)="openTextModal(performance, performance.solution, 'Solution')">
-                  View
+                  {{ 'View' | translate }}
                 </button>
                 <span *ngIf="!performance.solution || performance.solution.length <= 10">
                   {{ performance.solution }}
@@ -388,7 +388,7 @@
                 <button *ngIf="performance.complaint && performance.complaint.length > 10" type="button"
                   class="text-blue-600 underline"
                   (click)="openTextModal(performance, performance.complaint, 'Complaint')">
-                  View
+                  {{ 'View' | translate }}
                 </button>
                 <span *ngIf="!performance.complaint || performance.complaint.length <= 10">
                   {{ performance.complaint }}
@@ -400,7 +400,7 @@
                 <button *ngIf="performance.solution_complaint && performance.solution_complaint.length > 10"
                   type="button" class="text-blue-600 underline"
                   (click)="openTextModal(performance, performance.solution_complaint, 'Solution Complaint')">
-                  View
+                  {{ 'View' | translate }}
                 </button>
                 <span *ngIf="!performance.solution_complaint || performance.solution_complaint.length <= 10">
                   {{ performance.solution_complaint }}
@@ -411,7 +411,7 @@
               <td class="w-[1rem] p-3">
                 <button *ngIf="performance.appeal && performance.appeal.length > 10" type="button"
                   class="text-blue-600 underline" (click)="openTextModal(performance, performance.appeal, 'Appeal')">
-                  View
+                  {{ 'View' | translate }}
                 </button>
                 <span *ngIf="!performance.appeal || performance.appeal.length <= 10">
                   {{ performance.appeal }}
@@ -423,7 +423,7 @@
                 <button *ngIf="performance.solution_appeal && performance.solution_appeal.length > 10" type="button"
                   class="text-blue-600 underline"
                   (click)="openTextModal(performance, performance.solution_appeal, 'Solution Appeal')">
-                  View
+                    {{ 'View' | translate }}
                 </button>
                 <span *ngIf="!performance.solution_appeal || performance.solution_appeal.length <= 10">
                   {{ performance.solution_appeal }}
@@ -443,13 +443,13 @@
       </div>
 
       <div class="flex justify-end w-full space-x-3">
-        <button (click)="openAddUpdateModal()"
+        <button (click)="openAddUpdateModal()" *ngIf="canAddUpdate"
           class="p-2 rounded-xl bg-indigo-500 text-white font-medium animate__animated animate__fadeInDown">
-          Add Update
+            {{ 'Add Update' | translate }}
         </button>
         <button (click)="closePerformanceModal()"
           class="p-2 rounded-xl bg-line text-darkslategray font-medium animate__animated animate__fadeInDown">
-          Cancel
+            {{ 'Cancel' | translate }}
         </button>
       </div>
     </div>
@@ -470,7 +470,7 @@
                 {{ 'Download Document 1' | translate }}
               </button>
               <span *ngIf="!modalPerformance?.justifyingdocument" class="text-gray-500">
-                {{ 'No Document Provided' | translate }}
+                {{ 'No First Document Provided' | translate }}
               </span>
             </div>
 
@@ -483,7 +483,7 @@
                 {{ 'Download Document 2' | translate }}
               </button>
               <span *ngIf="!modalPerformance?.justifyingdocument2" class="text-gray-500">
-                {{ 'No Document Provided' | translate }}
+                {{ 'No Second Document Provided' | translate }}
               </span>
             </div>
           </div>
@@ -598,7 +598,7 @@
             <!-- RIGHT COLUMN: normal editable fields -->
             <div class="flex flex-col space-y-4">
               <div class="flex flex-col">
-                <label for="finalRating" class="font-semibold mb-1">Rating (0-5)</label>
+                <label for="finalRating" class="font-semibold mb-1">{{ 'Rating (0-5)' | translate }}</label>
                 <input formControlName="finalRating" id="finalRating" type="number" min="0" max="5"
                   class="border border-gray-300 rounded-md p-2" placeholder="e.g. 4" />
               </div>
