@@ -658,8 +658,8 @@ const handleGetTransparencyReportsIncomeExpenses = async (event, res) => {
       // Fetch claims for the given Subscriber ID
       const claimResult = await pool.query(`
         SELECT id, amountclaimed, amountpaid, improvementsavings 
-        FROM claim_file 
-        WHERE status IN ('Completed', 'Closed') AND subscriberclaimedid = $1
+        FROM claim_file
+        WHERE subscriberclaimedid = $1
       `, [SubscriberId]);
       claimList = claimResult.rows;
       console.log(`✅ Found ${claimList.length} claims for Subscriber ID: ${SubscriberId}`);
@@ -667,8 +667,7 @@ const handleGetTransparencyReportsIncomeExpenses = async (event, res) => {
       console.log(`📊 Fetching ALL completed and closed claims...`);
       const claimResult = await pool.query(`
         SELECT id, amountclaimed, amountpaid, improvementsavings 
-        FROM claim_file 
-        WHERE status IN ('Completed', 'Closed')
+        FROM claim_file
       `);
 
       claimList = claimResult.rows;
