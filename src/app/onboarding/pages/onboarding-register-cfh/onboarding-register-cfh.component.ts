@@ -130,7 +130,7 @@ export class OnboardingRegisterCfhComponent {
       zipCode: ['', [Validators.required]],
       address: ['', [Validators.required]],
       city: [''],
-      country: [''],
+      country: ['', [Validators.required]],
       landline: [''],
       mobilePhone: ['', [Validators.required]],
       email: ['', [Validators.required, this.validationsService.isValidEmail]],
@@ -211,6 +211,12 @@ export class OnboardingRegisterCfhComponent {
   // -------------------- SUBMIT --------------------
 
   onSubmit(): void {
+    if (!this.personalForm.value.country) {
+      this.personalForm.markAllAsTouched();
+      this.accountForm.markAllAsTouched();
+      return;
+    }
+
     if (this.accountForm.invalid || this.personalForm.invalid) {
       this.accountForm.markAllAsTouched();
       this.personalForm.markAllAsTouched();

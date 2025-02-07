@@ -35,7 +35,7 @@
                 <div class="flex items-center justify-center">
                     <div class="flex flex-col p-3 bg-gray-100 border border-gray-300 rounded-md space-y-2">
                         <label class="flex items-center space-x-2">
-                            <input type="radio" formControlName="clientCanBeClaimed" [value]="'Client Subscriber'">
+                            <input type="radio" formControlName="clientCanBeClaimed" [value]="'Client Subscriber'" (onChange)="onClientTypeChange('Client Subscriber')">
                             <span>{{ 'Client Subscriber' | translate }}</span>
                         </label>
                     </div>
@@ -75,7 +75,7 @@
                     <div class="flex flex-col p-3 bg-gray-100 border border-gray-300 rounded-md space-y-2">
                         <label class="flex items-center space-x-2">
                             <input type="radio" formControlName="clientCanBeClaimed"
-                                [value]="'Solutions Only Customer'">
+                                [value]="'Solutions Only Customer'" (onChange)="onClientTypeChange('Solutions Only Customer')">
                             <span>{{ 'Solutions Only Customer' | translate }}</span>
                         </label>
                     </div>

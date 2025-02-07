@@ -59,7 +59,8 @@ export class HomeComponent implements OnInit, OnDestroy {
         'Assign_client_to_Trainer',
         'fp_management',
         'edit_user_profile',
-        'logs'
+        'logs',
+        'users_management'
       ]
     },
     {
@@ -67,6 +68,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       optionNames: [
         'file_claim',
         'Assign_Processor_to_Claim',
+        'claims_management'
       ]
     },
     {
@@ -164,6 +166,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           // Store the codes and open a modal
           this.pendingClaimsCodes = codes;
           this.showPendingClaimsModal = true;
+          this.osdEventService.sendClaimReadyEmailToUser(this.user.Id);
         }
       },
       error: (err) => {

@@ -177,7 +177,7 @@ export class FileManagerComponent implements OnInit, OnDestroy {
           this.addUpdateForm.get('answer_to_appeal')?.enable();
         }
       });
-    }, 0);
+    }, 200);
   }
 
   // Opens the modal with the passed performance, content, and title.
@@ -245,9 +245,13 @@ export class FileManagerComponent implements OnInit, OnDestroy {
    *       "Add Update" Modal 
    *  ============================== */
   openAddUpdateModal(): void {
-    // If the performance modal is open, close it first
-    this.closePerformanceModal();
-    this.showAddUpdateModal = true;
+    if (this.canAddUpdate) {
+      // If the performance modal is open, close it first
+      this.closePerformanceModal();
+      this.showAddUpdateModal = true;
+    } else {
+      alert(this.translate.instant('This claim is already closed.'));
+    }
   }
 
   closeAddUpdateModal(): void {
@@ -307,7 +311,11 @@ export class FileManagerComponent implements OnInit, OnDestroy {
         this.editingPerformance = null;
       } else {
         // Call your add service method
-        await this.osdEventService.addPerformanceUpdate(payload);
+        await this.osdEventService.addPerformanceUpdate(payload).subscribe(() => {
+          this.osdEventService.sendNewPerformanceUpdateToEveryone(this.claim, this.user.Id).subscribe(() => {
+            console.log('New performance update sent to everyone');
+          });
+        });
       }
 
       this.store.dispatch(

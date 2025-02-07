@@ -146,14 +146,13 @@ export class LogsComponent implements OnInit {
   }
 
   getRowDataKeys(rowData: any, operationType: string): string[] {
+    console.log('rowData:', rowData);
     if (rowData && typeof rowData === 'object') {
-      if (operationType === 'INSERT') {
-        return Object.keys(rowData || {});
-      } else if (operationType === 'DELETE') {
-        return Object.keys(rowData.old || {});
+      if (operationType === 'INSERT' || operationType === 'DELETE') {
+        return rowData.columns ? Object.keys(rowData.columns) : Object.keys(rowData);
       } else if (operationType === 'UPDATE') {
-        const oldKeys = Object.keys(rowData.old || {});
-        const newKeys = Object.keys(rowData.new || {});
+        const oldKeys = rowData.old ? Object.keys(rowData.old) : [];
+        const newKeys = rowData.new ? Object.keys(rowData.new) : [];
         return Array.from(new Set([...oldKeys, ...newKeys]));
       }
     }
@@ -162,6 +161,7 @@ export class LogsComponent implements OnInit {
 
   // New method to restore a change
   restoreLog(log: any): void {
+    console.log('Restoring log:', log);
     if (!confirm('Are you sure you want to restore (undo) this change?')) {
       return;
     }

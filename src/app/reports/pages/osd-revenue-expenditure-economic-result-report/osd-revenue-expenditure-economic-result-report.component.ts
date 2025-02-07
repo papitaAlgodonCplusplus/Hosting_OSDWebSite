@@ -72,7 +72,7 @@ export class OSDRevenueExpenditureEconomicResultReportComponent implements OnIni
                 Numberfiles: 0
               };
 
-              if (dto.ImprovementSavings === 0 && dto.Income === 0) {
+              if (dto.Numberfiles === 0) {
                 return;
               }
 

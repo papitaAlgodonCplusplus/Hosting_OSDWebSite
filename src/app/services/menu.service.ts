@@ -58,6 +58,8 @@ export class MenuService {
       //this.createMenuOption('accounting_services', '/functions/accounting-services', 'fa-calculator', 'bg-purple-500'),
       this.createMenuOption('edit_user_profile', '/functions/edit-my-info', 'fa-user-edit', 'bg-blue-500'),
       this.createMenuOption('administer_users', '/functions/students-management', 'fa-graduation-cap', 'bg-teal-500'),
+      this.createMenuOption('users_management', '/functions/users-management', 'fa-users', 'bg-cyan-500'),
+      this.createMenuOption('claims_management', '/functions/claims-management', 'fa-tasks', 'bg-orange-500'),
       this.createMenuOption('accounting', '/functions/accounting', 'fa-money-check-alt', 'bg-purple-500'),
       this.createMenuOption('fp_management', '/functions/fp-management', 'fa-users-cog', 'bg-pink-500'),
       this.createMenuOption('logs', '/functions/logs', 'fa-file-alt', 'bg-gray-500'),

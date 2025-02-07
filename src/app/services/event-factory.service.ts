@@ -45,6 +45,33 @@ export class EventFactoryService {
     return event;
   }
 
+  public CreateDeleteClaimEvent(claimId: string): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.DELETE_CLAIM;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    event.setBodyProperty(EventConstants.CLAIM_ID, claimId);
+    return event;
+  }
+
+  public CreateGetClaimsEvent(): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.GET_ALL_CLAIMS;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    return event;
+  }
+
   public CreateLogEvent(logData: any): WebBaseEvent {
     const event = new WebBaseEvent();
     event.SessionKey = this.authenticationService.sessionKey;
@@ -225,6 +252,20 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.DEVELOPER_MODULE, performanceFP.developer_module);
     event.setBodyProperty(EventConstants.DEVELOPER_SCREEN_FORM, performanceFP.developer_screen_form);
     event.setBodyProperty(EventConstants.DEVELOPER_ACTIVITY, performanceFP.developer_activity);
+    return event;
+  }
+
+  public CreateDeleteUserEvent(userId: string): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.DELETE_USER;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    event.setBodyProperty(EventConstants.USER_ID, userId);
     return event;
   }
 
@@ -478,6 +519,35 @@ export class EventFactoryService {
     return event;
   }
 
+  public CreateSendClaimReadyEmailToUserEvent(UserId: string): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.SEND_CLAIM_READY_EMAIL_TO_USER;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    event.setBodyProperty(EventConstants.USER_ID, UserId);
+    return event;
+  }
+  
+  public CreateSendNewPerformanceUpdateToEveryoneEvent(claim: any, UserId: any): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.SEND_NEW_PERFORMANCE_UPDATE_TO_EVERYONE;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    event.setBodyProperty(EventConstants.CLAIM, claim);
+    event.setBodyProperty(EventConstants.USER_ID, UserId);
+    return event;
+  }
+  
   public createClaimsProcessorPerformance(performance: ClaimsProcessorPerformance, claimId: string, documentBytes: string): WebBaseEvent {
     let event: WebBaseEvent;
     event = new WebBaseEvent();

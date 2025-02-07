@@ -11,8 +11,13 @@ export class EventAction {
   public static GET_USERS: string = "GetUsers";
   public static GET_USER_ACTION_LOGS: string = "GetUserActionLogs";
   public static RESTORE_DATABASE_LOG: string = "RestoreDatabaseLogs";
+  public static SEND_CLAIM_READY_EMAIL_TO_USER: string = "SendClaimReadyEmailToUser";
 
   //#region OSD
+  public static DELETE_CLAIM: string = "DeleteClaim";
+  public static GET_ALL_CLAIMS: string = "GetAllClaims";
+  public static DELETE_USER: string = "DeleteUser";
+  public static SEND_NEW_PERFORMANCE_UPDATE_TO_EVERYONE : string = "SendNewPerformanceUpdateToEveryone";
   public static UPDATE_CLAIM_STATE: string = "UpdateClaimState";
   public static GET_MY_PENDING_CLAIMS: string = "GetMyPendingClaims";
   public static LOG_EVENT: string = "LogEvent";

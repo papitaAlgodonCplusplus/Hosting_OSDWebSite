@@ -75,6 +75,66 @@ export class OSDService {
     this.freeProfessionalsResponse = false;
   }
 
+  public sendClaimReadyEmailToUser(UserId: string): Observable<any> {
+    const event: WebBaseEvent = this.eventFactoryService.CreateSendClaimReadyEmailToUserEvent(UserId);
+    return new Observable((observer) => {
+      this.restApiService.SendOSDEvent(event).subscribe({
+        next: (response) => {
+          observer.next(response);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
+
+  public deleteClaim(claimId: string): Observable<any> {
+    const deleteClaimEvent: WebBaseEvent = this.eventFactoryService.CreateDeleteClaimEvent(claimId);
+    return new Observable((observer) => {
+      this.restApiService.SendOSDEvent(deleteClaimEvent).subscribe({
+        next: (response) => {
+          observer.next(response);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
+
+  public getClaims(): Observable<any> {
+    const getClaimsEvent: WebBaseEvent = this.eventFactoryService.CreateGetClaimsEvent();
+    return new Observable((observer) => {
+      this.restApiService.SendOSDEvent(getClaimsEvent).subscribe({
+        next: (response) => {
+          observer.next(response);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
+
+  public sendNewPerformanceUpdateToEveryone(claim: any, UserId: any): Observable<any> {
+    const event: WebBaseEvent = this.eventFactoryService.CreateSendNewPerformanceUpdateToEveryoneEvent(claim, UserId);
+    return new Observable((observer) => {
+      this.restApiService.SendOSDEvent(event).subscribe({
+        next: (response) => {
+          observer.next(response);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
+
   getUserByID(userId: string): Promise<any> {
     return new Promise((resolve, reject) => {
       const event: WebBaseEvent = this.eventFactoryService.CreateGetUserByIdEvent(userId);
@@ -152,6 +212,11 @@ export class OSDService {
 
       checkResponse();
     });
+  }
+
+  public deleteUser(userId: string): Observable<any> {
+    const deleteUserEvent: WebBaseEvent = this.eventFactoryService.CreateDeleteUserEvent(userId);
+    return this.restApiService.SendOSDEvent(deleteUserEvent);
   }
 
   public userLogin(loginForm: UserLoginEvent): Observable<any> {
@@ -856,16 +921,21 @@ export class OSDService {
     );
   }
 
-  public addPerformanceUpdate(payload: any): void {
+  public addPerformanceUpdate(payload: any): Observable<any> {
     const addPerformanceUpdateEvent: WebBaseEvent = this.eventFactoryService.CreateAddPerformanceUpdateEvent(payload);
-    this.restApiService.SendOSDEvent(addPerformanceUpdateEvent).subscribe({
-      next: (response) => {
-        const osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
-        this.HandleAddPerformanceUpdateResponse(osdEvent);
-      },
-      error: (error) => {
-        console.error('Error in addPerformanceUpdate:', error);
-      }
+    return new Observable((observer) => {
+      this.restApiService.SendOSDEvent(addPerformanceUpdateEvent).subscribe({
+        next: (response) => {
+          const osdEvent = this.eventFactoryService.ConvertJsonObjectToWebBaseEvent(response);
+          this.HandleAddPerformanceUpdateResponse(osdEvent);
+          observer.next(response);
+          observer.complete();
+        },
+        error: (error) => {
+          console.error('Error in addPerformanceUpdate:', error);
+          observer.error(error);
+        }
+      });
     });
   }
 

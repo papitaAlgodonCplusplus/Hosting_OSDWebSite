@@ -195,6 +195,24 @@ export class OnboardingRegisterClaimantComponent {
   }
 
   async onSubmit(): Promise<void> {
+    if (this.personalForm.invalid && this.selectorRegistry === true) {
+      this.personalForm.markAllAsTouched();
+      return;
+    }
+
+    if (!this.personalForm.value.country && this.selectorRegistry === true) {
+      this.personalForm.get('country')?.markAsTouched();
+      return;
+    }
+    
+    if (!this.personalForm.value.acceptConditions) {
+      this.personalForm.get('acceptConditions')?.markAsTouched();
+      return;
+    }
+
+    this.uploadFile = true;
+    this.store.dispatch(UiActions.toggleConfirmationButton());
+
     if (this.selectorRegistry === true) {
       this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, "Claimant").subscribe((response) => {
         // Wait 5 seconds to ensure the user is created.
@@ -251,19 +269,6 @@ export class OnboardingRegisterClaimantComponent {
       });
       return;
     }
-
-    if (this.accountForm.invalid && this.selectorRegistry === false) {
-      this.accountForm.markAllAsTouched();
-      return;
-    }
-
-    if (!this.personalForm.value.acceptConditions) {
-      this.isAcceptConditions = true;
-      return;
-    }
-
-    this.uploadFile = true;
-    this.store.dispatch(UiActions.toggleConfirmationButton());
 
     setTimeout(() => {
       if (this.personalForm.value.identity) {

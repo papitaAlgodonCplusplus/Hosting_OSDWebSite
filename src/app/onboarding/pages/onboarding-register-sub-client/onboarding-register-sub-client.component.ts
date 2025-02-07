@@ -107,6 +107,7 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
   }
 
   onClientTypeChange(clientCanBeClaimed: string): void {
+    console.log("Client type changed:", clientCanBeClaimed, "can be claimed:", clientCanBeClaimed === 'Client Subscriber' ? 'Yes' : 'No');
     this.accountForm.patchValue({
       clientCanBeClaimed: clientCanBeClaimed === 'Client Subscriber' ? 'Yes' : 'No'
     });
@@ -122,7 +123,7 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
       zipCode: ['', Validators.required],
       address: ['', [Validators.required]],
       city: [''],
-      country: [''],
+      country: ['', [Validators.required]],
       landline: [''],
       mobilePhone: ['', [Validators.required]],
       email: ['', [Validators.required, this.validationsService.isValidEmail]],
@@ -169,6 +170,11 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
   }
 
   onSubmit(): void {
+    const selectedClientCanBeClaimed = this.accountForm.get('clientCanBeClaimed')?.value;
+    console.log("Client type changed:", selectedClientCanBeClaimed, "can be claimed:", selectedClientCanBeClaimed === 'Client Subscriber' ? 'Yes' : 'No');
+    this.accountForm.patchValue({
+      clientCanBeClaimed: selectedClientCanBeClaimed === 'Client Subscriber' ? 'Yes' : 'No'
+    });
     if (this.personalForm.invalid || this.accountForm.invalid) {
       this.accountForm.markAllAsTouched();
       this.personalForm.markAllAsTouched();

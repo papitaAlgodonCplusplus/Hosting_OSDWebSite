@@ -27,6 +27,9 @@ import { UserProfileEditComponent } from './pages/edit-my-info/edit-my-info.comp
 import { StudentRecordComponent } from './pages/students-management/student-record.component';
 import { AccountingComponent } from './pages/accounting/accounting.component';
 import { FpManagementComponent } from './pages/fp-management/fp-management.component'; // Import the new component
+import { UsersManagementComponent } from './pages/users-management/users-record.component';
+import { ClaimsManagementComponent } from './pages/claims-management/claims-management.component';
+
 
 @NgModule({
   declarations: [
@@ -36,10 +39,12 @@ import { FpManagementComponent } from './pages/fp-management/fp-management.compo
     SubAuthorizedComponent,
     ClaimsFileComponent,
     FileManagerComponent,
+    ClaimsManagementComponent,
     EditClaimFileComponent,
     RestoreHistoryComponent,
     AuthorizedModalComponent,
     AssignClientToTrainerComponent,
+    UsersManagementComponent,
     AccountingServicesComponent,
     ClaimantAndClaimsCustomerPerformanceComponent,
     ClaimsTrainerPerformanceComponent,

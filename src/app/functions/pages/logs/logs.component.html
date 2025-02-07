@@ -46,29 +46,34 @@
                   View Details
                 </button>
                 <div *ngIf="expandedRow === i" class="mt-2">
-                  <table class="w-full text-sm border-collapse border border-gray-200">
+                  <table class="w-full text-sm border-collapse border border-gray-200 table-fixed">
                     <thead class="bg-gray-50">
                       <tr>
-                        <th class="p-2 border">Field</th>
-                        <th *ngIf="log.value.operation_type === 'INSERT'" class="p-2 border">Value</th>
-                        <th *ngIf="log.value.operation_type !== 'INSERT'" class="p-2 border">Old Value</th>
-                        <th *ngIf="log.value.operation_type !== 'DELETE'" class="p-2 border">New Value</th>
+                        <th class="p-2 border w-1/4">Field</th>
+                        <!-- If UPDATE, show two separate headers; otherwise, show one header spanning two columns -->
+                        <ng-container *ngIf="log.value.operation_type === 'UPDATE'; else singleValueHeader">
+                          <th class="p-2 border w-1/4">Old Value</th>
+                          <th class="p-2 border w-1/4">New Value</th>
+                        </ng-container>
+                        <ng-template #singleValueHeader>
+                          <th class="p-2 border w-1/2" colspan="2">Value</th>
+                        </ng-template>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr *ngFor="let key of getRowDataKeys(log.value.row_data, log.value.operation_type)" [ngClass]="{
-                          'bg-red-100': log.value.operation_type === 'UPDATE' && log.value.row_data.old?.[key] !== log.value.row_data.new?.[key]
-                        }">
-                        <td class="p-2 border">{{ key }}</td>
-                        <td *ngIf="log.value.operation_type === 'INSERT'" class="p-2 border">
-                          {{ log.value.row_data[key] || 'N/A' }}
-                        </td>
-                        <td *ngIf="log.value.operation_type !== 'INSERT'" class="p-2 border">
-                          {{ log.value.row_data.old?.[key] || 'N/A' }}
-                        </td>
-                        <td *ngIf="log.value.operation_type !== 'DELETE'" class="p-2 border">
-                          {{ log.value.row_data.new?.[key] || 'N/A' }}
-                        </td>
+                      <tr *ngFor="let key of getRowDataKeys(log.value.row_data, log.value.operation_type)"
+                        [ngClass]="{'bg-red-100': log.value.operation_type === 'UPDATE' && log.value.row_data.old?.[key] !== log.value.row_data.new?.[key]}">
+                        <td class="p-2 border truncate">{{ key }}</td>
+                        <ng-container *ngIf="log.value.operation_type === 'UPDATE'; else singleValueData">
+                          <td class="p-2 border truncate">{{ log.value.row_data.old?.[key] || 'N/A' }}</td>
+                          <td class="p-2 border truncate">{{ log.value.row_data.new?.[key] || 'N/A' }}</td>
+                        </ng-container>
+                        <ng-template #singleValueData>
+                          <td class="p-2 border truncate" colspan="2">
+                            {{ log.value.row_data.columns ? log.value.row_data.columns[key] : log.value.row_data[key] ||
+                            'N/A' }}
+                          </td>
+                        </ng-template>
                       </tr>
                     </tbody>
                   </table>

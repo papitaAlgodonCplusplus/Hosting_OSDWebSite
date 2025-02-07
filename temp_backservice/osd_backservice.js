@@ -280,6 +280,26 @@ app.post('/api/events/processOSDEvent', async (req, res) => {
         await handleRegisterUserEmail(event, res);
         break;
 
+      case 'SendNewPerformanceUpdateToEveryone':
+        await handleSendNewPerformanceUpdateToEveryone(event, res);
+        break;
+
+      case 'SendClaimReadyEmailToUser':
+        await handleSendClaimReadyEmailToUser(event, res);
+        break;
+
+      case 'DeleteUser':
+        await handleDeleteUser(event, res);
+        break;
+
+      case 'GetAllClaims':
+        await handleGetAllClaims(event, res);
+        break;
+
+      case 'DeleteClaim':
+        await handleDeleteClaim(event, res);
+        break;
+
       default:
         res.status(400).json(createWebBaseEvent({
           SUCCESS: false,
@@ -3109,7 +3129,7 @@ const handleUserRegistration = async (event, res) => {
         false,
         accountForm.cfhOffer,
         referId || null,
-        accountForm.canBeClaimed === 'Yes'
+        accountForm.clientCanBeClaimed === 'Yes'
       ]);
 
       if (accountTypeId === '8e539a42-4108-4be6-8f77-2d16671d1069') {
@@ -3208,7 +3228,7 @@ const handleUserRegistration = async (event, res) => {
 
 
     // Insert into student_records if courseCheckbox is checked
-    if (accountForm.courseCheckbox === true && accountForm.course) {
+    if (accountForm.course) {
       const insertStudentRecordQuery = `
           INSERT INTO student_records (
             id, name, email, phone, address, city, state, zip, country, status,
@@ -3408,8 +3428,285 @@ const handleGetUsers = async (event, res) => {
   }
 };
 
+const handleDeleteClaim = async (event, res) => {
+  try {
+    const claimId = event.Body?.ClaimId;
+
+    if (!claimId) {
+      return res.status(400).json(createWebBaseEvent({
+        DELETE_CLAIM_SUCCESS: false,
+        DELETE_CLAIM_MESSAGE: 'Claim ID is required.',
+      }, event.SessionKey, event.SecurityToken, 'DeleteClaim'));
+    }
+
+    // Start a transaction to ensure atomicity
+    await pool.query('BEGIN');
+
+    // Delete related records in other tables first
+    await pool.query('DELETE FROM performance_claim_control WHERE claimid = $1', [claimId]);
+    await pool.query('DELETE FROM freeprofessional_claim WHERE claimid = $1', [claimId]);
+
+    // Delete the claim itself
+    const deleteQuery = await pool.query(
+      'DELETE FROM claim_file WHERE id = $1 RETURNING *',
+      [claimId]
+    );
+
+    if (deleteQuery.rows.length === 0) {
+      await pool.query('ROLLBACK');
+      return res.status(404).json(createWebBaseEvent({
+        DELETE_CLAIM_SUCCESS: false,
+        DELETE_CLAIM_MESSAGE: 'Claim not found.',
+      }, event.SessionKey, event.SecurityToken, 'DeleteClaim'));
+    }
+
+    // Commit the transaction
+    await pool.query('COMMIT');
+
+    return res.status(200).json(createWebBaseEvent({
+      DELETE_CLAIM_SUCCESS: true,
+      DELETE_CLAIM_MESSAGE: 'Claim deleted successfully.',
+      deletedClaim: deleteQuery.rows[0]
+    }, event.SessionKey, event.SecurityToken, 'DeleteClaim'));
+
+  } catch (error) {
+    await pool.query('ROLLBACK');
+    console.error('❌ Error deleting claim:', error);
+    return res.status(500).json(createWebBaseEvent({
+      DELETE_CLAIM_SUCCESS: false,
+      DELETE_CLAIM_MESSAGE: 'Server error deleting claim.',
+    }, event.SessionKey, event.SecurityToken, 'DeleteClaim'));
+  }
+};
+
+const handleGetAllClaims = async (event, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM claim_file');
+    res.status(200).json(createWebBaseEvent({
+      GET_ALL_CLAIMS_SUCCESS: true,
+      claims: result.rows
+    }, event.SessionKey, event.SecurityToken, 'GetAllClaims'));
+  } catch (error) {
+    console.error('❌ Error fetching all claims:', error);
+    res.status(500).json(createWebBaseEvent({
+      GET_ALL_CLAIMS_SUCCESS: false,
+      GET_ALL_CLAIMS_MESSAGE: 'Server error fetching all claims.',
+    }, event.SessionKey, event.SecurityToken, 'GetAllClaims'));
+  }
+};
+
+const handleDeleteUser = async (event, res) => {
+  try {
+    const userId = event.Body?.UserId;
+
+    if (!userId) {
+      return res.status(400).json(createWebBaseEvent({
+        DELETE_USER_SUCCESS: false,
+        DELETE_USER_MESSAGE: 'User ID is required.',
+      }, event.SessionKey, event.SecurityToken, 'DeleteUser'));
+    }
+
+    const deleteQuery = await pool.query(
+      'DELETE FROM osduser WHERE id = $1 RETURNING *',
+      [userId]
+    );
+
+    if (deleteQuery.rows.length === 0) {
+      return res.status(404).json(createWebBaseEvent({
+        DELETE_USER_SUCCESS: false,
+        DELETE_USER_MESSAGE: 'User not found.',
+      }, event.SessionKey, event.SecurityToken, 'DeleteUser'));
+    }
+
+    return res.status(200).json(createWebBaseEvent({
+      DELETE_USER_SUCCESS: true,
+      DELETE_USER_MESSAGE: 'User deleted successfully.',
+      deletedUser: deleteQuery.rows[0]
+    }, event.SessionKey, event.SecurityToken, 'DeleteUser'));
+
+  } catch (error) {
+    console.error('❌ Error deleting user:', error);
+    return res.status(500).json(createWebBaseEvent({
+      DELETE_USER_SUCCESS: false,
+      DELETE_USER_MESSAGE: 'Server error deleting user.',
+    }, event.SessionKey, event.SecurityToken, 'DeleteUser'));
+  }
+};
+
 
 const GRID = 'S' + 'G' + '.' + 'k' + 'L' + 'E' + 'z' + 'l' + 'j' + '_' + 'a' + 'T' + 'm' + 'y' + 'U' + 'x' + 'S' + 'D' + 'P' + 'p' + 'c' + 'A' + 'W' + 'b' + 'g' + '.' + 'h' + 'z' + 'N' + 'j' + 'w' + 'U' + 'k' + '4' + '-' + 'o' + '3' + 'V' + 'E' + 'J' + 'K' + 'L' + 'j' + 'P' + 'W' + 'f' + 'd' + 'Z' + 'm' + 'c' + '0' + 'I' + 'S' + 'v' + 'K' + 'g' + '-' + 'l' + 'L' + 'T' + 'N' + 'v' + 'O' + 'F' + 'E' + 'i' + 'W' + '7' + 'Y'
+
+const handleSendClaimReadyEmailToUser = async (event, res) => {
+  try {
+    const userId = event.Body?.UserId;
+
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: 'User ID is required.'
+      });
+    }
+
+    const userQuery = await pool.query('SELECT email FROM osduser WHERE id = $1', [userId]);
+
+    if (userQuery.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found.'
+      });
+    }
+
+    const email = userQuery.rows[0].email;
+
+    const payload = {
+      from: {
+        email: "info@digitalsolutionoffice.com",
+        name: "Digital Solution Office"
+      },
+      template_id: 'd-9b3326060299450481c3841d83613ba0',
+      personalizations: [
+        {
+          to: [{ email: email }]
+        }
+      ]
+    };
+
+    await axios.post(
+      'https://api.sendgrid.com/v3/mail/send',
+      payload,
+      {
+        headers: {
+          'Authorization': `Bearer ${GRID}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    console.log(`✅ Email sent to ${email}`);
+    return res.status(200).json({
+      success: true,
+      message: 'Email sent successfully.'
+    });
+
+  } catch (error) {
+    console.error('❌ Error sending claim ready email:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Server error sending claim ready email.'
+    });
+  }
+};
+
+const handleSendNewPerformanceUpdateToEveryone = async (event, res) => {
+  try {
+    console.log('📥 Received request to send new performance update to everyone:', event.Body);
+    const claim = event.Body?.Claim;
+    const performance_made_by_id = event.Body?.UserId;
+
+    if (!claim || !claim.id) {
+      return res.status(400).json({
+        success: false,
+        message: 'Claim ID are required.'
+      });
+    }
+
+    const claimId = claim.id;
+
+    // Fetch claim details
+    const claimQuery = await pool.query('SELECT subscriberclaimedid, claimantid FROM claim_file WHERE id = $1', [claimId]);
+    if (claimQuery.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Claim not found.'
+      });
+    }
+
+    const { subscriberclaimedid, claimantid } = claimQuery.rows[0];
+
+    // Fetch assigned trainer
+    const trainerQuery = await pool.query('SELECT assignedtrainer FROM osduser WHERE id = $1', [subscriberclaimedid]);
+    let assignedTrainerId = trainerQuery.rows.length > 0 ? trainerQuery.rows[0].assignedtrainer : null;
+
+    // Fetch trainer's user ID
+    if (assignedTrainerId) {
+      const trainerUserQuery = await pool.query('SELECT userid FROM freeprofessional WHERE id = $1', [assignedTrainerId]);
+      assignedTrainerId = trainerUserQuery.rows.length > 0 ? trainerUserQuery.rows[0].userid : null;
+    }
+
+    // Collect all user IDs to send emails to
+    const userIds = [subscriberclaimedid, claimantid, assignedTrainerId].filter(id => id);
+
+    // Fetch email addresses for the user IDs
+    const emailQuery = await pool.query('SELECT email, code FROM osduser WHERE id = ANY($1::uuid[])', [userIds]);
+    const emails = emailQuery.rows.map(row => row.email);
+    const codes = emailQuery.rows.map(row => row.code);
+    let typePlaceholder = "";
+    const userCodeQuery = await pool.query('SELECT code FROM osduser WHERE id = $1', [performance_made_by_id]);
+    if (userCodeQuery.rows.length > 0) {
+      const userCode = userCodeQuery.rows[0].code;
+      const parts = userCode.split('/');
+      if (parts.length >= 2) {
+        typePlaceholder = parts[1];
+        switch (typePlaceholder) {
+          case 'R':
+            typePlaceholder = 'Reclamante';
+            break;
+          case 'CL':
+            typePlaceholder = 'Reclamado';
+            break;
+          case 'PL':
+            typePlaceholder = 'Tramitador';
+            break;
+          default:
+            break;
+        }
+      }
+    }
+
+    // Send email to each address
+    for (const email of emails) {
+      const payload = {
+        from: {
+          email: "info@digitalsolutionoffice.com",
+          name: "Digital Solution Office"
+        },
+        template_id: 'd-deb49eedfa5348d49dbf04a50991d4f1',
+        personalizations: [
+          {
+            to: [{ email: email }],
+            dynamic_template_data: {
+              TYPE_PLACEHOLDER: typePlaceholder
+            }
+          }
+        ]
+      };
+
+      await axios.post(
+        'https://api.sendgrid.com/v3/mail/send',
+        payload,
+        {
+          headers: {
+            'Authorization': `Bearer ${GRID}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      console.log(`✅ Email sent to ${email}, user type: ${typePlaceholder}`);
+    }
+    return res.status(200).json({
+      success: true,
+      message: 'Emails sent successfully.'
+    });
+
+  } catch (error) {
+    console.error('❌ Error sending performance update emails:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Server error sending performance update emails.'
+    });
+  }
+};
 
 const handleRegisterUserEmail = async (req, res) => {
   try {
@@ -3620,8 +3917,7 @@ const handleRestoreDatabaseLogs = async (event, res) => {
       result = await pool.query(deleteQuery, [insertedRow.id]);
 
     } else if (opType === 'DELETE') {
-      // To undo a DELETE, we reinsert the row using the stored old data.
-      const oldData = log.row_data.old;
+      const oldData = log.row_data.old || log.row_data.columns || log.row_data;
       if (!oldData) {
         console.log('❌ Old row data is missing for delete operation.');
         return res.status(400).json({

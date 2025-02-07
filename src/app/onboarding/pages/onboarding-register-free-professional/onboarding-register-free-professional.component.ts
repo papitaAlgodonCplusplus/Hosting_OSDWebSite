@@ -61,6 +61,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   selectedCourse: string | undefined;
   showCourseDropdown: boolean = false;
   showCourseCheckbox: boolean = false;
+  public cfhOptions: Array<{ display: string; value: string }> = [];
 
   constructor(private store: Store,
     private formBuilder: FormBuilder,
@@ -112,51 +113,47 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     this.http.get<any>(`${this.apiUrl}/courses`).subscribe(
       (response) => {
         if (response.success && response.courses.length) {
+          // 1) Store the raw courses
           this.courses = response.courses.map((course: any) => ({
             value: course.title,
             key: course.id,
             mode: course.mode
           }));
-          this.cdr.detectChanges();
+
+          // 2) Transform them into {display, value} for your dropdown
+          const mapped = this.courses.map((c) => {
+            // Extract text inside the first parentheses
+            let extracted = '';
+            if (c.value) {
+              const parts = c.value.split('(');
+              if (parts.length >= 2) {
+                extracted = parts[1].replace(')', '').trim();
+              }
+            }
+            return {
+              display: extracted, // e.g. "OSD", "AlexCFH"
+              value: extracted        // unique ID
+            };
+          });
+
+          // 3) Filter duplicates by display
+          const seen = new Set<string>();
+          const unique: { display: string; value: string }[] = [];
+          for (const item of mapped) {
+            if (!seen.has(item.display)) {
+              seen.add(item.display);
+              unique.push(item);
+            }
+          }
+
+          // 4) Assign to the class property
+          this.cfhOptions = unique;
         }
       },
       (error) => {
         console.error('Error fetching courses:', error);
       }
     );
-  }
-
-  get cfhOptions() {
-    // First, map the original courses array into an array of { display, value }
-    const mapped = this.courses.map((c) => {
-      // Example c.value: "course_name (some_content) (some_other_part)"
-      // Suppose you want the piece inside the first parentheses:
-      let extracted = '';
-      if (c.value) {
-        const parts = c.value.split('(');
-        // e.g. ["course_name ", "some_content) ", "some_other_part)"]
-        if (parts.length >= 2) {
-          extracted = parts[1].replace(')', '').trim();
-        }
-      }
-      return {
-        display: extracted, // The label to show (e.g. "AlexCFH")
-        value: c.key        // The actual key or ID behind the scenes
-      };
-    });
-
-    // 2) Filter out duplicates in 'display' using a Set
-    const unique: { display: string; value: string }[] = [];
-    const seen = new Set<string>(); // track distinct display values
-
-    mapped.forEach((item) => {
-      if (!seen.has(item.display)) {
-        seen.add(item.display);
-        unique.push(item);
-      }
-    });
-
-    return unique; // Only distinct labels remain
   }
 
   trackByKey(index: number, item: any): string {
@@ -308,6 +305,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
   updateCourseString() {
     const { courseTitle, courseMode, courseCFH } = this.accountForm.value;
     const combined_string = `${courseTitle} (${courseCFH})`;
+    console.log('Combined string:', combined_string);
     for (let course of this.courses) {
       if (course.value === combined_string && course.mode === courseMode) {
         console.log('Found course:', course);
@@ -338,7 +336,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
     });
     return personalForm;
   }
-  
+
   sendRegistrationEmail(to_email: string, userCode?: string) {
     const payload = {
       to_email: to_email,
@@ -376,6 +374,7 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
       return;
     }
     if (this.accountForm.invalid || this.personalForm.invalid) {
+      console.log("Invalid form:", this.accountForm, this.personalForm);
       this.accountForm.markAllAsTouched();
       this.personalForm.markAllAsTouched();
       const alertMsg = this.translate.currentLang === "en"

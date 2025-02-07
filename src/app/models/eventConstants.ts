@@ -10,6 +10,7 @@ export class EventConstants {
   public static DATE: string = "Date";
   public static ACTION: string = "Action";
   public static LOG: string = "Log";
+  public static CLAIM: string = "Claim";
   public static DATE_PERFORMANCE: string = "DatePerformance";
   public static APPLICATION_IDENTIFIER: string = "ApplicationIdentifier";
   public static COMPONENT: string = "Component";

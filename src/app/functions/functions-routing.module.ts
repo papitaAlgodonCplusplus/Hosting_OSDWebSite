@@ -19,6 +19,8 @@ import { ClaimsTrainerPerformanceComponent } from './pages/claims-trainer-perfor
 import { ClaimsProcessorPerformanceComponent } from './pages/claims-processor-performance/claims-processor-performance.component';
 import { FpManagementComponent } from './pages/fp-management/fp-management.component';
 import { LogsComponent } from './pages/logs/logs.component';
+import { UsersManagementComponent } from './pages/users-management/users-record.component';
+import { ClaimsManagementComponent } from './pages/claims-management/claims-management.component';
 
 const routes: Routes = [
   {
@@ -44,6 +46,14 @@ const routes: Routes = [
   {
     path: 'students-management',
     component: StudentRecordComponent
+  },
+  {
+    path: 'users-management',
+    component: UsersManagementComponent
+  },
+  {
+    path: 'claims-management',
+    component: ClaimsManagementComponent
   },
   {
     path: 'edit-my-info',

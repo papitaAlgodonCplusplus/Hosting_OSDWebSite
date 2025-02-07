@@ -14,10 +14,10 @@
                     <label for="courseCFH" class="text-darkgray">{{ 'Select_CFH' | translate}}</label>
                     <select id="courseCFH" class="w-full p-2 border border-gray-300 rounded-lg"
                         formControlName="courseCFH" (change)="updateCourseString()">
-                        <option [value]="''" disabled selected>
+                        <option [ngValue]="''" disabled>
                             {{ 'Select_CFH' | translate }}
                         </option>
-                        <option *ngFor="let opt of cfhOptions" [value]="opt.display">
+                        <option *ngFor="let opt of cfhOptions" [value]="opt.value">
                             {{ opt.display }}
                         </option>
                     </select>
