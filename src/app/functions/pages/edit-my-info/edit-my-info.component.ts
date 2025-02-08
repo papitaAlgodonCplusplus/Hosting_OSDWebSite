@@ -12,11 +12,11 @@ import { ModalActions, PerformanceActions, UiActions } from 'src/app/store/actio
   selector: 'app-edit-my-info',
   templateUrl: './edit-my-info.component.html',
   styleUrls: ['./edit-my-info.css']
-
 })
 export class UserProfileEditComponent implements OnInit {
   userForm: FormGroup;
   user: any;
+  showPassword = false; // For toggling password visibility
 
   constructor(
     private store: Store,
@@ -37,6 +37,7 @@ export class UserProfileEditComponent implements OnInit {
       landline: [''],
       mobilePhone: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.minLength(6)]], // Optional password field
       web: ['']
     });
   }
@@ -88,29 +89,28 @@ export class UserProfileEditComponent implements OnInit {
       return;
     }
 
-    this.osdService.updateUserProfile(this.user.id, this.userForm.value).subscribe({
+    const updateData = { ...this.userForm.value };
+    if (!updateData.password) {
+      delete updateData.password; // If password field is empty, don't send it in the request
+    }
+
+    this.osdService.updateUserProfile(this.user.id, updateData).subscribe({
       next: () => {
         this.snackBar.open('✅ Datos personales actualizados correctamente.', 'Cerrar', {
-          duration: 3000,
-          horizontalPosition: 'left',
-          verticalPosition: 'top',
-          panelClass: ['success-snackbar']
+          duration: 3000
         });
-        this.store.dispatch(
-          ModalActions.addAlertMessage({ alertMessage: "Registration successful!" })
-        );
-        this.store.dispatch(ModalActions.openAlert());
         this.router.navigate(['/home']);
       },
       error: (error: any) => {
         console.error('❌ Error updating user profile:', error);
         this.snackBar.open('❌ Error al actualizar los datos personales.', 'Cerrar', {
-          duration: 3000,
-          horizontalPosition: 'left',
-          verticalPosition: 'top',
-          panelClass: ['error-snackbar']
+          duration: 3000
         });
       }
     });
   }
-} 
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+}

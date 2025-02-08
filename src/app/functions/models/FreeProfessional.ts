@@ -7,10 +7,15 @@ export class FreeProfessional {
     Name: string = "";
     name: string = "";
     code: string = "";
+    cfhid: string = "";
     username: string = "";
     servicerates: string = "";
     userid: string = "";
     Country: string = "";
+    country: string = "";
+    email: string = "";
+    useremail: string = "";
+    Email: string = "";
     clientType: string= "";
     FreeprofessionaltypeName: string = "";
     FreeprofessionaltypeAcronym: string = "";

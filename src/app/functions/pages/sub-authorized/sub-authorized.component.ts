@@ -7,6 +7,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { Subscriber } from '../../models/Subscriber';
 import { BackblazeService } from 'src/app/services/backblaze.service';
+import { CountryService } from 'src/app/services/country.service';
+import { map } from 'rxjs/operators';
+import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
+import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-sub-authorized',
@@ -16,6 +20,7 @@ import { BackblazeService } from 'src/app/services/backblaze.service';
 export class SubAuthorizedComponent implements OnDestroy {
   items: any[] = [];
   displayedItems: any[] = [];
+  myForm!: FormGroup; // Declare FormGroup instance
   // Map USER_TYPE codes to display names
   userTypeDisplayNames: { [key: string]: string } = {
     CL: 'Cliente',
@@ -34,12 +39,27 @@ export class SubAuthorizedComponent implements OnDestroy {
   user!: any;
   subscribers: Subscriber[] = [];
   subscriber!: Subscriber;
+  itemsBackup: any[] = [];
   itemsGroupedByUserType: { [key: string]: any[] } = {
     Cliente: [],
     CFH: [],
     RestFreeProfessionals: [],
     Reclamante: []
   };
+  userTypes: DropDownItem[] = [
+    { value: '', key: 'All' },
+    { value: 'Cliente', key: 'Cliente' },
+    { value: 'Centro de Formacion Homologado', key: 'Centro de Formacion Homologado' },
+    { value: 'Reclamante', key: 'Reclamante' }
+  ];
+  showProcessorsModal: boolean = false;
+  selectedProcessors: any[] = [];
+  selectedProcessorsTitle: string = '';
+  ClientProcessorsArray: any[] = [];
+  CFHProcessorsArray: any[] = [];
+  solutions_clients: any[] = [];
+  office_clients: any[] = [];
+  countries: DropDownItem[] = [];
 
   userId!: string;
   isAuthorized!: boolean;
@@ -53,7 +73,9 @@ export class SubAuthorizedComponent implements OnDestroy {
     private osdDataService: OSDDataService,
     private translate: TranslateService,
     private backblazeService: BackblazeService,
-    private osdEventService: OSDService
+    private osdEventService: OSDService,
+    private countryService: CountryService,
+    private fb: FormBuilder
   ) { }
 
   downloadSelectedFile(document_type: string) {
@@ -122,8 +144,27 @@ export class SubAuthorizedComponent implements OnDestroy {
 
       if (userType === 'CL') {
         groupedItems['Cliente'].push(item);
+        console.log('Getting processors for client:', item.userid);
+        this.osdEventService.getMyAssignedProcessors(item.userid).subscribe({
+          next: (processors) => {
+            console.log('Got processors for client:', processors.Body?.processors);
+            this.ClientProcessorsArray[item.code] = processors.Body?.processors;
+          },
+          error: (err) => {
+            console.error('Error fetching processors for client:', err);
+          }
+        })
       } else if (userType === 'CFH') {
         groupedItems['CFH'].push(item);
+        this.osdEventService.getMyAssignedProcessors(item.userid).subscribe({
+          next: (processors) => {
+            console.log('Got processors for client:', processors.Body?.processors);
+            this.CFHProcessorsArray[item.code] = processors.Body?.processors;
+          },
+          error: (err) => {
+            console.error('Error fetching processors for client:', err);
+          }
+        })
       } else if (userType === 'R') {
         groupedItems['Reclamante'].push(item);
       } else {
@@ -142,6 +183,10 @@ export class SubAuthorizedComponent implements OnDestroy {
 
 
   ngOnInit(): void {
+    this.myForm = this.fb.group({
+      selectedCountry: new FormControl(''),
+      selectedUserType: new FormControl('') // New control for user type filter
+    });
     this.itemsGroupedByUserType = {
       Cliente: [],
       CFH: [],
@@ -157,6 +202,7 @@ export class SubAuthorizedComponent implements OnDestroy {
     // Observing the user's subscribers
     this.osdDataService.getOsdUsersSubscribersSuccess$.subscribe(osdUsersSubscribers => {
       this.items = osdUsersSubscribers;
+      this.itemsBackup = osdUsersSubscribers;
       console.log("Got subscribers", osdUsersSubscribers);
 
       // Observing all subscribers
@@ -173,12 +219,126 @@ export class SubAuthorizedComponent implements OnDestroy {
           }
         });
 
+        this.loadCountries();
         this.groupSubscribersByUserType();
         this.updateDisplayedItems();
+        this.SubCategorizeClients();
+        console.log("Office clients: ", this.office_clients, "Solutions clients: ", this.solutions_clients);
       });
     });
   }
 
+  filterUsers(): void {
+    const selectedCountry: string = this.myForm.value.selectedCountry.trim().toLowerCase();
+    const selectedUserType: string = this.myForm.value.selectedUserType;
+    console.log("Selected country: ", selectedCountry, "Selected user type: ", selectedUserType);
+    if (selectedUserType) {
+      let groupName: string;
+      switch (selectedUserType) {
+        case 'Cliente':
+          groupName = 'Cliente';
+          break;
+        case 'CL':
+          groupName = 'Cliente';
+          break;
+        case 'Centro de Formacion Homologado':
+          groupName = 'CFH';
+          break;
+        case 'CFH':
+          groupName = 'CFH';
+          break;
+        case 'Reclamante':
+          groupName = 'Reclamante';
+          break;
+        case 'R':
+          groupName = 'Reclamante';
+          break;
+        default:
+          groupName = 'All';
+      }
+      
+      let groupItems = this.itemsGroupedByUserType[groupName] || [];
+      if (selectedCountry) {
+        groupItems = groupItems.filter(item =>
+          item.country.trim().toLowerCase() === selectedCountry
+        );
+      }
+
+      console.log("Group items: ", groupItems);
+      Object.keys(this.itemsGroupedByUserType).forEach(key => {
+        if (key !== groupName) {
+          this.itemsGroupedByUserType[key] = [];
+        }
+      });
+      this.itemsGroupedByUserType[groupName] = groupItems;
+      this.items = groupItems;
+    } else {
+      const filteredItems = this.items.filter(item => {
+        if (selectedCountry) {
+          return item.country.trim().toLowerCase() === selectedCountry;
+        }
+        return true;
+      });
+      
+      this.items = filteredItems;
+      this.groupSubscribersByUserType();
+    }
+    this.updateDisplayedItems();
+    this.SubCategorizeClients();
+  }
+  
+
+  onCancel() {
+    this.myForm.patchValue({
+      selectedCountry: '',
+      selectedUserType: ''
+    });
+    this.items = this.itemsBackup;
+    this.itemsGroupedByUserType = {
+      Cliente: [],
+      CFH: [],
+      RestFreeProfessionals: [],
+      Reclamante: [],
+    };
+    this.groupSubscribersByUserType();
+    this.updateDisplayedItems();
+    this.SubCategorizeClients();
+  }
+
+  private loadCountries(): void {
+    this.countryService.getCountries()
+      .pipe(
+        map((countries: any[]) => this.mapCountriesToDropdown(countries))
+      )
+      .subscribe(countries => {
+        this.countries = countries;
+        this.sortCountries();
+      });
+  }
+
+  private mapCountriesToDropdown(countries: any[]): DropDownItem[] {
+    return countries
+      .map(country => this.getCountryDropdownItem(country))
+      .filter(item => item !== undefined) as DropDownItem[];
+  }
+  private getCountryDropdownItem(country: any): DropDownItem | undefined {
+    const name = this.translate.currentLang === 'en'
+      ? country.name?.common
+      : country.translations?.spa?.common;
+
+    return name && country.cca2 ? { value: name, key: country.name.common } : undefined;
+  }
+  private sortCountries(): void {
+    this.countries.sort((a, b) => a.value.localeCompare(b.value));
+  }
+
+  SubCategorizeClients() {
+    for (let i = 0; i < this.itemsGroupedByUserType['Cliente'].length; i++) {
+      console.log("Item: ", this.itemsGroupedByUserType['Cliente'][i]);
+    }
+    this.solutions_clients = this.itemsGroupedByUserType['Cliente']?.filter(item => !item.can_be_claimed) || [];
+    this.office_clients = this.itemsGroupedByUserType['Cliente']?.filter(item => item.can_be_claimed) || [];
+  }
 
   ngOnDestroy(): void {
     setTimeout(() => {
@@ -298,6 +458,35 @@ export class SubAuthorizedComponent implements OnDestroy {
 
   onCancelHandler() {
     this.showAuthorizatedModal = false;
+  }
+
+  /**
+   * Opens the Processors modal and sets the processors list based on the item.
+   */
+  viewProcessors(item: any): void {
+    // Check which processors array has the data for this user
+    console.log("arays: ", this.ClientProcessorsArray, this.CFHProcessorsArray)
+    console.log("item: ", item.code);
+    if (this.ClientProcessorsArray[item.code]) {
+      this.selectedProcessors = this.ClientProcessorsArray[item.code];
+    } else if (this.CFHProcessorsArray[item.code]) {
+      this.selectedProcessors = this.CFHProcessorsArray[item.code];
+    } else {
+      this.selectedProcessors = [];
+    }
+    console.log("Selected processors: ", this.selectedProcessors);
+    // Set a title using the company name or name
+    this.selectedProcessorsTitle = item.companyname || item.name || '';
+    this.showProcessorsModal = true;
+  }
+
+  /**
+   * Closes the Processors modal.
+   */
+  closeProcessorsModal(): void {
+    this.showProcessorsModal = false;
+    this.selectedProcessors = [];
+    this.selectedProcessorsTitle = '';
   }
 
   // NEW METHOD: "See Info" -> display subscriber details in a modal

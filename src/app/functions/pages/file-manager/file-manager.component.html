@@ -29,17 +29,20 @@
       <!-- Code Field (readOnly; single column) -->
       <div class="col-span-1 border border-gray-300 rounded-md p-2">
         <label class="block mb-1 font-medium">{{ 'Code' | translate }}</label>
-        <input formControlName="code" type="text" class="w-full bg-white-lightbone" [readonly]="true"
-          [placeholder]="this.claim?.code" />
+        <div class="flex items-center">
+          <input formControlName="code" type="text" class="w-full bg-white-lightbone" readonly
+            [placeholder]="this.claim?.code" />
+          <button type="button"
+            class="ml-2 p-1 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors duration-200"
+            (click)="copyText('code')">📋</button>
+        </div>
       </div>
 
+      <!-- Justification/Proof File Label & Download Button (not readOnly) -->
       <div class="col-span-1 border border-gray-300 rounded-md p-2">
-        <!-- Justification/Proof File Label (non readOnly; single column) -->
         <label for="downloadButton" class="text-sm text-gray-700 font-medium">
           {{ 'Justification/Proof File of the Claim' | translate }}
         </label>
-
-        <!-- Download Button (non readOnly; single column) -->
         <div class="col-span-1 flex items-center">
           <button id="downloadButton" type="button" class="cursor-pointer px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg shadow-md 
           hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 
@@ -52,50 +55,67 @@
       <!-- Facts Field (readOnly; spans both columns) -->
       <div class="col-span-2 border border-gray-300 rounded-md p-2 h-32">
         <label class="block mb-1 font-medium">{{ 'Facts' | translate }}</label>
-        <textarea formControlName="facts" class="w-full bg-white-lightbone" [readonly]="true"
-          [placeholder]="this.claim?.facts"></textarea>
+        <div class="flex items-start">
+          <textarea formControlName="facts" class="w-full bg-white-lightbone" readonly
+            [placeholder]="this.claim?.facts"></textarea>
+          <button type="button"
+            class="ml-2 p-1 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors duration-200"
+            (click)="copyText('facts')">📋</button>
+        </div>
       </div>
 
       <!-- Claimant Field (readOnly; single column) -->
       <div class="col-span-1 border border-gray-300 rounded-md p-2">
         <label class="block mb-1 font-medium">{{ 'Reclamación' | translate }}</label>
-        <input formControlName="claimant" type="text" class="w-full bg-white-lightbone" [readonly]="true"
-          [placeholder]="this.claim?.namecompanysubscriberclaimed" />
+        <div class="flex items-center">
+          <input formControlName="claimant" type="text" class="w-full bg-white-lightbone" readonly
+            [placeholder]="this.claim?.namecompanysubscriberclaimed" />
+        </div>
       </div>
 
       <!-- Status Field (readOnly; single column) -->
       <div class="col-span-1 border border-gray-300 rounded-md p-2">
         <label class="block mb-1 font-medium">{{ 'Status' | translate }}</label>
-        <input formControlName="state" type="text" class="w-full bg-white-lightbone" [readonly]="true"
-          [placeholder]="this.claim?.status" />
+        <div class="flex items-center">
+          <input formControlName="state" type="text" class="w-full bg-white-lightbone" readonly
+            [placeholder]="this.claim?.status" />
+        </div>
       </div>
 
       <!-- Amount Claimed Field (readOnly; single column) -->
       <div class="col-span-1 border border-gray-300 rounded-md p-2">
         <label class="block mb-1 font-medium">{{ 'Amount Claimed' | translate }}</label>
-        <input formControlName="amountClaimed" type="text" class="w-full bg-white-lightbone" [readonly]="true"
-          [placeholder]="this.claim?.amountclaimed" />
+        <div class="flex items-center">
+          <input formControlName="amountClaimed" type="text" class="w-full bg-white-lightbone" readonly
+            [placeholder]="this.claim?.amountclaimed" />
+        </div>
       </div>
 
       <!-- Valuation Free Professionals Field (readOnly; single column) -->
       <div class="col-span-1 border border-gray-300 rounded-md p-2">
         <label class="block mb-1 font-medium">{{ 'Valuation Processor' | translate }}</label>
-        <input formControlName="valuationFreeProfessionals" type="text" class="w-full bg-white-lightbone"
-          [readonly]="true" [placeholder]="this.fileManager.get('valuationFreeProfessionals')?.value" />
+        <div class="flex items-center">
+          <input formControlName="valuationFreeProfessionals" type="text" class="w-full bg-white-lightbone" readonly
+            [placeholder]="this.fileManager.get('valuationFreeProfessionals')?.value" />
+        </div>
       </div>
 
       <!-- Valuation Claimant Field (readOnly; single column) -->
       <div class="col-span-1 border border-gray-300 rounded-md p-2">
         <label class="block mb-1 font-medium">{{ 'Valuation Claimant' | translate }}</label>
-        <input formControlName="valuationClaimant" type="text" class="w-full bg-white-lightbone" [readonly]="true"
-          [placeholder]="this.fileManager.get('valuationClaimant')?.value" />
+        <div class="flex items-center">
+          <input formControlName="valuationClaimant" type="text" class="w-full bg-white-lightbone" readonly
+            [placeholder]="this.fileManager.get('valuationClaimant')?.value" />
+        </div>
       </div>
 
       <!-- Valuation Subscriber Field (readOnly; single column) -->
       <div class="col-span-1 border border-gray-300 rounded-md p-2">
         <label class="block mb-1 font-medium">{{ 'Valuation Subscriber' | translate }}</label>
-        <input formControlName="valuationSubscriber" type="text" class="w-full bg-white-lightbone" [readonly]="true"
-          [placeholder]="this.fileManager.get('valuationSubscriber')?.value" />
+        <div class="flex items-center">
+          <input formControlName="valuationSubscriber" type="text" class="w-full bg-white-lightbone" readonly
+            [placeholder]="this.fileManager.get('valuationSubscriber')?.value" />
+        </div>
       </div>
     </form>
   </div>
@@ -160,11 +180,13 @@
             <!-- Right Column: Facts Field -->
             <div class="border border-gray-300 rounded-md p-2 h-32">
               <label class="block mb-1 font-medium">{{ 'Facts' | translate }}</label>
-              <textarea formControlName="facts" class="w-full bg-white-lightbone" [readonly]="true"
+              <textarea formControlName="facts" class="w-full bg-white-lightbone" readonly
                 [placeholder]="this.claim?.facts"></textarea>
+              <button type="button"
+                class="ml-2 p-1 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors duration-200"
+                (click)="copyText('facts')">📋</button>
             </div>
           </div>
-
 
           <!-- Ask for More Info Checkbox -->
           <div class="flex items-center w-full" *ngIf="isUserProcessor && selectedOption === 'ask_for_more_info'">
@@ -201,8 +223,14 @@
           <div *ngIf="!isUserProcessor && !isTrainer && !isClaimant && selectedOption === 'answer_to_appeal'"
             class="flex flex-col w-full">
             <label for="performanceAppeal" class="font-semibold mb-1">{{ 'Appeal' | translate }}</label>
-            <textarea formControlName="appeal" id="performanceAppeal" class="border border-gray-300 rounded-md p-2 h-32"
-              [placeholder]="this.claim?.appeal || 'None'" [readonly]="true"></textarea>
+            <div class="flex items-start">
+              <textarea formControlName="appeal" id="performanceAppeal"
+                class="border border-gray-300 rounded-md p-2 h-32" [placeholder]="this.claim?.appeal || 'None'"
+                readonly></textarea>
+              <button type="button"
+                class="absolute top-2 right-2 p-1 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors duration-200"
+                (click)="copyText('appeal')">📋</button>
+            </div>
           </div>
 
           <!-- Answer to Appeal Field -->
@@ -219,9 +247,14 @@
           <!-- Solution Suggestion ReadOnly Field for Processor -->
           <div *ngIf="isUserProcessor && selectedOption === 'solution'" class="flex flex-col w-full">
             <label for="solutionSuggestion" class="font-semibold mb-1">{{ 'solution_suggestion' | translate }}</label>
-            <textarea formControlName="solutionSuggestion" id="solutionSuggestion"
-              class="border border-gray-300 rounded-md p-2 h-32"
-              [placeholder]="this.claim?.solution_suggestion || 'None'" [readonly]="true"></textarea>
+            <div class="flex items-start">
+              <textarea formControlName="solutionSuggestion" id="solutionSuggestion"
+                class="border border-gray-300 rounded-md p-2 h-32"
+                [placeholder]="this.claim?.solution_suggestion || 'None'" readonly></textarea>
+              <button type="button"
+                class="absolute top-2 right-2 p-1 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors duration-200"
+                (click)="copyText('solution_suggestion')">📋</button>
+            </div>
           </div>
 
           <!-- Solution Field for Processor -->
@@ -231,35 +264,16 @@
               placeholder="{{ 'Enter your solution' | translate }}"></textarea>
           </div>
 
-          <!-- Appeal Readonly Field (conditionally displayed) -->
-          <div *ngIf="isTrainer" class="flex flex-col w-full">
-            <label for="appeal" class="font-semibold mb-1">{{ 'appeal' | translate }}</label>
-            <textarea formControlName="appeal" id="appeal" class="border border-gray-300 rounded-md p-2 h-32"
-              [placeholder]="this.claim?.appeal || 'None'" [readonly]="true"></textarea>
-          </div>
-
-          <!-- Solution Appeal Field for Trainer -->
-          <div *ngIf="isTrainer" class="flex flex-col w-full">
-            <label for="solutionAppeal" class="font-semibold mb-1">{{ 'solution_appeal' | translate }}</label>
-            <textarea formControlName="solutionAppeal" id="solutionAppeal"
-              class="border border-gray-300 rounded-md p-2 h-32"
-              placeholder="{{ 'Enter your solution appeal' | translate }}"></textarea>
-          </div>
-
-          <!-- Solution Suggestion Field for non-Trainer -->
-          <div *ngIf="!isTrainer && !isClaimant && !isUserProcessor && selectedOption === 'solution_suggestion'"
-            class="flex flex-col w-full">
-            <label for="solutionSuggestion" class="font-semibold mb-1">{{ 'solution_suggestion' | translate }}</label>
-            <textarea formControlName="solutionSuggestion" id="solutionSuggestion"
-              class="border border-gray-300 rounded-md p-2 h-32"
-              placeholder="{{ 'Enter your solution suggestion' | translate }}"></textarea>
-          </div>
-
           <!-- Complaint Readonly Field (conditionally displayed) -->
           <div *ngIf="isUserProcessor && selectedOption === 'solution_complaint'" class="flex flex-col w-full">
             <label for="complaint" class="font-semibold mb-1">{{ 'complaint' | translate }}</label>
-            <textarea formControlName="complaint" id="complaint" class="border border-gray-300 rounded-md p-2 h-32"
-              [placeholder]="this.claim?.complaint || 'None'" [readonly]="true"></textarea>
+            <div class="flex items-start">
+              <textarea formControlName="complaint" id="complaint" class="border border-gray-300 rounded-md p-2 h-32"
+                [placeholder]="this.claim?.complaint || 'None'" readonly></textarea>
+              <button type="button"
+                class="absolute top-2 right-2 p-1 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors duration-200"
+                (click)="copyText('complaint')">📋</button>
+            </div>
           </div>
 
           <!-- Solution Complaint Field (conditionally displayed) -->
@@ -286,6 +300,35 @@
               placeholder="{{ 'Enter your appeal' | translate }}"></textarea>
           </div>
 
+          <!-- Appeal Field ReadOnly for Trainer -->
+          <div *ngIf="isTrainer" class="flex flex-col w-full">
+            <label for="appeal" class="font-semibold mb-1">{{ 'appeal' | translate }}</label>
+            <div class="relative">
+              <textarea formControlName="appeal" id="appeal" class="border border-gray-300 rounded-md p-2 h-32 w-full"
+                [placeholder]="this.claim?.appeal || 'None'" readonly></textarea>
+              <button type="button"
+                class="absolute top-2 right-2 p-1 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors duration-200"
+                (click)="copyText('appeal')">📋</button>
+            </div>
+          </div>
+
+          <!-- Solution Appeal Field for Trainer -->
+          <div *ngIf="isTrainer" class="flex flex-col w-full">
+            <label for="solutionAppeal" class="font-semibold mb-1">{{ 'solution_appeal' | translate }}</label>
+            <textarea formControlName="solutionAppeal" id="solutionAppeal"
+              class="border border-gray-300 rounded-md p-2 h-32"
+              placeholder="{{ 'Enter your solution appeal' | translate }}"></textarea>
+          </div>
+
+          <!-- Solution Suggestion Field for non-Trainer -->
+          <div *ngIf="!isTrainer && !isClaimant && !isUserProcessor && selectedOption === 'solution_suggestion'"
+            class="flex flex-col w-full">
+            <label for="solutionSuggestion" class="font-semibold mb-1">{{ 'solution_suggestion' | translate }}</label>
+            <textarea formControlName="solutionSuggestion" id="solutionSuggestion"
+              class="border border-gray-300 rounded-md p-2 h-32"
+              placeholder="{{ 'Enter your solution suggestion' | translate }}"></textarea>
+          </div>
+
           <!-- Submit / Cancel Buttons -->
           <div class="flex justify-end space-x-3 mt-3">
             <button type="button" (click)="closeAddUpdateModal()"
@@ -306,7 +349,7 @@
   <div *ngIf="showModalPerformances" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto w-90">
     <div class="bg-opacity-75 bg-black absolute inset-0"></div>
     <div class="relative z-50 bg-white shadow-md rounded-xl p-3 w-90 h-90 overflow-y-auto">
-      <div class="p-3 flex flex-col items-center space-y-3">
+      <div class="p-3 flex flex-col items-center">
         <table class="table-fixed w-full">
           <thead>
             <tr class="text-darkslategray border-b">
@@ -329,10 +372,6 @@
             <tr class="border-t text-center" *ngFor="let performance of displayedItems; let i = index">
               <td class="w-[0.5rem] p-3 text-xs">{{ performance.code }}</td>
               <td class="w-[1rem] p-3">{{ performance.dateperformance | date:'dd-MM-yyyy' }}</td>
-              <!-- <td class="w-[1rem] p-2">
-              <span *ngIf="!performance.summary" class="text-green-600">&#10003;</span>
-              <span *ngIf="performance.summary" class="text-red-600">&#10007;</span>
-            </td> -->
 
               <!-- Information column -->
               <td class="w-[1rem] p-3">
@@ -365,10 +404,7 @@
                   (click)="openTextModal(performance, performance.solution_suggestion, 'Solution Suggestion')">
                   {{ 'View' | translate }}
                 </button>
-                <span *ngIf="
-                  !performance.solution_suggestion ||
-                  performance.solution_suggestion.length <= 10
-                ">
+                <span *ngIf="!performance.solution_suggestion || performance.solution_suggestion.length <= 10">
                   {{ performance.solution_suggestion }}
                 </span>
               </td>
@@ -399,17 +435,12 @@
 
               <!-- Solution Complaint column -->
               <td class="w-[1rem] p-3">
-                <button *ngIf="
-                  performance.solution_complaint &&
-                  performance.solution_complaint.length > 10
-                " type="button" class="text-blue-600 underline"
+                <button *ngIf="performance.solution_complaint && performance.solution_complaint.length > 10"
+                  type="button" class="text-blue-600 underline"
                   (click)="openTextModal(performance, performance.solution_complaint, 'Solution Complaint')">
                   {{ 'View' | translate }}
                 </button>
-                <span *ngIf="
-                  !performance.solution_complaint ||
-                  performance.solution_complaint.length <= 10
-                ">
+                <span *ngIf="!performance.solution_complaint || performance.solution_complaint.length <= 10">
                   {{ performance.solution_complaint }}
                 </span>
               </td>
@@ -427,16 +458,12 @@
 
               <!-- Solution Appeal column -->
               <td class="w-[1rem] p-3">
-                <button *ngIf="
-                  performance.solution_appeal && performance.solution_appeal.length > 10
-                " type="button" class="text-blue-600 underline"
+                <button *ngIf="performance.solution_appeal && performance.solution_appeal.length > 10" type="button"
+                  class="text-blue-600 underline"
                   (click)="openTextModal(performance, performance.solution_appeal, 'Solution Appeal')">
                   {{ 'View' | translate }}
                 </button>
-                <span *ngIf="
-                  !performance.solution_appeal ||
-                  performance.solution_appeal.length <= 10
-                ">
+                <span *ngIf="!performance.solution_appeal || performance.solution_appeal.length <= 10">
                   {{ performance.solution_appeal }}
                 </span>
               </td>
@@ -462,224 +489,228 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
 
-      <!-- Text Modal (placed as a sibling, not nested) -->
-      <div *ngIf="showTextModal" class="fixed inset-0 z-[80] flex items-center justify-center overflow-y-auto w-90">
-        <div class="bg-opacity-75 bg-black absolute inset-0" (click)="closeTextModal()"></div>
-        <div class="relative z-[80] bg-white shadow-md rounded-xl p-3 w-90">
-          <div class="p-3">
-            <!-- Show the two documents if they exist -->
-            <div class="mb-3 flex space-x-3 items-center justify-start">
-              <!-- Document 1 -->
-              <div>
-                <button *ngIf="modalPerformance?.justifyingdocument" id="downloadButton" type="button" class="mt-2 cursor-pointer px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg shadow-md 
+  <!-- Text Modal (placed as a sibling, not nested) -->
+  <div *ngIf="showTextModal" class="fixed inset-0 z-[80] flex items-center justify-center overflow-y-auto w-90">
+    <div class="bg-opacity-75 bg-black absolute inset-0" (click)="closeTextModal()"></div>
+    <div class="relative z-[80] bg-white shadow-md rounded-xl p-3 w-90">
+      <div class="p-3">
+        <!-- Show the two documents if they exist -->
+        <div class="mb-3 flex space-x-3 items-center justify-start">
+          <!-- Document 1 -->
+          <div>
+            <button *ngIf="modalPerformance?.justifyingdocument" id="downloadButton" type="button" class="mt-2 cursor-pointer px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg shadow-md 
                        hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 
                        transition ease-in-out duration-150"
-                  (click)="downloadSelectedFile(modalPerformance.justifyingdocument)">
-                  {{ 'Download Document 1' | translate }}
-                </button>
-                <span *ngIf="!modalPerformance?.justifyingdocument" class="text-gray-500">
-                  {{ 'No First Document Provided' | translate }}
-                </span>
-              </div>
+              (click)="downloadSelectedFile(modalPerformance.justifyingdocument)">
+              {{ 'Download Document 1' | translate }}
+            </button>
+            <span *ngIf="!modalPerformance?.justifyingdocument" class="text-gray-500">
+              {{ 'No First Document Provided' | translate }}
+            </span>
+          </div>
 
-              <!-- Document 2 -->
-              <div>
-                <button *ngIf="modalPerformance?.justifyingdocument2" id="downloadButton" type="button" class="mt-2 cursor-pointer px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg shadow-md 
+          <!-- Document 2 -->
+          <div>
+            <button *ngIf="modalPerformance?.justifyingdocument2" id="downloadButton" type="button" class="mt-2 cursor-pointer px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg shadow-md 
                        hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 
                        transition ease-in-out duration-150"
-                  (click)="downloadSelectedFile(modalPerformance.justifyingdocument2)">
-                  {{ 'Download Document 2' | translate }}
-                </button>
-                <span *ngIf="!modalPerformance?.justifyingdocument2" class="text-gray-500">
-                  {{ 'No Second Document Provided' | translate }}
-                </span>
-              </div>
-            </div>
-
-            <h2 class="text-lg font-bold mb-3">{{ modalTitle }}</h2>
-            <p class="whitespace-pre-wrap">{{ modalContent }}</p>
-            <div class="flex justify-end w-full mt-3">
-              <button (click)="closeTextModal()" class="p-2 rounded-xl bg-line text-darkslategray font-medium">
-                {{ 'Close' | translate }}
-              </button>
-            </div>
+              (click)="downloadSelectedFile(modalPerformance.justifyingdocument2)">
+              {{ 'Download Document 2' | translate }}
+            </button>
+            <span *ngIf="!modalPerformance?.justifyingdocument2" class="text-gray-500">
+              {{ 'No Second Document Provided' | translate }}
+            </span>
           </div>
         </div>
-      </div>
 
-      <!-- Ratings Modal -->
-      <div *ngIf="showModalRatings" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
-        <div class="bg-opacity-75 bg-black absolute inset-0"></div>
-        <div class="relative z-50 bg-white shadow-md rounded-xl p-3 w-11/12 lg:w-1/2">
-          <div class="p-3 flex flex-col items-center">
-            <form [formGroup]="fileManager" autocomplete="off" class="w-full flex flex-col space-y-3">
-              <h1 class="text-center text-darkslategray font-medium">
-                {{ 'Valoration' | translate }}
-              </h1>
-
-              <div
-                class="flex flex-col lg:flex-row md:flex-row space-y-3 lg:space-y-0 md:space-y-0 lg:space-x-3 md:space-x-3 justify-center">
-                <!-- Subscriber Valuation -->
-                <div *ngIf="isSubscriber" class="flex flex-col w-full">
-                  <label for="valuationSubscriber" class="font-semibold">
-                    {{ 'institutionOsdValuation' | translate }}
-                  </label>
-                  <input formControlName="valuationSubscriber" id="valuationSubscriber"
-                    class="border border-gray-300 rounded-md p-2" type="number" max="5" min="0"
-                    [placeholder]="this.claim?.valuationsubscriber" />
-                </div>
-
-                <!-- Claimant Valuation -->
-                <div *ngIf="isClaimant" class="flex flex-col w-full">
-                  <label for="valuationClaimant" class="font-semibold">
-                    {{ 'institutionClaimantRating' | translate }}
-                  </label>
-                  <input formControlName="valuationClaimant" id="valuationClaimant"
-                    class="border border-gray-300 rounded-md p-2" type="number" max="5" min="0"
-                    [placeholder]="this.claim?.valuationclaimant" />
-                </div>
-
-                <!-- Free Professional Valuation -->
-                <div *ngIf="isFreeProfessional" class="flex flex-col w-full">
-                  <label for="valuationFreeProfessionals" class="font-semibold">
-                    {{ 'institutionValuationFreeOsdProfessionals' | translate }}
-                  </label>
-                  <input formControlName="valuationFreeProfessionals" id="valuationFreeProfessionals"
-                    class="border border-gray-300 rounded-md p-2" type="number" max="5" min="0"
-                    [placeholder]="this.claim?.valuationfreeprofessionals" />
-                </div>
-              </div>
-
-              <div class="flex justify-center">
-                <button (click)="updateValuation()"
-                  class="p-2 rounded-xl bg-darkslategray text-line font-medium animate__animated animate__fadeInDown">
-                  {{ 'MakeAreview' | translate }}
-                </button>
-              </div>
-            </form>
-          </div>
+        <h2 class="text-lg font-bold mb-3">{{ modalTitle }}</h2>
+        <p class="whitespace-pre-wrap">{{ modalContent }}</p>
+        <div class="flex justify-end w-full mt-3">
+          <button (click)="closeTextModal()" class="p-2 rounded-xl bg-line text-darkslategray font-medium">
+            {{ 'Close' | translate }}
+          </button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Finalize Claim (Rating) Modal -->
-  <div *ngIf="showFinalizeModal" class="fixed inset-0 z-[9999] flex items-center justify-center">
+  <!-- Ratings Modal -->
+  <div *ngIf="showModalRatings" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
     <div class="bg-opacity-75 bg-black absolute inset-0"></div>
     <div class="relative z-50 bg-white shadow-md rounded-xl p-3 w-11/12 lg:w-1/2">
       <div class="p-3 flex flex-col items-center">
-        <h1 class="text-center text-darkslategray font-medium text-xl mb-3">
-          {{ 'Finalizar Reclamación' | translate }}
-        </h1>
-        <p class="mb-2 text-sm text-gray-600">
-          {{ 'Califique la reclamación de 0 a 5 estrellas (0 = malo, 5 = excelente)' | translate }}
-        </p>
+        <form [formGroup]="fileManager" autocomplete="off" class="w-full flex flex-col space-y-3">
+          <h1 class="text-center text-darkslategray font-medium">
+            {{ 'Valoration' | translate }}
+          </h1>
 
-        <!-- If trainer, show a 2-column grid layout; else single-column -->
-        <ng-container *ngIf="isTrainer; else normalLayout">
-          <form [formGroup]="finalizeForm" (ngSubmit)="submitFinalize()" class="w-full">
-            <!-- Two-column grid: items-stretch ensures columns match in height -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+          <div
+            class="flex flex-col lg:flex-row md:flex-row space-y-3 lg:space-y-0 md:space-y-0 lg:space-x-3 md:space-x-3 justify-center">
+            <!-- Subscriber Valuation -->
+            <div *ngIf="isSubscriber" class="flex flex-col w-full">
+              <label for="valuationSubscriber" class="font-semibold">
+                {{ 'institutionOsdValuation' | translate }}
+              </label>
+              <input formControlName="valuationSubscriber" id="valuationSubscriber"
+                class="border border-gray-300 rounded-md p-2" type="number" max="5" min="0"
+                [placeholder]="this.claim?.valuationsubscriber" />
+            </div>
 
-              <!-- LEFT COLUMN: read-only fields (if they exist) -->
-              <div class="flex flex-col space-y-4">
-                <div *ngIf="claim?.valuationfreeprofessionals" class="flex flex-col">
-                  <label class="font-semibold mb-1">{{ 'Valuation Processor' | translate }}</label>
+            <!-- Claimant Valuation -->
+            <div *ngIf="isClaimant" class="flex flex-col w-full">
+              <label for="valuationClaimant" class="font-semibold">
+                {{ 'institutionClaimantRating' | translate }}
+              </label>
+              <input formControlName="valuationClaimant" id="valuationClaimant"
+                class="border border-gray-300 rounded-md p-2" type="number" max="5" min="0"
+                [placeholder]="this.claim?.valuationclaimant" />
+            </div>
+
+            <!-- Free Professional Valuation -->
+            <div *ngIf="isFreeProfessional" class="flex flex-col w-full">
+              <label for="valuationFreeProfessionals" class="font-semibold">
+                {{ 'institutionValuationFreeOsdProfessionals' | translate }}
+              </label>
+              <input formControlName="valuationFreeProfessionals" id="valuationFreeProfessionals"
+                class="border border-gray-300 rounded-md p-2" type="number" max="5" min="0"
+                [placeholder]="this.claim?.valuationfreeprofessionals" />
+            </div>
+          </div>
+
+          <div class="flex justify-center">
+            <button (click)="updateValuation()"
+              class="p-2 rounded-xl bg-darkslategray text-line font-medium animate__animated animate__fadeInDown">
+              {{ 'MakeAreview' | translate }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Finalize Claim (Rating) Modal -->
+<div *ngIf="showFinalizeModal" class="fixed inset-0 z-[9999] flex items-center justify-center">
+  <div class="bg-opacity-75 bg-black absolute inset-0"></div>
+  <div class="relative z-50 bg-white shadow-md rounded-xl p-3 w-11/12 lg:w-1/2">
+    <div class="p-3 flex flex-col items-center">
+      <h1 class="text-center text-darkslategray font-medium text-xl mb-3">
+        {{ 'Finalizar Reclamación' | translate }}
+      </h1>
+      <p class="mb-2 text-sm text-gray-600">
+        {{ 'Califique la reclamación de 0 a 5 estrellas (0 = malo, 5 = excelente)' | translate }}
+      </p>
+
+      <!-- If trainer, show a 2-column grid layout; else single-column -->
+      <ng-container *ngIf="isTrainer; else normalLayout">
+        <form [formGroup]="finalizeForm" (ngSubmit)="submitFinalize()" class="w-full">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+            <!-- LEFT COLUMN: read-only fields (if they exist) -->
+            <div class="flex flex-col space-y-4">
+              <div *ngIf="claim?.valuationfreeprofessionals" class="flex flex-col">
+                <label class="font-semibold mb-1">{{ 'Valuation Processor' | translate }}</label>
+                <div class="flex items-center">
                   <input type="text" [value]="claim.valuationfreeprofessionals"
                     class="border border-gray-300 rounded-md p-2 bg-gray-100 text-gray-700" readonly />
                 </div>
+              </div>
 
-                <div *ngIf="claim?.improvementsavings" class="flex flex-col">
-                  <label class="font-semibold mb-1">{{ 'Improvement Savings' | translate }} {{ 'Processor' | translate
-                    }}</label>
+              <div *ngIf="claim?.improvementsavings" class="flex flex-col">
+                <label class="font-semibold mb-1">{{ 'Improvement Savings' | translate }} {{ 'Processor' | translate
+                  }}</label>
+                <div class="flex items-center">
                   <input type="text" [value]="claim.improvementsavings"
                     class="border border-gray-300 rounded-md p-2 bg-gray-100 text-gray-700" readonly />
                 </div>
+              </div>
 
-                <div *ngIf="claim?.amountpaid" class="flex flex-col">
-                  <label class="font-semibold mb-1">{{ 'Amount Paid' | translate }} {{ 'Processor' | translate
-                    }}</label>
+              <div *ngIf="claim?.amountpaid" class="flex flex-col">
+                <label class="font-semibold mb-1">{{ 'Amount Paid' | translate }} {{ 'Processor' | translate }}</label>
+                <div class="flex items-center">
                   <input type="text" [value]="claim.amountpaid"
                     class="border border-gray-300 rounded-md p-2 bg-gray-100 text-gray-700" readonly />
                 </div>
               </div>
+            </div>
 
-              <!-- RIGHT COLUMN: normal editable fields -->
-              <div class="flex flex-col space-y-4">
-                <div class="flex flex-col">
-                  <label for="finalRating" class="font-semibold mb-1">{{ 'Rating (0-5)' | translate }}</label>
-                  <input formControlName="finalRating" id="finalRating" type="number" min="0" max="5"
-                    class="border border-gray-300 rounded-md p-2" placeholder="e.g. 4" />
-                </div>
+            <!-- RIGHT COLUMN: normal editable fields -->
+            <div class="flex flex-col space-y-4">
+              <div class="flex flex-col">
+                <label for="finalRating" class="font-semibold mb-1">{{ 'Rating (0-5)' | translate }}</label>
+                <input formControlName="finalRating" id="finalRating" type="number" min="0" max="5"
+                  class="border border-gray-300 rounded-md p-2" placeholder="e.g. 4" />
+              </div>
 
-                <div *ngIf="isTrainer || isUserProcessor" class="flex flex-col">
-                  <label for="savingsImprovement" class="font-semibold mb-1">
-                    {{ 'Savings/Improvement - Continuous' | translate }}
-                  </label>
-                  <input formControlName="savingsImprovement" id="savingsImprovement" type="text"
-                    class="border border-gray-300 rounded-md p-2" placeholder="{{ 'e.g. 12000' | translate }}" />
-                </div>
+              <div *ngIf="isTrainer || isUserProcessor" class="flex flex-col">
+                <label for="savingsImprovement" class="font-semibold mb-1">
+                  {{ 'Savings/Improvement - Continuous' | translate }}
+                </label>
+                <input formControlName="savingsImprovement" id="savingsImprovement" type="text"
+                  class="border border-gray-300 rounded-md p-2" placeholder="{{ 'e.g. 12000' | translate }}" />
+              </div>
 
-                <div *ngIf="isTrainer || isUserProcessor" class="flex flex-col">
-                  <label for="claimantPayment" class="font-semibold mb-1">
-                    {{ 'Claimant Payment' | translate }}
-                  </label>
-                  <input formControlName="claimantPayment" id="claimantPayment" type="text"
-                    class="border border-gray-300 rounded-md p-2" placeholder="{{ 'e.g. 3000' | translate }}" />
-                </div>
+              <div *ngIf="isTrainer || isUserProcessor" class="flex flex-col">
+                <label for="claimantPayment" class="font-semibold mb-1">
+                  {{ 'Claimant Payment' | translate }}
+                </label>
+                <input formControlName="claimantPayment" id="claimantPayment" type="text"
+                  class="border border-gray-300 rounded-md p-2" placeholder="{{ 'e.g. 3000' | translate }}" />
               </div>
             </div>
+          </div>
 
-            <!-- Action Buttons -->
-            <div class="flex justify-end space-x-3 mt-4" *ngIf="canCloseClaim">
-              <button type="button" (click)="closeFinalizeModal()"
-                class="p-2 rounded-xl bg-line text-darkslategray font-medium">
-                {{ 'Cancel' | translate }}
-              </button>
-              <button type="submit" class="p-2 rounded-xl bg-darkslategray text-line font-medium">
-                {{ editingPerformance ? ('Update' | translate) : ('Submit' | translate) }}
-              </button>
-            </div>
-          </form>
-        </ng-container>
+          <!-- Action Buttons -->
+          <div class="flex justify-end space-x-3 mt-4" *ngIf="canCloseClaim">
+            <button type="button" (click)="closeFinalizeModal()"
+              class="p-2 rounded-xl bg-line text-darkslategray font-medium">
+              {{ 'Cancel' | translate }}
+            </button>
+            <button type="submit" class="p-2 rounded-xl bg-darkslategray text-line font-medium">
+              {{ editingPerformance ? ('Update' | translate) : ('Submit' | translate) }}
+            </button>
+          </div>
+        </form>
+      </ng-container>
 
-        <!-- ELSE: normal layout if NOT trainer -->
-        <ng-template #normalLayout>
-          <form [formGroup]="finalizeForm" (ngSubmit)="submitFinalize()" class="w-full flex flex-col space-y-3">
-            <div class="flex flex-col w-full">
-              <label for="finalRating" class="font-semibold mb-1">Rating (0-5)</label>
-              <input formControlName="finalRating" id="finalRating" type="number" min="0" max="5"
-                class="border border-gray-300 rounded-md p-2" placeholder="e.g. 4" />
-            </div>
+      <!-- ELSE: normal layout if NOT trainer -->
+      <ng-template #normalLayout>
+        <form [formGroup]="finalizeForm" (ngSubmit)="submitFinalize()" class="w-full flex flex-col space-y-3">
+          <div class="flex flex-col w-full">
+            <label for="finalRating" class="font-semibold mb-1">Rating (0-5)</label>
+            <input formControlName="finalRating" id="finalRating" type="number" min="0" max="5"
+              class="border border-gray-300 rounded-md p-2" placeholder="e.g. 4" />
+          </div>
 
-            <div *ngIf="isTrainer || isUserProcessor" class="flex flex-col w-full">
-              <label for="savingsImprovement" class="font-semibold mb-1">
-                {{ 'Savings/Improvement - Continuous' | translate }}
-              </label>
-              <input formControlName="savingsImprovement" id="savingsImprovement" type="text"
-                class="border border-gray-300 rounded-md p-2" placeholder="{{ 'e.g. 12000' | translate }}" />
-            </div>
+          <div *ngIf="isTrainer || isUserProcessor" class="flex flex-col w-full">
+            <label for="savingsImprovement" class="font-semibold mb-1">
+              {{ 'Savings/Improvement - Continuous' | translate }}
+            </label>
+            <input formControlName="savingsImprovement" id="savingsImprovement" type="text"
+              class="border border-gray-300 rounded-md p-2" placeholder="{{ 'e.g. 12000' | translate }}" />
+          </div>
 
-            <div *ngIf="isTrainer || isUserProcessor" class="flex flex-col w-full">
-              <label for="claimantPayment" class="font-semibold mb-1">
-                {{ 'Claimant Payment' | translate }}
-              </label>
-              <input formControlName="claimantPayment" id="claimantPayment" type="text"
-                class="border border-gray-300 rounded-md p-2" placeholder="{{ 'e.g. 3000' | translate }}" />
-            </div>
+          <div *ngIf="isTrainer || isUserProcessor" class="flex flex-col w-full">
+            <label for="claimantPayment" class="font-semibold mb-1">
+              {{ 'Claimant Payment' | translate }}
+            </label>
+            <input formControlName="claimantPayment" id="claimantPayment" type="text"
+              class="border border-gray-300 rounded-md p-2" placeholder="{{ 'e.g. 3000' | translate }}" />
+          </div>
 
-            <div class="flex justify-end space-x-3 mt-3" *ngIf="canCloseClaim">
-              <button type="button" (click)="closeFinalizeModal()"
-                class="p-2 rounded-xl bg-line text-darkslategray font-medium">
-                {{ 'Cancel' | translate }}
-              </button>
-              <button type="submit" class="p-2 rounded-xl bg-darkslategray text-line font-medium">
-                {{ editingPerformance ? ('Update' | translate) : ('Submit' | translate) }}
-              </button>
-            </div>
-          </form>
-        </ng-template>
-      </div>
+          <div class="flex justify-end space-x-3 mt-3" *ngIf="canCloseClaim">
+            <button type="button" (click)="closeFinalizeModal()"
+              class="p-2 rounded-xl bg-line text-darkslategray font-medium">
+              {{ 'Cancel' | translate }}
+            </button>
+            <button type="submit" class="p-2 rounded-xl bg-darkslategray text-line font-medium">
+              {{ editingPerformance ? ('Update' | translate) : ('Submit' | translate) }}
+            </button>
+          </div>
+        </form>
+      </ng-template>
     </div>
   </div>
+</div>

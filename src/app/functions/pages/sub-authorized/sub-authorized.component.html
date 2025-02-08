@@ -12,72 +12,172 @@
         (cancel)="onCancelHandler()">
     </shared-authorized-modal>
 
+    <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-4">
+        <!-- Country Filter -->
+        <div class="w-full md:w-1/2 flex flex-col items-center">
+            <h3 class="text-darkslategray text-lg font-semibold mb-2 text-center">
+                {{ 'Country' | translate }}
+            </h3>
+            <shared-simple-dropdown class="w-full" [dropdownItems]="countries" [formGroup]="myForm"
+                fieldName="selectedCountry" (change)="filterUsers()">
+            </shared-simple-dropdown>
+        </div>
+        <!-- User Type Filter -->
+        <div class="w-full md:w-1/2 flex flex-col items-center">
+            <h3 class="text-darkslategray text-lg font-semibold mb-2 text-center">
+                {{ 'User Type' | translate }}
+            </h3>
+            <shared-simple-dropdown class="w-full" [dropdownItems]="userTypes" [formGroup]="myForm"
+                fieldName="selectedUserType" (change)="filterUsers()">
+            </shared-simple-dropdown>
+        </div>
+    </div>
+
+
+    <!-- Cancel Button -->
+    <div class="flex justify-center mt-4">
+        <button
+            class="px-2 py-1 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150"
+            (click)="onCancel()">
+            {{ 'Cancel' | translate }}
+        </button>
+    </div>
+
     <!-- TABLE -->
     <div class="flex justify-center flex-col p-5">
         <div class="overflow-x-auto">
             <!-- Display Cliente group -->
-            <div *ngIf="itemsGroupedByUserType && itemsGroupedByUserType['Cliente'] && itemsGroupedByUserType['Cliente'].length > 0">
+            <div *ngIf="itemsGroupedByUserType && itemsGroupedByUserType['Cliente'].length > 0">
                 <div class="text-darkslategray text-start py-3 text-lg font-semibold">
                     {{ 'Cliente' | translate }}
                 </div>
-                <table class="max-h-106 overflow-y-auto table-auto w-full mb-5">
-                    <thead>
-                        <tr class="text-darkslategray">
-                            <th class="px-2 py-2" style="width: 20%;">{{ 'Formador asignado' | translate }}</th>
-                            <th class="px-2 py-2" style="width: 15%;">{{ 'Code' | translate }}</th>
-                            <th class="px-2 py-2" style="width: 20%;">{{ 'SubscriberCustomer' | translate }}</th>
-                            <th class="px-2" style="width: 15%;">{{ 'actions' | translate }}</th>
-                            <th class="px-2" style="width: 15%;">{{ 'authorized' | translate }}</th>
-                            <th class="px-2" style="width: 15%;">{{ 'See Info' | translate }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let item of itemsGroupedByUserType['Cliente']">
-                            <td class="text-center border-y px-2 py-2">{{ item.trainerassigned || 'Sin asignar' }}</td>
-                            <td class="text-center border-y px-2 py-2">{{ item.code }}</td>
-                            <td class="text-center border-y px-2 py-2">{{ item.name }} {{ item.firstsurname }} {{
-                                item.middlesurname || '' }}</td>
-                            <td class="text-center space-x-2 border-y py-2">
-                                <button (click)="selectUser(item)" class="underline text-darkslategray text-sm">
-                                    <i class="fas fa-check-circle text-xl animate-bounce"></i>
-                                </button>
-                            </td>
-                            <td class="text-center border-y px-2 py-2">
-                                <i class="fa-solid fa-circle"
-                                    [ngClass]="{ 'text-green-500': item.isauthorized, 'text-red-600': !item.isauthorized }"></i>
-                            </td>
-                            <td class="text-center border-y px-2 py-2">
-                                <button (click)="viewSubscriberInfo(item)" class="underline text-darkslategray text-sm">
-                                    <i class="fa-solid fa-eye"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+
+                <!-- Office Clients -->
+                <div *ngIf="office_clients.length > 0">
+                    <div class="text-darkslategray text-start py-2 text-md font-semibold">
+                        {{ 'Office Clients' | translate }}
+                    </div>
+                    <table class="max-h-106 overflow-y-auto table-auto w-full mb-5">
+                        <thead>
+                            <tr class="text-darkslategray">
+                                <th class="px-2 py-2" style="width: 12%;">{{ 'Code' | translate }}</th>
+                                <th class="px-2 py-2" style="width: 15%;">{{ 'CL' | translate }}</th>
+                                <th class="px-2 py-2" style="width: 20%;">{{ 'Formador asignado' | translate }}</th>
+                                <th class="px-2 py-2" style="width: 15%;">{{ 'Processors Assigned' | translate }}</th>
+                                <th class="px-2" style="width: 15%;">{{ 'actions' | translate }}</th>
+                                <th class="px-2" style="width: 10%;">{{ 'authorized' | translate }}</th>
+                                <th class="px-2" style="width: 13%;">{{ 'See Info' | translate }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of office_clients">
+                                <td class="text-center border-y px-2 py-2">{{ item.code }}</td>
+                                <td class="text-center border-y px-2 py-2">{{ item.companyname }}</td>
+                                <td class="text-center border-y px-2 py-2">{{ item.trainerassigned || 'Sin asignar' }}
+                                </td>
+                                <td class="text-center border-y px-2 py-2">
+                                    <button (click)="viewProcessors(item)" class="underline text-darkslategray text-sm">
+                                        <i class="fa-solid fa-list text-xl"></i>
+                                    </button>
+                                </td>
+                                <td class="text-center space-x-2 border-y py-2">
+                                    <button (click)="selectUser(item)" class="underline text-darkslategray text-sm">
+                                        <i class="fas fa-check-circle text-xl animate-bounce"></i>
+                                    </button>
+                                </td>
+                                <td class="text-center border-y px-2 py-2">
+                                    <i class="fa-solid fa-circle"
+                                        [ngClass]="{ 'text-green-500': item.isauthorized, 'text-red-600': !item.isauthorized }"></i>
+                                </td>
+                                <td class="text-center border-y px-2 py-2">
+                                    <button (click)="viewSubscriberInfo(item)"
+                                        class="underline text-darkslategray text-sm">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Solutions Clients -->
+                <div *ngIf="solutions_clients.length > 0">
+                    <div class="text-darkslategray text-start py-2 text-md font-semibold">
+                        {{ 'Solutions Clients' | translate }}
+                    </div>
+                    <table class="max-h-106 overflow-y-auto table-auto w-full mb-5">
+                        <thead>
+                            <tr class="text-darkslategray">
+                                <th class="px-2 py-2" style="width: 12%;">{{ 'Code' | translate }}</th>
+                                <th class="px-2 py-2" style="width: 15%;">{{ 'CL' | translate }}</th>
+                                <th class="px-2 py-2" style="width: 20%;">{{ 'Formador asignado' | translate }}</th>
+                                <th class="px-2 py-2" style="width: 15%;">{{ 'Processors Assigned' | translate }}</th>
+                                <th class="px-2" style="width: 15%;">{{ 'actions' | translate }}</th>
+                                <th class="px-2" style="width: 10%;">{{ 'authorized' | translate }}</th>
+                                <th class="px-2" style="width: 13%;">{{ 'See Info' | translate }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of solutions_clients">
+                                <td class="text-center border-y px-2 py-2">{{ item.code }}</td>
+                                <td class="text-center border-y px-2 py-2">{{ item.companyname }}</td>
+                                <td class="text-center border-y px-2 py-2">{{ item.trainerassigned || 'Sin asignar' }}
+                                </td>
+                                <td class="text-center border-y px-2 py-2">
+                                    <button (click)="viewProcessors(item)" class="underline text-darkslategray text-sm">
+                                        <i class="fa-solid fa-list text-xl"></i>
+                                    </button>
+                                </td>
+                                <td class="text-center space-x-2 border-y py-2">
+                                    <button (click)="selectUser(item)" class="underline text-darkslategray text-sm">
+                                        <i class="fas fa-check-circle text-xl animate-bounce"></i>
+                                    </button>
+                                </td>
+                                <td class="text-center border-y px-2 py-2">
+                                    <i class="fa-solid fa-circle"
+                                        [ngClass]="{ 'text-green-500': item.isauthorized, 'text-red-600': !item.isauthorized }"></i>
+                                </td>
+                                <td class="text-center border-y px-2 py-2">
+                                    <button (click)="viewSubscriberInfo(item)"
+                                        class="underline text-darkslategray text-sm">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- Display CFH group -->
-            <div *ngIf="itemsGroupedByUserType && itemsGroupedByUserType['CFH'] && itemsGroupedByUserType['CFH'].length > 0">
+            <div
+                *ngIf="itemsGroupedByUserType && itemsGroupedByUserType['CFH'] && itemsGroupedByUserType['CFH'].length > 0">
                 <div class="text-darkslategray text-start py-3 text-lg font-semibold">
                     {{ 'Centro de Formacion Homologado' | translate }}
                 </div>
                 <table class="table-auto w-full mb-5">
                     <thead>
                         <tr class="text-darkslategray">
+                            <th class="px-2 py-2" style="width: 12%;">{{ 'Code' | translate }}</th>
+                            <th class="px-2 py-2" style="width: 15%;">{{ 'CFH' | translate }}</th>
                             <th class="px-2 py-2" style="width: 20%;">{{ 'Formador asignado' | translate }}</th>
-                            <th class="px-2 py-2" style="width: 15%;">{{ 'Code' | translate }}</th>
-                            <th class="px-2 py-2" style="width: 20%;">{{ 'SubscriberCustomer' | translate }}</th>
+                            <th class="px-2 py-2" style="width: 15%;">{{ 'Processors Assigned' | translate }}</th>
                             <th class="px-2" style="width: 15%;">{{ 'actions' | translate }}</th>
-                            <th class="px-2" style="width: 15%;">{{ 'authorized' | translate }}</th>
-                            <th class="px-2" style="width: 15%;">{{ 'See Info' | translate }}</th>
+                            <th class="px-2" style="width: 10%;">{{ 'authorized' | translate }}</th>
+                            <th class="px-2" style="width: 13%;">{{ 'See Info' | translate }}</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let item of itemsGroupedByUserType['CFH']">
-                            <td class="text-center border-y px-2 py-2">{{ item.trainerassigned || 'Sin asignar' }}</td>
                             <td class="text-center border-y px-2 py-2">{{ item.code }}</td>
-                            <td class="text-center border-y px-2 py-2">{{ item.name }} {{ item.firstsurname }} {{
-                                item.middlesurname || '' }}</td>
+                            <td class="text-center border-y px-2 py-2">{{ item.companyname }}</td>
+                            <td class="text-center border-y px-2 py-2">{{ item.trainerassigned || 'Sin asignar' }}</td>
+                            <!-- New Processors Assigned column -->
+                            <td class="text-center border-y px-2 py-2">
+                                <button (click)="viewProcessors(item)" class="underline text-darkslategray text-sm">
+                                    <i class="fa-solid fa-list text-xl"></i>
+                                </button>
+                            </td>
                             <td class="text-center space-x-2 border-y py-2">
                                 <button (click)="selectUser(item)" class="underline text-darkslategray text-sm">
                                     <i class="fas fa-check-circle text-xl animate-bounce"></i>
@@ -98,16 +198,17 @@
             </div>
 
             <!-- Display RestFreeProfessionals group -->
-            <div *ngIf="itemsGroupedByUserType && itemsGroupedByUserType['RestFreeProfessionals'] && itemsGroupedByUserType['RestFreeProfessionals'].length > 0">
+            <div
+                *ngIf="itemsGroupedByUserType && itemsGroupedByUserType['RestFreeProfessionals'] && itemsGroupedByUserType['RestFreeProfessionals'].length > 0">
                 <div class="text-darkslategray text-start py-3 text-lg font-semibold">
                     {{ 'Profesionales Libres' | translate }}
                 </div>
                 <table class="table-auto w-full mb-5">
                     <thead>
                         <tr class="text-darkslategray">
-                            <th class="px-2 py-2" style="width: 20%;">{{ 'Formador asignado' | translate }}</th>
                             <th class="px-2 py-2" style="width: 15%;">{{ 'Code' | translate }}</th>
-                            <th class="px-2 py-2" style="width: 20%;">{{ 'SubscriberCustomer' | translate }}</th>
+                            <th class="px-2 py-2" style="width: 20%;">{{ 'PL' | translate }}</th>
+                            <th class="px-2 py-2" style="width: 20%;">{{ 'Formador asignado' | translate }}</th>
                             <th class="px-2" style="width: 15%;">{{ 'actions' | translate }}</th>
                             <th class="px-2" style="width: 15%;">{{ 'authorized' | translate }}</th>
                             <th class="px-2" style="width: 15%;">{{ 'See Info' | translate }}</th>
@@ -115,10 +216,9 @@
                     </thead>
                     <tbody>
                         <tr *ngFor="let item of itemsGroupedByUserType['RestFreeProfessionals']">
-                            <td class="text-center border-y px-2 py-2">{{ item.trainerassigned || 'Sin asignar' }}</td>
                             <td class="text-center border-y px-2 py-2">{{ item.code }}</td>
-                            <td class="text-center border-y px-2 py-2">{{ item.name }} {{ item.firstsurname }} {{
-                                item.middlesurname || '' }}</td>
+                            <td class="text-center border-y px-2 py-2">{{ item.companyname }}</td>
+                            <td class="text-center border-y px-2 py-2">{{ item.trainerassigned || 'Sin asignar' }}</td>
                             <td class="text-center space-x-2 border-y py-2">
                                 <button (click)="selectUser(item)" class="underline text-darkslategray text-sm">
                                     <i class="fas fa-check-circle text-xl animate-bounce"></i>
@@ -139,16 +239,17 @@
             </div>
 
             <!-- Display Reclamante group -->
-            <div *ngIf="itemsGroupedByUserType && itemsGroupedByUserType['Reclamante'] && itemsGroupedByUserType['Reclamante'].length > 0">
+            <div
+                *ngIf="itemsGroupedByUserType && itemsGroupedByUserType['Reclamante'] && itemsGroupedByUserType['Reclamante'].length > 0">
                 <div class="text-darkslategray text-start py-3 text-lg font-semibold">
                     {{ 'Reclamante' | translate }}
                 </div>
                 <table class="table-auto w-full mb-5">
                     <thead>
                         <tr class="text-darkslategray">
-                            <th class="px-2 py-2" style="width: 20%;">{{ 'Formador asignado' | translate }}</th>
                             <th class="px-2 py-2" style="width: 15%;">{{ 'Code' | translate }}</th>
-                            <th class="px-2 py-2" style="width: 20%;">{{ 'SubscriberCustomer' | translate }}</th>
+                            <th class="px-2 py-2" style="width: 20%;">{{ 'R' | translate }}</th>
+                            <th class="px-2 py-2" style="width: 20%;">{{ 'Formador asignado' | translate }}</th>
                             <th class="px-2" style="width: 15%;">{{ 'actions' | translate }}</th>
                             <th class="px-2" style="width: 15%;">{{ 'authorized' | translate }}</th>
                             <th class="px-2" style="width: 15%;">{{ 'See Info' | translate }}</th>
@@ -156,10 +257,9 @@
                     </thead>
                     <tbody>
                         <tr *ngFor="let item of itemsGroupedByUserType['Reclamante']">
-                            <td class="text-center border-y px-2 py-2">{{ item.trainerassigned || 'Sin asignar' }}</td>
                             <td class="text-center border-y px-2 py-2">{{ item.code }}</td>
-                            <td class="text-center border-y px-2 py-2">{{ item.name }} {{ item.firstsurname }} {{
-                                item.middlesurname || '' }}</td>
+                            <td class="text-center border-y px-2 py-2">{{ item.name }}</td>
+                            <td class="text-center border-y px-2 py-2">{{ item.trainerassigned || 'Sin asignar' }}</td>
                             <td class="text-center space-x-2 border-y py-2">
                                 <button (click)="selectUser(item)" class="underline text-darkslategray text-sm">
                                     <i class="fas fa-check-circle text-xl animate-bounce"></i>
@@ -329,6 +429,37 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+
+<!-- Processors Modal -->
+<div *ngIf="showProcessorsModal" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
+    <!-- Blackout overlay -->
+    <div class="bg-opacity-80 bg-black absolute inset-0"></div>
+
+    <!-- Modal content -->
+    <div class="modern-modal relative z-50 bg-white shadow-md rounded-xl max-w-lg w-full p-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-2xl font-bold text-darkslategray">
+                {{ 'Processors Assigned for' | translate }} {{ selectedProcessorsTitle }}
+            </h2>
+            <button (click)="closeProcessorsModal()" class="close-modal-btn text-gray-600 hover:text-gray-900">
+                <i class="fa-solid fa-times text-lg"></i>
+            </button>
+        </div>
+
+        <div class="border-t border-gray-300 my-4"></div>
+
+        <div *ngIf="selectedProcessors.length > 0" class="space-y-3">
+            <div *ngFor="let processor of selectedProcessors"
+                style="font-size: 1.25rem; font-weight: 600; padding: 10px; background-color: #f9f9f9; border-radius: 8px; text-align: center;">
+                {{ processor }}
+            </div>
+        </div>
+
+        <div *ngIf="selectedProcessors.length === 0" class="text-center text-lg font-semibold text-gray-600 mt-3">
+            {{ 'No processors assigned' | translate }}
         </div>
     </div>
 </div>

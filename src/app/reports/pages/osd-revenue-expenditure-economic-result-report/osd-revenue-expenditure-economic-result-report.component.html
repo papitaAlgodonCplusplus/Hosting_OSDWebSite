@@ -8,19 +8,13 @@
         <div class="grid grid-cols-2 gap-4 mb-5">
           <div class="flex flex-col">
             <label for="country" class="text-darkslategray font-medium">Country</label>
-            <select id="country" class="w-full h-12 border rounded border-gray-300" formControlName="country">
-              <option *ngFor="let country of countries" [value]="country.key">
-                {{ country.value }}
-              </option>
-            </select>
+            <shared-simple-dropdown class="w-full"fieldName="country" [formGroup]="filterForm" [dropdownItems]="countries" (change)="filterOptions()">
+            </shared-simple-dropdown >
           </div>
           <div class="flex flex-col">
             <label for="client" class="text-darkslategray font-medium">Client</label>
-            <select id="client" class="w-full h-12 border rounded border-gray-300" formControlName="client">
-              <option *ngFor="let subscriber of allSubscribers" [value]="subscriber.companyname">
-                {{ subscriber.companyname }}
-              </option>
-            </select>
+            <shared-simple-dropdown [formGroup]="filterForm" class="w-full" fieldName="client" [dropdownItems]="allSubscribersDropdown" (change)="filterOptions()">
+            </shared-simple-dropdown>
           </div>
         </div>
       </form>

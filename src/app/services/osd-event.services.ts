@@ -105,6 +105,37 @@ export class OSDService {
     });
   }
 
+  public getFreeProfessionals(): Observable<FreeProfessional[]> {
+    const getFreeProfessionalsEvent: WebBaseEvent = this.eventFactoryService.CreateGetFreeProfessionalsEvent();
+    return new Observable((observer) => {
+      this.restApiService.SendOSDEvent(getFreeProfessionalsEvent).subscribe({
+        next: (response) => {
+          const freeProfessionals = response.Body?.['ListFreeProfessionals'] || [];
+          observer.next(freeProfessionals);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
+
+  public getMyAssignedProcessors(userId: string): Observable<any> {
+    const getMyAssignedProcessorsEvent: WebBaseEvent = this.eventFactoryService.CreateGetMyAssignedProcessorsEvent(userId);
+    return new Observable((observer) => {
+      this.restApiService.SendOSDEvent(getMyAssignedProcessorsEvent).subscribe({
+        next: (response) => {
+          observer.next(response);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
+
   public getClaims(): Observable<any> {
     const getClaimsEvent: WebBaseEvent = this.eventFactoryService.CreateGetClaimsEvent();
     return new Observable((observer) => {

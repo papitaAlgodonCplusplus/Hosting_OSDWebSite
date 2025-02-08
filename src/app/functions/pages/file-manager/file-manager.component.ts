@@ -177,7 +177,50 @@ export class FileManagerComponent implements OnInit, OnDestroy {
           this.addUpdateForm.get('answer_to_appeal')?.enable();
         }
       });
-    }, 200);
+    }, 500);
+  }
+
+  copyText(to_copy: any): void {
+    let text: string | undefined;
+    switch (to_copy) {
+      case 'facts':
+        text = this.claim.facts;
+        break;
+      case 'complaint':
+        text = this.claim.complaint;
+        break;
+      case 'appeal':
+        text = this.claim.appeal;
+        break;
+      case 'solution_suggestion':
+        text = this.claim.solution_suggestion;
+        break;
+      case 'solution_appeal':
+        text = this.claim.solution_appeal;
+        break;
+      case 'answer_to_appeal':
+        text = this.claim.answer_to_appeal;
+        break;
+      case 'solution':
+        text = this.claim.solution;
+        break;
+      case 'solution_complaint':
+        text = this.claim.solution_complaint;
+        break;
+      case 'code':
+        text = this.claim.code;
+        break;
+      default:
+        text = '';
+    }
+
+    if (!text) { return; }
+    navigator.clipboard.writeText(text).then(() => {
+      // Optionally, display a toast or alert indicating success
+      console.log('Text copied successfully');
+    }).catch(err => {
+      console.error('Failed to copy text: ', err);
+    });
   }
 
   // Opens the modal with the passed performance, content, and title.

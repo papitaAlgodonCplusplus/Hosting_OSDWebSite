@@ -13,3 +13,9 @@
     /* Reset any inherited styles */
     cursor: pointer;
 }
+
+input[readonly] {
+    user-select: all;
+    cursor: text;
+  }
+  

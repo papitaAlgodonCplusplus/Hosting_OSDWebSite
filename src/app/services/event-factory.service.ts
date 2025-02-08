@@ -72,6 +72,19 @@ export class EventFactoryService {
     return event;
   }
 
+  public CreateGetFreeProfessionalsEvent(): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.GET_FREE_PROFESSIONALS;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    return event;
+  }
+  
   public CreateLogEvent(logData: any): WebBaseEvent {
     const event = new WebBaseEvent();
     event.SessionKey = this.authenticationService.sessionKey;
@@ -100,6 +113,20 @@ export class EventFactoryService {
     event.SessionKey = jsonObject.SessionKey;
     event.SecurityToken = jsonObject.SecurityToken;
 
+    return event;
+  }
+
+  public CreateGetMyAssignedProcessorsEvent(userId: string): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.GET_MY_ASSIGNED_PROCESSORS;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    event.setBodyProperty(EventConstants.USER_ID, userId);
     return event;
   }
 

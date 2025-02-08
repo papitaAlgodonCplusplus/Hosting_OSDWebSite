@@ -132,7 +132,8 @@ export class HomeComponent implements OnInit, OnDestroy {
           this.checkPendingClaims();
           break;
         case 'SubscriberCustomer':
-          this.menuOptions = this.menuService.getMenuOptionSubscriber();
+          console.log('SubscriberCustomer: ', this.user.can_be_claimed);
+          this.menuOptions = this.menuService.getMenuOptionSubscriber(this.user.can_be_claimed);
           this.checkPendingClaims();
           break;
         default:

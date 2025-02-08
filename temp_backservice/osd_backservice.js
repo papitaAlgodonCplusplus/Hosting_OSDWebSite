@@ -300,6 +300,10 @@ app.post('/api/events/processOSDEvent', async (req, res) => {
         await handleDeleteClaim(event, res);
         break;
 
+      case 'GetMyAssignedProcessors':
+        await handleGetMyAssignedProcessors(event, res);
+        break;
+
       default:
         res.status(400).json(createWebBaseEvent({
           SUCCESS: false,
@@ -412,6 +416,7 @@ const handleUserLogin = async (event, res) => {
           Id: user.id,
           email: user.email,
           name: user.name,
+          can_be_claimed: user.can_be_claimed,
           Isauthorized: user.isauthorized,
           isadmin: user.isadmin,
           AccountType: user.account_type,
@@ -1781,31 +1786,11 @@ const handleGetProfessionalFreeTrainers = async (event, res) => {
 
 const handleGetUnassignedSubscribers = async (event, res) => {
   try {
-    const subscriberUnassignedListDTO = [];
-
-    // Get IDs of subscribers whose associated user has an assigned trainer
-    const subscriberIdsWithTrainers = await pool.query(`
-      SELECT sc.id
-      FROM subscribercustomer sc
-      JOIN osduser u ON sc.userid = u.id
-      WHERE u.assignedtrainer IS NOT NULL
+    let subscriberUnassignedListDTO = [];
+    const subscribersList = await pool.query(`
+        SELECT *
+        FROM subscribercustomer
     `);
-
-    const subscriberIds = subscriberIdsWithTrainers.rows.map(row => row.id);
-
-    let subscribersList;
-    if (subscriberIds.length > 0) {
-      subscribersList = await pool.query(`
-        SELECT *
-        FROM subscribercustomer
-        WHERE id NOT IN (${subscriberIds.map((_, i) => `$${i + 1}`).join(', ')})
-      `, subscriberIds);
-    } else {
-      subscribersList = await pool.query(`
-        SELECT *
-        FROM subscribercustomer
-      `);
-    }
 
     for (const subscriber of subscribersList.rows) {
       const osduser = await pool.query(`
@@ -3286,8 +3271,11 @@ async function handleGetFreeProfessionals(event, res) {
         fp.civilliabilityinsurancefilename,
         fp.servicerates,
         fp.paytpv,
+        fp.cfh_id AS cfhid,
         u.name AS username,
         u.companyname AS usercompanyname,
+        u.email AS useremail,
+        u.country AS Country,
         (SELECT COUNT(*) FROM osduser WHERE refeer = fp.userid) AS n_refeers
       FROM freeprofessional fp
       LEFT JOIN freeprofessionaltype fpt ON fp.freeprofessionaltypeid = fpt.id
@@ -3424,6 +3412,81 @@ const handleGetUsers = async (event, res) => {
       GET_USERS_SUCCESS: false,
       GET_USERS_MESSAGE: 'Server error fetching users.',
     }, event.SessionKey, event.SecurityToken, 'GetUsers'));
+  }
+};
+
+const handleGetMyAssignedProcessors = async (event, res) => {
+  try {
+    const userId = event.Body?.UserId;
+
+    if (!userId) {
+      return res.status(400).json(createWebBaseEvent({
+        GET_MY_ASSIGNED_PROCESSORS_SUCCESS: false,
+        GET_MY_ASSIGNED_PROCESSORS_MESSAGE: 'User ID is required.',
+      }, event.SessionKey, event.SecurityToken, 'GetMyAssignedProcessors'));
+    }
+
+    // Fetch all claims where the user is the subscriber
+    const claimsQuery = `
+      SELECT id
+      FROM claim_file
+      WHERE subscriberclaimedid = $1
+    `;
+    const claimsResult = await pool.query(claimsQuery, [userId]);
+
+    if (claimsResult.rows.length === 0) {
+      return res.status(404).json(createWebBaseEvent({
+        GET_MY_ASSIGNED_PROCESSORS_SUCCESS: false,
+        GET_MY_ASSIGNED_PROCESSORS_MESSAGE: 'No claims found for this user.',
+      }, event.SessionKey, event.SecurityToken, 'GetMyAssignedProcessors'));
+    }
+
+    const claimIds = claimsResult.rows.map(row => row.id);
+
+    // Fetch free professional IDs for each claim
+    const freeProfessionalIdsQuery = `
+      SELECT freeprofessionalid
+      FROM freeprofessional_claim
+      WHERE claimid = ANY($1::uuid[])
+    `;
+    const freeProfessionalIdsResult = await pool.query(freeProfessionalIdsQuery, [claimIds]);
+
+    if (freeProfessionalIdsResult.rows.length === 0) {
+      return res.status(404).json(createWebBaseEvent({
+        GET_MY_ASSIGNED_PROCESSORS_SUCCESS: false,
+        GET_MY_ASSIGNED_PROCESSORS_MESSAGE: 'No free professionals found for these claims.',
+      }, event.SessionKey, event.SecurityToken, 'GetMyAssignedProcessors'));
+    }
+
+    const freeProfessionalIds = freeProfessionalIdsResult.rows.map(row => row.freeprofessionalid);
+
+    // Fetch names of free professionals
+    const freeProfessionalNamesQuery = `
+      SELECT u.name
+      FROM osduser u
+      JOIN freeprofessional fp ON u.id = fp.userid
+      WHERE fp.id = ANY($1::uuid[])
+    `;
+    const freeProfessionalNamesResult = await pool.query(freeProfessionalNamesQuery, [freeProfessionalIds]);
+
+    if (freeProfessionalNamesResult.rows.length === 0) {
+      return res.status(404).json(createWebBaseEvent({
+        GET_MY_ASSIGNED_PROCESSORS_SUCCESS: false,
+        GET_MY_ASSIGNED_PROCESSORS_MESSAGE: 'No free professionals found.',
+      }, event.SessionKey, event.SecurityToken, 'GetMyAssignedProcessors'));
+    }
+
+    return res.status(200).json(createWebBaseEvent({
+      GET_MY_ASSIGNED_PROCESSORS_SUCCESS: true,
+      processors: freeProfessionalNamesResult.rows.map(row => row.name)
+    }, event.SessionKey, event.SecurityToken, 'GetMyAssignedProcessors'));
+
+  } catch (error) {
+    console.error('❌ Error fetching assigned processors:', error);
+    return res.status(500).json(createWebBaseEvent({
+      GET_MY_ASSIGNED_PROCESSORS_SUCCESS: false,
+      GET_MY_ASSIGNED_PROCESSORS_MESSAGE: 'Server error fetching assigned processors.',
+    }, event.SessionKey, event.SecurityToken, 'GetMyAssignedProcessors'));
   }
 };
 
@@ -3797,7 +3860,7 @@ const handleUpdateClaimState = async (event, res) => {
       UPDATE claim_file
       SET status = 'Closed'
       WHERE valuationsubscriber <> -1
-        AND valuationclaimant <> -1
+        AND (valuationclaimant <> -1 OR claimantid IS NULL)
         AND valuationfreeprofessionals <> -1
         AND status <> 'Closed'
       RETURNING *;

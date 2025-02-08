@@ -25,6 +25,23 @@
           </td>
         </tr>
         <tr>
+          <td class="p-2 border">Correo Electrónico</td>
+          <td class="p-2 border">
+            <input type="email" formControlName="email" class="w-full p-1 border rounded"
+              placeholder="Correo Electrónico" />
+          </td>
+        </tr>
+        <tr>
+          <td class="p-2 border">Contraseña</td>
+          <td class="p-2 border flex items-center">
+            <input [type]="showPassword ? 'text' : 'password'" formControlName="password"
+              class="w-full p-1 border rounded" placeholder="Nueva Contraseña" />
+            <button type="button" class="ml-2 text-gray-600" (click)="togglePasswordVisibility()">
+              <i [ngClass]="showPassword ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash'"></i>
+            </button>
+          </td>
+        </tr>
+        <tr>
           <td class="p-2 border">Ciudad</td>
           <td class="p-2 border">
             <input type="text" formControlName="city" class="w-full p-1 border rounded" placeholder="Ciudad" />
@@ -62,13 +79,6 @@
           <td class="p-2 border">
             <input type="text" formControlName="mobilePhone" class="w-full p-1 border rounded"
               placeholder="Teléfono Móvil" />
-          </td>
-        </tr>
-        <tr>
-          <td class="p-2 border">Correo Electrónico</td>
-          <td class="p-2 border">
-            <input type="email" formControlName="email" class="w-full p-1 border rounded"
-              placeholder="Correo Electrónico" />
           </td>
         </tr>
         <tr>

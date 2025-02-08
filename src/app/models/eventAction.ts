@@ -14,6 +14,7 @@ export class EventAction {
   public static SEND_CLAIM_READY_EMAIL_TO_USER: string = "SendClaimReadyEmailToUser";
 
   //#region OSD
+  public static GET_MY_ASSIGNED_PROCESSORS: string = "GetMyAssignedProcessors";
   public static DELETE_CLAIM: string = "DeleteClaim";
   public static GET_ALL_CLAIMS: string = "GetAllClaims";
   public static DELETE_USER: string = "DeleteUser";

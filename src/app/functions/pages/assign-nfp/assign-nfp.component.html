@@ -6,53 +6,50 @@
     </span>
   </div>
 
-  <!-- Assignment form -->
-  <form [formGroup]="assignForm" (ngSubmit)="onAssignSubmit()"
-    class="flex flex-col space-y-3 max-w-lg bg-white p-4 rounded-md shadow-sm">
-
-    <label class="font-medium" for="fpEmail">
-      {{ 'freeProfessionalEmail' | translate }}
-    </label>
-    <input id="fpEmail" formControlName="email" type="email" class="border border-gray-300 px-2 py-1 rounded-md"
-      placeholder="{{ 'enterEmail' | translate }}" />
-    <div *ngIf="assignForm.controls['email']?.errors && assignForm.controls['email']?.touched" class="text-red-500">
-      <!-- For instance, if there's a required error or invalid email error -->
-      <span *ngIf="assignForm.controls['email'].hasError('required')">
-        {{ 'emailIsRequired' | translate }}
-      </span>
-      <span *ngIf="assignForm.controls['email'].hasError('email')">
-        {{ 'emailFormatError' | translate }}
-      </span>
+  <!-- Filter Section -->
+  <div class="flex flex-col items-center space-y-4">
+    <!-- Country Filter Dropdown -->
+    <div class="w-full md:w-1/2">
+      <h3 class="text-darkslategray text-lg font-semibold mb-2 text-center">
+        {{ 'Country' | translate }}
+      </h3>
+      <shared-simple-dropdown class="w-full" [dropdownItems]="countries" [formGroup]="myForm"
+        fieldName="selectedCountry" (change)="filterUsers()">
+      </shared-simple-dropdown>
     </div>
 
-    <button type="submit" class="bg-darkslategray text-line px-3 py-1 rounded-md self-start"
-      [disabled]="assignForm.invalid || loading">
-      {{ 'assignNewFreeProfessional' | translate }}
-    </button>
-
-    <!-- Show error or loader -->
-    <div class="text-red-500" *ngIf="errorMessage">{{ errorMessage }}</div>
-    <div *ngIf="loading">
-      <i class="fa-solid fa-spinner animate-spin"></i>
+    <!-- Cancel Button -->
+    <div class="flex justify-center mt-4">
+      <button
+        class="px-2 py-1 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150"
+        (click)="onCancel()">
+        {{ 'Cancel' | translate }}
+      </button>
     </div>
-  </form>
+  </div>
 
-  <!-- Table of free professionals -->
+  <!-- Table of Free Professionals -->
   <div class="flex flex-col bg-white rounded-md shadow-sm p-3 w-full">
     <div class="overflow-x-auto">
       <table class="table-auto w-full">
         <thead>
           <tr class="text-darkslategray">
             <th class="px-4 py-2">{{ 'Name' | translate }}</th>
-            <th class="px-4 py-2">{{ 'FreeProfessionalType' | translate }}</th>
-            <th class="px-4 py-2">{{ 'ServiceRates' | translate }}</th>
+            <th class="px-4 py-2">{{ 'Email' | translate }}</th>
+            <th class="px-4 py-2">{{ 'Country' | translate }}</th>
+            <th class="px-4 py-2">{{ 'Action' | translate }}</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let fp of pagedFreeProfessionals" class="text-center">
             <td class="border-y px-4 py-2">{{ fp.username }}</td>
-            <td class="border-y px-4 py-2">{{ fp.typename }}</td>
-            <td class="border-y px-4 py-2">{{ fp.servicerates }}</td>
+            <td class="border-y px-4 py-2">{{ fp.useremail }}</td>
+            <td class="border-y px-4 py-2">{{ fp.country }}</td>
+            <td class="border-y px-4 py-2">
+              <button (click)="onSelectFreeProfessional(fp)" class="bg-darkslategray text-line px-3 py-1 rounded-md">
+                {{ 'Select' | translate }}
+              </button>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -69,5 +66,4 @@
       {{ 'goBack' | translate }}
     </button>
   </div>
-
 </div>

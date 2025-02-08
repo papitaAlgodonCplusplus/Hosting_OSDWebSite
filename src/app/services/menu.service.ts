@@ -87,14 +87,20 @@ export class MenuService {
     ];
   }
 
-  getMenuOptionSubscriber(): MenuOption[] {
-    return [
+  getMenuOptionSubscriber(can_be_claimed: any): MenuOption[] {
+    if (can_be_claimed) {
+      return [
       this.createMenuOption('transparent_project', '/project-manager', 'fa-project-diagram', 'bg-indigo-500'),
-      // this.createMenuOption('presentar_reclamación', '/onboarding/onboarding-register-claimant/False', 'fa-balance-scale', 'bg-red-500'),
-      //this.createMenuOption('Assign_Processor_to_Claim', '/functions/assign-pltr-claims', 'fa-user', 'bg-green-500'),
       this.createMenuOption('file_claim', '/functions/claims-file', 'fa-file', 'bg-yellow-500'),
       this.createMenuOption('edit_user_profile', '/functions/edit-my-info', 'fa-user-edit', 'bg-blue-500'),
       this.createMenuOption('Assign_New_Free_Professional', '/functions/assign-nfp', 'fa-user-plus', 'bg-orange-500'),
-    ];
+      ];
+    } else {
+      return [
+      this.createMenuOption('transparent_project', '/project-manager', 'fa-project-diagram', 'bg-indigo-500'),
+      this.createMenuOption('file_claim', '/functions/claims-file', 'fa-file', 'bg-yellow-500'),
+      this.createMenuOption('edit_user_profile', '/functions/edit-my-info', 'fa-user-edit', 'bg-blue-500')
+      ];
+    }
   }
 }

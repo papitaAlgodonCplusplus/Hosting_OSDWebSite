@@ -33,8 +33,6 @@ export class AssignClientToTrainerComponent implements OnDestroy {
   ngOnInit(): void {
     setTimeout(() => {
       this.osdEventService.GetUnassignedSubscribers();
-      this.store.dispatch(UiActions.hideLeftSidebar())
-      this.store.dispatch(UiActions.hideFooter())
     }, 0);
     this.unassignedSubscribers$.subscribe(subs => {
       this.subscribers = subs
@@ -97,6 +95,8 @@ export class AssignClientToTrainerComponent implements OnDestroy {
     this.store.dispatch(UiActions.toggleConfirmationButton())
     this.showModal = !this.showModal
     this.osdEventService.assignTrainerToSubscriber(this.subscribersSelected, freeProfessionalId)
+    this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: 'Client assigned to trainer' }))
+    this.store.dispatch(ModalActions.openAlert())
   }
 
   closeModal() {
