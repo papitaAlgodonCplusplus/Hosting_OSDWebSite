@@ -3,5 +3,6 @@ export interface DropDownItem {
     key: string;
     mode?: string;
     country?: string;
+    assignedclaimid?: string;
   }
   

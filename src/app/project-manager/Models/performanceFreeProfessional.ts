@@ -10,6 +10,11 @@ export class PerformanceFreeProfessional {
   FreeProfessionalId: string = "";
   freeprofessionalid: string = "";
   free_professional_id: string = "";
+  explanation_text: string = "";
+  explanation: string = "";
+  explanationText: string = "";
+  ExplanationText: string = "";
+  Explanation: string = "";
   FreeProfessionalAssignedId: string = "";
   freeprofessionalassignedid: string = "";
   free_professional_assigned_id: string = "";

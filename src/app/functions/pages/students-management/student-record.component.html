@@ -1,11 +1,51 @@
 <div class="flex flex-col py-3 space-y-3">
   <h1 class="text-center text-darkslategray text-xl">Registro de Alumnos</h1>
 
+  <!-- Filter Section: 4 shared-simple-dropdowns -->
+  <div class="w-full bg-white p-4 shadow mb-6">
+    <div class="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 max-w-screen-xl mx-auto">
+      <!-- Filter by Student Name -->
+      <div class="flex flex-col flex-1 mr-4">
+        <label class="text-darkslategray font-medium">Student Name</label>
+        <shared-simple-dropdown fieldName="studentName" [formGroup]="filterForm" [dropdownItems]="studentNameDropdown"
+          (change)="filterStudents()"></shared-simple-dropdown>
+      </div>
+      <!-- Filter by Course Name -->
+      <div class="flex flex-col flex-1 mr-4">
+        <label class="text-darkslategray font-medium">Course Name</label>
+        <shared-simple-dropdown fieldName="courseName" [formGroup]="filterForm" [dropdownItems]="courseNameDropdown"
+          (change)="filterStudents()"></shared-simple-dropdown>
+      </div>
+      <!-- Filter by Modality -->
+      <div class="flex flex-col flex-1 mr-4">
+        <label class="text-darkslategray font-medium">Modality</label>
+        <shared-simple-dropdown fieldName="modality" [formGroup]="filterForm" [dropdownItems]="modalityDropdown"
+          (change)="filterStudents()"></shared-simple-dropdown>
+      </div>
+      <!-- Filter by CFH -->
+      <div class="flex flex-col flex-1 mr-4">
+        <label class="text-darkslategray font-medium">CFH</label>
+        <shared-simple-dropdown fieldName="cfh" [formGroup]="filterForm" [dropdownItems]="cfhDropdown"
+          (change)="filterStudents()"></shared-simple-dropdown>
+      </div>
+      <!-- Cancel Button -->
+      <div class="flex flex-col flex-1 self-end md:self-auto">
+        <button (click)="clearStudentFilters()" class="px-3 py-1 bg-blue-500 text-white rounded">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Student Records Table -->
   <form [formGroup]="studentForm" (ngSubmit)="onSubmit()">
     <table class="w-full border">
       <thead>
         <tr class="bg-gray-200 text-darkslategray">
+          <th class="py-2 px-4">CFH</th>
           <th class="py-2 px-4">Nombre</th>
+          <th class="py-2 px-4">Curso</th>
+          <th class="py-2 px-4">Modalidad</th>
           <th class="py-2 px-4">Asistencia (%)</th>
           <th class="py-2 px-4">Calificación</th>
           <th class="py-2 px-4">Estado</th>
@@ -14,19 +54,35 @@
       </thead>
       <tbody formArrayName="students">
         <tr *ngFor="let student of students.controls; let i = index" [formGroupName]="i">
+          <!-- CFH Column -->
+          <td class="p-2 border">
+            <input type="text" formControlName="cfh" placeholder="CFH" class="w-full p-1 border rounded" readonly />
+          </td>
+          <!-- Student Name Column -->
           <td class="p-2 border">
             <input type="text" formControlName="name" placeholder="Nombre del Alumno"
-              class="w-full p-1 border rounded bg-gray-200 cursor-not-allowed"
+              class="w-full p-1 border rounded bg-gray-200 cursor-not-allowed" readonly />
+          </td>
+          <!-- Course Name Column -->
+          <td class="p-2 border">
+            <input type="text" formControlName="courseName" placeholder="Curso" class="w-full p-1 border rounded"
               readonly />
           </td>
+          <!-- Modality Column -->
+          <td class="p-2 border">
+            <input type="text" formControlName="modality" placeholder="Modalidad" class="w-full p-1 border rounded"
+              readonly />
+          </td>
+          <!-- Attendance Column -->
           <td class="p-2 border">
             <input type="number" formControlName="attendance" placeholder="%" min="0" max="100"
               class="w-full p-1 border rounded" />
           </td>
+          <!-- Grade Column -->
           <td class="p-2 border">
-            <input type="text" formControlName="grade" placeholder="Nota Final"
-              class="w-full p-1 border rounded" />
+            <input type="text" formControlName="grade" placeholder="Nota Final" class="w-full p-1 border rounded" />
           </td>
+          <!-- Status Column -->
           <td class="p-2 border">
             <select formControlName="status" class="w-full p-1 border rounded">
               <option value="Pending">Pendiente</option>
@@ -34,6 +90,7 @@
               <option value="Approved">Finalizado</option>
             </select>
           </td>
+          <!-- Actions Column -->
           <td class="p-2 border text-center">
             <button type="button" (click)="removeStudent(i)" class="text-red-500">🗑️</button>
           </td>
@@ -46,6 +103,6 @@
     </div>
   </form>
   <button class="bottom-3 mt-3 right-3 text-darkslategray bg-line p-2 rounded-xl w-20" routerLink="/home">
-    {{'regresar' | translate }}
+    {{ 'regresar' | translate }}
   </button>
 </div>

@@ -1,59 +1,99 @@
-<div class="flex flex-col py-3 space-y-3">
-    <div class="text-darkslategray text-start py-3 text-xl font-medium animate__animated animate__fadeInLeft">
-        <span class="pl-5 pr-3 py-1 bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden">
-            {{'file_claim' | translate}} <i class="fa-solid fa-project-diagram"></i></span>
-    </div>
-    <div class="w-full flex flex-col items-center space-y-3 font-medium">
-        <h1 class="text-center text-darkslategray text-xl">{{'claims' | translate}}</h1>
-        <div class="flex-1 flex justify-center w-full p-3">
-            <table class="w-full">
-                <thead>
-                    <tr class="text-darkslategray">
-                        <th class="py-2 px-4 font-normal"></th>
-                        <th class="py-2 px-4 font-normal">{{'Code_claim' | translate}}</th>
-                        <th class="py-2 px-4 font-normal">{{'SubscriberCustomer' | translate}}</th>
-                        <th class="py-2 px-4 font-normal">{{'facts' | translate}}</th>
-                        <th class="py-2 px-4 font-normal">{{'status' | translate}}</th>
-                        <th class="py-2 px-4 font-normal">{{'Date' | translate}}</th>
-                        <th class="py-2 px-4 font-normal" *ngIf="isClaimant || isAdmin">{{'Edit' | translate}}</th>
-                    </tr>
-                </thead>
-                <ng-container *ngIf="claims">
-                    <tbody>
-                        <tr *ngFor="let claim of displayedItems; let i = index" class="my-5">
-                            <td class="p-2 border-y text-center">
-                                <span (click)="selectClaim(claim)" routerLink="/functions/file-manager"
-                                    class="font-medium text-darkslategray px-4 py-2 text-lg cursor-pointer">
-                                    <i class="fa-solid fa-eye"></i>
-                                </span>
-                            </td>
-                            <td class="p-2 border-y text-center">{{claim.code}}</td>
-                            <td class="p-2 border-y text-center">{{claim.companyname}}</td>
-                            <td class="p-2 border-y text-center">{{claim.facts | truncate:100}}</td>
-                            <td class="p-2 border-y text-center">
-                                <i class="fa-solid fa-circle pr-3" [ngClass]="{
-                                        'text-red-500' : claim.status == 'Unassigned',
-                                        'text-yellow-500' : claim.status == 'Running',
-                                        'text-green-500' : claim.status == 'Completed',
-                                        'text-blue-500' : claim.status == 'Falta Información'
-                                    }">
-                                </i>{{ claim.status | translate }}
-                            </td>
-                            <td class="p-2 border-y text-center">{{ claim.datecreated | date:'medium' }}</td>
-                            <td class="p-2 border-y text-center" *ngIf="claim.status !== 'Closed' && (isClaimant || isAdmin)">
-                                <span (click)="selectClaim(claim)" routerLink="/functions/edit-claim-file"
-                                    class="font-medium text-darkslategray px-4 py-2 text-lg cursor-pointer">
-                                    <i class="fa-solid fa-pencil"></i>
-                                </span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </ng-container>
-            </table>
+<!-- Full-width Filter Section for Admin -->
+<div *ngIf="isAdmin" class="w-full bg-white p-4 shadow mb-6">
+    <div class="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 max-w-screen-xl mx-auto">
+        <div class="flex flex-col flex-1 mr-4">
+            <label for="filterCountry" class="text-darkslategray font-medium">Country</label>
+            <shared-simple-dropdown fieldName="country" [formGroup]="filterForm" [dropdownItems]="countries"
+                (change)="filterOptions()">
+            </shared-simple-dropdown>
         </div>
-        <mat-paginator [length]="claims.length" [pageSize]="5" (page)="onPageChange($event)"></mat-paginator>
-        <button class="absolute bottom-3 right-3 text-darkslategray bg-line p-2 rounded-xl " routerLink="/home">
-            {{'regresar' | translate }}
-        </button>
+        <div class="flex flex-col flex-1 mr-4">
+            <label for="filterClient" class="text-darkslategray font-medium">Client</label>
+            <shared-simple-dropdown fieldName="client" [formGroup]="filterForm" [dropdownItems]="allSubscribersDropdown"
+                (change)="filterOptions()">
+            </shared-simple-dropdown>
+        </div>
+        <div class="flex flex-col flex-1 mr-4">
+            <label for="filterProcessor" class="text-darkslategray font-medium">Assigned Processor</label>
+            <shared-simple-dropdown fieldName="processor" [formGroup]="filterForm" [dropdownItems]="processorsDropdown"
+                (change)="filterOptions()">
+            </shared-simple-dropdown>
+        </div>
+        <div class="flex flex-col flex-1 mr-4 self-end md:self-auto w-10">
+            <button (click)="clearFilters()" class="px-3 py-1 w-20 bg-blue-500 text-white rounded">
+                Cancel
+            </button>
+        </div>
     </div>
+</div>
+
+<!-- Claims Table Section -->
+<div class="w-full flex flex-col items-center space-y-3 font-medium">
+    <h1 class="text-center text-darkslategray text-xl">{{ 'claims' | translate }}</h1>
+    <div class="flex-1 flex justify-center w-full p-3">
+        <table class="w-full">
+            <thead>
+                <tr class="text-darkslategray">
+                    <th class="py-2 px-4 font-normal"></th>
+                    <th class="py-2 px-4 font-normal">{{ 'Code_claim' | translate }}</th>
+                    <th class="py-2 px-4 font-normal">{{ 'SubscriberCustomer' | translate }}</th>
+                    <th class="py-2 px-4 font-normal">{{ 'facts' | translate }}</th>
+                    <th class="py-2 px-4 font-normal">{{ 'status' | translate }}</th>
+                    <th class="py-2 px-4 font-normal">{{ 'Date' | translate }}</th>
+                    <!-- Edit column only for Claimant -->
+                    <th class="py-2 px-4 font-normal" *ngIf="isClaimant">{{ 'Edit' | translate }}</th>
+                    <!-- Delete column only for Admin -->
+                    <th class="py-2 px-4 font-normal" *ngIf="isAdmin">Delete</th>
+                </tr>
+            </thead>
+            <ng-container *ngIf="claims">
+                <tbody>
+                    <tr *ngFor="let claim of displayedItems; let i = index" class="my-5">
+                        <!-- View Button -->
+                        <td class="p-2 border-y text-center">
+                            <span (click)="selectClaim(claim)" routerLink="/functions/file-manager"
+                                class="font-medium text-darkslategray px-4 py-2 text-lg cursor-pointer">
+                                <i class="fa-solid fa-eye"></i>
+                            </span>
+                        </td>
+                        <!-- Claim Code -->
+                        <td class="p-2 border-y text-center">{{ claim.code }}</td>
+                        <!-- Subscriber/Client -->
+                        <td class="p-2 border-y text-center">{{ claim.companyname }}</td>
+                        <!-- Facts -->
+                        <td class="p-2 border-y text-center">{{ claim.facts | truncate:100 }}</td>
+                        <!-- Status with colored dot -->
+                        <td class="p-2 border-y text-center">
+                            <i class="fa-solid fa-circle pr-3" [ngClass]="{
+                  'text-red-500': claim.status == 'Unassigned',
+                  'text-yellow-500': claim.status == 'Running',
+                  'text-green-500': claim.status == 'Completed',
+                  'text-blue-500': claim.status == 'Falta Información'
+              }"></i>{{ claim.status | translate }}
+                        </td>
+                        <!-- Date -->
+                        <td class="p-2 border-y text-center">{{ claim.datecreated | date:'medium' }}</td>
+                        <!-- Edit Button (only for Claimant when not Closed) -->
+                        <td class="p-2 border-y text-center" *ngIf="claim.status !== 'Closed' && isClaimant">
+                            <span (click)="selectClaim(claim)" routerLink="/functions/edit-claim-file"
+                                class="font-medium text-darkslategray px-4 py-2 text-lg cursor-pointer">
+                                <i class="fa-solid fa-pencil"></i>
+                            </span>
+                        </td>
+                        <!-- Delete Button (only for Admin) -->
+                        <td class="p-2 border-y text-center" *ngIf="isAdmin">
+                            <button type="button" (click)="deleteClaim(claim.id)"
+                                class="text-red-500 hover:text-red-700 cursor-pointer">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </ng-container>
+        </table>
+    </div>
+    <mat-paginator [length]="claims.length" [pageSize]="5" (page)="onPageChange($event)"></mat-paginator>
+    <button class="absolute bottom-3 right-3 text-darkslategray bg-line p-2 rounded-xl" routerLink="/home">
+        {{ 'regresar' | translate }}
+    </button>
 </div>

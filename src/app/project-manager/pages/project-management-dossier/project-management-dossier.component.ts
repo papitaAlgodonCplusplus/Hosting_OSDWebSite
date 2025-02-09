@@ -6,7 +6,7 @@ import { Observable, firstValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { OSDDataService } from 'src/app/services/osd-data.service';
 import { OSDService } from 'src/app/services/osd-event.services';
-import { PerformanceActions, UiActions } from 'src/app/store/actions';
+import { ModalActions, PerformanceActions, UiActions } from 'src/app/store/actions';
 import { AuthSelectors } from 'src/app/store/selectors';
 import { PerformanceBuy } from '../../Models/performanceBuy';
 import { TranslateService } from '@ngx-translate/core';
@@ -15,6 +15,7 @@ import { AuthenticationService } from 'src/app/services/authentication.service';
 import { ResponseToPerformanceFreeProfessional } from '../../Models/responseToperformanceFreeProfessional';
 import { showPerformance } from '../../Models/showPerformance';
 import { PerformanceFreeProfessional } from '../../Models/performanceFreeProfessional';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-project-management-dossier',
@@ -54,7 +55,8 @@ export class ProjectManagementDossierComponent implements OnDestroy {
     private osdDataService: OSDDataService,
     private osdEventService: OSDService,
     private translate: TranslateService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private snackBar: MatSnackBar,
   ) {
     this.formProjectManager = this.createForm({} as Project);
   }
@@ -243,9 +245,43 @@ export class ProjectManagementDossierComponent implements OnDestroy {
     this.osdEventService.updateProjectDetails(updatedProjectData)
       .subscribe(response => {
         console.log('Project details updated successfully', response);
-        // Optionally, you could display a success message or refresh your project data here.
+        this.snackBar.open('Project details updated successfully', 'Close', {
+          duration: 5000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+        });
       }, error => {
         console.error('Error updating project details', error);
+      });
+  }
+
+  deletePerformance(pf: any) {
+    console.log('Deleting performance', pf);
+    const performanceId = pf.id;
+    this.osdEventService.deletePerformance(performanceId)
+      .subscribe(response => {
+        console.log('Performance deleted successfully', response);
+        this.snackBar.open('Performance deleted successfully', 'Close', {
+          duration: 5000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+        });
+      }, error => {
+        console.error('Error deleting performance', error);
+      });
+  }
+
+  deleteProject() {
+    this.osdEventService.deleteProject(this.formProjectManager.value.projectID)
+      .subscribe(response => {
+        console.log('Project deleted successfully', response);
+        this.snackBar.open('Project deleted successfully', 'Close', {
+          duration: 5000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+        });
+      }, error => {
+        console.error('Error deleting project', error);
       });
   }
 }

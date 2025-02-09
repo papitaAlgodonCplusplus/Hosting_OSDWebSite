@@ -32,7 +32,7 @@
     <thead>
       <tr class="bg-gray-200">
         <th class="border p-2">Título</th>
-        <th class="border p-2">Costo (EUR)</th>
+        <th class="border p-2">Precio (EUR)</th>
         <th class="border p-2">Modalidad</th>
       </tr>
     </thead>
@@ -49,49 +49,6 @@
   <form [formGroup]="budgetForm">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
       <div>
-        <label for="pricePerStudent" class="block text-sm font-medium text-gray-700">
-          💵 Precio Promedio por Alumno (EUR)
-        </label>
-        <input type="text" [value]="budgetForm.get('pricePerStudent')?.value | number:'1.0-0'"
-          class="w-full p-2 border rounded bg-gray-100 cursor-not-allowed" readonly />
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Modo de Curso</label>
-        <input type="text" [value]="filteredCourses[0]?.mode || courses[0]?.mode"
-          class="w-full p-2 border rounded bg-gray-100 cursor-not-allowed" readonly />
-      </div>
-
-      <div>
-        <label for="otherExpenses" class="block text-sm font-medium text-gray-700">
-          💼 Otros Gastos (EUR)
-        </label>
-        <input type="text" formControlName="otherExpenses"
-          class="w-full p-2 border rounded bg-gray-100 cursor-not-allowed" readonly />
-      </div>
-    </div>
-
-    <!-- Distribution Percentages -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-      <div>
-        <label class="block text-sm font-medium text-gray-700">% OSD</label>
-        <input type="text" [value]="distribution.osdPerc + '%'"
-          class="w-full p-2 border rounded bg-gray-100 cursor-not-allowed" readonly />
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700">% Profesor</label>
-        <input type="text" [value]="distribution.profPerc + '%'"
-          class="w-full p-2 border rounded bg-gray-100 cursor-not-allowed" readonly />
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700">% CFH</label>
-        <input type="text" [value]="distribution.cfhPerc + '%'"
-          class="w-full p-2 border rounded bg-gray-100 cursor-not-allowed" readonly />
-      </div>
-    </div>
-
-    <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div>
         <label class="block text-sm font-medium text-gray-700">
           👥 N° de Alumnos Inscritos
         </label>
@@ -105,6 +62,35 @@
         <input type="text" formControlName="totalIncome"
           class="w-full p-2 border rounded bg-gray-100 cursor-not-allowed" readonly />
       </div>
+      <div>
+        <label for="otherExpenses" class="block text-sm font-medium text-gray-700">
+          💼 Otros Gastos (EUR)
+        </label>
+        <input type="text" formControlName="otherExpenses"
+          class="w-full p-2 border rounded bg-gray-100 cursor-not-allowed" readonly />
+      </div>
+    </div>
+
+    <!-- Distribution Percentages -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+      <div>
+      <label class="block text-sm font-medium text-gray-700">OSD (EUR)</label>
+      <input type="text" [value]="(budgetForm.get('totalIncome')?.value * distribution.osdPerc / 100) | number:'1.0-2'"
+        class="w-full p-2 border rounded bg-gray-100 cursor-not-allowed" readonly />
+      </div>
+      <div>
+      <label class="block text-sm font-medium text-gray-700">Profesor (EUR)</label>
+      <input type="text" [value]="(budgetForm.get('totalIncome')?.value * distribution.profPerc / 100) | number:'1.0-2'"
+        class="w-full p-2 border rounded bg-gray-100 cursor-not-allowed" readonly />
+      </div>
+      <div>
+      <label class="block text-sm font-medium text-gray-700">CFH (EUR)</label>
+      <input type="text" [value]="(budgetForm.get('totalIncome')?.value * distribution.cfhPerc / 100) | number:'1.0-2'"
+        class="w-full p-2 border rounded bg-gray-100 cursor-not-allowed" readonly />
+      </div>
+    </div>
+
+    <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
         <label class="block text-sm font-medium text-gray-700">
           📚 Gastos de Profesores (EUR)

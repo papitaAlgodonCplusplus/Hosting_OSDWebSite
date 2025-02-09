@@ -90,10 +90,40 @@ export class OSDService {
     });
   }
 
+  public deletePerformance(performanceId: string): Observable<any> {
+    const deletePerformanceEvent: WebBaseEvent = this.eventFactoryService.CreateDeletePerformanceEvent(performanceId);
+    return new Observable((observer) => {
+      this.restApiService.SendOSDEvent(deletePerformanceEvent).subscribe({
+        next: (response) => {
+          observer.next(response);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
+  
   public deleteClaim(claimId: string): Observable<any> {
     const deleteClaimEvent: WebBaseEvent = this.eventFactoryService.CreateDeleteClaimEvent(claimId);
     return new Observable((observer) => {
       this.restApiService.SendOSDEvent(deleteClaimEvent).subscribe({
+        next: (response) => {
+          observer.next(response);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
+
+  public deleteProject(projectId: string): Observable<any> {
+    const deleteProjectEvent: WebBaseEvent = this.eventFactoryService.CreateDeleteProjectEvent(projectId);
+    return new Observable((observer) => {
+      this.restApiService.SendOSDEvent(deleteProjectEvent).subscribe({
         next: (response) => {
           observer.next(response);
           observer.complete();
@@ -166,6 +196,20 @@ export class OSDService {
     });
   }
 
+  public getOperatingProcessors(): Observable<any> {
+    const getOperatingProcessorsEvent: WebBaseEvent = this.eventFactoryService.CreateGetOperatingProcessorsEvent();
+    return new Observable((observer) => {
+      this.restApiService.SendOSDEvent(getOperatingProcessorsEvent).subscribe({
+        next: (response) => {
+          observer.next(response);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
   getUserByID(userId: string): Promise<any> {
     return new Promise((resolve, reject) => {
       const event: WebBaseEvent = this.eventFactoryService.CreateGetUserByIdEvent(userId);

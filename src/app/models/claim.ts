@@ -6,6 +6,7 @@ export interface Claim {
     //Claimant: string;
     Claimtype: string;
     Status: string;
+    country: string;
     Facts: string;
     FreeprofessionalId: string;
     Serviceprovided: string;

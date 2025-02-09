@@ -304,6 +304,18 @@ app.post('/api/events/processOSDEvent', async (req, res) => {
         await handleGetMyAssignedProcessors(event, res);
         break;
 
+      case 'GetOperatingProcessors':
+        await handleGetOperatingProcessors(event, res);
+        break;
+
+      case 'DeleteProject':
+        await handleDeleteProject(event, res);
+        break;
+      
+      case 'DeletePerformance':
+        await handleDeletePerformance(event, res);
+        break;
+
       default:
         res.status(400).json(createWebBaseEvent({
           SUCCESS: false,
@@ -852,6 +864,7 @@ const HandleGetPerformanceAssignedById = async (event, res) => {
         estimated_transport_expenses AS "EstimatedTransportExpenses", estimated_transport_expenses AS "estimated_transport_expenses",
         estimated_transport_hours AS "EstimatedTransportHours", estimated_transport_hours AS "estimated_transport_hours",
         estimated_work_hours AS "EstimatedWorkHours", estimated_work_hours AS "estimated_work_hours",
+        explanation AS "Explanation", explanation AS "explanation",
         total_forecast_data AS "TotalForecastData", total_forecast_data AS "totalforecastdata", total_forecast_data AS "total_forecast_data",
         (SELECT summary FROM summarytypeperformancefreeprofessional WHERE id = summarytypeid) AS "Summary",
         (SELECT summary FROM summarytypeperformancefreeprofessional WHERE id = summarytypeid) AS "SummaryTypeName",
@@ -1381,6 +1394,7 @@ const handleModifyPerformanceFreeProfessional = async (event, res) => {
     performanceFreeprofessional.estimated_transport_hours = addPerformancFPEvent.ForecastTravelTime;
     performanceFreeprofessional.estimated_work_hours = addPerformancFPEvent.ForecastWorkHours;
     performanceFreeprofessional.total_forecast_data = addPerformancFPEvent.TotalForecastData;
+    performanceFreeprofessional.explanation = addPerformancFPEvent.ExplanationText;
 
     // Optional fields
     if (addPerformancFPEvent.developer_module !== undefined) {
@@ -1403,8 +1417,8 @@ const handleModifyPerformanceFreeProfessional = async (event, res) => {
        freeprofessionalcreatedperformanceid = $4, estimated_transport_expenses = $5, estimated_transport_hours = $6,
        estimated_work_hours = $7, total_forecast_data = $8, summarytypeid = $9,
        developer_module = $10, developer_category = $11, developer_activity = $12,
-       developer_screen_form = $13
-       WHERE id = $14`,
+       developer_screen_form = $13, explanation = $14
+       WHERE id = $15`,
       [
         performanceFreeprofessional.start_date,
         performanceFreeprofessional.end_date,
@@ -1419,6 +1433,7 @@ const handleModifyPerformanceFreeProfessional = async (event, res) => {
         performanceFreeprofessional.developer_category,
         performanceFreeprofessional.developer_activity,
         performanceFreeprofessional.developer_screen_form,
+        performanceFreeprofessional.explanation,
         performanceId
       ]
     );
@@ -1833,7 +1848,7 @@ const handleGetPerformancesProjectManagerById = async (event, res) => {
     const performancesFreeProfessionalQuery = `
       SELECT id, code, projectmanagerid, summarytypeid, start_date, end_date, justifying_document, 
              freeprofessionalcreatedperformanceid, freeprofessionalassignedid, estimated_transport_expenses, 
-             estimated_transport_hours, estimated_work_hours, total_forecast_data, justifying_document_bytes, developer_category, developer_module, developer_screen_form, developer_activity
+             estimated_transport_hours, estimated_work_hours, total_forecast_data, justifying_document_bytes, developer_category, developer_module, developer_screen_form, developer_activity, explanation
       FROM performance_freeprofessional
       WHERE projectmanagerid = $1
     `;
@@ -3415,6 +3430,124 @@ const handleGetUsers = async (event, res) => {
   }
 };
 
+const handleDeletePerformance = async (event, res) => {
+  try {
+    const performanceId = event.Body?.PerformanceId;
+
+    if (!performanceId) {
+      return res.status(400).json(createWebBaseEvent({
+        DELETE_PERFORMANCE_SUCCESS: false,
+        DELETE_PERFORMANCE_MESSAGE: 'Performance ID is required.',
+      }, event.SessionKey, event.SecurityToken, 'DeletePerformance'));
+    }
+
+    // Try deleting from performance_freeprofessional
+    let deleteQuery = await pool.query(
+      'DELETE FROM performance_freeprofessional WHERE id = $1 RETURNING *',
+      [performanceId]
+    );
+
+    // If no rows were deleted, try deleting from performance_buy
+    if (deleteQuery.rows.length === 0) {
+      deleteQuery = await pool.query(
+        'DELETE FROM performance_buy WHERE id = $1 RETURNING *',
+        [performanceId]
+      );
+    }
+
+    if (deleteQuery.rows.length === 0) {
+      return res.status(404).json(createWebBaseEvent({
+        DELETE_PERFORMANCE_SUCCESS: false,
+        DELETE_PERFORMANCE_MESSAGE: 'Performance not found.',
+      }, event.SessionKey, event.SecurityToken, 'DeletePerformance'));
+    }
+
+    return res.status(200).json(createWebBaseEvent({
+      DELETE_PERFORMANCE_SUCCESS: true,
+      DELETE_PERFORMANCE_MESSAGE: 'Performance deleted successfully.',
+      deletedPerformance: deleteQuery.rows[0]
+    }, event.SessionKey, event.SecurityToken, 'DeletePerformance'));
+
+  } catch (error) {
+    console.error('❌ Error deleting performance:', error);
+    return res.status(500).json(createWebBaseEvent({
+      DELETE_PERFORMANCE_SUCCESS: false,
+      DELETE_PERFORMANCE_MESSAGE: 'Server error deleting performance.',
+    }, event.SessionKey, event.SecurityToken, 'DeletePerformance'));
+  }
+};
+
+const handleDeleteProject = async (event, res) => {
+  try {
+    const projectId = event.Body?.ProjectId;
+
+    if (!projectId) {
+      return res.status(400).json(createWebBaseEvent({
+        DELETE_PROJECT_SUCCESS: false,
+        DELETE_PROJECT_MESSAGE: 'Project ID is required.',
+      }, event.SessionKey, event.SecurityToken, 'DeleteProject'));
+    }
+
+    const deleteQuery = await pool.query(
+      'DELETE FROM projectmanager WHERE id = $1 RETURNING *',
+      [projectId]
+    );
+
+    if (deleteQuery.rows.length === 0) {
+      return res.status(404).json(createWebBaseEvent({
+        DELETE_PROJECT_SUCCESS: false,
+        DELETE_PROJECT_MESSAGE: 'Project not found.',
+      }, event.SessionKey, event.SecurityToken, 'DeleteProject'));
+    }
+
+    return res.status(200).json(createWebBaseEvent({
+      DELETE_PROJECT_SUCCESS: true,
+      DELETE_PROJECT_MESSAGE: 'Project deleted successfully.',
+      deletedProject: deleteQuery.rows[0]
+    }, event.SessionKey, event.SecurityToken, 'DeleteProject'));
+
+  } catch (error) {
+    console.error('❌ Error deleting project:', error);
+    return res.status(500).json(createWebBaseEvent({
+      DELETE_PROJECT_SUCCESS: false,
+      DELETE_PROJECT_MESSAGE: 'Server error deleting project.',
+    }, event.SessionKey, event.SecurityToken, 'DeleteProject'));
+  }
+};
+
+const handleGetOperatingProcessors = async (event, res) => {
+  try {
+    const query = `
+      SELECT DISTINCT u.name, fpc.claimid AS assignedclaimid
+      FROM osduser u
+      JOIN freeprofessional fp ON u.id = fp.userid
+      JOIN freeprofessional_claim fpc ON fp.id = fpc.freeprofessionalid
+      JOIN claim_file cf ON fpc.claimid = cf.id
+    `;
+
+    const result = await pool.query(query);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json(createWebBaseEvent({
+        GET_OPERATING_PROCESSORS_SUCCESS: false,
+        GET_OPERATING_PROCESSORS_MESSAGE: 'No operating processors found.',
+      }, event.SessionKey, event.SecurityToken, 'GetOperatingProcessors'));
+    }
+
+    return res.status(200).json(createWebBaseEvent({
+      GET_OPERATING_PROCESSORS_SUCCESS: true,
+      processors: result.rows.map(row => ({ name: row.name, assignedclaimid: row.assignedclaimid }))
+    }, event.SessionKey, event.SecurityToken, 'GetOperatingProcessors'));
+
+  } catch (error) {
+    console.error('❌ Error fetching operating processors:', error);
+    return res.status(500).json(createWebBaseEvent({
+      GET_OPERATING_PROCESSORS_SUCCESS: false,
+      GET_OPERATING_PROCESSORS_MESSAGE: 'Server error fetching operating processors.',
+    }, event.SessionKey, event.SecurityToken, 'GetOperatingProcessors'));
+  }
+};
+
 const handleGetMyAssignedProcessors = async (event, res) => {
   try {
     const userId = event.Body?.UserId;
@@ -4254,7 +4387,8 @@ const handleAddPerformanceFreeProfessional = async (event, res) => {
       Summarytypeid: addPerformancFPEvent.SummaryId,
       StartDate: addPerformancFPEvent.StartDate,
       EndDate: addPerformancFPEvent.EndDate,
-      JustifyingDocument: addPerformancFPEvent.JustifyingDocument,
+      ExplanationText: addPerformancFPEvent.ExplanationText || null,
+      JustifyingDocument: addPerformancFPEvent.JustifyingDocument || null,
       JustifyingDocumentBytes: addPerformancFPEvent.JustifyingDocumentBytes
         ? Buffer.from(addPerformancFPEvent.JustifyingDocumentBytes, 'base64')
         : null,
@@ -4340,11 +4474,12 @@ const handleAddPerformanceFreeProfessional = async (event, res) => {
         developer_category,
         developer_module,
         developer_screen_form,
-        developer_activity
+        developer_activity,
+        explanation
       )
       VALUES (
         $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
-        $11, $12, $13, $14, $15, $16, $17, $18
+        $11, $12, $13, $14, $15, $16, $17, $18, $19
       )
     `;
 
@@ -4366,7 +4501,8 @@ const handleAddPerformanceFreeProfessional = async (event, res) => {
       performanceFreeprofessional.developer_category,
       performanceFreeprofessional.developer_module,
       performanceFreeprofessional.developer_screen_form,
-      performanceFreeprofessional.developer_activity
+      performanceFreeprofessional.developer_activity,
+      performanceFreeprofessional.ExplanationText
     ]);
 
     console.log('✅ Inserted performance free professional into DB');
@@ -4605,7 +4741,7 @@ const handleGetStudentsByCourse = async (event, res) => {
 
     if (userId === 'e77b5172-f726-4c1d-9f9e-d2dbd77e03c9') {
       studentsQuery = `
-        SELECT sr.*, c.title AS course_name
+        SELECT sr.*, c.title AS course_name, c.mode AS modality
         FROM student_records sr
         LEFT JOIN courses c ON sr.course_id = c.id
       `;
@@ -4636,7 +4772,7 @@ const handleGetStudentsByCourse = async (event, res) => {
 
       // Step 2: Fetch students enrolled in these courses along with course names
       studentsQuery = `
-        SELECT sr.*, c.title AS course_name
+        SELECT sr.*, c.title AS course_name, c.mode AS modality
         FROM student_records sr
         LEFT JOIN courses c ON sr.course_id = c.id
         WHERE sr.course_id = ANY($1::uuid[])

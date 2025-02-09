@@ -51,6 +51,12 @@
                 </div>
                 <span class="ml-2 text-darkslategray">{{ documentName }}</span>
             </div>
+
+            <!-- ExplanationText -->
+            <div class="w-full md:w-1/2 flex flex-col items-center justify-center space-x-2 mx-auto mt-4 mb-4">
+                <label class="block text-gray-700 mb-1 text-center">{{ 'Explanation' | translate }}</label>
+                <shared-input-field [readOnly]="isViewPerformance" class="w-full" fieldName="explanationText" inputType="text" [formGroup]="performanceForm"></shared-input-field>
+            </div>
         </div>
 
 
@@ -68,7 +74,8 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4 justify-center">
                 <!-- Developer Category -->
                 <div class="developer-checkbox-group">
-                    <h3 class="text-lg font-semibold mb-4 text-gray-800 text-center">{{ 'DeveloperCategory' | translate }}</h3>
+                    <h3 class="text-lg font-semibold mb-4 text-gray-800 text-center">{{ 'DeveloperCategory' | translate
+                        }}</h3>
                     <div *ngFor="let option of developer_categoryOptions" class="flex items-center mb-2 justify-center">
                         <input type="checkbox"
                             [checked]="performanceForm.get('developer_category')?.value?.includes(option.key)"
@@ -79,7 +86,8 @@
 
                 <!-- Developer Module -->
                 <div class="developer-checkbox-group">
-                    <h3 class="text-lg font-semibold mb-4 text-gray-800 text-center">{{ 'DeveloperModule' | translate }}</h3>
+                    <h3 class="text-lg font-semibold mb-4 text-gray-800 text-center">{{ 'DeveloperModule' | translate }}
+                    </h3>
                     <div *ngFor="let option of developer_moduleOptions" class="flex items-center mb-2 justify-center">
                         <input type="checkbox"
                             [checked]="performanceForm.get('developer_module')?.value?.includes(option.key)"
@@ -90,8 +98,10 @@
 
                 <!-- Developer Screen/Form Module -->
                 <div class="developer-checkbox-group">
-                    <h3 class="text-lg font-semibold mb-4 text-gray-800 text-center">{{ 'DeveloperScreenForm' | translate }}</h3>
-                    <div *ngFor="let option of developer_screen_formOptions" class="flex items-center mb-2 justify-center">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-800 text-center">{{ 'DeveloperScreenForm' |
+                        translate }}</h3>
+                    <div *ngFor="let option of developer_screen_formOptions"
+                        class="flex items-center mb-2 justify-center">
                         <input type="checkbox"
                             [checked]="performanceForm.get('developer_screen_form')?.value?.includes(option.key)"
                             (change)="toggleCheckbox('developer_screen_form', option.key)">

@@ -11,6 +11,7 @@ import { CountryService } from 'src/app/services/country.service';
 import { map } from 'rxjs/operators';
 import { DropDownItem } from 'src/app/auth/interfaces/dropDownItem.interface';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-sub-authorized',
@@ -74,8 +75,9 @@ export class SubAuthorizedComponent implements OnDestroy {
     private translate: TranslateService,
     private backblazeService: BackblazeService,
     private osdEventService: OSDService,
-    private countryService: CountryService,
-    private fb: FormBuilder
+    private snackBar: MatSnackBar,
+    private fb: FormBuilder,
+    private countryService: CountryService
   ) { }
 
   downloadSelectedFile(document_type: string) {
@@ -287,6 +289,33 @@ export class SubAuthorizedComponent implements OnDestroy {
     this.SubCategorizeClients();
   }
   
+   /**
+   * Deletes the user record from the form array and calls the backend deletion.
+   * @param index The index of the user to delete.
+   */
+   deleteSubscriber(item: any): void {
+    const userId = item.userid;
+    console.log("Deleting user with ID:", userId);
+    this.osdEventService.deleteUser(userId).subscribe({
+      next: () => {
+        this.snackBar.open('User record deleted successfully.', 'Close', {
+          duration: 3000,
+          horizontalPosition: 'left',
+          verticalPosition: 'top',
+          panelClass: ['success-snackbar']
+        });
+      },
+      error: (error: any) => {
+        console.error('❌ Error deleting user record:', error);
+        this.snackBar.open('❌ Error deleting user record.', 'Close', {
+          duration: 3000,
+          horizontalPosition: 'left',
+          verticalPosition: 'top',
+          panelClass: ['error-snackbar']
+        });
+      }
+    });
+  }
 
   onCancel() {
     this.myForm.patchValue({

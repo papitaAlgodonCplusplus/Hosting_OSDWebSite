@@ -12,8 +12,11 @@ export class EventAction {
   public static GET_USER_ACTION_LOGS: string = "GetUserActionLogs";
   public static RESTORE_DATABASE_LOG: string = "RestoreDatabaseLogs";
   public static SEND_CLAIM_READY_EMAIL_TO_USER: string = "SendClaimReadyEmailToUser";
+  public static DELETE_PROJECT: string = "DeleteProject";
+  public static DELETE_PERFORMANCE: string = "DeletePerformance";
 
   //#region OSD
+  public static GET_OPERATING_PROCESSORS: string = "GetOperatingProcessors";
   public static GET_MY_ASSIGNED_PROCESSORS: string = "GetMyAssignedProcessors";
   public static DELETE_CLAIM: string = "DeleteClaim";
   public static GET_ALL_CLAIMS: string = "GetAllClaims";

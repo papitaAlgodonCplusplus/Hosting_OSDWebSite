@@ -202,6 +202,7 @@ export class OSDDataService {
   }
 
   emitUsersFreeProfessionalTR(data: any[]) {
+    console.log("Users Free Professional TR", data);
     this.usersFreeProfessionalTR.next(data);
   }
 

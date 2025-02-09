@@ -59,6 +59,20 @@ export class EventFactoryService {
     return event;
   }
 
+  public CreateDeletePerformanceEvent(performanceId: string): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.DELETE_PERFORMANCE;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    event.setBodyProperty(EventConstants.PERFORMANCE_ID, performanceId);
+    return event;
+  }
+
   public CreateGetClaimsEvent(): WebBaseEvent {
     let event: WebBaseEvent;
     event = new WebBaseEvent();
@@ -69,6 +83,20 @@ export class EventFactoryService {
     event.Action = EventAction.GET_ALL_CLAIMS;
     event.Date = new Date().toUTCString();
     event.ApplicationIdentifier = 'WebClient';
+    return event;
+  }
+
+  public CreateDeleteProjectEvent(projectId: string): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.DELETE_PROJECT;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    event.setBodyProperty(EventConstants.PROJECT_ID, projectId);
     return event;
   }
 
@@ -223,6 +251,7 @@ export class EventFactoryService {
   }
 
   public CreateAddPerformanceFreeProfessionalEvent(performanceFP: PerformanceFreeProfessional, projectManagerSelectedId: string, documentBase64: string): WebBaseEvent {
+    console.log(performanceFP);
     let event: WebBaseEvent;
     event = new WebBaseEvent();
     event.SessionKey = this.authenticationService.sessionKey;
@@ -249,6 +278,20 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.DEVELOPER_MODULE, performanceFP.developer_module);
     event.setBodyProperty(EventConstants.DEVELOPER_SCREEN_FORM, performanceFP.developer_screen_form);
     event.setBodyProperty(EventConstants.DEVELOPER_ACTIVITY, performanceFP.developer_activity);
+    event.setBodyProperty(EventConstants.EXPLANATION_TEXT, performanceFP.explanationText);
+    return event;
+  }
+
+  public CreateGetOperatingProcessorsEvent(): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.GET_OPERATING_PROCESSORS;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
     return event;
   }
 

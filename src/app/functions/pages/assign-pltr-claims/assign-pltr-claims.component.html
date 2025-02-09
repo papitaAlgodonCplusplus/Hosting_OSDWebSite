@@ -1,60 +1,113 @@
-<div class="flex justify-end items-end h-full flex-col space-y-2 ">
-    <div class="w-full text-darkslategray text-start py-3 text-xl font-medium animate__animated animate__fadeInLeft">
-        <span class="pl-5 pr-3 py-1 bg-yellow-500 rounded-r-full whitespace-nowrap overflow-hidden">
-            {{'Assign_Processor_to_Claim' | translate}}<i class="fa-regular fa-hand-pointer"></i></span>
-    </div>
-
-    <div class="flex mt-0 flex-col p-3 w-full h-full">
-        <div class="overflow-x-auto mt-0">
-            <table class="table-auto w-full">
-                <thead>
-                    <tr class="text-darkslategray">
-                        <th class="px-4 py-2">{{'SubscriberCustomer' | translate}}</th>
-                        <th class="px-4 py-2">{{'Code' | translate}}</th>
-                        <th class="px-4 py-2">{{'reclamacion' | translate}}</th>
-                        <th class="px-4 py-2">{{'hechos' | translate}} </th>
-                        <th class="px-4 py-2">{{'Date' | translate}} </th>
-                        <th class="px-4 py-2">{{'Action' | translate}} </th>
-                        <th class="px-4 py-2"> </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let claim of claims" class="text-center">
-                        <td class="text-center border-y px-4 py-2">{{ claim.name}}</td>
-                        <td class="text-center border-y px-4 py-2">{{ claim.code}}</td>
-                        <td class="text-center border-y px-4 py-2">{{ claim.claimtype | translate }}</td>
-                        <td class="text-center border-y px-4 py-2">{{ claim.facts }}</td>
-                        <td class="border-y px-3 py-2">{{ claim.datecreated | date:'yyyy-MM-dd' }}</td>
-                        <td class="text-center border-y px-4 py-2">
-                            <button class="rounded-xl bg-line text-darkslategray p-2" (click)="openModal(claim)"
-                                data-modal-target="default-modal">
-                                {{'assignProcessor' | translate}}
-                            </button>
-
-                            <ng-template #isAssigned>
-                                {{'Running' | translate}}
-                            </ng-template>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+<!-- Admin Assignment Filter Section -->
+<div class="w-full bg-white p-4 shadow mb-6">
+    <div class="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 max-w-screen-xl mx-auto">
+        <!-- Filter by Client -->
+        <div class="flex flex-col flex-1 mr-4">
+            <label for="filterClient" class="text-darkslategray font-medium">Client</label>
+            <shared-simple-dropdown fieldName="client" [formGroup]="filterForm" [dropdownItems]="allSubscribersDropdown"
+                (change)="filterOptions()">
+            </shared-simple-dropdown>
         </div>
-        <mat-paginator [length]="claims.length" [pageSize]="10" (page)="onPageChangeClaims($event)"></mat-paginator>
-    </div>
-    <div class="font-medium rounded-xl w-full flex items-end justify-end p-3">
-        <button class="px-2 py-1 bg-line text-darkslategray rounded-lg" routerLink="/home">
-            {{'regresar' | translate}}
-        </button>
+        <!-- Numeric Input for Number of Claims to Assign -->
+        <div class="flex flex-col flex-1 mr-4" style="position: relative; top: -10px;">
+            <label for="assignCount" class="text-darkslategray font-medium">Number of Claims</label>
+            <input type="number" id="assignCount" [value]="assignCount" min="0"
+            (input)="changeCount($event)" class="w-full p-2 border rounded" placeholder="0" />
+        </div>
+        <!-- Dropdown to Select Processor -->
+        <div class="flex flex-col flex-1 mr-4">
+            <label for="selectedProcessor" class="text-darkslategray font-medium">Select Processor</label>
+            <shared-simple-dropdown fieldName="selectedProcessor" [formGroup]="filterForm"
+                [dropdownItems]="processorsDropdown" (change)="filterOptions()">
+            </shared-simple-dropdown>
+        </div>
+        <!-- Assign Button -->
+        <div class="flex flex-col flex-1 mr-4 self-end md:self-auto">
+            <button (click)="assignClaimsToProcessor()" class="px-3 py-1 bg-green-500 text-white rounded">
+                Assign
+            </button>
+        </div>
+        <!-- Cancel Filters Button -->
+        <div class="flex flex-col flex-1 self-end md:self-auto">
+            <button (click)="clearFilters()" class="px-3 py-1 bg-blue-500 text-white rounded">
+                Cancel
+            </button>
+        </div>
     </div>
 </div>
 
+<!-- Claims Table -->
+<div class="flex mt-0 flex-col p-3 w-full h-full">
+    <div class="overflow-x-auto mt-0">
+        <table class="table-auto w-full">
+            <thead>
+                <tr class="text-darkslategray">
+                    <th class="px-4 py-2 font-normal"></th>
+                    <th class="px-4 py-2 font-normal">{{ 'Code_claim' | translate }}</th>
+                    <th class="px-4 py-2 font-normal">{{ 'SubscriberCustomer' | translate }}</th>
+                    <th class="px-4 py-2 font-normal">{{ 'reclamacion' | translate }}</th>
+                    <th class="px-4 py-2 font-normal">{{ 'hechos' | translate }}</th>
+                    <th class="px-4 py-2 font-normal">{{ 'Date' | translate }}</th>
+                    <th class="px-4 py-2 font-normal" *ngIf="isAdmin">{{ 'Assign Processor' | translate }}</th>
+                    <th class="px-4 py-2 font-normal">{{ 'Actions' | translate }}</th>
+                </tr>
+            </thead>
+            <ng-container *ngIf="claims">
+                <tbody>
+                    <tr *ngFor="let claim of displayedItems; let i = index" class="my-5">
+                        <!-- View Claim -->
+                        <td class="p-2 border-y text-center">
+                            <span (click)="selectClaim(claim)" routerLink="/functions/file-manager"
+                                class="font-medium text-darkslategray px-4 py-2 text-lg cursor-pointer">
+                                <i class="fa-solid fa-eye"></i>
+                            </span>
+                        </td>
+                        <!-- Claim Code -->
+                        <td class="p-2 border-y text-center">{{ claim.code }}</td>
+                        <!-- Client -->
+                        <td class="p-2 border-y text-center">{{ claim.companyname }}</td>
+                        <!-- Claim Type -->
+                        <td class="p-2 border-y text-center">{{ claim.claimtype | translate }}</td>
+                        <!-- Facts -->
+                        <td class="p-2 border-y text-center">{{ claim.facts | truncate:100 }}</td>
+                        <!-- Date -->
+                        <td class="p-2 border-y text-center">{{ claim.datecreated | date:'medium' }}</td>
+                        <!-- Assign Button for each row (opens modal for that claim) -->
+                        <td class="p-2 border-y text-center" *ngIf="isAdmin">
+                            <button class="rounded-xl bg-line text-darkslategray p-2" (click)="openModal(claim)"
+                                data-modal-target="default-modal">
+                                {{ 'assignProcessor' | translate }}
+                            </button>
+                        </td>
+                        <!-- Actions -->
+                        <td class="p-2 border-y text-center">
+                            <button class="rounded-xl bg-red-500 text-white p-2" (click)="deleteClaim(claim.id)">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </ng-container>
+        </table>
+    </div>
+    <mat-paginator [length]="claims.length" [pageSize]="5" (page)="onPageChangeClaims($event)"></mat-paginator>
+</div>
+
+<!-- Footer Button -->
+<div class="font-medium rounded-xl w-full flex items-end justify-end p-3">
+    <button class="px-2 py-1 bg-line text-darkslategray rounded-lg" routerLink="/home">
+        {{ 'regresar' | translate }}
+    </button>
+</div>
+
+<!-- Modal for selecting processor -->
 <div *ngIf="showModal" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
     <div class="bg-opacity-75 bg-black absolute inset-0"></div>
-    <div class="relative z-50 bg-white shadow-md space-y-1 rounded-xl">
+    <div class="relative z-50 bg-white shadow-md space-y-1 rounded-xl p-3 w-11/12 lg:w-1/2">
         <div class="justify-center p-3">
             <div class="flex flex-col items-center">
                 <div class="font-medium rounded-xl cursor-pointer text-end w-full">
-                    <a (click)="closeModal()" class="items-center text-darkslategray rounded-xl ">
+                    <a (click)="closeModal()" class="items-center text-darkslategray rounded-xl">
                         <i class="text-xl fa-solid fa-xmark"></i>
                     </a>
                 </div>
@@ -62,48 +115,39 @@
                     <thead>
                         <tr class="text-darkslategray">
                             <th scope="col" class="px-6 py-3">
-                                {{'Code' | translate}}
+                                {{ 'Code' | translate }}
                             </th>
                             <th scope="col" class="px-6 py-3">
-                                {{'Tramitador' | translate}}
+                                {{ 'Tramitador' | translate }}
                             </th>
                             <th scope="col" class="px-6 py-3">
-                                {{'Assignation' | translate}}
+                                {{ 'Assignation' | translate }}
                             </th>
                         </tr>
                     </thead>
                     <tbody>
                         <ng-container *ngIf="users.length > 0; else noUsers">
-                        <tr *ngFor="let user of users; let i = index">
-                            <th class="text-center font-normal border-y px-4 py-2">
-                                {{ user.code }}
-                            </th>
-                            <th class="text-center font-normal border-y px-4 py-2">
-                                {{ (user.name ?? '') + " " + (user.firstname ?? '') + " " + (user.middlesurname ?? '')
-                                }}
-                            </th>
-                            <td class="text-center font-normal border-y px-4 py-2">
-                                <button (click)="assignFreeProfessionalToClaim(claim.id, user.id)"
-                                    class="rounded-xl p-2 bg-darkslategray text-line">
-                                    {{ 'Select' | translate }}
-                                </button>
-                            </td>
-                        </tr>
+                            <tr *ngFor="let user of users; let i = index">
+                                <th class="text-center font-normal border-y px-4 py-2">
+                                    {{ user.code }}
+                                </th>
+                                <td class="text-center font-normal border-y px-4 py-2">
+                                    {{ (user.name ?? '') + " " + (user.firstname ?? '') + " " + (user.middlesurname ??
+                                    '') }}
+                                </td>
+                                <td class="text-center font-normal border-y px-4 py-2">
+                                    <button *ngIf="claim" (click)="assignFreeProfessionalToClaim(claim.id, user.id)"
+                                        class="rounded-xl p-2 bg-darkslategray text-line">
+                                        {{ 'Select' | translate }}
+                                    </button>
+                                </td>
+                            </tr>
                         </ng-container>
                         <ng-template #noUsers>
                             <tr class="text-center">
                                 <td colspan="3" class="text-darkslategray px-4 py-2">
                                     {{ 'No users available' | translate }}
                                 </td>
-                            </tr>
-                        </ng-template>
-                        <ng-template #isLoading>
-                            <tr class="text-center">
-                                <th></th>
-                                <th>
-                                    <i class="text-darkslategray text-xl fa-solid fa-spinner animate-spin"></i>
-                                </th>
-                                <th></th>
                             </tr>
                         </ng-template>
                     </tbody>

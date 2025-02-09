@@ -84,7 +84,6 @@ export class AccountingComponent implements OnInit {
           let courseCount = 0;
           // Loop through accounting entries and sum the cost of each course.
           this.accountingEntries.value.forEach((entry: any) => {
-            console.log('entry:', entry);
             if (entry.course_id) {
               totalCost += this.getCourseCost(entry.course_id);
               courseCount++;

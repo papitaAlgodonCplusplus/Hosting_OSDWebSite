@@ -74,18 +74,13 @@ export class HomeComponent implements OnInit, OnDestroy {
     {
       title: '3. GESTOR FORMACION OSD',
       optionNames: [
-        'administer_users'
-      ]
-    },
-    {
-      title: '4. GESTOR ECONOMICO',
-      optionNames: [
+        'administer_users',
         'accounting_services',
         'accounting'
       ]
     },
     {
-      title: '5. GETP -GESTOR ETICO y TRANSPARENTE de PROYECTO-',
+      title: '4. GETP -GESTOR ETICO y TRANSPARENTE de PROYECTO-',
       optionNames: [
         'assignarProyectoAFC',
         'gestorPersonasPL',

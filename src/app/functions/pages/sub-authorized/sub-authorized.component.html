@@ -67,6 +67,7 @@
                                 <th class="px-2" style="width: 15%;">{{ 'actions' | translate }}</th>
                                 <th class="px-2" style="width: 10%;">{{ 'authorized' | translate }}</th>
                                 <th class="px-2" style="width: 13%;">{{ 'See Info' | translate }}</th>
+                                <th class="px-2 py-2" style="width: 10%;">{{ 'Delete' | translate }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -95,6 +96,11 @@
                                         <i class="fa-solid fa-eye"></i>
                                     </button>
                                 </td>
+                                <td class="text-center border-y px-2 py-2">
+                                    <button (click)="deleteSubscriber(item)" class="underline text-darkslategray text-sm">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -115,6 +121,7 @@
                                 <th class="px-2" style="width: 15%;">{{ 'actions' | translate }}</th>
                                 <th class="px-2" style="width: 10%;">{{ 'authorized' | translate }}</th>
                                 <th class="px-2" style="width: 13%;">{{ 'See Info' | translate }}</th>
+                                <th class="px-2 py-2" style="width: 10%;">{{ 'Delete' | translate }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -143,6 +150,11 @@
                                         <i class="fa-solid fa-eye"></i>
                                     </button>
                                 </td>
+                                <td class="text-center border-y px-2 py-2">
+                                    <button (click)="deleteSubscriber(item)" class="underline text-darkslategray text-sm">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -165,6 +177,7 @@
                             <th class="px-2" style="width: 15%;">{{ 'actions' | translate }}</th>
                             <th class="px-2" style="width: 10%;">{{ 'authorized' | translate }}</th>
                             <th class="px-2" style="width: 13%;">{{ 'See Info' | translate }}</th>
+                            <th class="px-2 py-2" style="width: 10%;">{{ 'Delete' | translate }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -192,6 +205,11 @@
                                     <i class="fa-solid fa-eye"></i>
                                 </button>
                             </td>
+                            <td class="text-center border-y px-2 py-2">
+                                <button (click)="deleteSubscriber(item)" class="underline text-darkslategray text-sm">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -212,12 +230,13 @@
                             <th class="px-2" style="width: 15%;">{{ 'actions' | translate }}</th>
                             <th class="px-2" style="width: 15%;">{{ 'authorized' | translate }}</th>
                             <th class="px-2" style="width: 15%;">{{ 'See Info' | translate }}</th>
+                            <th class="px-2 py-2" style="width: 10%;">{{ 'Delete' | translate }}</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let item of itemsGroupedByUserType['RestFreeProfessionals']">
                             <td class="text-center border-y px-2 py-2">{{ item.code }}</td>
-                            <td class="text-center border-y px-2 py-2">{{ item.companyname }}</td>
+                            <td class="text-center border-y px-2 py-2">{{ item.name }} {{ item.firstsurname }} {{ item.middlesurname ? item.middlesurname : '' }}</td>
                             <td class="text-center border-y px-2 py-2">{{ item.trainerassigned || 'Sin asignar' }}</td>
                             <td class="text-center space-x-2 border-y py-2">
                                 <button (click)="selectUser(item)" class="underline text-darkslategray text-sm">
@@ -231,6 +250,11 @@
                             <td class="text-center border-y px-2 py-2">
                                 <button (click)="viewSubscriberInfo(item)" class="underline text-darkslategray text-sm">
                                     <i class="fa-solid fa-eye"></i>
+                                </button>
+                            </td>
+                            <td class="text-center border-y px-2 py-2">
+                                <button (click)="deleteSubscriber(item)" class="underline text-darkslategray text-sm">
+                                    <i class="fa-solid fa-trash"></i>
                                 </button>
                             </td>
                         </tr>
@@ -253,12 +277,13 @@
                             <th class="px-2" style="width: 15%;">{{ 'actions' | translate }}</th>
                             <th class="px-2" style="width: 15%;">{{ 'authorized' | translate }}</th>
                             <th class="px-2" style="width: 15%;">{{ 'See Info' | translate }}</th>
+                            <th class="px-2 py-2" style="width: 10%;">{{ 'Delete' | translate }}</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let item of itemsGroupedByUserType['Reclamante']">
                             <td class="text-center border-y px-2 py-2">{{ item.code }}</td>
-                            <td class="text-center border-y px-2 py-2">{{ item.name }}</td>
+                            <td class="text-center border-y px-2 py-2">{{ item.name }} {{ item.firstsurname }} {{ item.middlesurname ? item.middlesurname : '' }} ({{ item.companyname }})</td>
                             <td class="text-center border-y px-2 py-2">{{ item.trainerassigned || 'Sin asignar' }}</td>
                             <td class="text-center space-x-2 border-y py-2">
                                 <button (click)="selectUser(item)" class="underline text-darkslategray text-sm">
@@ -272,6 +297,11 @@
                             <td class="text-center border-y px-2 py-2">
                                 <button (click)="viewSubscriberInfo(item)" class="underline text-darkslategray text-sm">
                                     <i class="fa-solid fa-eye"></i>
+                                </button>
+                            </td>
+                            <td class="text-center border-y px-2 py-2">
+                                <button (click)="deleteSubscriber(item)" class="underline text-darkslategray text-sm">
+                                    <i class="fa-solid fa-trash"></i>
                                 </button>
                             </td>
                         </tr>
@@ -298,7 +328,7 @@
         <!-- Header with 'X' -->
         <div class="flex justify-between items-center mb-4">
             <h2 class="text-xl font-semibold text-darkslategray">
-                {{ 'Subscriber Info' | translate }}
+                {{ 'Info' | translate }}
             </h2>
             <button (click)="closeInfoModal()" class="close-modal-btn text-gray-600 hover:text-gray-900">
                 <i class="fa-solid fa-times text-lg"></i>

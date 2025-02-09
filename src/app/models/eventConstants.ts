@@ -11,6 +11,9 @@ export class EventConstants {
   public static ACTION: string = "Action";
   public static LOG: string = "Log";
   public static CLAIM: string = "Claim";
+  public static PROJECT_ID: string = "ProjectId"; 
+  public static EXPLANATION_TEXT: string = "ExplanationText";
+
   public static DATE_PERFORMANCE: string = "DatePerformance";
   public static APPLICATION_IDENTIFIER: string = "ApplicationIdentifier";
   public static COMPONENT: string = "Component";

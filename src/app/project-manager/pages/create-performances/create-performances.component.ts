@@ -212,7 +212,8 @@ export class CreatePerformancesComponent {
       FreeProfessionalAssignedId: ['', [Validators.required]],
       FreeProfessionalCode: ['', [Validators.required]],
       SummaryId: ['', [Validators.required]],
-      JustifyingDocument: ['', [Validators.required]],
+      JustifyingDocument: [''],
+      explanationText: [''],
       ForecastTravelExpenses: ['', [Validators.required]],
       ForecastTravelTime: ['', [Validators.required]],
       ForecastWorkHours: ['', [Validators.required]],
@@ -251,6 +252,9 @@ export class CreatePerformancesComponent {
   fillform(performance: PerformanceFreeProfessional): FormGroup {
     this.isCreatePerformance = false;
     this.justifyingDocument = performance.justifying_document;
+    if (!performance.total_forecast_data) {
+      performance.total_forecast_data = '0';
+    }
 
     let formatedStartDate = this.datePipe.transform(performance.start_date, 'yyyy-MM-dd');
     let formatedEndDate = this.datePipe.transform(performance.end_date, 'yyyy-MM-dd');
@@ -258,7 +262,8 @@ export class CreatePerformancesComponent {
     return this.formBuilder.group({
       Start_Date: [formatedStartDate, [Validators.required]],
       End_Date: [formatedEndDate, [Validators.required]],
-      JustifyingDocument: [performance.justifying_document, [Validators.required]],
+      JustifyingDocument: [performance.justifying_document],
+      explanationText: [performance.explanation],
       FreeProfessionalCode: [performance.FreeProfessionalAssignedCode, [Validators.required]],
       SummaryId: [performance.summarytypeid, [Validators.required]],
       freeProfessionalId: [performance.freeprofessionalassignedid, [Validators.required]],
@@ -283,8 +288,9 @@ export class CreatePerformancesComponent {
     }
   }
 
-  // CHANGED: onSubmit will only send the 3 developer fields if canAddDeveloperPerformance = true
   onSubmit(): void {
+    const formData = { ...this.performanceForm.value };
+    console.log("performanceForm", this.performanceForm.value);
     if (this.performanceForm.invalid) {
       this.performanceForm.markAllAsTouched();
       return;
@@ -294,17 +300,6 @@ export class CreatePerformancesComponent {
 
     if (this.projectManagerSelected) {
       // Build up the data to send
-      const formData = { ...this.performanceForm.value };
-
-      // If canAddDeveloperPerformance == false, remove developer fields before sending
-      // if (!this.canAddDeveloperPerformance) {
-      //   delete formData.developer_category;
-      //   delete formData.developer_module;
-      //   delete formData.developer_screen_form;
-      //   delete formData.developer_activity;
-      // }
-
-      console.log("formData", formData, "projectManagerSelected", this.projectManagerSelected);
       if (this.documentBytes != null) {
         const documentBase64 = this.convertUint8ArrayToBase64(this.documentBytes);
         this.OSDEventService.addPerformanceFreeProfessional(formData, this.projectManagerSelected, documentBase64);
@@ -365,7 +360,7 @@ export class CreatePerformancesComponent {
       this.incorrectFormat = false;
     } else {
       this.incorrectFormat = true;
-      this.performanceForm.patchValue({ TotalForecastData: '' });
+      this.performanceForm.patchValue({ TotalForecastData: '0' });
     }
   }
 
@@ -444,6 +439,9 @@ export class CreatePerformancesComponent {
       total = (totalWorkHours + totalTransportHours);
     }
 
+    if (isNaN(total)) {
+      total = 0;
+    }
     this.performanceForm.patchValue({
       TotalForecastData: total
     });
