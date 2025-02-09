@@ -1158,6 +1158,7 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.MOBILE_PHONE, userFormValue.mobilePhone);
     event.setBodyProperty(EventConstants.EMAIL, userFormValue.email);
     event.setBodyProperty(EventConstants.WEB, userFormValue.web);
+    event.setBodyProperty(EventConstants.PASSWORD, userFormValue.password);
     return event;
   }
 

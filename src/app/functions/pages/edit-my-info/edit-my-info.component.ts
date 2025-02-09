@@ -27,17 +27,17 @@ export class UserProfileEditComponent implements OnInit {
     private snackBar: MatSnackBar
   ) {
     this.userForm = this.fb.group({
-      name: ['', Validators.required],
-      firstSurname: ['', Validators.required],
+      name: [''],
+      firstSurname: [''],
       middleSurname: [''],
-      city: ['', Validators.required],
+      city: [''],
       companyName: [''],
       address: [''],
       zipcode: [''],
       landline: [''],
-      mobilePhone: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.minLength(6)]], // Optional password field
+      mobilePhone: [''],
+      email: [''],
+      password: [''], // Optional password field
       web: ['']
     });
   }
@@ -94,7 +94,7 @@ export class UserProfileEditComponent implements OnInit {
       delete updateData.password; // If password field is empty, don't send it in the request
     }
 
-    this.osdService.updateUserProfile(this.user.id, updateData).subscribe({
+    this.osdService.updateUserProfile(this.user.Id, updateData).subscribe({
       next: () => {
         this.snackBar.open('✅ Datos personales actualizados correctamente.', 'Cerrar', {
           duration: 3000

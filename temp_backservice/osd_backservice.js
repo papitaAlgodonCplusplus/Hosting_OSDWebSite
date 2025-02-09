@@ -2824,36 +2824,21 @@ const handleCreateClaim = async (event, res) => {
 
 const handleUpdateUserProfile = async (event, res) => {
   try {
-    const Email = event.Body?.Email;
-
-    // Validate required fields
-    if (!Email) {
+    console.log('🟢 Received event:', event);
+    const userId = event.Body?.UserId;
+    if (!userId) {
       return res.status(400).json(createWebBaseEvent({
         success: false,
-        message: 'Email is required.'
+        message: 'userId is required.'
       }, event.SessionKey, event.SecurityToken, 'UpdateUserProfile'));
     }
 
-    // Check if the user exists
-    const userQuery = await pool.query(
-      `SELECT id FROM osduser WHERE email = $1`,
-      [Email]
-    );
-
-    if (userQuery.rows.length === 0) {
-      return res.status(404).json(createWebBaseEvent({
-        success: false,
-        message: 'User not found.'
-      }, event.SessionKey, event.SecurityToken, 'UpdateUserProfile'));
-    }
-
-    const userId = userQuery.rows[0].id;
     const fields = [];
     const values = [];
     let index = 1;
 
     for (const [key, value] of Object.entries(event.Body)) {
-      if (key !== 'Email' && key !== 'Action' && key !== 'TraceIdentifier' && key !== 'Type' && key !== 'Date' && key !== 'ApplicationIdentifier') {
+      if (key !== 'UserId' && key !== 'Action' && key !== 'TraceIdentifier' && key !== 'Type' && key !== 'Date' && key !== 'ApplicationIdentifier') {
         fields.push(`${key.toLowerCase()} = $${index}`);
         values.push(value);
         index++;
