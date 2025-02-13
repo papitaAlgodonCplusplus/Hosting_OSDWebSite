@@ -38,7 +38,7 @@ export class ClaimantClaimedOsdReportComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.initializeData();
+    setTimeout(() => this.initializeData(), 200);
   }
 
   ngOnDestroy(): void {
@@ -67,12 +67,14 @@ export class ClaimantClaimedOsdReportComponent implements OnInit, OnDestroy {
     this.loadCountries();
     this.osdDataService.TransparencyReportsSubscriberClientList$
       .subscribe(reports => {
+        console.log(reports);
         this.reports = reports;
         this.allReports = reports;
       });
 
     this.osdDataService.getSubscribersSuccess$
       .subscribe(subscribers => {
+        console.log(subscribers);
         this.allSubscribers = subscribers;
         this.subscribers = subscribers.map(subscriber => ({
           value: subscriber.name,
@@ -87,6 +89,7 @@ export class ClaimantClaimedOsdReportComponent implements OnInit, OnDestroy {
         map((countries: any[]) => this.mapCountriesToDropdown(countries))
       )
       .subscribe(countries => {
+        console.log(countries);
         this.countries = countries;
         this.sortCountries();
       });

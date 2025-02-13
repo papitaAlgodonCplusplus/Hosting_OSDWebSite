@@ -798,7 +798,6 @@ const handleGetTransparencyReportsSubscriberClients = async (event, res) => {
       cf.solution_appeal,
       cf.solution,
       cf.solution_complaint,
-      cf.time_taken,
       u.id AS user_id,
       u.code AS user_code,
       u.accounttype AS user_accounttype,
@@ -1385,6 +1384,7 @@ const handleModifyPerformanceFreeProfessional = async (event, res) => {
 
     const addPerformancFPEvent = event.Body;
     const performanceId = addPerformancFPEvent.PerformanceId;
+    console.log('🚀 addPerformancFPEvent: ', addPerformancFPEvent);
 
     let performanceFreeprofessional = await pool.query(
       'SELECT * FROM performance_freeprofessional WHERE id = $1',
@@ -1974,7 +1974,7 @@ const handleUpdateClaim = async (event, res) => {
       'serviceprovided', 'facts', 'amountclaimed', 'documentfile1id', 'documentfile1name',
       'documentfile2id', 'documentfile2name', 'creditingdate', 'amountpaid', 'improvementsavings',
       'valuationsubscriber', 'valuationclaimant', 'valuationfreeprofessionals', 'valuationfc', 'processor_id',
-      'complaint', 'appeal', 'solution_suggestion', 'solution_appeal', 'answer_to_appeal', 'solution', 'solution_complaint', 'time_taken'
+      'complaint', 'appeal', 'solution_suggestion', 'solution_appeal', 'answer_to_appeal', 'solution', 'solution_complaint'
     ];
 
     fieldsToUpdate.forEach(field => {
@@ -2387,26 +2387,26 @@ const handleAddPerformanceUpdate = async (event, res) => {
       performanceCode,
       performanceData.ClaimId,
       performanceData.NewStatus || existingPerformance.status || 'Running',
-      performanceData.datePerformance || existingPerformance.dateperformance || new Date().toISOString().split('T')[0],
-      performanceData.Document || existingPerformance.justifyingdocument || '',
-      documentBase64 || existingPerformance.justifyingdocumentbytes || null,
-      performanceData.Summary || existingPerformance.summary,
+      performanceData.datePerformance || new Date().toISOString().split('T')[0],
+      performanceData.Document || '',
+      documentBase64 || null,
+      performanceData.Summary || '',
       performanceData.type || existingPerformance.type || 8,
-      performanceData.typePerformance || existingPerformance.typeperformance || 'Complaint',
-      performanceData.userTypePerformance || existingPerformance.usertypeperformance || 'CLAIMANT',
-      performanceData.FileType || existingPerformance.filetype || 'txt',
-      performanceData.Document || existingPerformance.documentfile1id || '',
-      performanceData.Document2 || existingPerformance.justifyingdocument2 || '',
-      performanceData.FileType2 || existingPerformance.filetype2 || 'txt',
-      performanceData.Document2 || existingPerformance.documentfile2id || '',
-      performanceData.answer_to_appeal || existingPerformance.answer_to_appeal || '',
-      performanceData.solutionSuggestion || existingPerformance.solutionSuggestion || '',
-      performanceData.appeal || existingPerformance.appeal || '',
-      performanceData.complaint || existingPerformance.complaint || '',
-      performanceData.solution || existingPerformance.solution || '',
-      performanceData.solutionComplaint || existingPerformance.solutionComplaint || '',
-      performanceData.solutionAppeal || existingPerformance.solutionAppeal || '',
-      performanceData.timeTaken || existingPerformance.timeTaken || '',
+      performanceData.typePerformance || 'Complaint',
+      performanceData.userTypePerformance || 'CLAIMANT',
+      performanceData.FileType || 'txt',
+      performanceData.Document || '',
+      performanceData.Document2 || '',
+      performanceData.FileType2 || 'txt',
+      performanceData.Document2 || '',
+      performanceData.answer_to_appeal || '',
+      performanceData.solutionSuggestion || '',
+      performanceData.appeal || '',
+      performanceData.complaint || '',
+      performanceData.solution || '',
+      performanceData.solutionComplaint || '',
+      performanceData.solutionAppeal || '',
+      performanceData.timeTaken || '',
       performanceData.userid || existingPerformance.userid || ''
     ]);
 
@@ -2428,8 +2428,7 @@ const handleAddPerformanceUpdate = async (event, res) => {
         answer_to_appeal = COALESCE($10, answer_to_appeal),
         solution = COALESCE($11, solution),
         solution_complaint = COALESCE($12, solution_complaint),
-        solution_appeal = COALESCE($13, solution_appeal),
-        time_taken = COALESCE($14, time_taken)
+        solution_appeal = COALESCE($13, solution_appeal)
       WHERE id = $5
       RETURNING *;
     `;
@@ -2448,7 +2447,6 @@ const handleAddPerformanceUpdate = async (event, res) => {
       performanceData.solution || null,
       performanceData.solutionComplaint || null,
       performanceData.solutionAppeal || null,
-      performanceData.timeTaken || null
     ]);
 
     console.log('✅ claim_file updated successfully:', updateResult.rows[0]);
@@ -3120,11 +3118,11 @@ const handleUserRegistration = async (event, res) => {
           isauthorized, isadmin, offering_type, refeer, can_be_claimed, 
           osdSolutionType, numClientes, numEmpleados, numProveedores, numDepartamentos, 
           identificacionDepartamentos, numQuejasReclamaciones, numProcedimientos, 
-          ingresosAnual, gastosAnual, bankAccount
+          ingresosAnual, gastosAnual, bankAccount, payPal, stripe
         ) VALUES (
           $1, $2, $3, $4, $5, $6, $7, $8,
           $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, 
-          $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33
+          $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35
         )
         RETURNING id;
       `;
@@ -3162,7 +3160,9 @@ const handleUserRegistration = async (event, res) => {
         personalForm.numProcedimientos || null,
         personalForm.ingresosAnual || null,
         personalForm.gastosAnual || null,
-        personalForm.bankAccount || null
+        personalForm.bankAccount || null,
+        personalForm.payPal || null,
+        personalForm.stripe || null
       ]);
 
       if (accountTypeId === '8e539a42-4108-4be6-8f77-2d16671d1069') {
@@ -3537,6 +3537,11 @@ const handleCreateServiceRequest = async (event, res) => {
       additionalInfo,
       appeal,
       documentId,
+      documentId2,
+      documentId3,
+      documentSolution1Id,
+      documentSolution2Id,
+      documentSolution3Id,
       createdAt,
       meetingLink,
       response,
@@ -3545,9 +3550,9 @@ const handleCreateServiceRequest = async (event, res) => {
 
     const insertQuery = `
       INSERT INTO services (
-        id, client_id, service_type, additional_info, meeting_link, document_id, response, appeal, answer_to_appeal, created_at, updated_at
+        id, client_id, service_type, additional_info, meeting_link, document_id, document2_id, document3_id, document_solution_1_id, document_solution_2_id, document_solution_3_id, response, appeal, answer_to_appeal, created_at, updated_at
       ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16
       ) RETURNING *;
     `;
 
@@ -3558,6 +3563,11 @@ const handleCreateServiceRequest = async (event, res) => {
       additionalInfo,
       meetingLink,
       documentId,
+      documentId2,
+      documentId3,
+      documentSolution1Id,
+      documentSolution2Id,
+      documentSolution3Id,
       response,
       appeal,
       answerToAppeal,

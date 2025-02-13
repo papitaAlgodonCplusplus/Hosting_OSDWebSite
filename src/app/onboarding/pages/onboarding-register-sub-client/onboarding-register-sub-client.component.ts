@@ -33,6 +33,19 @@ export class OnboardingRegisterSubClientComponent implements OnInit, OnDestroy {
     { value: this.translate.instant('Public Entity'), key: "Public Entity" },
     { value: this.translate.instant('Private Entity'), key: "Private Entity" },
   ];
+  departmentsList: { key: string; value: string }[] = [
+    { key: 'HR', value: this.translate.instant('Human Resources') },
+    { key: 'IT', value: this.translate.instant('Information Technology') },
+    { key: 'Finance', value: this.translate.instant('Finance') },
+    { key: 'Marketing', value: this.translate.instant('Marketing') },
+    { key: 'Operations', value: this.translate.instant('Operations') },
+    { key: 'Legal', value: this.translate.instant('Legal') },
+    { key: 'Sales', value: this.translate.instant('Sales') },
+    { key: 'CustomerService', value: this.translate.instant('Customer Service') },
+    { key: 'Other', value: this.translate.instant('Other') }
+  ];
+
+  selectedDepartment: string | undefined;
   countries: DropDownItem[] = [];
   selectedCountries: string | undefined;
 
@@ -53,6 +66,7 @@ export class OnboardingRegisterSubClientComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     setTimeout(() => {
+      this.selectedDepartment = this.departmentsList[0].key;
       this.countryService.getCountries().subscribe((data: any[]) => {
         let countriesList;
         if (this.translate.currentLang === "en") {

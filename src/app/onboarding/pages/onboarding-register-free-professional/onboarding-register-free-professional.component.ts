@@ -333,7 +333,9 @@ export class OnboardingRegisterFreeProfessionalComponent implements OnDestroy {
       password: ['', [Validators.required, this.validationsService.isValidPassword, Validators.minLength(6)], []],
       accountType: ['0c61160c-d087-42b6-9fa0-1fc8673a00b2'],
       acceptConditions: [false],
-      bankAccount: ['']  // New optional field for Bank Account
+      bankAccount: [''],  // New optional field for Bank Account
+      payPal: [''],  // New optional field for PayPal
+      stripe: [''],  // New optional field for Stripe
     });
     return personalForm;
   }

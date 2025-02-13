@@ -351,6 +351,10 @@ export class FileManagerComponent implements OnInit, OnDestroy {
 
       console.log("Add/Update payload", payload, "Is editing?", this.editingPerformance);
 
+      if (payload.solutionAppeal) {
+        payload.appeal = null;
+      }
+      
       if (this.editingPerformance) {
         // Call your update service method
         await this.osdEventService.updatePerformanceUpdate(payload);

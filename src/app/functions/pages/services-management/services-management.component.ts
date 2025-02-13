@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar'; // still using snackBar for alerts
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { OSDService } from 'src/app/services/osd-event.services';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { BackblazeService } from 'src/app/services/backblaze.service';
@@ -15,6 +15,11 @@ export interface ServiceRequest {
   additionalInfo?: string;
   meetingLink?: string;
   documentId?: string;
+  documentId2?: string;
+  documentId3?: string;
+  document3_id?: string;
+  document2_id?: string;
+  document_id?: string;
   response?: string;
   appeal?: string;
   answerToAppeal?: string;
@@ -44,7 +49,6 @@ export class ServicesManagementComponent implements OnInit {
   popupTitle: string = '';
   popupMessage: string = '';
   popupInput: string = '';
-  // This indicates which field we are updating: 'response', 'answerToAppeal', 'appeal', 'meetingLink', or 'additionalInfo'
   popupUpdateType: 'response' | 'answerToAppeal' | 'appeal' | 'meetingLink' | 'additionalInfo' | null = null;
   currentRequest: ServiceRequest | null = null;
   // -------------------------------------
@@ -63,22 +67,22 @@ export class ServicesManagementComponent implements OnInit {
     private backblazeService: BackblazeService,
     private store: Store
   ) {
-    // Notice that the appeal field is not included in the creation form.
+    // Note that we now add two extra fields: document2 and document3.
     this.serviceForm = this.fb.group({
       serviceType: ['', Validators.required],
       additionalInfo: [''],
-      document: ['']
+      document: [''],
+      document2: [''],
+      document3: ['']
     });
   }
 
   ngOnInit(): void {
-    // We use a small delay to ensure user info is set.
     setTimeout(() => {
       if (this.authenticationService.userInfo) {
         this.user = this.authenticationService.userInfo;
       }
       if (this.user.osdSolutionType) {
-        console.log('User OSD Solution Type', this.user.osdSolutionType.replace(/[€\d]/g, ''));
         this.serviceTypes = this.serviceTypes.filter(type =>
           type.toLowerCase().includes(this.user.osdSolutionType.replace(/[€\d]/g, '').toLowerCase().trim())
         );
@@ -90,31 +94,24 @@ export class ServicesManagementComponent implements OnInit {
   loadServiceRequests(): void {
     this.osdService.getServiceRequests().subscribe({
       next: async (data: any) => {
-        // Save raw services first.
         const rawServices = data.Body?.services || [];
-
-        // Process free professional data and set trainer flag.
+        console.log('rawServices', rawServices);
         await (async () => {
           let freeProfessionalId = '';
           await this.osdService.GetFreeProfessionalsDataEvent();
           const profResponse: any = await this.osdService.getFreeProfessionalsList();
           profResponse.forEach((professional: any) => {
             if (professional.userid === this.user.Id) {
-              console.log('Free Professional ID inside promise', professional.id);
               freeProfessionalId = professional.id;
             }
           });
-          console.log('Free Professional ID after promise resolved:', freeProfessionalId);
           if (this.user && this.user.FreeProfessionalTypeID === "eea2312e-6a85-4ab6-85ff-0864547e3870") {
             this.isTrainer = freeProfessionalId !== '';
           } else {
             this.isSolutionsClient = true;
           }
         })();
-
-        // Now that we have the correct isTrainer flag, filter the services.
         if (this.isTrainer) {
-          // For trainers, show all services.
           this.serviceRequests = rawServices.map((service: any) => ({
             id: service.id,
             clientId: service.client_id,
@@ -122,6 +119,10 @@ export class ServicesManagementComponent implements OnInit {
             additionalInfo: service.additional_info,
             meetingLink: service.meeting_link,
             documentId: service.document_id,
+            documentId2: service.document2_id,
+            documentId3: service.document3_id,
+            document2_id: service.document2_id,
+            document3_id: service.document3_id,
             response: service.response,
             appeal: service.appeal,
             answerToAppeal: service.answer_to_appeal,
@@ -129,7 +130,6 @@ export class ServicesManagementComponent implements OnInit {
             updatedAt: service.updated_at ? new Date(service.updated_at) : undefined
           }));
         } else {
-          // For non-trainers, show only the services that belong to the current user.
           this.serviceRequests = rawServices
             .filter((service: any) => service.client_id === this.user.Id)
             .map((service: any) => ({
@@ -139,6 +139,10 @@ export class ServicesManagementComponent implements OnInit {
               additionalInfo: service.additional_info,
               meetingLink: service.meeting_link,
               documentId: service.document_id,
+              documentId2: service.document2_id,
+              documentId3: service.document_id3,
+              document2_id: service.document2_id,
+              document3_id: service.document3_id,
               response: service.response,
               appeal: service.appeal,
               answerToAppeal: service.answer_to_appeal,
@@ -146,12 +150,9 @@ export class ServicesManagementComponent implements OnInit {
               updatedAt: service.updated_at ? new Date(service.updated_at) : undefined
             }));
         }
-
-        // Fetch client data for clientName (using first service's client_id as example)
         if (rawServices.length) {
           from(this.osdService.getUserByID(rawServices[0].client_id)).subscribe({
             next: (response: any) => {
-              console.log('Client data loaded', response);
               this.clientName = response.Body.user.name;
             },
             error: (err: any) => {
@@ -168,10 +169,19 @@ export class ServicesManagementComponent implements OnInit {
     });
   }
 
-  // Called by shared-uploadfile when a file is successfully uploaded.
+  // Called when a file is successfully uploaded for document 1.
   handleFileUploaded(event: { typeFile: string, fileId: string }): void {
-    console.log('File uploaded', event);
     this.serviceForm.patchValue({ document: event.fileId });
+  }
+
+  // New: Handler for document 2 uploads.
+  handleFileUploaded2(event: { typeFile: string, fileId: string }): void {
+    this.serviceForm.patchValue({ document2: event.fileId });
+  }
+
+  // New: Handler for document 3 uploads.
+  handleFileUploaded3(event: { typeFile: string, fileId: string }): void {
+    this.serviceForm.patchValue({ document3: event.fileId });
   }
 
   onSubmit(): void {
@@ -186,6 +196,8 @@ export class ServicesManagementComponent implements OnInit {
       additionalInfo: this.serviceForm.value.additionalInfo,
       appeal: '',
       documentId: this.serviceForm.value.document,
+      documentId2: this.serviceForm.value.document2,
+      documentId3: this.serviceForm.value.document3,
       createdAt: new Date(),
       updatedAt: undefined,
       meetingLink: '',
@@ -289,43 +301,34 @@ export class ServicesManagementComponent implements OnInit {
   }
   // -------------------------------------------
 
-  // Trainer: update the service response using the pop-up window.
   updateResponse(request: ServiceRequest): void {
     this.openPopup('response', 'Update Response', 'Enter your response for this request:', request.response || '', request);
   }
 
-  // Trainer: update answer to appeal using the pop-up window.
   updateAnswerToAppeal(request: ServiceRequest): void {
     this.openPopup('answerToAppeal', 'Update Answer to Appeal', 'Enter your answer to the appeal:', request.answerToAppeal || '', request);
   }
 
-  // All: update additional information using the pop-up window.
   updateInfo(request: ServiceRequest): void {
     this.openPopup('additionalInfo', 'Update Additional Info', 'Enter additional information:', request.additionalInfo || '', request);
   }
 
-  // Client: update their appeal using the pop-up window.
   updateAppeal(request: ServiceRequest): void {
     this.openPopup('appeal', 'Update Appeal', 'Enter your appeal:', request.appeal || '', request);
   }
 
-  // Trainer: start a videoconference using the pop-up window.
   startVideoconference(request: ServiceRequest): void {
     this.openPopup('meetingLink', 'Start Videoconference', 'Enter the videoconference link:', request.meetingLink || '', request);
   }
 
-  // Download a file using the Backblaze service.
   downloadSelectedFile(optionalDocument: any): void {
     let fileId: string;
-    console.log("Optional Document", optionalDocument);
     if (optionalDocument && optionalDocument !== '') {
       fileId = optionalDocument;
     } else {
       return;
     }
-    if (!fileId) {
-      return;
-    }
+    if (!fileId) { return; }
     this.backblazeService.authorizeAccount().subscribe(response => {
       const apiUrl = response.apiUrl;
       const authorizationToken = response.authorizationToken;

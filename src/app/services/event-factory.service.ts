@@ -363,6 +363,7 @@ export class EventFactoryService {
     event.setBodyProperty(EventConstants.DEVELOPER_MODULE, performanceFP.developer_module);
     event.setBodyProperty(EventConstants.DEVELOPER_SCREEN_FORM, performanceFP.developer_screen_form);
     event.setBodyProperty(EventConstants.DEVELOPER_ACTIVITY, performanceFP.developer_activity);
+    event.setBodyProperty(EventConstants.EXPLANATION_TEXT, performanceFP.explanationText);
     return event;
   }
 

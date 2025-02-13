@@ -252,8 +252,9 @@ export class CreatePerformancesComponent {
   fillform(performance: PerformanceFreeProfessional): FormGroup {
     this.isCreatePerformance = false;
     this.justifyingDocument = performance.justifying_document;
+    let local_total_forecast_data = performance.total_forecast_data;
     if (!performance.total_forecast_data) {
-      performance.total_forecast_data = '0';
+      local_total_forecast_data = '0';
     }
 
     let formatedStartDate = this.datePipe.transform(performance.start_date, 'yyyy-MM-dd');
@@ -270,7 +271,7 @@ export class CreatePerformancesComponent {
       ForecastTravelExpenses: [performance.estimated_transport_expenses, [Validators.required]],
       ForecastTravelTime: [performance.estimated_transport_hours, [Validators.required]],
       ForecastWorkHours: [performance.estimated_work_hours, [Validators.required]],
-      TotalForecastData: [performance.total_forecast_data, [Validators.required]],
+      TotalForecastData: [local_total_forecast_data, [Validators.required]],
       developer_category: this.formBuilder.array((Array.isArray(performance.developer_category) ? performance.developer_category : []).map(item => this.formBuilder.control(item))),
       developer_module: this.formBuilder.array(Array.isArray(performance.developer_module) ? performance.developer_module : []),
       developer_screen_form: this.formBuilder.array(Array.isArray(performance.developer_screen_form) ? performance.developer_screen_form : []),

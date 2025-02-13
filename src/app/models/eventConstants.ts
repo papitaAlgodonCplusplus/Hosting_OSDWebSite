@@ -110,6 +110,7 @@ export class EventConstants {
   public static AMOUNT_CLAIMED: string = "amountClaimed";
   public static SUPPORTING_DOCUMENT1: string = "supportingDocument1";
   public static SUPPORTING_DOCUMENT2: string = "supportingDocument2";
+  public static SUPPORTING_DOCUMENT3: string = "supportingDocument3";
   public static CLAIMANT_ID: string = "ClaimantId";
   public static FACTS: string = "facts";
   public static CLAIM_TYPE: string = "claimtype";
