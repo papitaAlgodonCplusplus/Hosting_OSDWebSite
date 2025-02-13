@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
 import { flush } from '@angular/core/testing';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
+import { AuthenticationService } from 'src/app/services/authentication.service';
 
 @Component({
   selector: 'app-assign-client-to-trainer',
@@ -22,20 +23,28 @@ export class AssignClientToTrainerComponent implements OnDestroy {
   freeProfessionalsTrainersObservable$: Observable<FreeProfessional[]> = this.osdDataService.ProfessionalFreeTrainerList$
   freeProfessionalsTrainers: FreeProfessional[] = [];
   subscribersSelected: string = "";
+  user: any;
   private subscription: Subscription | null = null;
 
   constructor(
     private store: Store,
     private osdEventService: OSDService,
     private osdDataService: OSDDataService,
+    private authenticationService: AuthenticationService,
     private translate: TranslateService
   ) { }
   ngOnInit(): void {
     setTimeout(() => {
       this.osdEventService.GetUnassignedSubscribers();
     }, 0);
+    if (this.authenticationService.userInfo) {
+      this.user = this.authenticationService.userInfo;
+    }
     this.unassignedSubscribers$.subscribe(subs => {
       this.subscribers = subs
+      if(!this.user.FreeProfessionalTypeID) {
+        this.subscribers = this.subscribers.filter(sub => sub.id === this.user.Id);
+      }
     })
   }
 

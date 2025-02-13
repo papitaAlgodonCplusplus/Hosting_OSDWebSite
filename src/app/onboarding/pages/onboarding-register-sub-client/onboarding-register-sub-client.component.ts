@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
@@ -11,13 +11,14 @@ import { OSDService } from 'src/app/services/osd-event.services';
 import { ValidationsService } from 'src/app/services/validations.service';
 import { ModalActions, UiActions } from 'src/app/store/actions';
 import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-register-sub-client',
   templateUrl: './onboarding-register-sub-client.component.html',
   styleUrls: ['./onboarding-register-sub-client.component.css']
 })
-export class OnboardingRegisterSubClientComponent implements OnDestroy {
+export class OnboardingRegisterSubClientComponent implements OnInit, OnDestroy {
   isAcceptConditions!: boolean;
   accountForm: FormGroup;
   personalForm: FormGroup;
@@ -32,10 +33,6 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
     { value: this.translate.instant('Public Entity'), key: "Public Entity" },
     { value: this.translate.instant('Private Entity'), key: "Private Entity" },
   ];
-  clientCanBeClaimed: DropDownItem[] = [
-    { value: this.translate.instant('Yes'), key: "Yes" },
-    { value: this.translate.instant('No'), key: "No" },
-  ];
   countries: DropDownItem[] = [];
   selectedCountries: string | undefined;
 
@@ -46,8 +43,9 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
     private osdEventService: OSDService,
     private translate: TranslateService,
     private osdDataService: OSDDataService,
-    private countryService: CountryService,
-    private router: Router
+    private router: Router,
+    private snackBar: MatSnackBar,
+    private countryService: CountryService
   ) {
     this.accountForm = this.createAccountForm();
     this.personalForm = this.createPersonalForm();
@@ -106,11 +104,15 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
     }, 0);
   }
 
-  onClientTypeChange(clientCanBeClaimed: string): void {
-    console.log("Client type changed:", clientCanBeClaimed, "can be claimed:", clientCanBeClaimed === 'Client Subscriber' ? 'Yes' : 'No');
-    this.accountForm.patchValue({
-      clientCanBeClaimed: clientCanBeClaimed === 'Client Subscriber' ? 'Yes' : 'No'
-    });
+  onClientOptionChange(selectedOption: string): void {
+    console.log("Client option selected:", selectedOption);
+    if (selectedOption === 'Client Subscriber') {
+      this.personalForm.patchValue({ osdSolutionType: '' });
+      this.accountForm.patchValue({ clientCanBeClaimed: 'Yes' });
+    } else {
+      this.personalForm.patchValue({ osdSolutionType: selectedOption });
+      this.accountForm.patchValue({ clientCanBeClaimed: 'No' });
+    }
   }
 
   private createPersonalForm(): FormGroup {
@@ -127,19 +129,32 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
       landline: [''],
       mobilePhone: ['', [Validators.required]],
       email: ['', [Validators.required, this.validationsService.isValidEmail]],
-      password: ['', [Validators.required, this.validationsService.isValidPassword, Validators.minLength(6)], []],
+      password: ['', [Validators.required, this.validationsService.isValidPassword, Validators.minLength(6)]],
       web: [''],
       accountType: ['063e12fa-33db-47f3-ac96-a5bdb08ede61'],
-      acceptConditions: [false]
+      acceptConditions: [false],
+      osdSolutionType: [''],
+      numClientes: [''],
+      numEmpleados: [''],
+      numProveedores: [''],
+      numDepartamentos: [''],
+      identificacionDepartamentos: [''],
+      numQuejasReclamaciones: [''],
+      numProcedimientos: [''],
+      ingresosAnual: [''],
+      gastosAnual: ['']
     });
   }
 
+  // Note: We remove the separate clientCanBeClaimed and osdSolutionType controls from accountForm
+  // and instead add a single control called clientOption.
   private createAccountForm(): FormGroup {
     return this.formBuilder.group({
       clientType: ['', [Validators.required]],
       showCodepl: [''],
       emailOfRefer: [''],
-      clientCanBeClaimed: [''],
+      clientOption: ['', Validators.required],
+      clientCanBeClaimed: ['']
     });
   }
 
@@ -165,16 +180,21 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
     };
 
     const url = 'https://api.sendgrid.com/v3/mail/send';
-    // Return the observable so the caller can subscribe.
     return this.osdEventService.userRegisterEmail(payload, url);
   }
 
   onSubmit(): void {
-    const selectedClientCanBeClaimed = this.accountForm.get('clientCanBeClaimed')?.value;
-    console.log("Client type changed:", selectedClientCanBeClaimed, "can be claimed:", selectedClientCanBeClaimed === 'Client Subscriber' ? 'Yes' : 'No');
-    this.accountForm.patchValue({
-      clientCanBeClaimed: selectedClientCanBeClaimed === 'Client Subscriber' ? 'Yes' : 'No'
-    });
+    // Check that the client option is selected.
+    console.log("clientOption value:", this.accountForm.get('clientOption')?.value);
+    if (!this.accountForm.get('clientOption')?.value || this.accountForm.get('clientOption')?.value === '') {
+      console.log("Client option not selected.");
+      this.snackBar.open(this.translate.instant('Please select a client type.'), 'Close', {
+        duration: 3000,
+      });
+      return;
+    }
+
+    // Validate the forms.
     if (this.personalForm.invalid || this.accountForm.invalid) {
       this.accountForm.markAllAsTouched();
       this.personalForm.markAllAsTouched();
@@ -194,13 +214,11 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
     const userEmail = this.personalForm.value.email;
     localStorage.setItem('userEmail', userEmail);
 
-    // Include both accountForm and personalForm values in the registration call
+    // Include both accountForm and personalForm values in the registration call.
     this.osdEventService.userRegister(this.accountForm.value, this.personalForm.value, EventConstants.SUBSCRIBER_CUSTOMER)
       .subscribe({
         next: (response) => {
           console.log("Registration successful:", response);
-          // After registration is successful, send the registration email.
-          console.log("Registration successful. Sending registration email...", userEmail);
           const userCode = response.UserCode;
           this.sendRegistrationEmail(userEmail, userCode).subscribe({
             next: () => {
@@ -210,7 +228,6 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
             },
             error: (error: any) => {
               console.error("Error sending registration email:", error);
-              // Even if email sending fails, proceed with navigation.
               this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: "Registration successful, but email sending failed." }));
               this.store.dispatch(ModalActions.openAlert());
               this.router.navigate(['/auth']);
@@ -225,16 +242,16 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
       });
   }
 
-  openModal() {
+  openModal(): void {
     this.showModal = !this.showModal;
     this.freeProfessionalExists = false;
   }
 
-  closeModal() {
+  closeModal(): void {
     this.showModal = false;
   }
 
-  verifiedProfessionalFree(event: Event) {
+  verifiedProfessionalFree(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
     const inputValue = inputElement.value.trim();
 
@@ -251,24 +268,24 @@ export class OnboardingRegisterSubClientComponent implements OnDestroy {
     });
   }
 
-  eliminatedProfessionalFree() {
+  eliminatedProfessionalFree(): void {
     this.showModal = false;
     this.freeProfessionalExists = false;
   }
 
-  openVideo() {
+  openVideo(): void {
     window.open('https://www.youtube.com/embed/I80vR3wOUqc', '_blank');
   }
 
-  makeAPurchase() {
+  makeAPurchase(): void {
     window.open('https://buy.stripe.com/5kA0139lO0Od2v67ss', '_blank');
   }
 
-  openVideoSolutionsOsd() {
+  openVideoSolutionsOsd(): void {
     window.open('https://youtu.be/pBWiJQA_66E?si=eBQGYz_AS5xFGq2h', '_blank');
   }
 
-  makeAPurchaseSolutionsOsd() {
+  makeAPurchaseSolutionsOsd(): void {
     window.open('https://buy.stripe.com/00g5ln69CeF35Hi28b', '_blank');
   }
 }

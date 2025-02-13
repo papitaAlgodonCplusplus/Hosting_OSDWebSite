@@ -1,11 +1,20 @@
 <div class="z-50 w-full fixed flex items-center px-3 py-2 text-black bg-darkslategray">
   <div class="flex-1 flex items-center space-x-1 px-3">
-    <img src="/assets/img/OSD_2.png" alt="Logo OSD" class="w-32 cursor-pointer" routerLink="/home">
+    <!-- Use [src] for the image file and [ngStyle] to bind your style object -->
+    <img
+      [src]="imgLogo"
+      [ngStyle]="imgStyle"
+      alt="Logo OSD"
+      class="cursor-pointer"
+      routerLink="/home"
+    />
   </div>
   <div class="border-t bg-gray-600 rounded border-gray-300">
-    <a (click)="onClick()" 
-       class="block px-4 py-2 text-sm text-white hover:text-gray-300 flex items-center space-x-2"
-       role="menuitem">
+    <a
+      (click)="onClick()"
+      class="block px-4 py-2 text-sm text-white hover:text-gray-300 flex items-center space-x-2"
+      role="menuitem"
+    >
       <span>{{ 'Exit' | translate }}</span>
     </a>
   </div>

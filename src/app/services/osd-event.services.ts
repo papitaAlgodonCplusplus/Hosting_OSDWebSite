@@ -104,11 +104,26 @@ export class OSDService {
       });
     });
   }
-  
+
   public deleteClaim(claimId: string): Observable<any> {
     const deleteClaimEvent: WebBaseEvent = this.eventFactoryService.CreateDeleteClaimEvent(claimId);
     return new Observable((observer) => {
       this.restApiService.SendOSDEvent(deleteClaimEvent).subscribe({
+        next: (response) => {
+          observer.next(response);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
+
+  public getServiceRequests(): Observable<any> {
+    const getServiceRequestsEvent: WebBaseEvent = this.eventFactoryService.CreateGetServiceRequestsEvent();
+    return new Observable((observer) => {
+      this.restApiService.SendOSDEvent(getServiceRequestsEvent).subscribe({
         next: (response) => {
           observer.next(response);
           observer.complete();
@@ -890,7 +905,39 @@ export class OSDService {
     }
   }
 
-
+  public updateServiceRequest(request: any): Observable<any> {
+    const updateServiceRequestEvent: WebBaseEvent = this.eventFactoryService.UpdateServiceRequestEvent(request);
+    return new Observable((observer) => {
+      this.restApiService.SendOSDEvent(updateServiceRequestEvent).subscribe({
+        next: (response) => {
+          return new Observable((observer) => {
+            observer.next({ message: 'Service request updated successfully' });
+            observer.complete();
+          });
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
+  
+  public createServiceRequest(request: any): Observable<any> {
+    const createServiceRequestEvent: WebBaseEvent = this.eventFactoryService.CreateServiceRequestEvent(request);
+    return new Observable((observer) => {
+      this.restApiService.SendOSDEvent(createServiceRequestEvent).subscribe({
+        next: (response) => {
+          return new Observable((observer) => {
+            observer.next({ message: 'Service request created successfully' });
+            observer.complete();
+          });
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
 
   public HandleChangingOsdUserAutorizationResponse(webBaseEvent: WebBaseEvent) {
     try {
@@ -1475,7 +1522,6 @@ export class OSDService {
       if (userAuthenticationSuccess) {
         userInfo = webBaseEvent.getBodyProperty(EventConstants.USER_INFO);
         sessionKey = webBaseEvent.getBodyProperty(EventConstants.GENERATED_SESSION_KEY);
-        // this.authenticationService.startSession(sessionKey);
         this.authenticationService.userInfo = userInfo;
         this.securityDataService.emitUserAuthenticationSuccess("/home");
         this.store.dispatch(AuthenticationActions.signIn());

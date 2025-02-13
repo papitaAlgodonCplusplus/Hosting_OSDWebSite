@@ -198,6 +198,8 @@ export class HomeComponent implements OnInit, OnDestroy {
                 : type === 'FC'
                   ? this.menuService.getMenuOptionFreeProfessionalTrainer()
                   : this.menuService.getMenuOptionAllFreeProfessional();
+        } else {
+          this.menuOptions = this.menuService.getMenuOptionAllFreeProfessional();
         }
       } else {
         console.error('freeProfessionals is not an array:', freeProfessionals);

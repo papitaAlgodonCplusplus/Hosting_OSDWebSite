@@ -311,9 +311,21 @@ app.post('/api/events/processOSDEvent', async (req, res) => {
       case 'DeleteProject':
         await handleDeleteProject(event, res);
         break;
-      
+
       case 'DeletePerformance':
         await handleDeletePerformance(event, res);
+        break;
+
+      case 'GetServiceRequests':
+        await handleGetServiceRequests(event, res);
+        break;
+
+      case 'CreateServiceRequest':
+        await handleCreateServiceRequest(event, res);
+        break;
+
+      case 'UpdateServiceRequest':
+        await handleUpdateServiceRequest(event, res);
         break;
 
       default:
@@ -433,6 +445,17 @@ const handleUserLogin = async (event, res) => {
           isadmin: user.isadmin,
           AccountType: user.account_type,
           FreeProfessionalTypeID: user.free_professional_type_id,
+          osdSolutionType: user.osdsolutiontype,
+          numClientes: user.numclientes,
+          numEmpleados: user.numempleados,
+          numProveedores: user.numproveedores,
+          numDepartamentos: user.numdepartamentos,
+          identificacionDepartamentos: user.identificaciondepartamentos,
+          numQuejasReclamaciones: user.numquejasreclamaciones,
+          numProcedimientos: user.numprocedimientos,
+          ingresosAnual: user.ingresosanual,
+          gastosAnual: user.gastosanual,
+          assignedTrainer: user.assignedtrainer,
         },
       },
       sessionKey,
@@ -775,6 +798,7 @@ const handleGetTransparencyReportsSubscriberClients = async (event, res) => {
       cf.solution_appeal,
       cf.solution,
       cf.solution_complaint,
+      cf.time_taken,
       u.id AS user_id,
       u.code AS user_code,
       u.accounttype AS user_accounttype,
@@ -1049,7 +1073,12 @@ const handleGetUserById = async (event, res) => {
 
 
     const userQuery = await pool.query(
-      `SELECT id, code, accounttype, identity, name, firstsurname, middlesurname, city, companyname, address, zipcode, country, landline, mobilephone, email, password, web, isauthorized, isadmin FROM osduser WHERE id = $1`,
+      `SELECT id, code, accounttype, identity, name, firstsurname, middlesurname, city,
+          companyname, address, zipcode, country, landline, mobilephone, email, password, web,
+          isauthorized, isadmin, offering_type, refeer, can_be_claimed, 
+          osdSolutionType, numClientes, numEmpleados, numProveedores, numDepartamentos, 
+          identificacionDepartamentos, numQuejasReclamaciones, numProcedimientos, 
+          ingresosAnual, gastosAnual, assignedtrainer FROM osduser WHERE id = $1`,
       [userId]
     );
 
@@ -1945,7 +1974,7 @@ const handleUpdateClaim = async (event, res) => {
       'serviceprovided', 'facts', 'amountclaimed', 'documentfile1id', 'documentfile1name',
       'documentfile2id', 'documentfile2name', 'creditingdate', 'amountpaid', 'improvementsavings',
       'valuationsubscriber', 'valuationclaimant', 'valuationfreeprofessionals', 'valuationfc', 'processor_id',
-      'complaint', 'appeal', 'solution_suggestion', 'solution_appeal', 'answer_to_appeal', 'solution', 'solution_complaint'
+      'complaint', 'appeal', 'solution_suggestion', 'solution_appeal', 'answer_to_appeal', 'solution', 'solution_complaint', 'time_taken'
     ];
 
     fieldsToUpdate.forEach(field => {
@@ -2199,6 +2228,7 @@ const handleUpdatePerformanceUpdate = async (event, res) => {
       appeal: 'appeal',
       complaint: 'complaint',
       solutionAppeal: 'solution_appeal',
+      timeTaken: 'time_taken',
       answer_to_appeal: 'answer_to_appeal',
       solution: 'solution',
       solutionComplaint: 'solution_complaint'
@@ -2323,9 +2353,10 @@ const handleAddPerformanceUpdate = async (event, res) => {
     solution,
     solution_complaint,
     solution_appeal,
+    time_taken,
     userid
   ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25
   ) RETURNING *;
 `;
 
@@ -2375,6 +2406,7 @@ const handleAddPerformanceUpdate = async (event, res) => {
       performanceData.solution || existingPerformance.solution || '',
       performanceData.solutionComplaint || existingPerformance.solutionComplaint || '',
       performanceData.solutionAppeal || existingPerformance.solutionAppeal || '',
+      performanceData.timeTaken || existingPerformance.timeTaken || '',
       performanceData.userid || existingPerformance.userid || ''
     ]);
 
@@ -2396,7 +2428,8 @@ const handleAddPerformanceUpdate = async (event, res) => {
         answer_to_appeal = COALESCE($10, answer_to_appeal),
         solution = COALESCE($11, solution),
         solution_complaint = COALESCE($12, solution_complaint),
-        solution_appeal = COALESCE($13, solution_appeal)
+        solution_appeal = COALESCE($13, solution_appeal),
+        time_taken = COALESCE($14, time_taken)
       WHERE id = $5
       RETURNING *;
     `;
@@ -2414,7 +2447,8 @@ const handleAddPerformanceUpdate = async (event, res) => {
       performanceData.answer_to_appeal || null,
       performanceData.solution || null,
       performanceData.solutionComplaint || null,
-      performanceData.solutionAppeal || null
+      performanceData.solutionAppeal || null,
+      performanceData.timeTaken || null
     ]);
 
     console.log('✅ claim_file updated successfully:', updateResult.rows[0]);
@@ -3083,10 +3117,14 @@ const handleUserRegistration = async (event, res) => {
         INSERT INTO osduser (
           id, code, accounttype, identity, name, firstsurname, middlesurname, city,
           companyname, address, zipcode, country, landline, mobilephone, email, password, web,
-          isauthorized, isadmin, offering_type, refeer, can_be_claimed
+          isauthorized, isadmin, offering_type, refeer, can_be_claimed, 
+          osdSolutionType, numClientes, numEmpleados, numProveedores, numDepartamentos, 
+          identificacionDepartamentos, numQuejasReclamaciones, numProcedimientos, 
+          ingresosAnual, gastosAnual, bankAccount
         ) VALUES (
           $1, $2, $3, $4, $5, $6, $7, $8,
-          $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22
+          $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, 
+          $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33
         )
         RETURNING id;
       `;
@@ -3113,7 +3151,18 @@ const handleUserRegistration = async (event, res) => {
         false,
         accountForm.cfhOffer,
         referId || null,
-        accountForm.clientCanBeClaimed === 'Yes'
+        accountForm.clientCanBeClaimed === 'Yes',
+        personalForm.osdSolutionType || null,
+        personalForm.numClientes || null,
+        personalForm.numEmpleados || null,
+        personalForm.numProveedores || null,
+        personalForm.numDepartamentos || null,
+        personalForm.identificacionDepartamentos || null,
+        personalForm.numQuejasReclamaciones || null,
+        personalForm.numProcedimientos || null,
+        personalForm.ingresosAnual || null,
+        personalForm.gastosAnual || null,
+        personalForm.bankAccount || null
       ]);
 
       if (accountTypeId === '8e539a42-4108-4be6-8f77-2d16671d1069') {
@@ -3412,6 +3461,137 @@ const handleGetUsers = async (event, res) => {
       GET_USERS_SUCCESS: false,
       GET_USERS_MESSAGE: 'Server error fetching users.',
     }, event.SessionKey, event.SecurityToken, 'GetUsers'));
+  }
+};
+
+const handleUpdateServiceRequest = async (event, res) => {
+  try {
+    console.log('📥 Received event in handleUpdateServiceRequest', event);
+    const requestId = event.Body?.Request?.id;
+
+    if (!requestId) {
+      return res.status(400).json(createWebBaseEvent({
+        UPDATE_SERVICE_REQUEST_SUCCESS: false,
+        UPDATE_SERVICE_REQUEST_MESSAGE: 'Request ID is required.',
+      }, event.SessionKey, event.SecurityToken, 'UpdateServiceRequest'));
+    }
+
+    const fields = [];
+    const values = [];
+    let index = 1;
+
+    for (const [key, value] of Object.entries(event.Body?.Request)) {
+      if (key !== 'id') {
+        fields.push(`${key.replace(/([A-Z])/g, '_$1').toLowerCase()} = $${index}`);
+        values.push(value);
+        index++;
+      }
+    }
+
+    if (fields.length === 0) {
+      return res.status(400).json(createWebBaseEvent({
+        UPDATE_SERVICE_REQUEST_SUCCESS: false,
+        UPDATE_SERVICE_REQUEST_MESSAGE: 'No fields to update.',
+      }, event.SessionKey, event.SecurityToken, 'UpdateServiceRequest'));
+    }
+
+    values.push(requestId);
+
+    const updateQuery = `
+      UPDATE services
+      SET ${fields.join(', ')}
+      WHERE id = $${index}
+      RETURNING *;
+    `;
+
+    const updateResult = await pool.query(updateQuery, values);
+
+    if (updateResult.rows.length === 0) {
+      return res.status(404).json(createWebBaseEvent({
+        UPDATE_SERVICE_REQUEST_SUCCESS: false,
+        UPDATE_SERVICE_REQUEST_MESSAGE: 'Service request not found.',
+      }, event.SessionKey, event.SecurityToken, 'UpdateServiceRequest'));
+    }
+
+    return res.status(200).json(createWebBaseEvent({
+      UPDATE_SERVICE_REQUEST_SUCCESS: true,
+      serviceRequest: updateResult.rows[0]
+    }, event.SessionKey, event.SecurityToken, 'UpdateServiceRequest'));
+
+  } catch (error) {
+    console.error('❌ Error updating service request:', error);
+    return res.status(500).json(createWebBaseEvent({
+      UPDATE_SERVICE_REQUEST_SUCCESS: false,
+      UPDATE_SERVICE_REQUEST_MESSAGE: 'Server error updating service request.',
+    }, event.SessionKey, event.SecurityToken, 'UpdateServiceRequest'));
+  }
+};
+
+const handleCreateServiceRequest = async (event, res) => {
+  console.log('📥 Received event in handleCreateServiceRequest: ', event);
+
+  try {
+    const {
+      clientId,
+      serviceType,
+      additionalInfo,
+      appeal,
+      documentId,
+      createdAt,
+      meetingLink,
+      response,
+      answerToAppeal
+    } = event.Body.Request;
+
+    const insertQuery = `
+      INSERT INTO services (
+        id, client_id, service_type, additional_info, meeting_link, document_id, response, appeal, answer_to_appeal, created_at, updated_at
+      ) VALUES (
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
+      ) RETURNING *;
+    `;
+
+    const result = await pool.query(insertQuery, [
+      uuidv4(),
+      clientId,
+      serviceType,
+      additionalInfo,
+      meetingLink,
+      documentId,
+      response,
+      appeal,
+      answerToAppeal,
+      createdAt,
+      new Date().toISOString()
+    ]);
+
+    return res.status(200).json(createWebBaseEvent({
+      CREATE_SERVICE_REQUEST_SUCCESS: true,
+      serviceRequest: result.rows[0]
+    }, event.SessionKey, event.SecurityToken, 'CreateServiceRequest'));
+
+  } catch (error) {
+    console.error('❌ Error creating service request:', error);
+    return res.status(500).json(createWebBaseEvent({
+      CREATE_SERVICE_REQUEST_SUCCESS: false,
+      CREATE_SERVICE_REQUEST_MESSAGE: 'Server error creating service request.'
+    }, event.SessionKey, event.SecurityToken, 'CreateServiceRequest'));
+  }
+};
+
+const handleGetServiceRequests = async (event, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM services');
+    res.status(200).json(createWebBaseEvent({
+      GET_SERVICE_REQUESTS_SUCCESS: true,
+      services: result.rows
+    }, event.SessionKey, event.SecurityToken, 'GetServiceRequests'));
+  } catch (error) {
+    console.error('❌ Error fetching service requests:', error);
+    res.status(500).json(createWebBaseEvent({
+      GET_SERVICE_REQUESTS_SUCCESS: false,
+      GET_SERVICE_REQUESTS_MESSAGE: 'Server error fetching service requests.',
+    }, event.SessionKey, event.SecurityToken, 'GetServiceRequests'));
   }
 };
 

@@ -1,5 +1,7 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
+import { MatFormFieldModule } from '@angular/material/form-field';  // <-- Material form field
+import { MatInputModule } from '@angular/material/input';  // <-- Material input
 import { FunctionsRoutingModule } from './functions-routing.module';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { AutorizationPlComponent } from './pages/autorization-pl/autorization-pl.component';
@@ -29,6 +31,7 @@ import { AccountingComponent } from './pages/accounting/accounting.component';
 import { FpManagementComponent } from './pages/fp-management/fp-management.component'; // Import the new component
 import { UsersManagementComponent } from './pages/users-management/users-record.component';
 import { ClaimsManagementComponent } from './pages/claims-management/claims-management.component';
+import { ServicesManagementComponent } from './pages/services-management/services-management.component';
 
 
 @NgModule({
@@ -46,6 +49,7 @@ import { ClaimsManagementComponent } from './pages/claims-management/claims-mana
     AssignClientToTrainerComponent,
     UsersManagementComponent,
     AccountingServicesComponent,
+    ServicesManagementComponent,
     ClaimantAndClaimsCustomerPerformanceComponent,
     ClaimsTrainerPerformanceComponent,
     ClaimsProcessorPerformanceComponent,
@@ -63,6 +67,9 @@ import { ClaimsManagementComponent } from './pages/claims-management/claims-mana
     FormsModule,
     TranslateModule,
     MatPaginatorModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
     ReactiveFormsModule,  // ✅ Already imported, correct
     MatSnackBarModule  // ✅ Already imported, correct
   ],

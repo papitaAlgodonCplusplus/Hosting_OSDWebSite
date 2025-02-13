@@ -1,0 +1,231 @@
+<div *ngIf="isSolutionsClient || isTrainer; else noClient" class="container mx-auto p-4">
+  <h1 class="text-2xl font-bold mb-4">Service Management</h1>
+
+  <!-- Solutions Client: New Service Request Form -->
+  <div *ngIf="isSolutionsClient">
+    <form [formGroup]="serviceForm" (ngSubmit)="onSubmit()" class="mb-6 border p-4 rounded">
+      <h2 class="text-xl font-semibold mb-2">New Service Request</h2>
+
+      <!-- Service Type Dropdown -->
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-1">Select Service Type</label>
+        <select formControlName="serviceType" class="w-full p-2 border rounded">
+          <option value="" disabled>Select a service type</option>
+          <option *ngFor="let type of serviceTypes" [value]="type">{{ type }}</option>
+        </select>
+      </div>
+
+      <!-- Additional Information Textarea -->
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-1">Additional Information</label>
+        <textarea formControlName="additionalInfo" class="w-full p-2 border rounded" placeholder="Enter additional info"></textarea>
+      </div>
+
+      <!-- File Upload (Document) -->
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-1">Upload Document (optional)</label>
+        <shared-uploadfile [isModified]="false" [uploadFile]="uploadFile" [fileId]="''" [fileName]="''"
+          formControlName="document" id="serviceDocument1" [formGroup]="serviceForm" label="documento1"
+          fieldName="document" (fileUploaded)="handleFileUploaded($event)"></shared-uploadfile>
+      </div>
+
+      <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Submit Service Request</button>
+    </form>
+
+    <!-- Solutions Client: Read-only table of their requests -->
+    <h2 class="text-xl font-bold mb-2">Your Service Requests</h2>
+    <table class="min-w-full bg-white border">
+      <thead>
+        <tr class="bg-gray-200">
+          <th class="py-2 border px-4">Created At</th>
+          <th class="py-2 border px-4">Updated At</th>
+          <th class="py-2 border px-4">Service Type</th>
+          <th class="py-2 border px-4">Additional Info</th>
+          <th class="py-2 border px-4">Response</th>
+          <th class="py-2 border px-4">Document</th>
+          <th class="py-2 border px-4">Appeal</th>
+          <th class="py-2 border px-4">Answer to Appeal</th>
+          <th class="py-2 border px-4">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let request of serviceRequests" class="text-center">
+          <td class="py-2 border px-4">{{ request.createdAt | date:'short' }}</td>
+          <td class="py-2 border px-4">{{ request.updatedAt | date:'short' }}</td>
+          <td class="py-2 border px-4">{{ request.serviceType }}</td>
+          <!-- Additional Info Column -->
+          <td class="py-2 border px-4">
+            <ng-container *ngIf="request.additionalInfo && request.additionalInfo.length > 20; else infoText">
+              <button (click)="openViewPopup('Additional Information', request.additionalInfo)" class="px-2 py-1 bg-gray-500 text-white rounded">View</button>
+            </ng-container>
+            <ng-template #infoText>
+              {{ request.additionalInfo || 'N/A' }}
+            </ng-template>
+          </td>
+          <!-- Response Column -->
+          <td class="py-2 border px-4">
+            <ng-container *ngIf="request.response && request.response.length > 20; else responseText">
+              <button (click)="openViewPopup('Response', request.response)" class="px-2 py-1 bg-gray-500 text-white rounded">View</button>
+            </ng-container>
+            <ng-template #responseText>
+              {{ request.response ? request.response : 'No Response' }}
+            </ng-template>
+          </td>
+          <!-- Document Column -->
+          <td class="py-2 border px-4">
+            <button *ngIf="request.documentId" (click)="downloadSelectedFile(request.documentId)" class="px-2 py-1 bg-indigo-500 text-white rounded">Download Document</button>
+            <span *ngIf="!request.documentId">No Document</span>
+          </td>
+          <!-- Appeal Column -->
+          <td class="py-2 border px-4">
+            <ng-container *ngIf="request.appeal && request.appeal.length > 20; else appealText">
+              <button (click)="openViewPopup('Appeal', request.appeal)" class="px-2 py-1 bg-gray-500 text-white rounded">View</button>
+            </ng-container>
+            <ng-template #appealText>
+              {{ request.appeal ? request.appeal : 'No Appeal' }}
+            </ng-template>
+          </td>
+          <!-- Answer to Appeal Column -->
+          <td class="py-2 border px-4">
+            <ng-container *ngIf="request.answerToAppeal && request.answerToAppeal.length > 20; else answerText">
+              <button (click)="openViewPopup('Answer to Appeal', request.answerToAppeal)" class="px-2 py-1 bg-gray-500 text-white rounded">View</button>
+            </ng-container>
+            <ng-template #answerText>
+              {{ request.answerToAppeal ? request.answerToAppeal : 'No Answer' }}
+            </ng-template>
+          </td>
+          <!-- Actions Column -->
+          <td class="py-2 border px-4">
+            <button (click)="updateInfo(request)" class="px-2 py-1 bg-blue-500 text-white rounded">
+              {{ request.additionalInfo ? 'Edit Info' : 'Add Info' }}
+            </button>
+            <button (click)="updateAppeal(request)" class="ml-2 px-2 py-1 bg-yellow-500 text-white rounded">
+              {{ request.appeal ? 'Edit Appeal' : 'Appeal' }}
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Trainer: Table of all service requests with action buttons -->
+  <div *ngIf="isTrainer">
+    <h2 class="text-xl font-bold mb-2">Service Requests</h2>
+    <table class="min-w-full bg-white border">
+      <thead>
+        <tr class="bg-gray-200">
+          <th class="py-2 border px-4">Created At</th>
+          <th class="py-2 border px-4">Updated At</th>
+          <th class="py-2 border px-4">Client Name</th>
+          <th class="py-2 border px-4">Service Type</th>
+          <th class="py-2 border px-4">Additional Info</th>
+          <th class="py-2 border px-4">Response</th>
+          <th class="py-2 border px-4">Document</th>
+          <th class="py-2 border px-4">Appeal</th>
+          <th class="py-2 border px-4">Answer to Appeal</th>
+          <th class="py-2 border px-4">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let request of serviceRequests" class="text-center">
+          <td class="py-2 border px-4">{{ request.createdAt | date:'short' }}</td>
+          <td class="py-2 border px-4">{{ request.updatedAt | date:'short' }}</td>
+          <td class="py-2 border px-4">{{ clientName }}</td>
+          <td class="py-2 border px-4">{{ request.serviceType }}</td>
+          <!-- Additional Info Column -->
+          <td class="py-2 border px-4">
+            <ng-container *ngIf="request.additionalInfo && request.additionalInfo.length > 20; else trainerInfoText">
+              <button (click)="openViewPopup('Additional Info', request.additionalInfo)" class="px-2 py-1 bg-gray-500 text-white rounded">View</button>
+            </ng-container>
+            <ng-template #trainerInfoText>
+              {{ request.additionalInfo || 'N/A' }}
+            </ng-template>
+          </td>
+          <!-- Response Column -->
+          <td class="py-2 border px-4">
+            <ng-container *ngIf="request.response && request.response.length > 20; else trainerResponseText">
+              <button (click)="openViewPopup('Response', request.response)" class="px-2 py-1 bg-gray-500 text-white rounded">View</button>
+            </ng-container>
+            <ng-template #trainerResponseText>
+              {{ request.response ? request.response : 'No Response' }}
+            </ng-template>
+          </td>
+          <!-- Document Column -->
+          <td class="py-2 border px-4">
+            <button *ngIf="request.documentId" (click)="downloadSelectedFile(request.documentId)" class="px-2 py-1 bg-indigo-500 text-white rounded">Download</button>
+            <span *ngIf="!request.documentId">No Document</span>
+          </td>
+          <!-- Appeal Column -->
+          <td class="py-2 border px-4">
+            <ng-container *ngIf="request.appeal && request.appeal.length > 20; else trainerAppealText">
+              <button (click)="openViewPopup('Appeal', request.appeal)" class="px-2 py-1 bg-gray-500 text-white rounded">View</button>
+            </ng-container>
+            <ng-template #trainerAppealText>
+              {{ request.appeal ? request.appeal : 'No Appeal' }}
+            </ng-template>
+          </td>
+          <!-- Answer to Appeal Column -->
+          <td class="py-2 border px-4">
+            <ng-container *ngIf="request.answerToAppeal && request.answerToAppeal.length > 20; else trainerAnswerText">
+              <button (click)="openViewPopup('Answer to Appeal', request.answerToAppeal)" class="px-2 py-1 bg-gray-500 text-white rounded">View</button>
+            </ng-container>
+            <ng-template #trainerAnswerText>
+              {{ request.answerToAppeal ? request.answerToAppeal : 'No Answer' }}
+            </ng-template>
+          </td>
+          <!-- Actions Column -->
+          <td class="py-2 border px-4 flex flex-col items-center space-y-2">
+            <button (click)="updateResponse(request)" class="px-2 py-1 bg-green-500 text-white rounded">
+              {{ request.response ? 'Edit Response' : 'Respond' }}
+            </button>
+            <button *ngIf="isTrainer && request.appeal" (click)="updateAnswerToAppeal(request)" class="px-2 py-1 bg-orange-500 text-white rounded">
+              {{ request.answerToAppeal ? 'Edit Answer' : 'Answer Appeal' }}
+            </button>
+            <button *ngIf="!request.meetingLink" (click)="startVideoconference(request)" class="px-2 py-1 bg-blue-500 text-white rounded">
+              {{ request.meetingLink ? 'Edit Meeting Link' : 'Set Meeting Link' }}
+            </button>
+            <button (click)="updateInfo(request)" class="px-2 py-1 bg-yellow-500 text-white rounded">Add Info</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <button class="bottom-3 right-3 text-darkslategray bg-line p-2 rounded-xl w-20 mt-4" routerLink="/home">
+    {{'regresar' | translate }}
+  </button>
+</div>
+
+<!-- Fallback for when the user is neither a solutions client nor a trainer -->
+<ng-template #noClient>
+  <div class="flex items-center justify-center h-96 bg-gray-100 rounded-lg shadow-lg p-6 mb-4">
+    <span class="text-2xl font-bold text-gray-700">No solutions client assigned</span>
+  </div>
+  <button class="bottom-3 right-3 text-darkslategray bg-line p-2 rounded-xl w-20" routerLink="/home">
+    {{'regresar' | translate }}
+  </button>
+</ng-template>
+
+<!-- Inline Popup Modal for Updating Fields -->
+<div *ngIf="showPopup" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+  <div class="bg-white p-6 rounded shadow-lg w-80">
+    <h2 class="text-xl font-bold mb-4">{{ popupTitle }}</h2>
+    <p class="mb-2">{{ popupMessage }}</p>
+    <input type="text" [(ngModel)]="popupInput" class="w-full border p-2 rounded mb-4" />
+    <div class="flex justify-end">
+      <button (click)="cancelPopup()" class="mr-2 px-4 py-2 bg-gray-300 rounded">Cancel</button>
+      <button (click)="confirmPopup()" class="px-4 py-2 bg-blue-600 text-white rounded">OK</button>
+    </div>
+  </div>
+</div>
+
+<!-- Inline View Popup Modal for Displaying Content -->
+<div *ngIf="showViewPopup" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+  <div class="bg-white p-6 rounded shadow-lg max-w-4xl max-h-full overflow-auto">
+    <h2 class="text-xl font-bold mb-4">{{ viewPopupTitle }}</h2>
+    <p class="mb-4 whitespace-pre-wrap">{{ viewPopupContent }}</p>
+    <div class="flex justify-end">
+      <button (click)="closeViewPopup()" class="px-4 py-2 bg-blue-600 text-white rounded">Close</button>
+    </div>
+  </div>
+</div>

@@ -13,6 +13,7 @@ export class EventConstants {
   public static CLAIM: string = "Claim";
   public static PROJECT_ID: string = "ProjectId"; 
   public static EXPLANATION_TEXT: string = "ExplanationText";
+  public static REQUEST: string = "Request";
 
   public static DATE_PERFORMANCE: string = "DatePerformance";
   public static APPLICATION_IDENTIFIER: string = "ApplicationIdentifier";

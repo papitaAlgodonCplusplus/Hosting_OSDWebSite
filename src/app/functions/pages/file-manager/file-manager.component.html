@@ -161,6 +161,7 @@
               <option *ngIf="isUserProcessor" value="ask_for_more_info">{{ 'ask_for_more_info' | translate }}</option>
               <option *ngIf="isUserProcessor" value="solution_complaint">{{ 'solution_complaint' | translate }}</option>
               <option *ngIf="isUserProcessor" value="solution">{{ 'solution' | translate }}</option>
+              ç
             </select>
           </div>
 
@@ -194,9 +195,17 @@
             <label for="askForMoreInfo" class="font-semibold">Ask for more info</label>
           </div>
 
+          <!-- Time Taken Field for isUserProcessor or isTrainer -->
+          <div *ngIf="isUserProcessor || isTrainer" class="flex flex-col w-full">
+            <label for="timeTaken" class="font-semibold mb-1">{{ 'Time Taken' | translate }}</label>
+            <input formControlName="timeTaken" id="timeTaken" type="number" inputmode="numeric" pattern="[0-9]*"
+              class="border border-gray-300 rounded-md p-2"
+              [placeholder]="'Enter the time taken in minutes' | translate" />
+          </div>
+
           <!-- Document Fields in a Grid (for isUserProcessor) -->
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full"
-            *ngIf="['verification','ask_for_more_info','solution_complaint','solution','solution_suggestion','complaint','appeal','summary','answer_to_appeal','solution_appeal'].includes(selectedOption)">
+            *ngIf="['verification','ask_for_more_info','solution_complaint','solution','solution_suggestion','complaint','appeal','summary','answer_to_appeal', 'time_taken', 'solution_appeal'].includes(selectedOption)">
             <shared-uploadfile [isModified]="false" [uploadFile]="uploadFile" [fileId]="''" [fileName]="''"
               formControlName="document" id="performanceDocument1" [formGroup]="addUpdateForm" label="documento1"
               fieldName="document" (fileUploaded)="handleFileUploaded($event)"></shared-uploadfile>
@@ -268,7 +277,8 @@
           <div *ngIf="isUserProcessor && selectedOption === 'solution_complaint'" class="flex flex-col w-full">
             <label for="complaint" class="font-semibold mb-1">{{ 'complaint' | translate }}</label>
             <div class="flex items-start w-full">
-              <textarea formControlName="complaint" id="complaint" class="border border-gray-300 rounded-md p-2 h-32 w-full"
+              <textarea formControlName="complaint" id="complaint"
+                class="border border-gray-300 rounded-md p-2 h-32 w-full"
                 [placeholder]="this.claim?.complaint || 'None'" readonly></textarea>
               <button type="button"
                 class="ml-2 p-1 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors duration-200"
@@ -364,6 +374,7 @@
               <th class="w-[1rem] py-2">{{ 'Solution Complaint' | translate }}</th>
               <th class="w-[1rem] py-2">{{ 'Appeal' | translate }}</th>
               <th class="w-[1rem] py-2">{{ 'Solution Appeal' | translate }}</th>
+              <th class="w-[1rem] py-2">{{ 'Time Taken' | translate }}</th>
               <th class="w-[1rem] py-2">{{ 'Edit' | translate }}</th>
             </tr>
           </thead>
@@ -467,6 +478,9 @@
                   {{ performance.solution_appeal }}
                 </span>
               </td>
+
+              <!-- Time Taken column -->
+              <td class="w-[1rem] p-3">{{ performance.time_taken }}</td>
 
               <!-- Edit column: only show if performance.userid equals current user's Id -->
               <td class="w-[1rem] p-3" *ngIf="performance.userid === user.Id && canCloseClaim">

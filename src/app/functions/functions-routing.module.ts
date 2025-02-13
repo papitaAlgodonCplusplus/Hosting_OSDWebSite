@@ -21,6 +21,7 @@ import { FpManagementComponent } from './pages/fp-management/fp-management.compo
 import { LogsComponent } from './pages/logs/logs.component';
 import { UsersManagementComponent } from './pages/users-management/users-record.component';
 import { ClaimsManagementComponent } from './pages/claims-management/claims-management.component';
+import { ServicesManagementComponent } from './pages/services-management/services-management.component';
 
 const routes: Routes = [
   {
@@ -58,6 +59,10 @@ const routes: Routes = [
   {
     path: 'edit-my-info',
     component: UserProfileEditComponent
+  },
+  {
+    path: 'services-management',
+    component: ServicesManagementComponent
   },
   {
     path: 'accounting',

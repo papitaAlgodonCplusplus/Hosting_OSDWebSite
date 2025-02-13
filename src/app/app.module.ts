@@ -22,6 +22,9 @@ import { performanceReducers } from './store/reducers/performance.reducer';
 import { menuOptionsReducers } from './store/reducers/MenuOptions.reducer';
 import { metaReducers } from './store/store';
 import { reducers } from './store/reducers';
+import { FormsModule } from '@angular/forms';  // <-- for ngModel
+import { MatFormFieldModule } from '@angular/material/form-field';  // <-- Material form field
+import { MatInputModule } from '@angular/material/input';  // <-- Material input
 
 // ✅ Import ReactiveFormsModule
 import { ReactiveFormsModule } from '@angular/forms';
@@ -36,6 +39,9 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     BrowserModule,
     AppRoutingModule,
     SharedModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
     BrowserAnimationsModule,
     HttpClientModule,
     ReactiveFormsModule,  // ✅ Added ReactiveFormsModule

@@ -44,6 +44,7 @@ export class MenuService {
       this.createMenuOption('accounting', '/functions/accounting', 'fa-money-check-alt', 'bg-purple-500'),
       this.createMenuOption('administer_users', '/functions/students-management', 'fa-graduation-cap', 'bg-teal-500'),
       this.createMenuOption('edit_user_profile', '/functions/edit-my-info', 'fa-user-edit', 'bg-blue-500'),
+      this.createMenuOption('services_management', '/functions/services-management', 'fa-cogs', 'bg-red-500'),
     ];
   }
 
@@ -98,8 +99,9 @@ export class MenuService {
     } else {
       return [
       this.createMenuOption('transparent_project', '/project-manager', 'fa-project-diagram', 'bg-indigo-500'),
-      this.createMenuOption('file_claim', '/functions/claims-file', 'fa-file', 'bg-yellow-500'),
-      this.createMenuOption('edit_user_profile', '/functions/edit-my-info', 'fa-user-edit', 'bg-blue-500')
+      this.createMenuOption('edit_user_profile', '/functions/edit-my-info', 'fa-user-edit', 'bg-blue-500'),
+      this.createMenuOption('services_management', '/functions/services-management', 'fa-cogs', 'bg-red-500'),
+      this.createMenuOption('trainer_assigment', '/functions/assign-client-to-Trainer', 'fa-user', 'bg-orange-500')
       ];
     }
   }

@@ -94,7 +94,8 @@ export class FileManagerComponent implements OnInit, OnDestroy {
       complaint: [''],
       answer_to_appeal: [''],
       solution: [''],
-      userid: ['']
+      userid: [''],
+      timeTaken: [''],
     });
 
     // NEW: Finalize Form for user rating 0-5
@@ -321,6 +322,8 @@ export class FileManagerComponent implements OnInit, OnDestroy {
       const filetype = document ? document.split('.').pop() : null;
       const document2Type = document2 ? document2.split('.').pop() : null;
 
+      formData.timeTaken = formData.timeTaken + 'm';
+
       const payload = {
         ClaimId: this.claim.id,
         NewStatus: status,
@@ -342,7 +345,8 @@ export class FileManagerComponent implements OnInit, OnDestroy {
         solution: solution || null,
         solutionComplaint: formData.solutionComplaint || null,
         userid: this.user.Id || '0',
-        performanceId: this.editingPerformance?.id || null
+        performanceId: this.editingPerformance?.id || null,
+        timeTaken: formData.timeTaken || null
       };
 
       console.log("Add/Update payload", payload, "Is editing?", this.editingPerformance);
@@ -399,7 +403,8 @@ export class FileManagerComponent implements OnInit, OnDestroy {
       answer_to_appeal: performance.answer_to_appeal || '',
       solution: performance.solution || '',
       solutionComplaint: performance.solution_complaint || '',
-      userid: performance.userid || ''
+      userid: performance.userid || '',
+      timeTaken: performance.time_taken || ''
     });
 
     // Open the Add Update modal.
