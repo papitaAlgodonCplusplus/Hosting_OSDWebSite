@@ -5,6 +5,7 @@ export class EventAction {
   public static HANDLE_CONNECTION_INITIALIZED: string = "HandleConnectionInitialized";
   public static NOTIFY_SESSION_TERMINATED: string = "NotifySessionTerminated";
 
+  public static UPDATE_SERVICE_PERFORMANCE: string = "UpdateServicePerformance";
   public static GET_SERVICE_REQUESTS: string = "GetServiceRequests";
   public static SHOW_LOGIN_FAILURE: string = "ShowLoginFailure";
   public static GET_HORAS_REPORT: string = "GetHorasReport";
@@ -16,7 +17,9 @@ export class EventAction {
   public static DELETE_PROJECT: string = "DeleteProject";
   public static DELETE_PERFORMANCE: string = "DeletePerformance";
   public static CREATE_SERVICE_REQUEST: string = "CreateServiceRequest";
+  public static UPDATE_SERVICE: string = "UpdateService";
   public static UPDATE_SERVICE_REQUEST: string = "UpdateServiceRequest";
+  public static GET_PERFORMANCES_BY_SERVICE_ID: string = "GetPerformancesByServiceId";
 
   //#region OSD
   public static GET_OPERATING_PROCESSORS: string = "GetOperatingProcessors";

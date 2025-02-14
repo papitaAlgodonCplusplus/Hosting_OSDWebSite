@@ -45,6 +45,34 @@ export class EventFactoryService {
     return event;
   }
 
+  public CreateGetPerformancesByServiceIdEvent(serviceId: string): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.GET_PERFORMANCES_BY_SERVICE_ID;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    event.setBodyProperty(EventConstants.SERVICE_ID, serviceId);
+    return event;
+  }
+
+  public UpdateServiceEvent(request: any): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.UPDATE_SERVICE;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    event.setBodyProperty(EventConstants.REQUEST, request);
+    return event;
+  }
+
   public CreateDeleteClaimEvent(claimId: string): WebBaseEvent {
     let event: WebBaseEvent;
     event = new WebBaseEvent();
@@ -59,6 +87,20 @@ export class EventFactoryService {
     return event;
   }
 
+  public UpdateServicePerformanceEvent(payload: PayloadForm): WebBaseEvent {
+    let event: WebBaseEvent;
+    event = new WebBaseEvent();
+    event.SessionKey = this.authenticationService.sessionKey;
+    event.SecurityToken = "3746736473";
+    event.TraceIdentifier = Guid.create().toString();
+    event.Type = EventType.OSD;
+    event.Action = EventAction.UPDATE_SERVICE_PERFORMANCE;
+    event.Date = new Date().toUTCString();
+    event.ApplicationIdentifier = 'WebClient';
+    event.setBodyProperty(EventConstants.PAYLOAD, payload);
+    return event;
+  }
+  
   public CreateDeletePerformanceEvent(performanceId: string): WebBaseEvent {
     let event: WebBaseEvent;
     event = new WebBaseEvent();

@@ -90,6 +90,21 @@ export class OSDService {
     });
   }
 
+  public getPerformancesByServiceId(serviceId: string): Observable<any> {
+    const event: WebBaseEvent = this.eventFactoryService.CreateGetPerformancesByServiceIdEvent(serviceId);
+    return new Observable((observer) => {
+      this.restApiService.SendOSDEvent(event).subscribe({
+        next: (response) => {
+          observer.next(response);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
+
   public deletePerformance(performanceId: string): Observable<any> {
     const deletePerformanceEvent: WebBaseEvent = this.eventFactoryService.CreateDeletePerformanceEvent(performanceId);
     return new Observable((observer) => {
@@ -905,7 +920,37 @@ export class OSDService {
     }
   }
 
-  public updateServiceRequest(request: any): Observable<any> {
+  public updateService(request: any): Observable<any> {
+    const updateServiceEvent: WebBaseEvent = this.eventFactoryService.UpdateServiceEvent(request);
+    return new Observable((observer) => {
+      this.restApiService.SendOSDEvent(updateServiceEvent).subscribe({
+        next: (response) => {
+          observer.next(response);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
+
+  public updateServicePerformance(payload: any) {
+    const updateServicePerformanceEvent: WebBaseEvent = this.eventFactoryService.UpdateServicePerformanceEvent(payload);
+    return new Observable((observer) => {
+      this.restApiService.SendOSDEvent(updateServicePerformanceEvent).subscribe({
+        next: (response) => {
+          observer.next(response);
+          observer.complete();
+        },
+        error: (error) => {
+          observer.error(error);
+        }
+      });
+    });
+  }
+  
+  public addServicePerformance(request: any): Observable<any> {
     const updateServiceRequestEvent: WebBaseEvent = this.eventFactoryService.UpdateServiceRequestEvent(request);
     return new Observable((observer) => {
       this.restApiService.SendOSDEvent(updateServiceRequestEvent).subscribe({

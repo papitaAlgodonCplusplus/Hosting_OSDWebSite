@@ -328,6 +328,18 @@ app.post('/api/events/processOSDEvent', async (req, res) => {
         await handleUpdateServiceRequest(event, res);
         break;
 
+      case 'GetPerformancesByServiceId':
+        await handleGetPerformancesByServiceId(event, res);
+        break;
+
+      case 'UpdateServicePerformance':
+        await handleUpdateServicePerformance(event, res);
+        break;
+
+      case 'UpdateService':
+        await handleUpdateService(event, res);
+        break;
+
       default:
         res.status(400).json(createWebBaseEvent({
           SUCCESS: false,
@@ -3464,9 +3476,141 @@ const handleGetUsers = async (event, res) => {
   }
 };
 
-const handleUpdateServiceRequest = async (event, res) => {
+const handleUpdateServicePerformance = async (event, res) => {
   try {
-    console.log('📥 Received event in handleUpdateServiceRequest', event);
+    console.log('📥 Received event in handleUpdateServicePerformance', event);
+    const payload = event.Body?.Payload;
+    
+    if (!payload) {
+      return res.status(400).json(createWebBaseEvent({
+        UPDATE_SERVICE_PERFORMANCE_SUCCESS: false,
+        UPDATE_SERVICE_PERFORMANCE_MESSAGE: 'Payload is required.',
+      }, event.SessionKey, event.SecurityToken, 'UpdateServicePerformance'));
+    }
+    
+    // Generate a new id for insertion.
+    const newId = uuidv4();
+    
+    // Prepare values for each column.
+    // Use payload values (check both snake_case and camelCase) or default to null.
+    const client_id = payload.client_id || payload.clientId || null;
+    const service_id = payload.service_id || payload.id || null;
+    const additional_info = payload.additional_info || payload.additionalInfo || null;
+    const meeting_link = payload.meeting_link || payload.meetingLink || null;
+    const document_id = payload.document_id || payload.documentId || null;
+    const responseVal = payload.response || null;
+    const appeal = payload.appeal || null;
+    const answer_to_appeal = payload.answer_to_appeal || payload.answerToAppeal || null;
+    // For timestamps, use provided values or current time.
+    const created_at = payload.created_at || new Date().toISOString();
+    const updated_at = payload.updated_at || payload.updatedAt || new Date().toISOString();
+    const document2_id = payload.document2_id || payload.document2Id || null;
+    const document3_id = payload.document3_id || payload.document3Id || null;
+    const document_solution_1_id = payload.response_document1 || payload.document_solution_1_id || payload.document1_id || null;
+    const document_solution_2_id = payload.response_document2 || payload.document_solution_2_id ||  document2_id || null;
+    const document_solution_3_id = payload.response_document3 || payload.document_solution_3_id || document3_id || null;
+    
+    const insertQuery = `
+      INSERT INTO service_performance (
+        id, client_id, service_id, additional_info, meeting_link, document_id,
+        response, appeal, answer_to_appeal, created_at, updated_at,
+        document2_id, document3_id, document_solution_1_id, document_solution_2_id, document_solution_3_id
+      ) VALUES (
+        $1, $2, $3, $4, $5, $6,
+        $7, $8, $9, $10, $11,
+        $12, $13, $14, $15, $16
+      )
+      RETURNING *;
+    `;
+    
+    const values = [
+      newId,
+      client_id,
+      service_id,
+      additional_info,
+      meeting_link,
+      document_id,
+      responseVal,
+      appeal,
+      answer_to_appeal,
+      created_at,
+      updated_at,
+      document2_id,
+      document3_id,
+      document_solution_1_id,
+      document_solution_2_id,
+      document_solution_3_id
+    ];
+    
+    const insertResult = await pool.query(insertQuery, values);
+    console.log('✅ Service performance inserted successfully:', insertResult.rows[0]);
+    
+    if (insertResult.rowCount === 0) {
+      return res.status(404).json(createWebBaseEvent({
+        UPDATE_SERVICE_PERFORMANCE_SUCCESS: false,
+        UPDATE_SERVICE_PERFORMANCE_MESSAGE: 'Service performance not inserted.',
+      }, event.SessionKey, event.SecurityToken, 'UpdateServicePerformance'));
+    }
+    
+    return res.status(200).json(createWebBaseEvent({
+      UPDATE_SERVICE_PERFORMANCE_SUCCESS: true,
+      servicePerformance: insertResult.rows[0]
+    }, event.SessionKey, event.SecurityToken, 'UpdateServicePerformance'));
+    
+  } catch (error) {
+    console.error('❌ Error inserting service performance:', error);
+    return res.status(500).json(createWebBaseEvent({
+      UPDATE_SERVICE_PERFORMANCE_SUCCESS: false,
+      UPDATE_SERVICE_PERFORMANCE_MESSAGE: 'Server error inserting service performance.',
+    }, event.SessionKey, event.SecurityToken, 'UpdateServicePerformance'));
+  }
+};
+
+const handleGetPerformancesByServiceId = async (event, res) => {
+  try {
+    console.log('📥 Received event in handleGetPerformancesByServiceId', event);
+    const serviceId = event.Body?.ServiceId;
+
+    if (!serviceId) {
+      return res.status(400).json(createWebBaseEvent({
+        GET_PERFORMANCES_BY_SERVICE_ID_SUCCESS: false,
+        GET_PERFORMANCES_BY_SERVICE_ID_MESSAGE: 'Service ID is required.',
+      }, event.SessionKey, event.SecurityToken, 'GetPerformancesByServiceId'));
+    }
+
+    const query = `
+      SELECT *
+      FROM service_performance
+      WHERE service_id = $1
+    `;
+
+    const result = await pool.query(query, [serviceId]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json(createWebBaseEvent({
+        GET_PERFORMANCES_BY_SERVICE_ID_SUCCESS: false,
+        GET_PERFORMANCES_BY_SERVICE_ID_MESSAGE: 'No performances found for this service ID.',
+      }, event.SessionKey, event.SecurityToken, 'GetPerformancesByServiceId'));
+    }
+
+    return res.status(200).json(createWebBaseEvent({
+      GET_PERFORMANCES_BY_SERVICE_ID_SUCCESS: true,
+      performances: result.rows
+    }, event.SessionKey, event.SecurityToken, 'GetPerformancesByServiceId'));
+
+  } catch (error) {
+    console.error('❌ Error fetching performances by service ID:', error);
+
+    return res.status(500).json(createWebBaseEvent({
+      GET_PERFORMANCES_BY_SERVICE_ID_SUCCESS: false,
+      GET_PERFORMANCES_BY_SERVICE_ID_MESSAGE: 'Server error fetching performances by service ID.',
+    }, event.SessionKey, event.SecurityToken, 'GetPerformancesByServiceId'));
+  }
+};
+
+const handleUpdateService = async (event, res) => {
+  try {
+    console.log('📥 Received event in handleUpdateService', event);
     const requestId = event.Body?.Request?.id;
 
     if (!requestId) {
@@ -3505,6 +3649,7 @@ const handleUpdateServiceRequest = async (event, res) => {
     `;
 
     const updateResult = await pool.query(updateQuery, values);
+    console.log('✅ Service updated successfully:', updateResult.rows[0]);
 
     if (updateResult.rows.length === 0) {
       return res.status(404).json(createWebBaseEvent({
@@ -3518,6 +3663,97 @@ const handleUpdateServiceRequest = async (event, res) => {
       serviceRequest: updateResult.rows[0]
     }, event.SessionKey, event.SecurityToken, 'UpdateServiceRequest'));
 
+  } catch (error) {
+    console.error('❌ Error updating service request:', error);
+    return res.status(500).json(createWebBaseEvent({
+      UPDATE_SERVICE_REQUEST_SUCCESS: false,
+      UPDATE_SERVICE_REQUEST_MESSAGE: 'Server error updating service request.',
+    }, event.SessionKey, event.SecurityToken, 'UpdateServiceRequest'));
+  }
+};
+
+const handleUpdateServiceRequest = async (event, res) => {
+  try {
+    console.log('📥 Received event in handleUpdateServiceRequest', event);
+    const request = event.Body?.Request;
+    
+    // Ensure required fields are present.
+    if (!request || !request.id || !request.clientId) {
+      return res.status(400).json(createWebBaseEvent({
+        UPDATE_SERVICE_REQUEST_SUCCESS: false,
+        UPDATE_SERVICE_REQUEST_MESSAGE: 'Request ID and Client ID are required.',
+      }, event.SessionKey, event.SecurityToken, 'UpdateServiceRequest'));
+    }
+    
+    // Generate a new random id for the service_performance record.
+    const newId = uuidv4();
+    
+    // Extract values from the event, defaulting to null (or now() for dates)
+    const client_id = request.clientId;  // provided in the event
+    const service_id = request.id;          // the request's id serves as the service_id
+    const additional_info = request.additionalInfo || null;
+    const document_id = request.documentId || null;
+    const responseVal = request.response || null;
+    const created_at = request.createdAt ? new Date(request.createdAt) : new Date();
+    const updated_at = request.updatedAt ? new Date(request.updatedAt) : new Date();
+    const document2_id = request.documentId2 || null;
+    const document3_id = request.documentId3 || null;
+    const document_solution_1_id = request.documentSolution1Id || null;
+    const document_solution_2_id = request.documentSolution2Id || null;
+    const document_solution_3_id = request.documentSolution3Id || null;
+    
+    // Build the values array in the exact order of the columns.
+    const values = [
+      newId,
+      client_id,
+      service_id,
+      additional_info,
+      document_id,
+      responseVal,
+      created_at,
+      updated_at,
+      document2_id,
+      document3_id,
+      document_solution_1_id,
+      document_solution_2_id,
+      document_solution_3_id
+    ];
+    
+    const insertQuery = `
+      INSERT INTO service_performance (
+        id,
+        client_id,
+        service_id,
+        additional_info,
+        document_id,
+        response,
+        created_at,
+        updated_at,
+        document2_id,
+        document3_id,
+        document_solution_1_id,
+        document_solution_2_id,
+        document_solution_3_id
+      ) VALUES (
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
+      ) RETURNING *;
+    `;
+    
+    const result = await pool.query(insertQuery, values);
+    console.log('✅ Service request updated successfully:', result.rows[0]);
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json(createWebBaseEvent({
+        UPDATE_SERVICE_REQUEST_SUCCESS: false,
+        UPDATE_SERVICE_REQUEST_MESSAGE: 'Service request not found.',
+      }, event.SessionKey, event.SecurityToken, 'UpdateServiceRequest'));
+    }
+    
+    return res.status(200).json(createWebBaseEvent({
+      UPDATE_SERVICE_REQUEST_SUCCESS: true,
+      serviceRequest: result.rows[0]
+    }, event.SessionKey, event.SecurityToken, 'UpdateServiceRequest'));
+    
   } catch (error) {
     console.error('❌ Error updating service request:', error);
     return res.status(500).json(createWebBaseEvent({

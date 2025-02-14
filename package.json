@@ -11,7 +11,7 @@
     "serve:ssr": "node dist/osdcwebapp/server/main.js",
     "build:ssr": "ng build && ng run osdcwebapp:server",
     "prerender": "ng run osdcwebapp:prerender",
-    "start_all": "concurrently \"ng serve\" \"cd temp_backservice && node osd_backservice.js\" \"cd osd-backblaze-backend && node server.js\""
+    "start_all": "concurrently \"ng serve\" \"cd temp_backservice && nodemon osd_backservice.js\" \"cd osd-backblaze-backend && node server.js\""
   },
   "private": true,
   "dependencies": {

@@ -1,11 +1,13 @@
 <div *ngIf="isSolutionsClient || isTrainer; else noClient" class="container mx-auto p-4">
-  <h1 *ngIf="!isTrainer" class="text-2xl font-bold mb-4">{{ 'Service Management' | translate }}</h1>
+  <!-- Header: Only for non-trainers -->
+  <h1 *ngIf="!isTrainer" class="text-2xl font-bold mb-4">
+    {{ 'Service Management' | translate }}
+  </h1>
 
   <!-- Solutions Client: New Service Request Form -->
   <div *ngIf="isSolutionsClient">
-    <form [formGroup]="serviceForm" (ngSubmit)="onSubmit()" class="mb-6 border p-4 rounded">
+    <form [formGroup]="serviceForm" (ngSubmit)="onSubmit()" autocomplete="off" class="mb-6 border p-4 rounded">
       <h2 class="text-xl font-semibold mb-2">{{ 'New Service Request' | translate }}</h2>
-
       <!-- Service Type Dropdown -->
       <div class="mb-4">
         <label class="block text-gray-700 mb-1">{{ 'Select Service Type' | translate }}</label>
@@ -14,14 +16,12 @@
           <option *ngFor="let type of serviceTypes" [value]="type">{{ type }}</option>
         </select>
       </div>
-
       <!-- Additional Information Textarea -->
       <div class="mb-4">
         <label class="block text-gray-700 mb-1">{{ 'Additional Information' | translate }}</label>
         <textarea formControlName="additionalInfo" rows="10" class="w-full p-2 border rounded big-text-field"
           placeholder="{{ 'Enter additional info' | translate }}"></textarea>
       </div>
-
       <!-- File Upload (Document 1) -->
       <div class="mb-4">
         <label class="block text-gray-700 mb-1">{{ 'Upload Document (optional)' | translate }}</label>
@@ -30,7 +30,6 @@
           fieldName="document" (fileUploaded)="handleFileUploaded($event)">
         </shared-uploadfile>
       </div>
-
       <!-- File Upload (Document 2) -->
       <div class="mb-4">
         <label class="block text-gray-700 mb-1">{{ 'Upload Document 2 (optional)' | translate }}</label>
@@ -39,7 +38,6 @@
           fieldName="document2" (fileUploaded)="handleFileUploaded2($event)">
         </shared-uploadfile>
       </div>
-
       <!-- File Upload (Document 3) -->
       <div class="mb-4">
         <label class="block text-gray-700 mb-1">{{ 'Upload Document 3 (optional)' | translate }}</label>
@@ -48,55 +46,60 @@
           fieldName="document3" (fileUploaded)="handleFileUploaded3($event)">
         </shared-uploadfile>
       </div>
-
       <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">
         {{ 'Submit Service Request' | translate }}
       </button>
     </form>
+  </div>
 
-    <!-- Solutions Client: Read-only table of their requests -->
-    <h2 class="text-xl font-bold mb-2">{{ 'Your Service Requests' | translate }}</h2>
-    <table class="min-w-full bg-white border">
-      <thead>
-        <tr class="bg-gray-200">
-          <th class="py-2 border px-4">{{ 'Created At' | translate }}</th>
-          <th class="py-2 border px-4">{{ 'Updated At' | translate }}</th>
-          <th class="py-2 border px-4">{{ 'Service Type' | translate }}</th>
-          <th class="py-2 border px-4">{{ 'Additional Info' | translate }}</th>
-          <th class="py-2 border px-4">{{ 'Response' | translate }}</th>
-          <th class="py-2 border px-4">{{ 'Document' | translate }}</th>
-          <th class="py-2 border px-4">{{ 'Appeal' | translate }}</th>
-          <th class="py-2 border px-4">{{ 'Answer to Appeal' | translate }}</th>
-          <th class="py-2 border px-4">{{ 'Actions' | translate }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let request of serviceRequests" class="text-center">
+  <!-- Parent-Child Table for Service Requests (Common for both Clients and Trainers) -->
+  <h2 class="text-xl font-bold mb-2">{{ 'Service Requests' | translate }}</h2>
+  <table class="w-full bg-white border">
+    <thead>
+      <tr class="bg-gray-200">
+        <!-- Toggle column -->
+        <th class="py-2 border px-4"></th>
+        <th class="py-2 border px-4">{{ 'Created At' | translate }}</th>
+        <th class="py-2 border px-4">{{ 'Updated At' | translate }}</th>
+        <th class="py-2 border px-4">{{ 'Service Type' | translate }}</th>
+        <th class="py-2 border px-4">{{ 'Additional Info' | translate }}</th>
+        <th class="py-2 border px-4">{{ 'Document' | translate }}</th>
+        <th class="py-2 border px-4">{{ 'Actions' | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let request of serviceRequests">
+        <!-- Parent Row -->
+        <tr class="border-b">
+          <td class="py-2 px-4 text-center">
+            <button (click)="toggleChildren(request)" class="focus:outline-none">
+              <i class="fa" [ngClass]="request.expanded ? 'fa-arrow-down' : 'fa-arrow-right'"></i>
+            </button>
+          </td>
           <td class="py-2 border px-4">{{ request.createdAt | date:'short' }}</td>
           <td class="py-2 border px-4">{{ request.updatedAt | date:'short' }}</td>
-          <td class="py-2 border px-4">{{ request.serviceType }}</td>
-          <!-- Additional Info Column -->
+          <!-- Service Type Column with length check -->
           <td class="py-2 border px-4">
-            <ng-container *ngIf="request.additionalInfo && request.additionalInfo.length > 20; else infoText">
+            <ng-container *ngIf="request.serviceType && request.serviceType.length > 30; else serviceTypeText">
+              <button (click)="openViewPopup('Service Type', request.serviceType)"
+                class="px-2 py-1 bg-gray-500 text-white rounded">
+                {{ 'View' | translate }}
+              </button>
+            </ng-container>
+            <ng-template #serviceTypeText>
+              {{ request.serviceType || ('N/A' | translate) }}
+            </ng-template>
+          </td>
+          <!-- Additional Info Column with length check -->
+          <td class="py-2 border px-4">
+            <ng-container *ngIf="request.additionalInfo && request.additionalInfo.length > 30; else addInfoText">
               <button (click)="openViewPopup('Additional Information', request.additionalInfo)"
                 class="px-2 py-1 bg-gray-500 text-white rounded">
                 {{ 'View' | translate }}
               </button>
             </ng-container>
-            <ng-template #infoText>
+            <ng-template #addInfoText>
               {{ request.additionalInfo || ('N/A' | translate) }}
-            </ng-template>
-          </td>
-          <!-- Response Column -->
-          <td class="py-2 border px-4">
-            <ng-container *ngIf="request.response && request.response.length > 20; else responseText">
-              <button (click)="openViewPopup('Response', request.response)"
-                class="px-2 py-1 bg-gray-500 text-white rounded">
-                {{ 'View' | translate }}
-              </button>
-            </ng-container>
-            <ng-template #responseText>
-              {{ request.response ? request.response : ('No Response' | translate) }}
             </ng-template>
           </td>
           <!-- Document Column -->
@@ -125,177 +128,142 @@
               </div>
             </div>
           </td>
-          <!-- Appeal Column -->
+          <!-- Parent Actions Column -->
           <td class="py-2 border px-4">
-            <ng-container *ngIf="request.appeal && request.appeal.length > 20; else appealText">
-              <button (click)="openViewPopup('Appeal', request.appeal)"
-                class="px-2 py-1 bg-gray-500 text-white rounded">
-                {{ 'View' | translate }}
-              </button>
-            </ng-container>
-            <ng-template #appealText>
-              {{ request.appeal ? request.appeal : ('No Appeal' | translate) }}
-            </ng-template>
-          </td>
-          <!-- Answer to Appeal Column -->
-          <td class="py-2 border px-4">
-            <ng-container *ngIf="request.answerToAppeal && request.answerToAppeal.length > 20; else answerText">
-              <button (click)="openViewPopup('Answer to Appeal', request.answerToAppeal)"
-                class="px-2 py-1 bg-gray-500 text-white rounded">
-                {{ 'View' | translate }}
-              </button>
-            </ng-container>
-            <ng-template #answerText>
-              {{ request.answerToAppeal ? request.answerToAppeal : ('No Answer' | translate) }}
-            </ng-template>
-          </td>
-          <!-- Actions Column -->
-          <td class="py-2 border px-4">
-            <div class="grid grid-cols-2 gap-2">
+            <ng-container *ngIf="isSolutionsClient; else trainerParentActions">
               <button (click)="updateInfo(request)" class="px-2 py-1 bg-blue-500 text-white rounded">
-                {{ request.additionalInfo ? ('Edit Info' | translate) : ('Add Info' | translate) }}
+                {{ 'Edit Additional Info' | translate }}
               </button>
-              <button (click)="updateAppeal(request)" class="px-2 py-1 bg-yellow-500 text-white rounded">
-                {{ request.appeal ? ('Edit Appeal' | translate) : ('Appeal' | translate) }}
-              </button>
-            </div>
+            </ng-container>
+            <ng-template #trainerParentActions>
+              <div class="grid grid-cols-2 gap-2">
+                <button (click)="updateResponse(request)" class="px-2 py-1 bg-green-500 text-white rounded">
+                  {{ request.response ? ('Edit Response' | translate) : ('Respond' | translate) }}
+                </button>
+                <button (click)="startVideoconference(request)" class="px-2 py-1 bg-blue-500 text-white rounded">
+                  {{ request.meetingLink ? ('Edit Meeting Link' | translate) : ('Set Meeting Link' | translate) }}
+                </button>
+              </div>
+            </ng-template>
           </td>
         </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- Trainer: Table of all service requests with action buttons -->
-  <div *ngIf="isTrainer">
-    <h2 class="text-xl font-bold mb-2 mt-4 relative left-[-120px]">{{ 'Service Requests' | translate }}</h2>
-    <table class="w-[120%] bg-white border relative left-[-120px]">
-      <thead>
-        <tr class="bg-gray-200">
-          <th class="py-2 border px-4">{{ 'Created At' | translate }}</th>
-          <th class="py-2 border px-4">{{ 'Updated At' | translate }}</th>
-          <th class="py-2 border px-4">{{ 'Client Name' | translate }}</th>
-          <th class="py-2 border px-4">{{ 'Service Type' | translate }}</th>
-          <th class="py-2 border px-4">{{ 'Additional Info' | translate }}</th>
-          <th class="py-2 border px-4">{{ 'Response' | translate }}</th>
-          <th class="py-2 border px-4">{{ 'Document' | translate }}</th>
-          <th class="py-2 border px-4">{{ 'Appeal' | translate }}</th>
-          <th class="py-2 border px-4">{{ 'Answer to Appeal' | translate }}</th>
-          <th class="py-2 border px-4">{{ 'Actions' | translate }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let request of serviceRequests" class="text-center">
-          <td class="py-2 border px-4">{{ request.createdAt | date:'short' }}</td>
-          <td class="py-2 border px-4">{{ request.updatedAt | date:'short' }}</td>
-          <td class="py-2 border px-4">{{ clientName }}</td>
-          <td class="py-2 border px-4">{{ request.serviceType }}</td>
-          <!-- Additional Info Column -->
-          <td class="py-2 border px-4">
-            <ng-container *ngIf="request.additionalInfo && request.additionalInfo.length > 20; else trainerInfoText">
-              <button (click)="openViewPopup('Additional Info', request.additionalInfo)"
-                class="px-2 py-1 bg-gray-500 text-white rounded">
-                {{ 'View' | translate }}
-              </button>
-            </ng-container>
-            <ng-template #trainerInfoText>
-              {{ request.additionalInfo || ('N/A' | translate) }}
-            </ng-template>
-          </td>
-          <!-- Response Column -->
-          <td class="py-2 border px-4">
-            <ng-container *ngIf="request.response && request.response.length > 20; else trainerResponseText">
-              <button (click)="openViewPopup('Response', request.response)"
-                class="px-2 py-1 bg-gray-500 text-white rounded">
-                {{ 'View' | translate }}
-              </button>
-            </ng-container>
-            <ng-template #trainerResponseText>
-              {{ request.response ? request.response : ('No Response' | translate) }}
-            </ng-template>
-          </td>
-          <!-- Document Column -->
-          <td class="py-2 border px-4">
-            <div class="grid grid-cols-3 gap-2">
-              <div>
-                <button *ngIf="request.documentId" (click)="downloadSelectedFile(request.documentId)"
-                  class="px-2 py-1 bg-indigo-500 text-white rounded">
-                  {{ 'Download Document' | translate }} 1
-                </button>
-                <span *ngIf="!request.documentId">{{ 'No Document' | translate }} 1</span>
-              </div>
-              <div>
-                <button *ngIf="request.document2_id" (click)="downloadSelectedFile(request.document2_id)"
-                  class="px-2 py-1 bg-indigo-500 text-white rounded">
-                  {{ 'Download Document' | translate }} 2
-                </button>
-                <span *ngIf="!request.document2_id">{{ 'No Document' | translate }} 2</span>
-              </div>
-              <div>
-                <button *ngIf="request.document3_id" (click)="downloadSelectedFile(request.document3_id)"
-                  class="px-2 py-1 bg-indigo-500 text-white rounded">
-                  {{ 'Download Document' | translate }} 3
-                </button>
-                <span *ngIf="!request.document3_id">{{ 'No Document' | translate }} 3</span>
-              </div>
-            </div>
-          </td>
-          <!-- Appeal Column -->
-          <td class="py-2 border px-4">
-            <ng-container *ngIf="request.appeal && request.appeal.length > 20; else trainerAppealText">
-              <button (click)="openViewPopup('Appeal', request.appeal)"
-                class="px-2 py-1 bg-gray-500 text-white rounded">
-                {{ 'View' | translate }}
-              </button>
-            </ng-container>
-            <ng-template #trainerAppealText>
-              {{ request.appeal ? request.appeal : ('No Appeal' | translate) }}
-            </ng-template>
-          </td>
-          <!-- Answer to Appeal Column -->
-          <td class="py-2 border px-4">
-            <ng-container *ngIf="request.answerToAppeal && request.answerToAppeal.length > 20; else trainerAnswerText">
-              <button (click)="openViewPopup('Answer to Appeal', request.answerToAppeal)"
-                class="px-2 py-1 bg-gray-500 text-white rounded">
-                {{ 'View' | translate }}
-              </button>
-            </ng-container>
-            <ng-template #trainerAnswerText>
-              {{ request.answerToAppeal ? request.answerToAppeal : ('No Answer' | translate) }}
-            </ng-template>
-          </td>
-          <!-- Actions Column -->
-          <td class="py-2 border px-4">
-            <div class="grid grid-cols-4 gap-2">
-              <button (click)="updateResponse(request)" class="px-2 py-1 bg-green-500 text-white rounded">
-                {{ request.response ? ('Edit Response' | translate) : ('Respond' | translate) }}
-              </button>
-              <button *ngIf="isTrainer && request.appeal" (click)="updateAnswerToAppeal(request)"
-                class="px-2 py-1 bg-orange-500 text-white rounded">
-                {{ request.answerToAppeal ? ('Edit Answer' | translate) : ('Answer Appeal' | translate) }}
-              </button>
-              <button *ngIf="!request.meetingLink" (click)="startVideoconference(request)"
-                class="px-2 py-1 bg-blue-500 text-white rounded">
-                {{ request.meetingLink ? ('Edit Meeting Link' | translate) : ('Set Meeting Link' | translate) }}
-              </button>
-              <button (click)="updateInfo(request)" class="px-2 py-1 bg-yellow-500 text-white rounded">
-                {{ 'Add Info' | translate }}
-              </button>
-            </div>
+        <!-- Child Rows: Shown if expanded -->
+        <tr *ngIf="request.expanded" class="bg-gray-50">
+          <td colspan="7" class="p-2">
+            <table class="w-full border border-dotted border-gray-400">
+              <thead>
+                <tr class="bg-gray-100 text-sm" *ngIf="isSolutionsClient; else trainerChildHeader">
+                  <th class="py-1 border px-2">{{ 'Response' | translate }}</th>
+                  <th class="py-1 border px-2">{{ 'Documents' | translate }}</th>
+                  <th class="py-1 border px-2">{{ 'Appeal' | translate }}</th>
+                  <th class="py-1 border px-2">{{ 'Answer to Appeal' | translate }}</th>
+                  <th class="py-1 border px-2">{{ 'Actions' | translate }}</th>
+                </tr>
+                <ng-template #trainerChildHeader>
+                  <tr class="bg-gray-100 text-sm">
+                    <th class="py-1 border px-2">{{ 'Response' | translate }}</th>
+                    <th class="py-1 border px-2">{{ 'Documents' | translate }}</th>
+                    <th class="py-1 border px-2">{{ 'Appeal' | translate }}</th>
+                    <th class="py-1 border px-2">{{ 'Answer to Appeal' | translate }}</th>
+                    <th class="py-1 border px-2">{{ 'Actions' | translate }}</th>
+                  </tr>
+                </ng-template>
+              </thead>
+              <tbody>
+                <tr *ngFor="let performance of request.performances" class="text-xs">
+                  <!-- For each textual cell, if length > 30 show a View button -->
+                  <td class="py-1 border px-2">
+                    <ng-container *ngIf="performance.response && performance.response.length > 30; else perfResponse">
+                      <button (click)="openViewPopup('Response', performance.response)"
+                        class="px-2 py-1 bg-gray-500 text-white rounded">
+                        {{ 'View' | translate }}
+                      </button>
+                    </ng-container>
+                    <ng-template #perfResponse>
+                      {{ performance.response || ('N/A' | translate) }}
+                    </ng-template>
+                  </td>
+                  <td class="py-1 border px-2">
+                    <div class="grid grid-cols-2 gap-2">
+                      <div>
+                        <button *ngIf="performance.document_solution_1_id" (click)="downloadSelectedFile(performance.document_solution_1_id)"
+                          class="px-2 py-1 bg-indigo-500 text-white rounded">
+                          {{ 'Download Document' | translate }} 1
+                        </button>
+                        <span *ngIf="!performance.document_solution_1_id">{{ 'No Document' | translate }} 1</span>
+                      </div>
+                      <div>
+                        <button *ngIf="performance.document_solution_2_id"
+                          (click)="downloadSelectedFile(performance.document_solution_2_id)"
+                          class="px-2 py-1 bg-indigo-500 text-white rounded">
+                          {{ 'Download Document' | translate }} 2
+                        </button>
+                        <span *ngIf="!performance.document_solution_2_id">{{ 'No Document' | translate }} 2</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-1 border px-2">
+                    <ng-container *ngIf="performance.appeal && performance.appeal.length > 30; else perfAppeal">
+                      <button (click)="openViewPopup('Appeal', performance.appeal)"
+                        class="px-2 py-1 bg-gray-500 text-white rounded">
+                        {{ 'View' | translate }}
+                      </button>
+                    </ng-container>
+                    <ng-template #perfAppeal>
+                      {{ performance.appeal || ('N/A' | translate) }}
+                    </ng-template>
+                  </td>
+                  <td class="py-1 border px-2">
+                    <ng-container
+                      *ngIf="performance.answer_to_appeal && performance.answer_to_appeal.length > 30; else perfAnswer">
+                      <button (click)="openViewPopup('Answer to Appeal', performance.answer_to_appeal)"
+                        class="px-2 py-1 bg-gray-500 text-white rounded">
+                        {{ 'View' | translate }}
+                      </button>
+                    </ng-container>
+                    <ng-template #perfAnswer>
+                      {{ performance.answer_to_appeal || ('N/A' | translate) }}
+                    </ng-template>
+                  </td>
+                  <td class="py-1 border px-2">
+                    <ng-container *ngIf="isSolutionsClient; else trainerChildActions">
+                      <button (click)="updateAppeal(performance)" class="px-2 py-1 bg-yellow-500 text-white rounded">
+                        {{ performance.appeal ? ('Edit Appeal' | translate) : ('Appeal' | translate) }}
+                      </button>
+                    </ng-container>
+                    <ng-template #trainerChildActions>
+                      <div class="grid grid-cols-2 gap-2">
+                        <button (click)="updateResponse(performance)" class="px-2 py-1 bg-green-500 text-white rounded">
+                          {{ performance.response ? ('Edit Response' | translate) : ('Respond' | translate) }}
+                        </button>
+                        <button (click)="updateAnswerToAppeal(performance)"
+                          class="px-2 py-1 bg-orange-500 text-white rounded">
+                          {{ performance.answer_to_appeal ? ('Edit Answer' | translate) : ('Answer Appeal' | translate)
+                          }}
+                        </button>
+                      </div>
+                    </ng-template>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </td>
         </tr>
-      </tbody>
-    </table>
-  </div>
+      </ng-container>
+    </tbody>
+  </table>
 
   <button class="bottom-3 right-3 text-darkslategray bg-line p-2 rounded-xl w-20 mt-4" routerLink="/home">
     {{ 'regresar' | translate }}
   </button>
 </div>
 
-<!-- Fallback for when the user is neither a solutions client nor a trainer -->
+<!-- Fallback for non-clients/non-trainers -->
 <ng-template #noClient>
   <div class="flex items-center justify-center h-96 bg-gray-100 rounded-lg shadow-lg p-6 mb-4">
-    <span class="text-2xl font-bold text-gray-700">{{ 'No solutions client assigned' | translate }}</span>
+    <span class="text-2xl font-bold text-gray-700">
+      {{ 'No solutions client assigned' | translate }}
+    </span>
   </div>
   <button class="bottom-3 right-3 text-darkslategray bg-line p-2 rounded-xl w-20" routerLink="/home">
     {{ 'regresar' | translate }}
@@ -310,6 +278,27 @@
     <p class="mb-4">{{ popupMessage }}</p>
     <textarea [(ngModel)]="popupInput" class="w-full border p-4 rounded mb-4 big-input"
       style="min-height: 20rem; min-width: 40rem;"></textarea>
+    <!-- Additional file upload controls for response update -->
+    <div *ngIf="popupUpdateType === 'response'">
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-1">
+          {{ 'Upload Response Document 1 (optional)' | translate }}
+        </label>
+        <shared-uploadfile [isModified]="false" [uploadFile]="uploadFile" [fileId]="''" [fileName]="''"
+          formControlName="document1" id="serviceDocument1" [formGroup]="serviceForm" label="documento1"
+          fieldName="document1" (fileUploaded)="handlePopupResponseFile1($event)">
+        </shared-uploadfile>
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-1">
+          {{ 'Upload Response Document 2 (optional)' | translate }}
+        </label>
+        <shared-uploadfile [isModified]="false" [uploadFile]="uploadFile" [fileId]="''" [fileName]="''"
+          formControlName="document2" id="serviceDocument1" [formGroup]="serviceForm" label="documento2"
+          fieldName="document2" (fileUploaded)="handlePopupResponseFile2($event)">
+        </shared-uploadfile>
+      </div>
+    </div>
     <div class="flex justify-end">
       <button (click)="cancelPopup()" class="mr-2 px-4 py-2 bg-gray-300 rounded">
         {{ 'Cancel' | translate }}

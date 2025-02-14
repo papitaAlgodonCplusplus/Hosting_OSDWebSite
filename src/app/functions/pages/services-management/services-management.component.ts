@@ -25,6 +25,9 @@ export interface ServiceRequest {
   answerToAppeal?: string;
   createdAt: Date;
   updatedAt?: Date;
+  // Parent-child properties:
+  expanded?: boolean;
+  performances?: any[]; // Ideally define a dedicated interface for performance records.
 }
 
 @Component({
@@ -43,21 +46,26 @@ export class ServicesManagementComponent implements OnInit {
   uploadFile: boolean = true;
   serviceTypes: string[] = ['Query simple', 'Sustainability report', 'Mediation arbitration'];
   user: any;
+  editingPerformance: any;
+  editingService: any;
 
-  // ----- Popup (modal) properties for editing/updating -----
+  // ----- Popup properties for editing/updating -----
   showPopup: boolean = false;
   popupTitle: string = '';
   popupMessage: string = '';
   popupInput: string = '';
   popupUpdateType: 'response' | 'answerToAppeal' | 'appeal' | 'meetingLink' | 'additionalInfo' | null = null;
   currentRequest: ServiceRequest | null = null;
-  // -------------------------------------
+  // Additional properties for response documents within the popup:
+  popupResponseFile1: string = '';
+  popupResponseFile2: string = '';
+  // ---------------------------------------------
 
   // ----- View Popup properties for read-only content -----
   showViewPopup: boolean = false;
   viewPopupTitle: string = '';
   viewPopupContent: string = '';
-  // -------------------------------------
+  // ---------------------------------------------
 
   constructor(
     private fb: FormBuilder,
@@ -67,7 +75,7 @@ export class ServicesManagementComponent implements OnInit {
     private backblazeService: BackblazeService,
     private store: Store
   ) {
-    // Note that we now add two extra fields: document2 and document3.
+    // Create the service form with three document fields.
     this.serviceForm = this.fb.group({
       serviceType: ['', Validators.required],
       additionalInfo: [''],
@@ -84,7 +92,9 @@ export class ServicesManagementComponent implements OnInit {
       }
       if (this.user.osdSolutionType) {
         this.serviceTypes = this.serviceTypes.filter(type =>
-          type.toLowerCase().includes(this.user.osdSolutionType.replace(/[€\d]/g, '').toLowerCase().trim())
+          type.toLowerCase().includes(
+            this.user.osdSolutionType.replace(/[€\d]/g, '').toLowerCase().trim()
+          )
         );
       }
       this.loadServiceRequests();
@@ -96,6 +106,7 @@ export class ServicesManagementComponent implements OnInit {
       next: async (data: any) => {
         const rawServices = data.Body?.services || [];
         console.log('rawServices', rawServices);
+        // Determine if the user is a trainer or a solutions client.
         await (async () => {
           let freeProfessionalId = '';
           await this.osdService.GetFreeProfessionalsDataEvent();
@@ -111,6 +122,7 @@ export class ServicesManagementComponent implements OnInit {
             this.isSolutionsClient = true;
           }
         })();
+        // Map raw services to ServiceRequest objects.
         if (this.isTrainer) {
           this.serviceRequests = rawServices.map((service: any) => ({
             id: service.id,
@@ -127,7 +139,9 @@ export class ServicesManagementComponent implements OnInit {
             appeal: service.appeal,
             answerToAppeal: service.answer_to_appeal,
             createdAt: new Date(service.created_at),
-            updatedAt: service.updated_at ? new Date(service.updated_at) : undefined
+            updatedAt: service.updated_at ? new Date(service.updated_at) : undefined,
+            expanded: false,
+            performances: []
           }));
         } else {
           this.serviceRequests = rawServices
@@ -140,46 +154,56 @@ export class ServicesManagementComponent implements OnInit {
               meetingLink: service.meeting_link,
               documentId: service.document_id,
               documentId2: service.document2_id,
-              documentId3: service.document_id3,
+              documentId3: service.document3_id,
               document2_id: service.document2_id,
               document3_id: service.document3_id,
               response: service.response,
               appeal: service.appeal,
               answerToAppeal: service.answer_to_appeal,
               createdAt: new Date(service.created_at),
-              updatedAt: service.updated_at ? new Date(service.updated_at) : undefined
+              updatedAt: service.updated_at ? new Date(service.updated_at) : undefined,
+              expanded: false,
+              performances: []
             }));
         }
         if (rawServices.length) {
           from(this.osdService.getUserByID(rawServices[0].client_id)).subscribe({
             next: (response: any) => {
               this.clientName = response.Body.user.name;
-            },
-            error: (err: any) => {
-              console.error('Error loading client data', err);
-              this.snackBar.open('Error loading client data', 'Close', { duration: 3000 });
             }
           });
         }
-      },
-      error: (err: any) => {
-        console.error('Error loading service requests', err);
-        this.snackBar.open('Error loading service requests', 'Close', { duration: 3000 });
       }
     });
   }
 
-  // Called when a file is successfully uploaded for document 1.
+  // Toggle child rows for a service request (parent row)
+  toggleChildren(request: ServiceRequest): void {
+    if (!request.expanded) {
+      // Fetch child performances for this service request.
+      this.osdService.getPerformancesByServiceId(request.id).subscribe(
+        (perfs: any) => {
+          console.log('Performances for service', perfs);
+          request.performances = perfs.Body.performances || [];
+          request.expanded = true;
+        },
+        error => {
+          console.error('Error fetching performances for service', request.id, error);
+          this.snackBar.open('Error fetching performance details', 'Close', { duration: 3000 });
+        }
+      );
+    } else {
+      request.expanded = false;
+    }
+  }
+
+  // File upload handlers for service form.
   handleFileUploaded(event: { typeFile: string, fileId: string }): void {
     this.serviceForm.patchValue({ document: event.fileId });
   }
-
-  // New: Handler for document 2 uploads.
   handleFileUploaded2(event: { typeFile: string, fileId: string }): void {
     this.serviceForm.patchValue({ document2: event.fileId });
   }
-
-  // New: Handler for document 3 uploads.
   handleFileUploaded3(event: { typeFile: string, fileId: string }): void {
     this.serviceForm.patchValue({ document3: event.fileId });
   }
@@ -202,7 +226,9 @@ export class ServicesManagementComponent implements OnInit {
       updatedAt: undefined,
       meetingLink: '',
       response: '',
-      answerToAppeal: ''
+      answerToAppeal: '',
+      expanded: false,
+      performances: []
     };
     this.createServiceRequest(newRequest);
   }
@@ -213,10 +239,6 @@ export class ServicesManagementComponent implements OnInit {
         this.store.dispatch(ModalActions.addAlertMessage({ alertMessage: 'Request submitted' }));
         this.store.dispatch(ModalActions.openAlert());
         this.loadServiceRequests();
-      },
-      error: (err: any) => {
-        console.error('Error creating service request', err);
-        this.snackBar.open('Failed to create service request', 'Close', { duration: 3000 });
       }
     });
   }
@@ -234,6 +256,9 @@ export class ServicesManagementComponent implements OnInit {
     this.popupMessage = message;
     this.popupInput = defaultValue;
     this.currentRequest = request;
+    // Clear any previous response file uploads (for response update)
+    this.popupResponseFile1 = '';
+    this.popupResponseFile2 = '';
     this.showPopup = true;
   }
 
@@ -242,6 +267,9 @@ export class ServicesManagementComponent implements OnInit {
       switch (this.popupUpdateType) {
         case 'response':
           this.currentRequest.response = this.popupInput;
+          // Attach the optional response document file IDs.
+          (this.currentRequest as any).response_document1 = this.popupResponseFile1 || null;
+          (this.currentRequest as any).response_document2 = this.popupResponseFile2 || null;
           break;
         case 'answerToAppeal':
           this.currentRequest.answerToAppeal = this.popupInput;
@@ -257,25 +285,41 @@ export class ServicesManagementComponent implements OnInit {
           break;
       }
       this.currentRequest.updatedAt = new Date();
-      this.osdService.updateServiceRequest(this.currentRequest).subscribe({
-        next: () => {
-          let msg = '';
-          switch (this.popupUpdateType) {
-            case 'response': msg = 'Response submitted'; break;
-            case 'answerToAppeal': msg = 'Answer to appeal submitted'; break;
-            case 'appeal': msg = 'Appeal updated'; break;
-            case 'meetingLink': msg = 'Videoconference link submitted'; break;
-            case 'additionalInfo': msg = 'Additional information submitted'; break;
+      if (this.editingService) {
+        const updatedRequest = { id: this.currentRequest.id, additionalInfo: this.currentRequest.additionalInfo };
+        this.osdService.updateService(updatedRequest).subscribe({
+          next: () => {
+            console.log('Service request updated');
+            this.snackBar.open('Service request updated', 'Close', { duration: 3000 });
+            this.loadServiceRequests();
           }
-          this.snackBar.open(msg, 'Close', { duration: 3000 });
-          this.loadServiceRequests();
-        },
-        error: (err: any) => {
-          console.error('Error updating request', err);
-          this.snackBar.open('Failed to update request', 'Close', { duration: 3000 });
-        }
-      });
+        });
+      } else if (this.editingPerformance != null) {
+        this.osdService.updateServicePerformance(this.editingPerformance).subscribe({
+          next: () => {
+            console.log('Performance updated');
+            this.snackBar.open('Performance updated', 'Close', { duration: 3000 });
+            this.loadServiceRequests();
+          }
+        });
+      } else {
+        this.osdService.addServicePerformance(this.currentRequest).subscribe({
+          next: () => {
+            let msg = '';
+            switch (this.popupUpdateType) {
+              case 'response': msg = 'Response submitted'; break;
+              case 'answerToAppeal': msg = 'Answer to appeal submitted'; break;
+              case 'appeal': msg = 'Appeal updated'; break;
+              case 'meetingLink': msg = 'Videoconference link submitted'; break;
+              case 'additionalInfo': msg = 'Additional information submitted'; break;
+            }
+            this.snackBar.open(msg, 'Close', { duration: 3000 });
+            this.loadServiceRequests();
+          }
+        });
+      }
     }
+    this.snackBar.open('Success', 'Close', { duration: 3000 });
     this.cancelPopup();
   }
 
@@ -284,6 +328,10 @@ export class ServicesManagementComponent implements OnInit {
     this.currentRequest = null;
     this.popupInput = '';
     this.popupUpdateType = null;
+    this.editingPerformance = null;
+    this.editingService = null;
+    this.popupResponseFile1 = '';
+    this.popupResponseFile2 = '';
   }
   // --------------------------
 
@@ -302,23 +350,41 @@ export class ServicesManagementComponent implements OnInit {
   // -------------------------------------------
 
   updateResponse(request: ServiceRequest): void {
+    this.editingPerformance = request;
     this.openPopup('response', 'Update Response', 'Enter your response for this request:', request.response || '', request);
   }
 
   updateAnswerToAppeal(request: ServiceRequest): void {
+    this.editingPerformance = request;
     this.openPopup('answerToAppeal', 'Update Answer to Appeal', 'Enter your answer to the appeal:', request.answerToAppeal || '', request);
   }
 
   updateInfo(request: ServiceRequest): void {
+    this.editingService = request;
     this.openPopup('additionalInfo', 'Update Additional Info', 'Enter additional information:', request.additionalInfo || '', request);
   }
 
   updateAppeal(request: ServiceRequest): void {
+    this.editingPerformance = request;
     this.openPopup('appeal', 'Update Appeal', 'Enter your appeal:', request.appeal || '', request);
   }
 
   startVideoconference(request: ServiceRequest): void {
     this.openPopup('meetingLink', 'Start Videoconference', 'Enter the videoconference link:', request.meetingLink || '', request);
+  }
+
+  // ----- New: Update performance (child row) -----
+  updatePerformance(performance: any): void {
+    this.editingPerformance = performance;
+    this.openPopup('response', 'Update Performance', 'Enter your update for this performance:', performance.response || '', performance);
+  }
+
+  // Handlers for file uploads within the popup (for response updates)
+  handlePopupResponseFile1(event: { typeFile: string, fileId: string }): void {
+    this.popupResponseFile1 = event.fileId;
+  }
+  handlePopupResponseFile2(event: { typeFile: string, fileId: string }): void {
+    this.popupResponseFile2 = event.fileId;
   }
 
   downloadSelectedFile(optionalDocument: any): void {
